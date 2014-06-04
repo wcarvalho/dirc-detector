@@ -1,0 +1,11 @@
+purpose "Generator for DirC.
+
+By Wilka Carvalho <wcarvalho92@gmail.com>"
+
+# Options
+option "events" e "Number of events" int optional
+option "particles" p "Range in the number of particles per event" int optional multiple
+option "random" r "value for seed of random numbers" int optional
+option "filename" f "root filename (relative or absolute path). By default written to ../../root_files/generator.root" string optional
+option "dirc-properties" d "file with dirc properties (in this order): Length, Width, Height, Radial Distance, Magnetic Field" string optional 
+option "maxpars" P "maximum number of particles to intersect DirC (for anlytical-control puposes)" optional

@@ -1,0 +1,6 @@
+purpose "Reconstructor for DirC.
+
+By Wilka Carvalho <wcarvalho92@gmail.com>"
+
+# Options
+option "new" n "runs all programs before it, i.e generator, simulator" optional
