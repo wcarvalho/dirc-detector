@@ -5,54 +5,59 @@
 //====================================================
 
 #include "../headers/reconstructor.h"
+#include <cstdlib>
+#include "cmdline.h"
 
-int main()
+int main(int argc, char** argv)
 {
+	gengetopt_args_info ai;  
+	if (cmdline_parser (argc, argv, &ai) != 0){ exit(1); }
+	if (ai.new_given)
+	{
+	  system("exec ./../../generator/build/generator");
+	  system("exec ./../../simulator/build/simulator");
+	}
+
 	int i=0, j=0;
   int input = 4;
   
   double pi = TMath::Pi();
-  string Output;
+  Displayer disp;
+  Displayer disp_def;
+  Displayer disp_yes;
 
   Reconstruction reconstruction;
-  Reconstruction* reconstruction_p = &reconstruction;
 	ReconstructionData data;
 	reconstruction.Track.push_back(data);
 
-	TH2D h1("h1","h1",100, -pi, pi, 100, 0, pi);
   // pointers to data from ROOT File
-  GeneratorOut *event_output_in = 0;
+  GeneratorOut *event_output = 0;
 
-  TCanvas c1_base("c1", "c1",1,1,2000,600);
-  TCanvas* c1 = &c1_base;
+  TFile file("../../root_files/simulator.root", "read");
+	TTree *events = (TTree*)file.Get("sim_out");
+	events->SetBranchAddress("simEvent", &event_output);
 
-  TFile file("../../dirc_events.root", "read");
-	TTree *events = (TTree*)file.Get("events");
-	events->SetBranchAddress("event_output", &event_output_in);
-
-	TFile file2("../../ReconstructionData.root", "recreate");
+	TFile file2("../../root_files/reconstructor.root", "recreate");
   TTree* tree = new TTree("output", "a tree of Reconstruction Data");
-	tree->Branch("reconstruction", &reconstruction_p);
+	tree->Branch("recEvent", &reconstruction);
 
 
   //--------------------------------------------------
   //              Beginning of Program;
   //--------------------------------------------------
-  
-  Output = "yes";
-  char name[100];
+	cout << "\nRECONSTRUCTOR\n";
+
+	int checker = -1;
+	disp.checker = checker;
   for (i = 0; i < events->GetEntries(); i++)
   {
-  	if (i == 1) {Output = "yes"; }
-  	// if (i == 2) { break; }
-  	else { Output = "no"; }
-  	cout << i << endl;
+  	// cout << "event " << i << endl;
+  	if (i == disp.checker) {disp.Main = "yes"; disp.Action = "yes"; disp.Specific = "no"; disp.General = "yes"; disp.Data = "yes"; cout << "Checking" << endl;}
+  	else { disp = disp_def; disp.checker = checker; }
 	  events->GetEntry(i);
-    GeneratorOut event_output_copy = *event_output_in;
-    GeneratorOut* event_output = &event_output_copy;
-
-	  ReconstructEvent(reconstruction, event_output, h1, Output);
+	  ReconstructEvent(reconstruction, event_output, disp);
 	  tree->Fill();
+	  if (i == disp.checker) { break; }
   }
 
   file2.Write();
@@ -62,7 +67,6 @@ int main()
 
   file2.cd();
   file2.Close();
-  cout << "done\n";
 
 
 }

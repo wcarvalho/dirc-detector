@@ -5,7 +5,7 @@
 #include "TCanvas.h"
 #include "TMath.h"
 #include "TGraph.h"
-#include "../headers/generator.h"
+#include "../headers/simulator.h"
 #include "../headers/functions.h"
 
 

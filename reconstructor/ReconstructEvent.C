@@ -13,19 +13,30 @@ using namespace std;
 /*================================================================================================
 Reconstruct one "Event"
 ================================================================================================*/
-void ReconstructEvent(Reconstruction &reconstruction, GeneratorOut*& event_output, TH2D& h1, string Output)
+void ReconstructEvent(Reconstruction &reconstruction, GeneratorOut*& event_output, Displayer disp)
 {
 
-	int i;
-	
-	FlipNegativePhotons(event_output, Output);
+	int i=0, j=0;
+	vector<PhotonOut> pho;
+	double *pho_theta, *pho_phi;
+	int num_photons = event_output->Photons.size();
+	for (i = 0; i < num_photons; i++)
+	{
+		pho.clear();
+		pho_theta = &event_output->Photons[i].Theta;
+		pho_phi = &event_output->Photons[i].Phi;
+		Reconstructed_Reflections(pho, *pho_theta, *pho_phi, disp);
+		for (j = 0; j < pho.size(); j++)
+		{
+			event_output->Photons.push_back(pho[j]);
+		}
+	}
+
 	reconstruction.Photons.clear();
 	for (i = 0; i < event_output->Particles.size(); i++)
 	{
-		// cout <<"\t\tTheta = "<< event_output->Particles.at(i).Theta << endl;
-		ReconstructTrack(reconstruction, event_output->Particles.at(i), event_output->Photons, h1, Output);
-		// cout << "\t\t\toutter vector size = " << reconstruction.Photons.size() << endl;
-		// cout << "\t\t\tinner vector size = " << reconstruction.Photons.back().size() << endl;
+		disp.location = i;
+		ReconstructTrack(reconstruction, event_output->Particles.at(i), event_output->Photons, disp);
 	}
 
 }

@@ -20,15 +20,16 @@
 //------------------------------------------
 #include "dirc_objects.h"
 #include "functions.h"
+#include "Simulate.h"
+
 //------------------------------------------
 //		Functions
 //------------------------------------------
 using namespace std;
 
-void ReconstructEvent(Reconstruction &reconstruction, GeneratorOut*& event_output, TH2D& h1, string Output);
-void ReconstructTrack(Reconstruction &reconstruction, ParticleOut particle, vector<PhotonOut> photons, TH2D& h1, string Output);
-void FlipNegativePhotons(GeneratorOut*& event_output, string Output);
-void FlipNegativePhoton(PhotonOut &photon, string Output);
-void CreateHistogram(TH2D& h1, vector<PhotonOut> photons, string Output);
+void ReconstructEvent(Reconstruction &reconstruction, GeneratorOut*& event_output, Displayer disp);
+void ReconstructTrack(Reconstruction &reconstruction, ParticleOut particle, vector<PhotonOut> photons, Displayer &disp);
+void Reconstructed_Reflections(vector<PhotonOut> &pho, double theta, double phi, Displayer disp);
+void XY_Reflections(vector<PhotonOut> &pho, Simulate sim, Displayer disp);
 
 

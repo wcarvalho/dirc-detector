@@ -17,12 +17,12 @@ void Check_ParticleEvent(ParticleEvent event)
 	int i;
 	TabToLevel(2); cout << "ParticleEvent " << event.Event << " wih focus " << event.Focus << ":\n";
 	TabToLevel(3); printf
-	("Which \t|Phi \t\t|Theta \t\t|X \t\t|Y \t\t|Z \t\t|\n");
+	("Which \t|Photons \t|Phi \t\t|Theta \t\t|X \t\t|Y \t\t|Z \t\t|\n");
 	for(i = 0; i < event.Particles.size(); i++)
 	{
   	TabToLevel(3); printf
-  	("%i \t|%f \t|%f \t|%f \t|%f \t|%f \t|\n",
-  	event.Particles[i].Which, 
+  	("%i \t|%i \t\t|%f \t|%f \t|%f \t|%f \t|%f \t|\n",
+  	event.Particles[i].Which, event.Particles[i].NumberofPhotons,
   	event.Particles[i].Phi, event.Particles[i].Theta,
   	event.Particles[i].X, event.Particles[i].Y, event.Particles[i].Z);
 	}

@@ -5,79 +5,90 @@
 //====================================================
 
 #include "../headers/generator.h"
+#include <cstdlib>
+#include "cmdline.h"
 
-int main()
+int main(int argc, char** argv)
 {
-  int input = 4;
-  
-  double pi = TMath::Pi();
-  string Output;
+	gengetopt_args_info ai;
+  if (cmdline_parser (argc, argv, &ai) != 0){ exit(1); }
+	int nparticle_range[2] = {1,10000};			//change to 1-1000 photons								// range in number of particles
+  int nevents = 5;																			// number of events
+  int nparticles = 0;																		// number of particles
+  int input = ai.random_given;
+  int maxPars = 1;
 
-  Detector detector(10.0, 1.0, 1.0);
-  vector<PhotonEvent> photon_events;											// vector of vector of photons; photon event is vector of photons
-  vector<ParticleEvent> particle_events;									// vector of vector of particles; photon event is vector of photons
-  ParticleEvent default_ParticleEvent;
 
-  GeneratorOut event_output;
-  TGraph rest(1);
-  TGraph focus(1);
-	TGraph* g1 = &focus;
-	TGraph* g2 = &rest;
+  string dirc_prop = "../dirc_prop.txt";
+  string filename = "../../root_files/generator.root";
+  if(ai.events_given){ nevents = ai.events_arg; }
+  if(ai.particles_given)
+  { 
+  	nparticle_range[0] = ai.particles_arg[0];
+		nparticle_range[1] = ai.particles_arg[1];
+	}
+	if(ai.filename_given){ filename = ai.filename_arg; }
+	if(ai.dirc_properties_given){ dirc_prop = ai.dirc_properties_arg; }
+	// if(ai.maxpars_given){ dirc_prop = ai.maxpars_arg; }	
 
-  photon_events.clear();
-  particle_events.clear();
-  
-  TFile file("../../dirc_events.root", "recreate");
-  TTree* tree = new TTree("events", "a tree of collision events");
-	
-	tree->Branch("event_output", &event_output);
-	tree->Branch("focus", &focus);
-	tree->Branch("rest", &rest);
 
-  //--------------------------------------------------
+	//--------------------------------------------------
   //              Beginning of Program;
   //--------------------------------------------------
-  
-  Output = "no";
+  Detector d;																							// detector
+  ParticleEvent ParEv;
+  vector<Particle> &pars = ParEv.Particles;
+  bool passed;
+  int passes=0;
 
-  find_critical_angle(detector.CriticalAngle, Output);                                      // get the angle to implement total internal reflection
-  detector.Checker = -1;
+	//__________________setting up root file________________
+	TFile file(filename.c_str(), "recreate");
+  TTree tree("gen_out", "a tree of particles");
+	tree.Branch("Particle Event", &ParEv);
+	tree.Branch("detector", &d);
 
-  Fill_ParticleEvent(detector, default_ParticleEvent, 1, input, Output);
-	default_ParticleEvent.Particles[0].NumberofPhotons = 1000;
-	default_ParticleEvent.Particles[0].ConeAngle = .8;
-	default_ParticleEvent.NumberofParticles = 4;
+  Random f(input);																				// random number generator
 
+	gParticle gPar(input); 
+	gParticle *gPar_p = &gPar;
+	Particle *Par = gPar_p;
 
- //  GenerateEvent(detector, particle_events, photon_events, 
- //                1, .8,
- //                default_ParticleEvent.Particles[0].X, default_ParticleEvent.Particles[0].Y,
- //                2, default_ParticleEvent.Particles[0].NumberofPhotons, 5,
- //                tree, g1, g2, input, Output);
-
-  ScanTheta(detector, particle_events, photon_events,
-	    default_ParticleEvent, event_output,
-	    0, 1, 1.0/20,
-	    tree, g1, g2, input, Output);
-
-
-  // ScanX(detector, particle_events, photon_events,
-	 //    default_ParticleEvent, event_output,
-	 //    .1*detector.Length, .9*detector.Length, .8*detector.Length/5,
-	 //    tree, g1, g2, input, Output);
-
-  // ScanY(detector, particle_events, photon_events,
-	 //    default_ParticleEvent, event_output,
-	 //    .1*detector.Width, .9*detector.Width, .8*detector.Width/5,
-	 //    tree, g1, g2, input, Output);
-
-  // ScanPhi(detector, particle_events, photon_events,
-	 //    default_ParticleEvent, event_output,
-	 //    0, 3, 3./5,
-	 //    tree, g1, g2, input, Output);
+	cout << "\nGENERATOR\n";
+  //__________________generate________________
+  for (unsigned int ev = 0; ev < nevents; ev++)
+  {
+  	f.Int(nparticle_range[0], nparticle_range[1], nparticles); 			// assign random number for number of particles "nparticles"
+  	pars.clear();
+  	passes=0;
+  	for (unsigned int par = 0; par < nparticles; par++)
+  	{
+			gPar.gen(); if (input != 0){ input++; }
+  		passed = intersect_with_dirc(d.Width, gPar.Eta, gPar.pt, 
+	  				gPar.Phi_i, gPar.m , gPar.Charge, d.Radial_D,
+	  				d.Mag_field, gPar.X, gPar.Y, gPar.Phi, 
+	  				gPar.Theta, gPar.Beta);
+  		gPar.X = gPar.X + d.Length/2;
+  		gPar.Y = gPar.Y + d.Width/2;
+  		// cout << "x,y = " << gPar.X<< ", " << gPar.Y << endl;
+  		if (passed == 1)
+			{
+				if( gPar.ConeAngle == gPar.ConeAngle )
+				{
+				pars.push_back(*Par);
+				// cout << "Eta = " << gPar.Eta << ", pt = " << gPar.pt << endl;
+				passes++;
+				// cout << "passed " << passes << "times\n";
+				if (passes == maxPars){ break; }
+				// cout << "ConeAngle = " << gPar.ConeAngle << endl;
+				}
+  		}
+  	}
+  	tree.Fill();
+  }
 
   file.Write();
+  cout << "file: " << filename << endl;
   file.Close();
-
   return 0;
+
 }

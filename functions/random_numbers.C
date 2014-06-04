@@ -1,16 +1,20 @@
+#include <iostream>
+#include <math.h>
 #include "TRandom3.h"
+#include "../headers/random.h"
+
+
 using namespace std;
 
-/*================================================
-Generate an array with n random numbers
-================================================*/
-
-double* random_numbers(int size, int input_number)
+double* Random::Array(int size)
 {
-  TRandom3 r;
-  r.SetSeed(0);
-  r.Rndm();
+  Rndm();
   double* x = new double[size];
-  r.RndmArray(size,x);
+  RndmArray(size,x);
   return x;
+}
+
+void Random::Int(int beginning, int end, int &x)
+{
+	x = beginning + Integer(end-beginning);
 }

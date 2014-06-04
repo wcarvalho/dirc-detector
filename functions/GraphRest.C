@@ -4,7 +4,7 @@
 #include "dirc_objects.h"
 #include "TCanvas.h"
 #include "TGraph.h"
-#include "../headers/generator.h"
+#include "../headers/simulator.h"
 #include "../headers/functions.h"
 
 

@@ -42,9 +42,9 @@ void Rotate_Photons(Detector d, ParticleEvent particle_event, PhotonEvent &photo
 
 		  for (k = 0; k < photon_event.Photons.size(); k++)
 		  {
-		  	if (Output == "yes") {TabToLevel(3); cout << "Photon " << k << " with Theta " << particle_event.Particles[i].Theta << "\n"; }
 		  	if (photon_event.Photons[k].WhichParticle == i)
 		  	{
+			  	if (Output == "yes") {TabToLevel(3); cout << "Photon " << k << " with Theta " << particle_event.Particles[i].Theta << "\n"; }
 			  	photon_event.Photons[k].UnitVector = Rotated_Vector(RotationMatrix, photon_event.Photons[k].UnitVector, Output);
 			  	Update_Photon_ThetaPhi(photon_event.Photons[k], Output);
 		  	}

@@ -11,54 +11,6 @@ using namespace std;
 Rotate Photons in event to the frame of either the detecotr if in phase generation or of the particle if in frame reconstruction
 ================================================================================================*/
 
-void Rotate_Photons(Detector d, ParticleEvent particle_event, PhotonEvent &photon_event, string Output)
-{
-
-	int i, k;
-	int Photons_Affected;
-	TVector3 RotationVector;
-	TVector3 ZeroVector(0,0,0);
-	double rotation_angle;
-	vector< vector<double> > RotationMatrix;
-
-	Introduce("Rotate_Photons", Output);
-
-	for(i = 0; i<particle_event.Particles.size(); i++)
-	{
-		RotationVector = Rotation_Vector(d, particle_event.Particles[i], Output);
-		if (RotationVector == ZeroVector) { continue; }
-		else
-		{
-			rotation_angle = d.Z_UnitVector.Angle(particle_event.Particles[i].UnitVector);
-			if (photon_event.Phase == "Reconstruction")
-			{
-				rotation_angle = -rotation_angle;
-			}
-			if (Output == "yes") { TabToLevel(3); cout << "rotation_angle = " << rotation_angle << endl; }
-
-
-		  create_2D_vector(RotationMatrix, 3, 3);
-		  Fill_RotationMatrix(RotationMatrix, RotationVector, rotation_angle, Output);
-
-		  Photons_Affected = Corresponding_Photons(photon_event, i);
-
-		  for (k = 0; k < photon_event.Photons.size(); k++)
-		  {
-		  	if (Output == "yes") {TabToLevel(3); cout << "Photon " << k << " with Theta " << particle_event.Particles[i].Theta << "\n"; }
-		  	if (photon_event.Photons.at(k).WhichParticle == i)
-		  	{
-			  	photon_event.Photons.at(k).UnitVector = Rotated_Vector(RotationMatrix, photon_event.Photons.at(k).UnitVector, Output);
-			  	Update_Photon_ThetaPhi(photon_event.Photons.at(k), Output);
-		  	}
-		  }	
-		}
-
-	}
-}
-
-
-
-
 
 void Rotate_Photons_IntoFrame(Detector d, ParticleOut particle, vector<PhotonOut> &photons, int beg, int end, string Output)
 {
@@ -66,7 +18,6 @@ void Rotate_Photons_IntoFrame(Detector d, ParticleOut particle, vector<PhotonOut
 	int k;
 	double x,y,z;
 	double rotation_angle;
-	vector< vector<double> > RotationMatrix;
 	x = sin(particle.Theta)*cos(particle.Phi);
 	y = sin(particle.Theta)*sin(particle.Phi);
 	z = cos(particle.Theta);
@@ -74,6 +25,10 @@ void Rotate_Photons_IntoFrame(Detector d, ParticleOut particle, vector<PhotonOut
 	TVector3 RotationVector;
 	TVector3 ZeroVector(0,0,0);
 	TVector3 Photon_v;
+	double RotationMatrix[3][3];
+
+	Rotater r;
+	
 	RotationVector = d.Z_UnitVector.Cross(Particle_v);
 	if (RotationVector == ZeroVector) { TabToLevel(3); cout << "ZERO VECTOR\n"; return; }
 
@@ -83,10 +38,8 @@ void Rotate_Photons_IntoFrame(Detector d, ParticleOut particle, vector<PhotonOut
 	if (Output == "yes") { TabToLevel(3); cout << "rotation_angle = " << rotation_angle << endl; }
 
   Output ="";
-  create_2D_vector(RotationMatrix, 3, 3);
-  Fill_RotationMatrix(RotationMatrix, RotationVector, rotation_angle, Output);
+  r.RotationMatrix(RotationMatrix, RotationVector, rotation_angle, Output);
 
-	TabToLevel(3); cout << "Example: Photon theta = " << photons.at(20).Theta << endl;
   for (k = beg; k < end; k++)
   {
 		x = sin(photons.at(k).Theta)*cos(photons.at(k).Phi);
@@ -97,11 +50,10 @@ void Rotate_Photons_IntoFrame(Detector d, ParticleOut particle, vector<PhotonOut
 		Photon_v.SetZ(z);
 		// cout << "Theta = " << Photon_v.Theta() << endl;
 		// TabToLevel(3); cout << "Unit Vector: ";Print_TVector(Photon_v);
-		Photon_v = Rotated_Vector(RotationMatrix, Photon_v, Output);
+		Photon_v = r.Rotated_Vector(RotationMatrix, Photon_v, Output);
 		// TabToLevel(4); cout << "->";Print_TVector(Photon_v);
 		// cout << "Theta = " << Photon_v.Theta() << endl;
   	photons.at(k).Theta = Photon_v.Theta();
   	photons.at(k).Phi = Photon_v.Phi();
   }	
-	TabToLevel(3); cout << "Photon theta = " << photons.at(20).Theta << endl;
 }

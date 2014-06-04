@@ -13,10 +13,8 @@ using namespace std;
 Get Unit Vector
 ================================================================================================*/
 
-void Get_Particle_UnitVector(Particle &particle)
+TVector3 Get_UnitVector(double theta, double phi)
 {
-	double theta = particle.Theta;
-	double phi = particle.Phi;
 	double xunit, yunit, zunit;
 
 	xunit = sin(theta)*cos(phi);
@@ -24,5 +22,5 @@ void Get_Particle_UnitVector(Particle &particle)
 	zunit = cos(theta);
 	TVector3 unit_vector(xunit, yunit, zunit);
 
-	particle.UnitVector = unit_vector;
+	return unit_vector;
 }

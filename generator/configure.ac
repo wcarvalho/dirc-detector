@@ -11,10 +11,10 @@ AC_PROG_LIBTOOL
 CPPFLAGS="${CPPFLAGS} -I`root-config --incdir` `pkg-config --cflags DircObjs`"
 
 ROOT_LIBS=`root-config --libs`
-LIB=`pkg-config --libs DircObjs`
+DIRC_LIB=`pkg-config --libs DircObjs`
 
 AC_SUBST(ROOT_LIBS)
-AC_SUBST(LIB)
+AC_SUBST(DIRC_LIB)
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
