@@ -1,0 +1,1702 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"p",
+				"photon"
+			],
+			[
+				"pa",
+				"param"
+			],
+			[
+				"Par",
+				"Particle"
+			],
+			[
+				"P",
+				"Particle"
+			],
+			[
+				"Pa",
+				"Parameters"
+			],
+			[
+				"Y",
+				"Y"
+			],
+			[
+				"ph",
+				"pho_theta"
+			],
+			[
+				"beg",
+				"beginning"
+			],
+			[
+				"Tr",
+				"TRandom"
+			],
+			[
+				"in",
+				"input_number"
+			],
+			[
+				"pho",
+				"photon_events"
+			],
+			[
+				"RO",
+				"RotationVector"
+			],
+			[
+				"s",
+				"s"
+			],
+			[
+				"y",
+				"y"
+			],
+			[
+				"x",
+				"x"
+			],
+			[
+				"Ro",
+				"RotationVector"
+			],
+			[
+				"R",
+				"RotationVector"
+			],
+			[
+				"phi",
+				"par_phi"
+			],
+			[
+				"par",
+				"par_x"
+			],
+			[
+				"rot",
+				"Rotater"
+			],
+			[
+				"G",
+				"GENERATOR"
+			],
+			[
+				"Rotat",
+				"Rotater"
+			],
+			[
+				"Rotate",
+				"Rotate_Photons"
+			],
+			[
+				"ma",
+				"matrix"
+			],
+			[
+				"Z",
+				"Z_UnitVector"
+			],
+			[
+				"D",
+				"Displayer"
+			],
+			[
+				"Nu",
+				"NumberofParticles"
+			],
+			[
+				"de",
+				"default_ParticleEvent"
+			],
+			[
+				"re",
+				"rest"
+			],
+			[
+				"In",
+				"IncidentX"
+			],
+			[
+				"e",
+				"event_output"
+			],
+			[
+				"T",
+				"Tphoton_event"
+			],
+			[
+				"fo",
+				"focus"
+			],
+			[
+				"the",
+				"theta"
+			],
+			[
+				"m",
+				"matrix"
+			],
+			[
+				"inc",
+				"incidence"
+			],
+			[
+				"crii",
+				"critical_angle"
+			],
+			[
+				"time",
+				"time_after"
+			],
+			[
+				"part",
+				"particle_file_names"
+			],
+			[
+				"i",
+				"iterator"
+			],
+			[
+				"en",
+				"endl"
+			],
+			[
+				"num",
+				"number_of_phis"
+			],
+			[
+				"numb",
+				"number_of_thetas"
+			],
+			[
+				"g",
+				"graph_name"
+			],
+			[
+				"fa",
+				"fake_points"
+			],
+			[
+				"out",
+				"output_data"
+			],
+			[
+				"phot",
+				"photon_data"
+			],
+			[
+				"thet",
+				"theta_before"
+			],
+			[
+				"th",
+				"theta_before"
+			],
+			[
+				"t",
+				"t"
+			],
+			[
+				"print",
+				"print_1D_array"
+			],
+			[
+				"graph_",
+				"graph_filename"
+			],
+			[
+				"grap",
+				"graph_filename"
+			],
+			[
+				"gra",
+				"graph_filename"
+			],
+			[
+				"gr",
+				"graph_file_names"
+			],
+			[
+				"fi",
+				"file_of_graph_names"
+			],
+			[
+				"loa",
+				"load_files"
+			],
+			[
+				"file",
+				"filename"
+			],
+			[
+				"all",
+				"all_photon_possibilities"
+			],
+			[
+				"al",
+				"all_photon_possibilities"
+			],
+			[
+				"char",
+				"char_filename"
+			],
+			[
+				"cha",
+				"char_filename"
+			],
+			[
+				"photon_da",
+				"photon_data_files"
+			],
+			[
+				"particle_data",
+				"particle_data_filenames"
+			],
+			[
+				"fie",
+				"file_name"
+			],
+			[
+				"f",
+				"file_name"
+			],
+			[
+				"n",
+				"number_of_points"
+			],
+			[
+				"c",
+				"critical_angle"
+			],
+			[
+				"sim",
+				"simulate_path"
+			],
+			[
+				"z",
+				"zunit"
+			],
+			[
+				"fill",
+				"fill_vector"
+			],
+			[
+				"theta",
+				"theta"
+			],
+			[
+				"push",
+				"push_back"
+			],
+			[
+				"a",
+				"array"
+			],
+			[
+				"fin",
+				"find_component_distances"
+			],
+			[
+				"ch",
+				"char_filename"
+			],
+			[
+				"simu",
+				"simulation_parameters"
+			],
+			[
+				"sca",
+				"scan_length"
+			],
+			[
+				"sc",
+				"scan_length"
+			],
+			[
+				"temp",
+				"temp2"
+			],
+			[
+				"tem",
+				"temp2"
+			],
+			[
+				"roation",
+				"rotation_matrix"
+			],
+			[
+				"te",
+				"temp2"
+			],
+			[
+				"gen",
+				"generator"
+			],
+			[
+				"phoo",
+				"photon_data"
+			],
+			[
+				"det",
+				"detector_data_file"
+			],
+			[
+				"tim",
+				"time_z"
+			],
+			[
+				"C",
+				"C"
+			],
+			[
+				"nu",
+				"number_of_phis"
+			],
+			[
+				"b",
+				"break"
+			],
+			[
+				"ort",
+				"orthogonal_vector"
+			],
+			[
+				"or",
+				"orthogonal_vector"
+			],
+			[
+				"angle",
+				"angle_between"
+			],
+			[
+				"phi_",
+				"phi_i"
+			],
+			[
+				"cu",
+				"current_photon"
+			],
+			[
+				"Curr",
+				"current_photon"
+			],
+			[
+				"r",
+				"r"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "main.cpp",
+			"settings":
+			{
+				"buffer_size": 2649,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/headers/generator.h",
+			"settings":
+			{
+				"buffer_size": 4546,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/headers/functions.h",
+			"settings":
+			{
+				"buffer_size": 3096,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/headers/Parameters.h",
+			"settings":
+			{
+				"buffer_size": 1711,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "Simulate_PhotonPath.C",
+			"settings":
+			{
+				"buffer_size": 1532,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "ScanTheta.C",
+			"settings":
+			{
+				"buffer_size": 1439,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "GenerateEvent.C",
+			"settings":
+			{
+				"buffer_size": 2001,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "SimulateEvent.C",
+			"settings":
+			{
+				"buffer_size": 1112,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "Change_Angle.C",
+			"settings":
+			{
+				"buffer_size": 1041,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "Fill_ParticleEvent.C",
+			"settings":
+			{
+				"buffer_size": 2383,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "CheckAngel.C",
+			"settings":
+			{
+				"buffer_size": 2213,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "FillTree.C",
+			"settings":
+			{
+				"buffer_size": 721,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 229.0,
+		"selected_items":
+		[
+			[
+				"Snippet: ",
+				"Snippet: #include \"…\""
+			]
+		],
+		"width": 404.0
+	},
+	"console":
+	{
+		"height": 125.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/generator/generator.sublime-build",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/generator/Makefile.am",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/generator/PushBack_ParticleEvent.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/generator/Fill_ParticleEvent.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/generator/PushBack_PhotonEvent.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/generator/ScanY.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/generator/ScanX.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/generator/ScanPhi.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/generator/ScanTheta.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/headers/Parameters.h",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/generator/CheckAngel.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/generator/GenerateEvent.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/generator/Simulate_PhotonPath.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/generator/SimulateEvent.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/generator/Simulate_ParticlePath.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/generator/CheckForFlag.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/generator/Change_Angle.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/generator/Random_Emission_Times.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/functions/random_numbers.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/generator/Get_PhotonDistance.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/functions/Get_Particle_UnitVector.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/generator/Get_PhotonWall.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/functions/Update_Photon_ThetaPhi.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/functions/Rotater.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/headers/functions.h",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/headers/generator.h",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/functions/Rotate_Photons.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/headers/Rotater.h",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/generator/find_critical_angle.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/functions/rotater.h",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/generator/FillTree.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/generator/Pull_Data.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/functions/Rotated_Vector.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/functions/Rotate_Photon.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/functions/Rotation_Vector.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/functions/Fill_RotationMatrix.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/functions/Check_ParticleEvent.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/functions/TabToLevel.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/functions/RandomNumberBetween.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/generator/SmearAngle.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/generator/build/.deps/SimulateEvent.Po",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/functions/GraphFocus.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/generator/GraphEvent.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/functions/GraphRest.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/generator/generator.kdev4",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/generator/files/plane.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/mutual_functions/random_numbers.C",
+		"/Users/wilkacarvalho/Google/programming/buffHist3D/buffHist3D.cpp",
+		"/Users/wilkacarvalho/Google/programming/buffHist3D/buffHist3D.h",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/mutual_functions/add_default_graph.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/reconstructor/print_graphs.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/generator/files/generate_data.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/mutual_functions/push_parameter_data.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/mutual_functions/generate_random_parameters.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/mutual_functions/multiply_matrix_vector.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/mutual_functions/print_2D_array.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/mutual_functions/take_in_simulation_parameters.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/generator/files/fill_vector.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/generator/files/get_all_photon_data.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/mutual_functions/denormalize_array_values.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/mutual_functions/normalize_angle.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/mutual_functions/take_in_simulation_parameters.h",
+		"/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/mutual_functions/generate_scan_parameters.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/dirc-detector/functions/TabToLevel.C",
+		"/Users/wilkacarvalho/Google/programming/nuclear/dirc-detector/generator/build/.kdev_include_paths",
+		"/Users/wilkacarvalho/Google/programming/nuclear/dirc-detector/generator/build/main.o",
+		"/Users/wilkacarvalho/Google/programming/nuclear/dirc-detector/generator/*.h",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/dirc-detector/generator/configure",
+		"/Users/wilkacarvalho/Google Drive/programming/buffHist3D/bufferedHistogram_Dict.h",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/dirc-detector/generator/find_critical_angle.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/dirc-detector/generator/DefaultParticles.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/dirc-detector/generator/*.h",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear_testing/configure.ac",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear_testing/Makefile",
+		"/Users/wilkacarvalho/Google Drive/programming/projects/ParticleDetector/random.sublime-project",
+		"/Users/wilkacarvalho/Google Drive/programming/random/random2.C",
+		"/Users/wilkacarvalho/Google Drive/programming/random/random.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_functions/take_in_simulation_parameters.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/generator/files/simulate_all_paths.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/generator/files/find_critical_angle.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_functions/check_direction.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/generator/files/fill_vector.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_functions/rotation_matrix.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/generator/files/simulate_path.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_functions/add_default_graph.C",
+		"/Users/wilkacarvalho/Google Drive/programming/projects/ParticleDetector/generator.sublime-project",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_functions/print_1D_array.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_functions/pipe_array.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/generator/files/get_all_photon_data.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_functions/.deps/pipe_array.Po",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_functions/current_file_name.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_functions/denormalize_array_values.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/generator/files/get_all_file_names.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_functions/generate_scan_parameters.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_functions/convert_string_to_char.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/generator/files/change_angle.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/generator/files/mapper.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_functions/make_values.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_functions/pipe_file_names.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/generator/files/pipe_particle_data.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/generator/files/generate_data.c",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_functions/generate_random_parameters.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_functions/add_graph.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_functions/print_canvas.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_functions/clear_file.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_functions/rotate_photons.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_functions/print_2D_array.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_functions/top_row_photon_data.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_functions/top_row_particle_data.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_functions/rotate_photons_via_particle.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_functions/rotate_photons_via_cross.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/generator/files/create_photon_vector.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/generator/files/.deps/pipe_particle_data.Po",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/generator/files/number_of_photons.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_data/photon_data_x_7.200000_y_0.264145_theta_0.720000_phi_0.410034.dat",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_functions/canvas_with_graph.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_functions/random_numbers.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_data/particle_data_x_5.400000_y_0.264145_theta_0.630000_phi_0.410034.dat",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_functions/graph_data.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/generator/files/normalize_angle.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_functions/create_default_canvas.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/generator/files/array_access_variables.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_functions/create_2D_vector.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/generator/files/store_angle.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_functions/push_scan.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/mutual_functions/push_parameter_data.C",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/generator/aclocal.m4",
+		"/Users/wilkacarvalho/Google Drive/programming/nuclear/particle-detector/generator/files/main.C"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"particle",
+			"output",
+			"push",
+			"ParticleEvent default_ParticleEvent",
+			"parameters.Particle",
+			"Set",
+			"Specific",
+			"Photon",
+			"get",
+			"RandomNumber",
+			"begin",
+			"get",
+			"matrix",
+			"Tvector",
+			"par",
+			"matrix",
+			"Output",
+			"g1, g2, ",
+			"g1",
+			"rotate_P",
+			"rotate",
+			"rot",
+			"()",
+			"fill",
+			".at(",
+			")[",
+			".at(",
+			"d",
+			"Out",
+			"random",
+			"photon_event",
+			"Photons",
+			"TTree* tree, vector<GeneratorOut> &data, TGraph*& g1, TGraph*& g2, int input, string Output",
+			"ParticleEvent &Tparticle_event, PhotonEvent &Tphoton_event",
+			"Tparticle_event, Tphoton_event",
+			"Tparticle_event, Tphoton_event,",
+			"data",
+			"setbin",
+			"focus",
+			"graph1",
+			"float",
+			"gr1",
+			"exit",
+			"graph",
+			"quark",
+			"quak",
+			"border",
+			"c1",
+			"ps",
+			"reconstructor",
+			"n2",
+			"graph_name",
+			"t_count",
+			"0",
+			"inner_end-1",
+			"j",
+			"char_graphname",
+			"graph_file_names[k]",
+			"char_graphname",
+			"fill",
+			"\"  ",
+			"particle_data[",
+			"file_name",
+			"number_of_points1",
+			"title",
+			"number_of_points",
+			"c1",
+			"middle ea",
+			"temp",
+			"number_of",
+			"graphname",
+			"char_graphname",
+			"particle_data",
+			"particle_filenames",
+			"l",
+			"photon_data_filenames",
+			"curren",
+			"char_filename",
+			"filena",
+			"file_name",
+			"particle",
+			"current",
+			"number_of_theta",
+			"get_values",
+			"at(i)",
+			"SetLimits",
+			"exit(1)",
+			"tmp",
+			"tab2",
+			"theta_access",
+			"phi_access",
+			"break;",
+			"theta_access",
+			"phi_access",
+			"z_access",
+			"x_access",
+			"y_access",
+			"theta_access",
+			"phi_access",
+			"theta_access",
+			"z_access",
+			"y_access",
+			"x_access",
+			"phi_access",
+			"theta_access",
+			"temp2",
+			"particle_data",
+			"THREE_D_ARRAY",
+			"TWO_D_ARRAY",
+			"2Darray",
+			"3Darray",
+			"vector< vector< vector<double> > > &particle_data",
+			"number_of_angles",
+			"phi_incidence_access",
+			"theta_incidence_access",
+			"yi_access",
+			"xi_access",
+			"number_of_photons_access",
+			"scan_number",
+			"Hello",
+			"= 0",
+			"rotate",
+			"functions",
+			"number_of_phis",
+			"photon_data",
+			"take_in_detector_parameters",
+			"[i]",
+			".at(row_number)"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"Parameter param",
+			"parameters",
+			"Range",
+			"Trivial",
+			"",
+			"Particle",
+			"RandomDouble",
+			"Matrix",
+			"RotationVector",
+			"pho",
+			"",
+			"[",
+			"][",
+			"[",
+			"particle_event",
+			"Particles",
+			"TTree* tree, TGraph*& g1, TGraph*& g2, int input, string Output",
+			"GeneratorOut& event_output",
+			"event_output",
+			"rest",
+			"focus",
+			"double",
+			"gr2",
+			"gr1",
+			"d1",
+			"tester",
+			"beginning",
+			"end",
+			"iterator",
+			"character",
+			"string",
+			"\"",
+			"number_of_points",
+			"number_of_points1",
+			"filenames[i]",
+			"char_filename",
+			"data",
+			"filenames",
+			"char_graphname",
+			"make_values",
+			"at(0)",
+			"abort()",
+			"file_name",
+			"char_filename",
+			"3",
+			"4",
+			"exit(1)",
+			"3",
+			"4",
+			"9",
+			"7",
+			"8",
+			"7",
+			"3",
+			"4",
+			"3",
+			"9",
+			"8",
+			"7",
+			"3",
+			"vector_prime",
+			"array1",
+			"array2",
+			"TWO_D_ARRAY",
+			"THREE_D_ARRAY",
+			"size",
+			"4",
+			"3",
+			"2",
+			"1",
+			"0",
+			"scan_length",
+			"Generator",
+			"mutual",
+			"number_of_points",
+			"data",
+			"[current_photon]",
+			"",
+			"[current_photon]",
+			""
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "main.cpp",
+					"settings":
+					{
+						"buffer_size": 2649,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1519,
+								1519
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 10.0,
+						"translation.y": 761.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/headers/generator.h",
+					"settings":
+					{
+						"buffer_size": 4546,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								847,
+								847
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 98.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/headers/functions.h",
+					"settings":
+					{
+						"buffer_size": 3096,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								372,
+								372
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 1237.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "/Users/wilkacarvalho/Google/programming/nuclear/particle-detector/headers/Parameters.h",
+					"settings":
+					{
+						"buffer_size": 1711,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1490,
+								1490
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 268.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "Simulate_PhotonPath.C",
+					"settings":
+					{
+						"buffer_size": 1532,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1017,
+								1017
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 268.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		},
+		{
+			"selected": 6,
+			"sheets":
+			[
+				{
+					"buffer": 5,
+					"file": "ScanTheta.C",
+					"settings":
+					{
+						"buffer_size": 1439,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								865,
+								910
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 313.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "GenerateEvent.C",
+					"settings":
+					{
+						"buffer_size": 2001,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1144,
+								1144
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 397.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "SimulateEvent.C",
+					"settings":
+					{
+						"buffer_size": 1112,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1058,
+								1058
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 145.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "Change_Angle.C",
+					"settings":
+					{
+						"buffer_size": 1041,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								646,
+								696
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 285.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "Fill_ParticleEvent.C",
+					"settings":
+					{
+						"buffer_size": 2383,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1389,
+								1389
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 25.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 10,
+					"file": "CheckAngel.C",
+					"settings":
+					{
+						"buffer_size": 2213,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2104,
+								2104
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 733.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 11,
+					"file": "FillTree.C",
+					"settings":
+					{
+						"buffer_size": 721,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			],
+			[
+				1,
+				0,
+				2,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			0.5,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 100.0
+	},
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"f",
+				"generator/FillTree.C"
+			],
+			[
+				"gener",
+				"generator/generator.sublime-build"
+			],
+			[
+				"ch",
+				"generator/CheckAngel.C"
+			],
+			[
+				"fill",
+				"generator/Fill_ParticleEvent.C"
+			],
+			[
+				"push",
+				"generator/PushBack_ParticleEvent.C"
+			],
+			[
+				"cha",
+				"generator/Change_Angle.C"
+			],
+			[
+				"sca",
+				"generator/ScanTheta.C"
+			],
+			[
+				"sim",
+				"generator/Simulate_PhotonPath.C"
+			],
+			[
+				"pa",
+				"headers/Parameters.h"
+			],
+			[
+				"fil",
+				"generator/Fill_ParticleEvent.C"
+			],
+			[
+				"ge",
+				"generator/GenerateEvent.C"
+			],
+			[
+				"scan",
+				"generator/ScanY.C"
+			],
+			[
+				"make",
+				"generator/Makefile.am"
+			],
+			[
+				"pus",
+				"generator/PushBack_PhotonEvent.C"
+			],
+			[
+				"checkfor",
+				"generator/CheckForFlag.C"
+			],
+			[
+				"chec",
+				"generator/CheckForFlag.C"
+			],
+			[
+				"che",
+				"generator/CheckAngel.C"
+			],
+			[
+				"chan",
+				"generator/Change_Angle.C"
+			],
+			[
+				"rand",
+				"generator/Random_Emission_Times.C"
+			],
+			[
+				"simula",
+				"generator/Simulate_ParticlePath.C"
+			],
+			[
+				"gen",
+				"generator/GenerateEvent.C"
+			],
+			[
+				"get",
+				"generator/Get_PhotonDistance.C"
+			],
+			[
+				"check",
+				"generator/CheckForFlag.C"
+			],
+			[
+				"simu",
+				"generator/SimulateEvent.C"
+			],
+			[
+				"func",
+				"headers/functions.h"
+			],
+			[
+				"gene",
+				"headers/generator.h"
+			],
+			[
+				"up",
+				"functions/Update_Photon_ThetaPhi.C"
+			],
+			[
+				"set",
+				"generator/ScanTheta.C"
+			],
+			[
+				"ro",
+				"functions/Rotater.C"
+			],
+			[
+				"mak",
+				"generator/Makefile.am"
+			],
+			[
+				"find",
+				"generator/find_critical_angle.C"
+			],
+			[
+				"rot",
+				"headers/Rotater.h"
+			],
+			[
+				"fun",
+				"headers/functions.h"
+			],
+			[
+				"photonp",
+				"generator/Simulate_PhotonPath.C"
+			],
+			[
+				"random",
+				"functions/random_numbers.C"
+			],
+			[
+				"pull_",
+				"generator/Pull_Data.C"
+			],
+			[
+				"fi",
+				"generator/FillTree.C"
+			],
+			[
+				"rotated",
+				"functions/Rotated_Vector.C"
+			],
+			[
+				"functin",
+				"headers/functions.h"
+			],
+			[
+				"genera",
+				"generator/GenerateEvent.C"
+			],
+			[
+				"tab",
+				"functions/TabToLevel.C"
+			],
+			[
+				"simul",
+				"generator/build/.deps/SimulateEvent.Po"
+			],
+			[
+				"ran",
+				"functions/random_numbers.C"
+			],
+			[
+				"fl",
+				"generator/Fill_ParticleEvent.C"
+			],
+			[
+				"focus",
+				"functions/GraphFocus.C"
+			],
+			[
+				"graph",
+				"generator/GraphEvent.C"
+			],
+			[
+				"gra",
+				"generator/GraphEvent.C"
+			],
+			[
+				"pu",
+				"generator/PushBack_PhotonEvent.C"
+			],
+			[
+				"fu",
+				"headers/functions.h"
+			],
+			[
+				"graphf",
+				"functions/GraphFocus.C"
+			],
+			[
+				"scant",
+				"generator/ScanTheta.C"
+			],
+			[
+				"dirc",
+				"dirc-objects/dirc_objects.h"
+			],
+			[
+				"con",
+				"configure.ac"
+			],
+			[
+				"main",
+				"main.h"
+			],
+			[
+				"ma",
+				"Makefile.am"
+			],
+			[
+				"random2",
+				"random2.C"
+			],
+			[
+				"tak",
+				"mutual_functions/take_in_simulation_parameters.C"
+			],
+			[
+				"mut",
+				"mutual_functions/mutual_functions.h"
+			],
+			[
+				"critc",
+				"generator/files/find_critical_angle.C"
+			],
+			[
+				"ror",
+				"mutual_functions/rotation_matrix.C"
+			],
+			[
+				"1",
+				"mutual_functions/print_1D_array.C"
+			],
+			[
+				"rota",
+				"mutual_functions/rotate_photons_via_particle.C"
+			],
+			[
+				"pip",
+				"mutual_functions/pipe_array.C"
+			],
+			[
+				"add",
+				"mutual_functions/add_default_graph.C"
+			],
+			[
+				"conver",
+				"mutual_functions/convert_string_to_char.C"
+			],
+			[
+				"add_",
+				"mutual_functions/add_default_graph.C"
+			],
+			[
+				"critica",
+				"generator/files/find_critical_angle.C"
+			],
+			[
+				"curre",
+				"mutual_functions/current_file_name.C"
+			],
+			[
+				"get_all",
+				"generator/files/get_all_file_names.C"
+			],
+			[
+				"mapp",
+				"generator/files/mapper.C"
+			],
+			[
+				"pipe_fi",
+				"mutual_functions/pipe_file_names.C"
+			],
+			[
+				"den",
+				"mutual_functions/denormalize_array_values.C"
+			],
+			[
+				"take",
+				"mutual_functions/take_in_simulation_parameters.C"
+			],
+			[
+				"generate_da",
+				"generator/files/generate_data.c"
+			],
+			[
+				"add_de",
+				"mutual_functions/add_default_graph.C"
+			],
+			[
+				"print",
+				"mutual_functions/print_2D_array.C"
+			],
+			[
+				"to",
+				"mutual_functions/top_row_photon_data.C"
+			],
+			[
+				"top",
+				"mutual_functions/top_row_particle_data.C"
+			],
+			[
+				"r",
+				"mutual_functions/rotate_photons_via_particle.C"
+			],
+			[
+				"pipe",
+				"generator/files/pipe_particle_data.C"
+			],
+			[
+				"create",
+				"generator/files/create_photon_vector.C"
+			],
+			[
+				"photon",
+				"generator/files/number_of_photons.C"
+			],
+			[
+				"crea",
+				"generator/files/create_photon_vector.C"
+			],
+			[
+				"pipe_pa",
+				"generator/files/pipe_particle_data.C"
+			],
+			[
+				"pipe_",
+				"mutual_functions/pipe_file_names.C"
+			],
+			[
+				"curr",
+				"mutual_functions/current_file_name.C"
+			],
+			[
+				"critic",
+				"generator/files/find_critical_angle.C"
+			],
+			[
+				"p",
+				"mutual_functions/pipe_array.C"
+			],
+			[
+				"criti",
+				"generator/files/find_critical_angle.C"
+			],
+			[
+				"ad",
+				"mutual_functions/add_default_graph.C"
+			],
+			[
+				"arra",
+				"generator/files/array_access_variables.C"
+			],
+			[
+				"grap",
+				"mutual_functions/graph_data.C"
+			],
+			[
+				"get_a",
+				"generator/files/get_all_photon_data.C"
+			],
+			[
+				"rote",
+				"mutual_functions/rotate_photons_via_particle.C"
+			],
+			[
+				"prin",
+				"mutual_functions/print_2D_array.C"
+			],
+			[
+				"de",
+				"mutual_functions/denormalize_array_values.C"
+			],
+			[
+				"push_can",
+				"mutual_functions/push_scan.C"
+			],
+			[
+				"make_v",
+				"mutual_functions/make_values.C"
+			],
+			[
+				"deno",
+				"mutual_functions/denormalize_array_values.C"
+			],
+			[
+				"generate",
+				"mutual_functions/generate_random_parameters.C"
+			],
+			[
+				"take_in",
+				"mutual_functions/take_in_simulation_parameters.C"
+			],
+			[
+				"",
+				"generator/aclocal.m4"
+			],
+			[
+				"takein",
+				"mutual_functions/take_in_detector_parameters.C"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"selected_items":
+		[
+			[
+				"",
+				"/Users/wilkacarvalho/Dropbox/codes/nuclear/dirc-detector/dirc-detector.sublime-project"
+			]
+		],
+		"width": 380.0
+	},
+	"show_minimap": false,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": false,
+	"side_bar_width": 150.0,
+	"status_bar_visible": true
+}
