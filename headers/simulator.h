@@ -30,7 +30,7 @@
 using namespace std;
 
 
-void Release_Photons(Simulate simPar, PhotonEvent &event, int released);
+void Release_Photons(Simulate simPar, PhotonEvent &event, int released, double EmissionAngle);
 
 void find_critical_angle(double &critical_angle, string Output);
 void PushBack_ParticleEvent(Detector detector, vector<ParticleEvent> &particle_events, Parameter param, int input, string Output);

@@ -67,19 +67,17 @@ int main(int argc, char** argv)
 	  				gPar.Phi_i, gPar.m , gPar.Charge, d.Radial_D,
 	  				d.Mag_field, gPar.X, gPar.Y, gPar.Phi, 
 	  				gPar.Theta, gPar.Beta);
+
   		gPar.X = gPar.X + d.Length/2;
   		gPar.Y = gPar.Y + d.Width/2;
-  		// cout << "x,y = " << gPar.X<< ", " << gPar.Y << endl;
-  		if (passed == 1)
+
+  		if ((passed == 1) && gPar.Theta < TMath::Pi()/2)
 			{
 				if( gPar.ConeAngle == gPar.ConeAngle )
 				{
 				pars.push_back(*Par);
-				// cout << "Eta = " << gPar.Eta << ", pt = " << gPar.pt << endl;
 				passes++;
-				// cout << "passed " << passes << "times\n";
 				if (passes == maxPars){ break; }
-				// cout << "ConeAngle = " << gPar.ConeAngle << endl;
 				}
   		}
   	}

@@ -24,15 +24,23 @@ void Reconstructed_Reflections(vector<PhotonOut> &pho, double theta, double phi,
 		TabToLevel(2); cout << "Reconstructed_Reflections: Begins\n";
 		disp.Angle(theta, phi);
 	}
-	// if (sim.Vec.Z() < 0)
-	// {
-		XY_Reflections(pho, sim, disp);
 		sim.FlipY();
+		PhotonOut y(sim.Theta, sim.Phi);
+		pho.push_back(y);
+
 		sim.FlipZ();
+		PhotonOut yz(sim.Theta, sim.Phi);
+		pho.push_back(yz);
+	
+		sim.FlipY();
 		PhotonOut z(sim.Theta, sim.Phi);
 		pho.push_back(z);
+
+	// if (sim.Vec.Z() < 0)
+	// {
+		// XY_Reflections(pho, sim, disp);
 		if (disp.Trivial == "yes"){ TabToLevel(3); cout << "Flipped Z\n" ;disp.Angle(z.Theta, z.Phi); }
-		XY_Reflections(pho, sim, disp);
+		// XY_Reflections(pho, sim, disp);
 	// }
 	// else{ XY_Reflections(pho, sim, disp); }
 	if (disp.Trivial == "yes")
