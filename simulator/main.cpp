@@ -30,6 +30,7 @@ int main(int argc, char** argv)
 			photon_event.Photons.clear();
 	GeneratorOut *event_output = 0;
 	Rotater r;
+	int lostphotons = 0;
 
 	//________read datafile______________
   TFile rf(readf.c_str(), "read");
@@ -58,30 +59,28 @@ int main(int argc, char** argv)
 		gen_out->GetEntry(ev);
 		photon_event.Photons.clear();
 		photon_event.iterator = 0;
+		lostphotons = 0;
 
-		cout << "event = " << ev << endl;
 		for (unsigned int par = 0; par < ParEvent->Particles.size(); par++)
 		{
 			Simulate_ParticlePath(*d, ParEvent->Particles[par], photon_event, "no");
-			r.Feed_Particle(ParEvent->Particles[par].Theta, ParEvent->Particles[par].Phi, Output);
+			r.Feed_Particle(ParEvent->Particles[par].Theta, ParEvent->Particles[par].Phi);
 			for(int &pho = photon_event.iterator; pho < photon_event.Photons.size(); pho++)
 			{
 				pho_theta = &photon_event.Photons[pho].Theta;
 				pho_phi = &photon_event.Photons[pho].Phi;
-				// cout << "Photon "<< pho << " Theta,Phi = " << *pho_theta<<"," <<*pho_phi <<"-->\n";
-				r.Rotate_Photon(*pho_theta, *pho_phi, Output);
+				r.Rotate_Photon(*pho_theta, *pho_phi);
 				photon_event.Photons[pho].UnitVector = Get_UnitVector(*pho_theta, *pho_phi);
-				// cout << "Photon Theta,Phi = " << *pho_theta<<"," <<*pho_phi <<"\n\n";
 			}
 		}
 
+		double totalphotons = photon_event.Photons.size();
 		for (int i = 0; i < photon_event.Photons.size(); i++)
 		{
-			Simulate_PhotonPath(*d, photon_event.Photons[i], ParEvent->Particles[photon_event.Photons[i].WhichParticle], Output);
+			Simulate_PhotonPath(*d, photon_event.Photons[i], Output);
 			CheckForFlag(photon_event, i, Output.Trivial);
 		}
-
-
+		cout << "\t\tpercent passed = " << photon_event.Photons.size()/totalphotons*100. << endl;
 		FillTree(sim_out, *ParEvent, photon_event, *event_output, Output.Important);
 	}
   
@@ -89,5 +88,6 @@ int main(int argc, char** argv)
   wf.Close();
   rf.Close();
   cout << "file: " << writef << endl;
+  
   return 0;
 }

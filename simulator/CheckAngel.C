@@ -63,14 +63,15 @@ void CheckAngel(Detector d, Photon &photon, string Output)
 	// }
   if ((angle < d.CriticalAngle) || (angle > (pi - d.CriticalAngle)&&(angle < pi)))
   {
-    if (Output == "yes")
-    {
+    // if (Output == "yes")
+    // {
       TabToLevel(3); cout << "CRITICAL ANGLE ERROR!!\n";
-    }
+    // }
     photon.Flag = 1;
   }
-  if ( fabs(photon.UnitVector.X()) <.005)
+  if ( fabs(photon.UnitVector.X()) <.3)
   {
+    // TabToLevel(3); cout << "TOO SLOW!!\n";
     photon.Flag = 1;
   }
   if ((Output == "yes")&&(photon.Flag == 1)){ TabToLevel(3); cout << "Flag!!\n"; }

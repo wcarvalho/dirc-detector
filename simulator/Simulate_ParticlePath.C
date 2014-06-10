@@ -25,7 +25,8 @@ void Simulate_ParticlePath(Detector d, Particle particle, PhotonEvent &photon_ev
 
 
 	Simulate simPar(particle.Theta, particle.Phi);
-	
+	cout << "\tParticle Theta, Phi = " << particle.Theta << ", " << particle.Phi << endl;
+
 	simPar.SetDim(d.Length, d.Width, d.Height);
 	simPar.SetStart(particle.X, particle.Y, 0);
 	simPar.DistancetoWalls( );
@@ -40,7 +41,9 @@ void Simulate_ParticlePath(Detector d, Particle particle, PhotonEvent &photon_ev
 	while (simPar.Traveled < Path_length)
 	{
 		Release_Photons(simPar, photon_event, photons_released, particle.ConeAngle);
+		// Check_PhotonEvent(photon_event);
 		simPar.TravelDistance(avg_d);
 		howmany += photons_released;
 	}
+	cout << "howmany = " << howmany << endl;
 }

@@ -37,11 +37,11 @@ const char *gengetopt_args_info_help[] = {
   "  -h, --help                    Print help and exit",
   "  -V, --version                 Print version and exit",
   "  -e, --events=INT              Number of events",
-  "  -p, --particles=INT           Range in the number of particles per event",
+  "  -P, --particles=INT           Range in the number of particles per event",
+  "  -m, --maxpars                 maximum number of particles to intersect DirC\n                                  (for anlytical-control puposes)",
   "  -r, --random=INT              value for seed of random numbers",
   "  -f, --filename=STRING         root filename (relative or absolute path). By\n                                  default written to\n                                  ../../root_files/generator.root",
   "  -d, --dirc-properties=STRING  file with dirc properties (in this order):\n                                  Length, Width, Height, Radial Distance,\n                                  Magnetic Field",
-  "  -P, --maxpars                 maximum number of particles to intersect DirC\n                                  (for anlytical-control puposes)",
     0
 };
 
@@ -72,10 +72,10 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->version_given = 0 ;
   args_info->events_given = 0 ;
   args_info->particles_given = 0 ;
+  args_info->maxpars_given = 0 ;
   args_info->random_given = 0 ;
   args_info->filename_given = 0 ;
   args_info->dirc_properties_given = 0 ;
-  args_info->maxpars_given = 0 ;
 }
 
 static
@@ -104,10 +104,10 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->particles_help = gengetopt_args_info_help[3] ;
   args_info->particles_min = 0;
   args_info->particles_max = 0;
-  args_info->random_help = gengetopt_args_info_help[4] ;
-  args_info->filename_help = gengetopt_args_info_help[5] ;
-  args_info->dirc_properties_help = gengetopt_args_info_help[6] ;
-  args_info->maxpars_help = gengetopt_args_info_help[7] ;
+  args_info->maxpars_help = gengetopt_args_info_help[4] ;
+  args_info->random_help = gengetopt_args_info_help[5] ;
+  args_info->filename_help = gengetopt_args_info_help[6] ;
+  args_info->dirc_properties_help = gengetopt_args_info_help[7] ;
   
 }
 
@@ -289,14 +289,14 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
   if (args_info->events_given)
     write_into_file(outfile, "events", args_info->events_orig, 0);
   write_multiple_into_file(outfile, args_info->particles_given, "particles", args_info->particles_orig, 0);
+  if (args_info->maxpars_given)
+    write_into_file(outfile, "maxpars", 0, 0 );
   if (args_info->random_given)
     write_into_file(outfile, "random", args_info->random_orig, 0);
   if (args_info->filename_given)
     write_into_file(outfile, "filename", args_info->filename_orig, 0);
   if (args_info->dirc_properties_given)
     write_into_file(outfile, "dirc-properties", args_info->dirc_properties_orig, 0);
-  if (args_info->maxpars_given)
-    write_into_file(outfile, "maxpars", 0, 0 );
   
 
   i = EXIT_SUCCESS;
@@ -548,7 +548,7 @@ cmdline_parser_required2 (struct gengetopt_args_info *args_info, const char *pro
   FIX_UNUSED (additional_error);
 
   /* checks for required options */
-  if (check_multiple_option_occurrences(prog_name, args_info->particles_given, args_info->particles_min, args_info->particles_max, "'--particles' ('-p')"))
+  if (check_multiple_option_occurrences(prog_name, args_info->particles_given, args_info->particles_min, args_info->particles_max, "'--particles' ('-P')"))
      error_occurred = 1;
   
   
@@ -842,15 +842,15 @@ cmdline_parser_internal (
         { "help",	0, NULL, 'h' },
         { "version",	0, NULL, 'V' },
         { "events",	1, NULL, 'e' },
-        { "particles",	1, NULL, 'p' },
+        { "particles",	1, NULL, 'P' },
+        { "maxpars",	0, NULL, 'm' },
         { "random",	1, NULL, 'r' },
         { "filename",	1, NULL, 'f' },
         { "dirc-properties",	1, NULL, 'd' },
-        { "maxpars",	0, NULL, 'P' },
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVe:p:r:f:d:P", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVe:P:mr:f:d:", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -878,11 +878,23 @@ cmdline_parser_internal (
             goto failure;
         
           break;
-        case 'p':	/* Range in the number of particles per event.  */
+        case 'P':	/* Range in the number of particles per event.  */
         
           if (update_multiple_arg_temp(&particles_list, 
               &(local_args_info.particles_given), optarg, 0, 0, ARG_INT,
-              "particles", 'p',
+              "particles", 'P',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'm':	/* maximum number of particles to intersect DirC (for anlytical-control puposes).  */
+        
+        
+          if (update_arg( 0 , 
+               0 , &(args_info->maxpars_given),
+              &(local_args_info.maxpars_given), optarg, 0, 0, ARG_NO,
+              check_ambiguity, override, 0, 0,
+              "maxpars", 'm',
               additional_error))
             goto failure;
         
@@ -919,18 +931,6 @@ cmdline_parser_internal (
               &(local_args_info.dirc_properties_given), optarg, 0, 0, ARG_STRING,
               check_ambiguity, override, 0, 0,
               "dirc-properties", 'd',
-              additional_error))
-            goto failure;
-        
-          break;
-        case 'P':	/* maximum number of particles to intersect DirC (for anlytical-control puposes).  */
-        
-        
-          if (update_arg( 0 , 
-               0 , &(args_info->maxpars_given),
-              &(local_args_info.maxpars_given), optarg, 0, 0, ARG_NO,
-              check_ambiguity, override, 0, 0,
-              "maxpars", 'P',
               additional_error))
             goto failure;
         

@@ -33,11 +33,14 @@ int main(int argc, char** argv)
   // pointers to data from ROOT File
   GeneratorOut *event_output = 0;
 
-  TFile file("../../root_files/simulator.root", "read");
+  string rf = "../../root_files/simulator.root";
+  string wf = "../../root_files/reconstructor.root"; 
+
+  TFile file(rf.c_str(), "read");
 	TTree *events = (TTree*)file.Get("sim_out");
 	events->SetBranchAddress("simEvent", &event_output);
 
-	TFile file2("../../root_files/reconstructor.root", "recreate");
+	TFile file2(wf.c_str(), "recreate");
   TTree* tree = new TTree("output", "a tree of Reconstruction Data");
 	tree->Branch("recEvent", &reconstruction);
 
@@ -56,6 +59,7 @@ int main(int argc, char** argv)
   	else { disp = disp_def; disp.checker = checker; }
 	  events->GetEntry(i);
 	  ReconstructEvent(reconstruction, event_output, disp);
+		cout << "Event " << i << ", with " << reconstruction.Photons.at(0).size() << " Photons\n";
 	  tree->Fill();
 	  if (i == disp.checker) { break; }
   }
@@ -68,5 +72,6 @@ int main(int argc, char** argv)
   file2.cd();
   file2.Close();
 
-
+  cout << "file: " << wf << endl;
+  return 0;
 }

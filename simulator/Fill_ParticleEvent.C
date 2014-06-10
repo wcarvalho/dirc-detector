@@ -30,7 +30,7 @@ void Fill_ParticleEvent(Detector d, ParticleEvent &event, ParticleParameters par
 		event.Particles.back().Theta = r.Uniform(parameters.Theta[0], parameters.Theta[1]);
 		event.Particles.back().Phi = r.Uniform(parameters.Phi[0], parameters.Phi[1]);
   	event.Particles.back().UnitVector = Get_UnitVector(event.Particles.back().Theta, event.Particles.back().Phi);
-		event.Particles.back().EmissionTimes = Random_Emission_Times(particle, "zero", Output);
+		// event.Particles.back().EmissionTimes = Random_Emission_Times(particle, "zero", Output);
   	event.Particles.back().IncidentX = r.Uniform(d.Length*parameters.X[0], d.Length*parameters.X[1]);
   	event.Particles.back().IncidentY = r.Uniform(d.Width*parameters.Y[0], d.Width*parameters.Y[1]);
   	event.Particles.back().X = event.Particles.back().IncidentX;

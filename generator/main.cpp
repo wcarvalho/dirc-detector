@@ -65,18 +65,24 @@ int main(int argc, char** argv)
 			gPar.gen(); if (input != 0){ input++; }
   		passed = intersect_with_dirc(d.Width, gPar.Eta, gPar.pt, 
 	  				gPar.Phi_i, gPar.m , gPar.Charge, d.Radial_D,
-	  				d.Mag_field, gPar.X, gPar.Y, gPar.Phi, 
-	  				gPar.Theta, gPar.Beta);
-
+	  				d.Mag_field, gPar.X, gPar.Y, gPar.Phi, gPar.Theta, gPar.Beta);
   		gPar.X = gPar.X + d.Length/2;
   		gPar.Y = gPar.Y + d.Width/2;
+  		gPar.getEangle();
 
+  		Simulate simPar(gPar.Theta, gPar.Phi);
+			simPar.SetStart(gPar.X, gPar.Y,0);  simPar.SetDim(d.Length, d.Width, d.Height);
+			simPar.DistancetoWalls( );  simPar.WhichWall( );
+			gPar.NumberofPhotons = (int(simPar.WillTravel())+1)*1000;
+			
   		if ((passed == 1) && gPar.Theta < TMath::Pi()/2)
 			{
 				if( gPar.ConeAngle == gPar.ConeAngle )
 				{
+				double temp = acos(1./(1.474*gPar.Beta));
 				pars.push_back(*Par);
 				passes++;
+
 				if (passes == maxPars){ break; }
 				}
   		}
@@ -87,6 +93,7 @@ int main(int argc, char** argv)
   file.Write();
   cout << "file: " << filename << endl;
   file.Close();
-  return 0;
+  
 
+  return 0;
 }

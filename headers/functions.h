@@ -59,8 +59,8 @@ public:
 	Rotater() : Zero(0,0,0), X(1,0,0), Y(0,1,0), Z(0,0,1), Direction("Outof") {}
 	~Rotater(){}
 
-	void Rotate_Photon(double &pho_theta, double &pho_phi, Displayer d);
-	void Feed_Particle(double par_theta, double par_phi, Displayer d);
+	void Rotate_Photon(double &pho_theta, double &pho_phi);
+	void Feed_Particle(double par_theta, double par_phi);
 
 	string Direction;
 	TVector3 RotationVector;
@@ -72,7 +72,7 @@ public:
 	double Matrix[3][3];
 
 private:
-	void Set_Matrix(Displayer d);
+	void Set_Matrix();
 };
 //		Printing / Cosmetic
 //------------------------------------------

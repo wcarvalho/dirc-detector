@@ -28,14 +28,14 @@ void GenerateEvent(Detector detector, vector<ParticleEvent> &particle_events, ve
 	
 	for (h = 0; h < particle_events.back().Particles.size(); h++)
 	{
-		r.Feed_Particle(particle_events.back().Particles[h].Theta, particle_events.back().Particles[h].Phi, Output);
+		r.Feed_Particle(particle_events.back().Particles[h].Theta, particle_events.back().Particles[h].Phi);
 		for(i = 0; i < photon_events.back().Photons.size(); i++)
 		{
 			pho_theta = &photon_events.back().Photons[i].Theta;
 			pho_phi = &photon_events.back().Photons[i].Phi;
 			if(photon_events.back().Photons[i].WhichParticle == h)
 			{
-				r.Rotate_Photon(*pho_theta, *pho_phi, Output);
+				r.Rotate_Photon(*pho_theta, *pho_phi);
 				photon_events.back().Photons[i].UnitVector = Get_UnitVector(*pho_theta, *pho_phi);
 			}
 		}

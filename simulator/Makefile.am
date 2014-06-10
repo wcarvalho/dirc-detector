@@ -10,7 +10,7 @@ simulator_LDADD = \
 $(ROOT_LIBS) \
 $(DIRC_LIB)
 
-simulator_SOURCES = \ 
+simulator_SOURCES = \
 	main.cpp \
 	cmdline.c \
 	find_critical_angle.C \
@@ -46,13 +46,13 @@ simulator_SOURCES = \
 	ScanY.C \
 	ScanPhi.C \
 	Pull_Data.C \
-	simulate_par.C \
 	Release_Photons.C \
 ##=====================================
 ##
 ##					Mutual functions
 ##
 ##=====================================
+	../functions/simulate_par.C \
 	../functions/TabToLevel.C \
 	../functions/Get_Photon_UnitVector.C \
 	../functions/Get_Particle_UnitVector.C \

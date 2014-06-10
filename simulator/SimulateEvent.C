@@ -15,6 +15,7 @@ Simulate the trajectories for all of the Photons of a single "Event"
 void SimulateEvent(Detector d, ParticleEvent &particle_event, PhotonEvent &photon_event, Displayer Output)
 {
 	int i=0;
+	int fails = 0;
 
 	if (Output.Main == "yes")
 	{		
@@ -29,7 +30,9 @@ void SimulateEvent(Detector d, ParticleEvent &particle_event, PhotonEvent &photo
 
 	for (i = 0; i < photon_event.Photons.size(); i++)
 	{
-		Simulate_PhotonPath(d, photon_event.Photons[i], particle_event.Particles[photon_event.Photons[i].WhichParticle], Output);
+		Simulate_PhotonPath(d, photon_event.Photons[i], Output);
+		if (photon_event.Photons[i].Flag == 1){ ++fails; }
 		CheckForFlag(photon_event, i, Output.Trivial);
 	}
+	cout << "fails = " << fails << endl;
 }

@@ -1,5 +1,5 @@
 //===================================================
-//                Printer
+//                Histogram Maker
 //
 //====================================================
 
@@ -29,22 +29,28 @@ int main(int argc, char** argv)
 	int xbins = 1000;
 	int ybins = 1000;
 
-	TFile f1("../../root_files/simulator.root", "read");
-	TFile f2("../../root_files/reconstructor.root", "read");
-	TFile wf("../../root_files/analysis.root", "recreate");
+	string readf1 = "../../root_files/simulator.root";
+	string readf2 = "../../root_files/reconstructor.root";
+	string writef = "../../root_files/analysis.root";
+
+
+	TFile f1(readf1.c_str(), "read");
+	TFile f2(readf2.c_str(), "read");
+	TFile wf(writef.c_str(), "recreate");
 
 	TTree *events = (TTree*)f1.Get("sim_out");
   TTree *output = (TTree*)f2.Get("output");
 	events -> SetBranchAddress("simEvent", &event_output);
 	output -> SetBranchAddress("recEvent", &reconstruction);
 
-  TTree* analyses = new TTree("analyses", "Histograms and other information for events");
-	analyses -> Branch("AnaEvent", &A);
+  TTree* THists = new TTree("THists", "Histograms and other information for events");
+	THists -> Branch("EventHists", &A);
 
   //--------------------------------------------------
   //              Beginning of Program;
   //--------------------------------------------------
-  double pi = TMath::Pi();
+	cout << "\nHistogram Maker\n";
+	double pi = TMath::Pi();
 	for (unsigned int ev = 0; ev < events->GetEntries(); ev++)
 	{
 	  Printer *printer = new Printer();
@@ -82,17 +88,24 @@ int main(int argc, char** argv)
 		  printer->AddTH1D(TH1Name.c_str(), title.c_str(), xbins, 0, pi, 1);
 		  printer->AddTH2D(TH2Name.c_str(), title.c_str(), xbins, -pi, pi, ybins, 0, pi);
 
-		  printer->PrintTH1D(par);
-		  printer->PrintTH2D(par);
+		  // printer->PrintTH1D(par);
+		  // printer->PrintTH2D(par);
 
 	  }
 	  A = printer;
-		analyses -> Fill();
+		THists -> Fill();
 		delete printer;
 	}
 
 wf.Write();
 wf.Close();
+
+f1.cd();
+f1.Close();
+
+f2.cd();
+f2.Close();
+cout << "file: " << writef << endl;
 
 return 0;
 }

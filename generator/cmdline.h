@@ -51,6 +51,7 @@ struct gengetopt_args_info
   unsigned int particles_min; /**< @brief Range in the number of particles per event's minimum occurreces */
   unsigned int particles_max; /**< @brief Range in the number of particles per event's maximum occurreces */
   const char *particles_help; /**< @brief Range in the number of particles per event help description.  */
+  const char *maxpars_help; /**< @brief maximum number of particles to intersect DirC (for anlytical-control puposes) help description.  */
   int random_arg;	/**< @brief value for seed of random numbers.  */
   char * random_orig;	/**< @brief value for seed of random numbers original value given at command line.  */
   const char *random_help; /**< @brief value for seed of random numbers help description.  */
@@ -60,16 +61,15 @@ struct gengetopt_args_info
   char * dirc_properties_arg;	/**< @brief file with dirc properties (in this order): Length, Width, Height, Radial Distance, Magnetic Field.  */
   char * dirc_properties_orig;	/**< @brief file with dirc properties (in this order): Length, Width, Height, Radial Distance, Magnetic Field original value given at command line.  */
   const char *dirc_properties_help; /**< @brief file with dirc properties (in this order): Length, Width, Height, Radial Distance, Magnetic Field help description.  */
-  const char *maxpars_help; /**< @brief maximum number of particles to intersect DirC (for anlytical-control puposes) help description.  */
   
   unsigned int help_given ;	/**< @brief Whether help was given.  */
   unsigned int version_given ;	/**< @brief Whether version was given.  */
   unsigned int events_given ;	/**< @brief Whether events was given.  */
   unsigned int particles_given ;	/**< @brief Whether particles was given.  */
+  unsigned int maxpars_given ;	/**< @brief Whether maxpars was given.  */
   unsigned int random_given ;	/**< @brief Whether random was given.  */
   unsigned int filename_given ;	/**< @brief Whether filename was given.  */
   unsigned int dirc_properties_given ;	/**< @brief Whether dirc-properties was given.  */
-  unsigned int maxpars_given ;	/**< @brief Whether maxpars was given.  */
 
 } ;
 

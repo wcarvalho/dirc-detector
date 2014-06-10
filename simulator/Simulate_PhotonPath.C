@@ -11,19 +11,17 @@ using namespace std;
 Simulate the trajectories for a single Photon of a single "Event"
 ================================================================================================*/
 
-void Simulate_PhotonPath(Detector d, Photon &photon, Particle &particle, Displayer Output)
+void Simulate_PhotonPath(Detector d, Photon &photon, Displayer Output)
 {
 	if (Output.Main == "yes")
 	{
 		TabToLevel(3); cout << "Simulate_PhotonPath:\n";
 	}
 	Random r;
-		// if (photon.UnitVector.Z() < 0){cout << photon.UnitVector.Z() << ": Z\n";}
 	while ((photon.X != d.Length) && (photon.X != 0))
 	{
 		Get_PhotonDistance(d, photon, Output.Trivial);
 		Get_PhotonWall(photon, Output.Trivial);
-		CheckAngel(d, photon, Output.Trivial);
 		Move_Photon(photon, Output.Trivial);
 		if ((photon.X == d.Length) || (photon.X == 0))
 		{
@@ -35,16 +33,15 @@ void Simulate_PhotonPath(Detector d, Photon &photon, Particle &particle, Display
 			}
 			return;
 		}
-		if (photon.Flag == 1){ return; }
+		CheckAngel(d, photon, Output.Trivial);
+		if (photon.Flag == 1){ 
+			return; }
 		Change_Angle(photon, Output.Trivial);
 		photon.Reflections++;
-		if (photon.Reflections > 300)
-		{
-			photon.Flag = 1;
-			return;
-			// TabToLevel(2); cout << "Simulation for Photon "<< photon.Which <<" is taking too long\n";
-			// Output = "yes";
-		}
-			// cout << "asasas\n";
+		// if (photon.Reflections > 800)
+		// {
+		// 	photon.Flag = 1;
+		// 	return;
+		// }
 	}
 }

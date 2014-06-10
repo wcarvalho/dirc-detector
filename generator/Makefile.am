@@ -6,7 +6,8 @@ bin_PROGRAMS = generator
 include_HEADERS = \
 	$(H)/generator.h \
 	$(H)/functions.h \
-	$(H)/random.h
+	$(H)/random.h \
+	$(H)/Simulate.h
 
 generator_LDADD = \
 	$(ROOT_LIBS) \
@@ -24,7 +25,8 @@ generator_SOURCES = \
 ##
 ##=====================================
 	../functions/random_numbers.C \
-	../functions/TabToLevel.C
+	../functions/TabToLevel.C \
+	../functions/simulate_par.C
 
 cmdline.c: cmdline.ggo
   gengetopt --input=cmdline.ggo --include-getopt

@@ -27,12 +27,12 @@ void ReconstructTrack(Reconstruction &reconstruction, ParticleOut particle, vect
 	reconstruction.Photons.push_back(photons);														// store photons so original photons aren't manipulated, basically resets the photons every time this function is called
 	
 	r.Direction = "Into";
-	r.Feed_Particle(particle.Theta, particle.Phi, disp);
+	r.Feed_Particle(particle.Theta, particle.Phi);
 	for(i = 0; i < reconstruction.Photons.back().size(); i++)
 	{
 		pho_theta = &reconstruction.Photons.back()[i].Theta;
 		pho_phi = &reconstruction.Photons.back()[i].Phi;
-		r.Rotate_Photon(*pho_theta, *pho_phi, disp);
+		r.Rotate_Photon(*pho_theta, *pho_phi);
 	}
 
 }

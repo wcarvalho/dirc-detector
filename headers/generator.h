@@ -29,6 +29,7 @@
 //------------------------------------------
 #include "dirc_objects.h"
 #include "functions.h"
+#include "Simulate.h"
 
 //------------------------------------------
 //		Functions
@@ -38,25 +39,21 @@ using namespace std;
 class gParticle : public Particle
 {
 public:
-	gParticle(double in = 0) : r(in) 
-		{ masses[0]=(.105658); masses[1]=(.511); masses[2]=(.1396);
-			masses[3]=(.493667); masses[4]=(.938); gen(); }
+	gParticle(double in = 0) : r(in) { gen(); }
 	~gParticle(){}
 
 	void genEta(){ Eta = r.Uniform(-.5,.5); }
 	void genMass();
 	void genPT();
 	void genCharge();
-	void getEangle(double n = 1.474){	ConeAngle = acos(1/(n*Beta));}
 	void getPhi(){ Phi_i = r.Uniform(0,2*TMath::Pi()); }
-	void gen(){ genEta(); genMass(); genPT(); getEangle(); genCharge(); getPhi(); }
+	void gen(){ genEta(); genMass(); genPT(); genCharge(); getPhi(); }
+	void getEangle(){	ConeAngle = acos(1./(1.474*Beta));}
 
-	double masses[5];
 	double Phi_i;
 	Random r;
 };
 
-// push_particle(sevent.sPar.back(), sParticle);
 bool intersect_with_dirc(double dirc_height, double eta, double pt, double phi_input, double mass, int charge, double radius, double magfield, double& x_dirc, double& y_dirc, double& phi_dirc, double& theta_dirc, double& beta);
 
 #endif

@@ -12,7 +12,7 @@ using namespace std;
 All functions pertinent to Rotater class
 ================================================================================================*/
 
-void Rotater::Rotate_Photon(double &pho_theta, double &pho_phi, Displayer d)
+void Rotater::Rotate_Photon(double &pho_theta, double &pho_phi)
 {
 	int m, n, p;
 	double pho_x, pho_y, pho_z;
@@ -37,7 +37,7 @@ void Rotater::Rotate_Photon(double &pho_theta, double &pho_phi, Displayer d)
 
 }
 
-void Rotater::Feed_Particle(double par_theta, double par_phi, Displayer d)
+void Rotater::Feed_Particle(double par_theta, double par_phi)
 {
 	double par_x, par_y, par_z;
 
@@ -51,11 +51,11 @@ void Rotater::Feed_Particle(double par_theta, double par_phi, Displayer d)
 	if (RotationVector != Zero){ RotationVector.SetMag(1.); }
 	Angle = Z.Angle(par);
 	if (Direction == "Into") { Angle = -Angle; }
-	Set_Matrix(d);
+	Set_Matrix();
 
 }
 
-void Rotater::Set_Matrix(Displayer d)
+void Rotater::Set_Matrix()
 {
 	int i, j;
   double x,y,z;
