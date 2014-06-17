@@ -36,6 +36,7 @@
 //------------------------------------------
 using namespace std;
 
+//class for generating particles
 class gParticle : public Particle
 {
 public:
@@ -47,8 +48,8 @@ public:
 	void genPT();
 	void genCharge();
 	void getPhi(){ Phi_i = r.Uniform(0,2*TMath::Pi()); }
-	void gen(){ genEta(); genMass(); genPT(); genCharge(); getPhi(); }
 	void getEangle(){	ConeAngle = acos(1./(1.474*Beta));}
+	void gen(){ genEta(); genMass(); genPT(); genCharge(); getPhi(); }
 
 	double Phi_i;
 	Random r;

@@ -27,15 +27,15 @@
 //------------------------------------------
 using namespace std;
 
-
+// class used to print histograms to filename Directory
 class Printer : public Analysis
 {
 public:
 	Printer(){}
 	~Printer(){}
   
-  void PrintTH1D(unsigned int event);
-  void PrintTH2D(unsigned int event);
+  void PrintTH1D(unsigned int particle);
+  void PrintTH2D(unsigned int particle);
 
   string filename;
 };

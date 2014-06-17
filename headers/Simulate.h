@@ -25,6 +25,8 @@
 
 using namespace std;		
 
+// This class can simulate the trajectory of a particle through a rectangular prism
+//_____________________________________________________________________________________________
 class Simulate: public sPhoton
 {
 public:

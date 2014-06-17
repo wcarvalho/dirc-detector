@@ -12,13 +12,13 @@
 using namespace std;
 
 /*================================================================================================
-Reconstruct one "Event"
+Prints the histogram for the particle of the current event
 ================================================================================================*/
 
-void Printer::PrintTH1D(unsigned int ev)
+void Printer::PrintTH1D(unsigned int par)
 {
 	TCanvas c("c", "c", 1,1,800,500);
-	TH1D &h1 = Hists1D.at(ev);
+	TH1D &h1 = Hists1D.at(par);
   h1.SetXTitle("Theta");
   h1.SetYTitle("Entries");
   h1.Draw();
@@ -29,10 +29,10 @@ void Printer::PrintTH1D(unsigned int ev)
 
 }
 
-void Printer::PrintTH2D(unsigned int ev)
+void Printer::PrintTH2D(unsigned int par)
 {
 	TCanvas c("c", "c", 1,1,800,500);
-	TH2D &h2 = Hists2D.at(ev);
+	TH2D &h2 = Hists2D.at(par);
   h2.SetXTitle("Phi");
   h2.SetYTitle("Theta");
   h2.SetStats(0);

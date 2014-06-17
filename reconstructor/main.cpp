@@ -22,9 +22,13 @@ int main(int argc, char** argv)
   int input = 4;
   
   double pi = TMath::Pi();
+  
   Displayer disp;
   Displayer disp_def;
-  Displayer disp_yes;
+  bool print = false;
+	int checker = -1;
+	if (ai.verbose_given) print = true;
+	if (ai.event_given) checker = ai.event_arg;
 
   Reconstruction reconstruction;
 	ReconstructionData data;
@@ -50,18 +54,21 @@ int main(int argc, char** argv)
   //--------------------------------------------------
 	cout << "\nRECONSTRUCTOR\n";
 
-	int checker = -1;
 	disp.checker = checker;
   for (i = 0; i < events->GetEntries(); i++)
   {
   	// cout << "event " << i << endl;
-  	if (i == disp.checker) {disp.Main = "yes"; disp.Action = "yes"; disp.Specific = "no"; disp.General = "yes"; disp.Data = "yes"; cout << "Checking" << endl;}
-  	else { disp = disp_def; disp.checker = checker; }
+  	if (print == true)
+  	{
+			cout << "Event " << i << "\n";
+  		disp.Main = "yes"; disp.Action = "yes"; disp.Specific = "no"; disp.General = "yes"; disp.Data = "yes"; 
+  	}
+  	if (i != checker) disp = disp_def;
 	  events->GetEntry(i);
 	  ReconstructEvent(reconstruction, event_output, disp);
-		cout << "Event " << i << ", with " << reconstruction.Photons.at(0).size() << " Photons\n";
+	  if ((print == true) && (reconstruction.Photons.size() == 0)) 
+	  	printf("\tEvent had no reconstructions");
 	  tree->Fill();
-	  if (i == disp.checker) { break; }
   }
 
   file2.Write();

@@ -30,7 +30,7 @@ void SimulateEvent(Detector d, ParticleEvent &particle_event, PhotonEvent &photo
 
 	for (i = 0; i < photon_event.Photons.size(); i++)
 	{
-		Simulate_PhotonPath(d, photon_event.Photons[i], Output);
+		Simulate_PhotonPath(d, photon_event.Photons[i]);
 		if (photon_event.Photons[i].Flag == 1){ ++fails; }
 		CheckForFlag(photon_event, i, Output.Trivial);
 	}

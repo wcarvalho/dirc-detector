@@ -47,11 +47,21 @@ struct gengetopt_args_info
   int random_arg;	/**< @brief value for seed of random numbers.  */
   char * random_orig;	/**< @brief value for seed of random numbers original value given at command line.  */
   const char *random_help; /**< @brief value for seed of random numbers help description.  */
+  const char *verbose_help; /**< @brief print data help description.  */
+  char * readfile_arg;	/**< @brief file to be read from.  */
+  char * readfile_orig;	/**< @brief file to be read from original value given at command line.  */
+  const char *readfile_help; /**< @brief file to be read from help description.  */
+  char * writefile_arg;	/**< @brief file to be written to.  */
+  char * writefile_orig;	/**< @brief file to be written to original value given at command line.  */
+  const char *writefile_help; /**< @brief file to be written to help description.  */
   
   unsigned int help_given ;	/**< @brief Whether help was given.  */
   unsigned int version_given ;	/**< @brief Whether version was given.  */
   unsigned int new_given ;	/**< @brief Whether new was given.  */
   unsigned int random_given ;	/**< @brief Whether random was given.  */
+  unsigned int verbose_given ;	/**< @brief Whether verbose was given.  */
+  unsigned int readfile_given ;	/**< @brief Whether readfile was given.  */
+  unsigned int writefile_given ;	/**< @brief Whether writefile was given.  */
 
 } ;
 

@@ -11,7 +11,7 @@ using namespace std;
 Simulate the trajectory for a single Particle of a single "Event"
 ================================================================================================*/
 
-void Simulate_ParticlePath(Detector d, Particle particle, PhotonEvent &photon_event, string Output)
+void Simulate_ParticlePath(Detector d, Particle particle, PhotonEvent &photon_event, bool print)
 {
 	Random r;
 	double Path_length = 0.;
@@ -19,13 +19,7 @@ void Simulate_ParticlePath(Detector d, Particle particle, PhotonEvent &photon_ev
 	int photons_released = 0;
 	int avg_released = 0;
 
-	if (Output == "yes"){
-		TabToLevel(3); cout << "Simulate_ParticlePath:\n";
-	}
-
-
 	Simulate simPar(particle.Theta, particle.Phi);
-	cout << "\tParticle Theta, Phi = " << particle.Theta << ", " << particle.Phi << endl;
 
 	simPar.SetDim(d.Length, d.Width, d.Height);
 	simPar.SetStart(particle.X, particle.Y, 0);
@@ -45,5 +39,4 @@ void Simulate_ParticlePath(Detector d, Particle particle, PhotonEvent &photon_ev
 		simPar.TravelDistance(avg_d);
 		howmany += photons_released;
 	}
-	cout << "howmany = " << howmany << endl;
 }

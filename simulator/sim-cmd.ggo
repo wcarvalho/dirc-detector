@@ -5,3 +5,6 @@ By Wilka Carvalho <wcarvalho92@gmail.com>"
 # Options
 option "new" n "runs all programs before it, i.e generator" optional
 option "random" r "value for seed of random numbers" int optional
+option "verbose" v "print data" optional
+option "readfile" R "file to be read from" string optional
+option "writefile" W "file to be written to" string optional

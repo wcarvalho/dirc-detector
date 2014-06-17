@@ -4,8 +4,9 @@ By Wilka Carvalho <wcarvalho92@gmail.com>"
 
 # Options
 option "events" e "Number of events" int optional
-option "particles" P "Range in the number of particles per event" int optional multiple
-option "maxpars" m "maximum number of particles to intersect DirC (for anlytical-control puposes)" optional
+option "particles" P "Takes in two arguments for the range in the number of particles per event" int optional multiple
+option "maxpars" m "maximum number of particles to intersect DirC (for anlytical-control puposes)" int optional
 option "random" r "value for seed of random numbers" int optional
 option "filename" f "root filename (relative or absolute path). By default written to ../../root_files/generator.root" string optional
+option "verbose" v "print data" optional 
 option "dirc-properties" d "file with dirc properties (in this order): Length, Width, Height, Radial Distance, Magnetic Field" string optional 

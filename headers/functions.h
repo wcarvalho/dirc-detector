@@ -7,6 +7,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <map>
 
 //------------------------------------------
 //		ROOT
@@ -29,6 +30,8 @@
 
 using namespace std;
 
+// Class made for printing options
+// ignore
 class Displayer
 {
 public:
@@ -53,6 +56,8 @@ public:
 
 };
 
+
+// class used to rotate a unit vector into the frame given by a provided theta and phi
 class Rotater
 {
 public:
@@ -74,6 +79,26 @@ public:
 private:
 	void Set_Matrix();
 };
+
+// class which provides mass information based provided Particle eta and pt
+class mass
+{
+public:
+	mass(double e = .2, double p = 3.): eta(e), pt(p)
+		{ MassNameMapper(); AngleMassMapper(); }
+	~mass(){}
+
+	void MassNameMapper();
+	void AngleMassMapper();
+
+	std::map<double, std::string> MasstoName;
+	std::map<double, double> AngletoMass;
+
+	double eta;
+	double pt;
+
+};
+
 //		Printing / Cosmetic
 //------------------------------------------
 void TabToLevel(int level);

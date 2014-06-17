@@ -44,10 +44,12 @@ struct gengetopt_args_info
   const char *help_help; /**< @brief Print help and exit help description.  */
   const char *version_help; /**< @brief Print version and exit help description.  */
   const char *new_help; /**< @brief runs all programs before it, i.e generator, simulator help description.  */
+  const char *verbose_help; /**< @brief print data help description.  */
   
   unsigned int help_given ;	/**< @brief Whether help was given.  */
   unsigned int version_given ;	/**< @brief Whether version was given.  */
   unsigned int new_given ;	/**< @brief Whether new was given.  */
+  unsigned int verbose_given ;	/**< @brief Whether verbose was given.  */
 
 } ;
 

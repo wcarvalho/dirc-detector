@@ -16,15 +16,20 @@ int main(int argc, char** argv)
 	  system("exec ./../../generator/build/generator");
 	  system("exec ./../../simulator/build/simulator");
 	  system("exec ./../../reconstructor/build/reconstructor");
+	  system("exec rm -rf ../../Graphs/*");
 	}
 
-  system("exec rm -rf ../../Graphs/*");
-
-	Displayer display;
 
   GeneratorOut* event_output = 0;
 	Reconstruction* reconstruction = 0;
 	Analysis *A = 0;
+	bool make = false;
+	bool print = false;
+
+	if (ai.make_given) make = true;
+	if (ai.verbose_given) print = true;
+  
+  if (make == true) system("exec rm -rf ../../Graphs/*");
 
 	int xbins = 1000;
 	int ybins = 1000;
@@ -80,16 +85,22 @@ int main(int argc, char** argv)
 		  filename << "../../Graphs/Event_" << histname.str();
 		  
 		  string title = histtitle.str();
-		  string TH1Name = histname.str().append("_1D");
-		  string TH2Name = histname.str().append("_2D");
+		  string TH1Name = histname.str(); TH1Name.append("_1D");
+		  string TH2Name = histname.str(); TH2Name.append("_2D");
+
 		  printer->filename = filename.str();
-
 		  printer->SetData(data);
-		  printer->AddTH1D(TH1Name.c_str(), title.c_str(), xbins, 0, pi, 1);
-		  printer->AddTH2D(TH2Name.c_str(), title.c_str(), xbins, -pi, pi, ybins, 0, pi);
+		  if (phos.size() != 0)
+		  {
+			  printer->AddTH1D(TH1Name.c_str(), title.c_str(), xbins, 0, pi, 1);
+			  printer->AddTH2D(TH2Name.c_str(), title.c_str(), xbins, -pi, pi, ybins, 0, pi);
+			  if (make == true)
+			  {
+				  printer->PrintTH1D(par);
+				  printer->PrintTH2D(par);
+			  }
+		  }
 
-		  // printer->PrintTH1D(par);
-		  // printer->PrintTH2D(par);
 
 	  }
 	  A = printer;

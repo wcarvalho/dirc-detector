@@ -34,14 +34,18 @@ const char *gengetopt_args_info_versiontext = "";
 const char *gengetopt_args_info_description = "";
 
 const char *gengetopt_args_info_help[] = {
-  "  -h, --help        Print help and exit",
-  "  -V, --version     Print version and exit",
-  "  -n, --new         runs all programs before it, i.e generator",
-  "  -r, --random=INT  value for seed of random numbers",
+  "  -h, --help              Print help and exit",
+  "  -V, --version           Print version and exit",
+  "  -n, --new               runs all programs before it, i.e generator",
+  "  -r, --random=INT        value for seed of random numbers",
+  "  -v, --verbose           print data",
+  "  -R, --readfile=STRING   file to be read from",
+  "  -W, --writefile=STRING  file to be written to",
     0
 };
 
 typedef enum {ARG_NO
+  , ARG_STRING
   , ARG_INT
 } cmdline_parser_arg_type;
 
@@ -65,6 +69,9 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->version_given = 0 ;
   args_info->new_given = 0 ;
   args_info->random_given = 0 ;
+  args_info->verbose_given = 0 ;
+  args_info->readfile_given = 0 ;
+  args_info->writefile_given = 0 ;
 }
 
 static
@@ -72,6 +79,10 @@ void clear_args (struct gengetopt_args_info *args_info)
 {
   FIX_UNUSED (args_info);
   args_info->random_orig = NULL;
+  args_info->readfile_arg = NULL;
+  args_info->readfile_orig = NULL;
+  args_info->writefile_arg = NULL;
+  args_info->writefile_orig = NULL;
   
 }
 
@@ -84,6 +95,9 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->version_help = gengetopt_args_info_help[1] ;
   args_info->new_help = gengetopt_args_info_help[2] ;
   args_info->random_help = gengetopt_args_info_help[3] ;
+  args_info->verbose_help = gengetopt_args_info_help[4] ;
+  args_info->readfile_help = gengetopt_args_info_help[5] ;
+  args_info->writefile_help = gengetopt_args_info_help[6] ;
   
 }
 
@@ -168,6 +182,10 @@ cmdline_parser_release (struct gengetopt_args_info *args_info)
 {
 
   free_string_field (&(args_info->random_orig));
+  free_string_field (&(args_info->readfile_arg));
+  free_string_field (&(args_info->readfile_orig));
+  free_string_field (&(args_info->writefile_arg));
+  free_string_field (&(args_info->writefile_orig));
   
   
 
@@ -206,6 +224,12 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "new", 0, 0 );
   if (args_info->random_given)
     write_into_file(outfile, "random", args_info->random_orig, 0);
+  if (args_info->verbose_given)
+    write_into_file(outfile, "verbose", 0, 0 );
+  if (args_info->readfile_given)
+    write_into_file(outfile, "readfile", args_info->readfile_orig, 0);
+  if (args_info->writefile_given)
+    write_into_file(outfile, "writefile", args_info->writefile_orig, 0);
   
 
   i = EXIT_SUCCESS;
@@ -341,6 +365,7 @@ int update_arg(void *field, char **orig_field,
   char *stop_char = 0;
   const char *val = value;
   int found;
+  char **string_field;
   FIX_UNUSED (field);
 
   stop_char = 0;
@@ -373,6 +398,14 @@ int update_arg(void *field, char **orig_field,
   switch(arg_type) {
   case ARG_INT:
     if (val) *((int *)field) = strtol (val, &stop_char, 0);
+    break;
+  case ARG_STRING:
+    if (val) {
+      string_field = (char **)field;
+      if (!no_free && *string_field)
+        free (*string_field); /* free previous string */
+      *string_field = gengetopt_strdup (val);
+    }
     break;
   default:
     break;
@@ -451,10 +484,13 @@ cmdline_parser_internal (
         { "version",	0, NULL, 'V' },
         { "new",	0, NULL, 'n' },
         { "random",	1, NULL, 'r' },
+        { "verbose",	0, NULL, 'v' },
+        { "readfile",	1, NULL, 'R' },
+        { "writefile",	1, NULL, 'W' },
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVnr:", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVnr:vR:W:", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -490,6 +526,42 @@ cmdline_parser_internal (
               &(local_args_info.random_given), optarg, 0, 0, ARG_INT,
               check_ambiguity, override, 0, 0,
               "random", 'r',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'v':	/* print data.  */
+        
+        
+          if (update_arg( 0 , 
+               0 , &(args_info->verbose_given),
+              &(local_args_info.verbose_given), optarg, 0, 0, ARG_NO,
+              check_ambiguity, override, 0, 0,
+              "verbose", 'v',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'R':	/* file to be read from.  */
+        
+        
+          if (update_arg( (void *)&(args_info->readfile_arg), 
+               &(args_info->readfile_orig), &(args_info->readfile_given),
+              &(local_args_info.readfile_given), optarg, 0, 0, ARG_STRING,
+              check_ambiguity, override, 0, 0,
+              "readfile", 'R',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'W':	/* file to be written to.  */
+        
+        
+          if (update_arg( (void *)&(args_info->writefile_arg), 
+               &(args_info->writefile_orig), &(args_info->writefile_given),
+              &(local_args_info.writefile_given), optarg, 0, 0, ARG_STRING,
+              check_ambiguity, override, 0, 0,
+              "writefile", 'W',
               additional_error))
             goto failure;
         

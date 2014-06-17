@@ -24,7 +24,8 @@ fitter_SOURCES = \
 	../simulator/Check_PhotonDirection.C \
 	../functions/Rotater.C \
 	../functions/TabToLevel.C \
-	../functions/simulate_par.C
+	../functions/simulate_par.C \
+	../functions/masses.C
 
 cmdline.c: fit-cmd.ggo
   gengetopt --input=fit-cmd.ggo --include-getopt

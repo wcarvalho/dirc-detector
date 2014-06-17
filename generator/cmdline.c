@@ -37,10 +37,11 @@ const char *gengetopt_args_info_help[] = {
   "  -h, --help                    Print help and exit",
   "  -V, --version                 Print version and exit",
   "  -e, --events=INT              Number of events",
-  "  -P, --particles=INT           Range in the number of particles per event",
-  "  -m, --maxpars                 maximum number of particles to intersect DirC\n                                  (for anlytical-control puposes)",
+  "  -P, --particles=INT           Takes in two arguments for the range in the\n                                  number of particles per event",
+  "  -m, --maxpars=INT             maximum number of particles to intersect DirC\n                                  (for anlytical-control puposes)",
   "  -r, --random=INT              value for seed of random numbers",
   "  -f, --filename=STRING         root filename (relative or absolute path). By\n                                  default written to\n                                  ../../root_files/generator.root",
+  "  -v, --verbose                 print data",
   "  -d, --dirc-properties=STRING  file with dirc properties (in this order):\n                                  Length, Width, Height, Radial Distance,\n                                  Magnetic Field",
     0
 };
@@ -75,6 +76,7 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->maxpars_given = 0 ;
   args_info->random_given = 0 ;
   args_info->filename_given = 0 ;
+  args_info->verbose_given = 0 ;
   args_info->dirc_properties_given = 0 ;
 }
 
@@ -85,6 +87,7 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->events_orig = NULL;
   args_info->particles_arg = NULL;
   args_info->particles_orig = NULL;
+  args_info->maxpars_orig = NULL;
   args_info->random_orig = NULL;
   args_info->filename_arg = NULL;
   args_info->filename_orig = NULL;
@@ -107,7 +110,8 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->maxpars_help = gengetopt_args_info_help[4] ;
   args_info->random_help = gengetopt_args_info_help[5] ;
   args_info->filename_help = gengetopt_args_info_help[6] ;
-  args_info->dirc_properties_help = gengetopt_args_info_help[7] ;
+  args_info->verbose_help = gengetopt_args_info_help[7] ;
+  args_info->dirc_properties_help = gengetopt_args_info_help[8] ;
   
 }
 
@@ -239,6 +243,7 @@ cmdline_parser_release (struct gengetopt_args_info *args_info)
   free_string_field (&(args_info->events_orig));
   free_multiple_field (args_info->particles_given, (void *)(args_info->particles_arg), &(args_info->particles_orig));
   args_info->particles_arg = 0;
+  free_string_field (&(args_info->maxpars_orig));
   free_string_field (&(args_info->random_orig));
   free_string_field (&(args_info->filename_arg));
   free_string_field (&(args_info->filename_orig));
@@ -290,11 +295,13 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "events", args_info->events_orig, 0);
   write_multiple_into_file(outfile, args_info->particles_given, "particles", args_info->particles_orig, 0);
   if (args_info->maxpars_given)
-    write_into_file(outfile, "maxpars", 0, 0 );
+    write_into_file(outfile, "maxpars", args_info->maxpars_orig, 0);
   if (args_info->random_given)
     write_into_file(outfile, "random", args_info->random_orig, 0);
   if (args_info->filename_given)
     write_into_file(outfile, "filename", args_info->filename_orig, 0);
+  if (args_info->verbose_given)
+    write_into_file(outfile, "verbose", 0, 0 );
   if (args_info->dirc_properties_given)
     write_into_file(outfile, "dirc-properties", args_info->dirc_properties_orig, 0);
   
@@ -843,14 +850,15 @@ cmdline_parser_internal (
         { "version",	0, NULL, 'V' },
         { "events",	1, NULL, 'e' },
         { "particles",	1, NULL, 'P' },
-        { "maxpars",	0, NULL, 'm' },
+        { "maxpars",	1, NULL, 'm' },
         { "random",	1, NULL, 'r' },
         { "filename",	1, NULL, 'f' },
+        { "verbose",	0, NULL, 'v' },
         { "dirc-properties",	1, NULL, 'd' },
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVe:P:mr:f:d:", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVe:P:m:r:f:vd:", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -878,7 +886,7 @@ cmdline_parser_internal (
             goto failure;
         
           break;
-        case 'P':	/* Range in the number of particles per event.  */
+        case 'P':	/* Takes in two arguments for the range in the number of particles per event.  */
         
           if (update_multiple_arg_temp(&particles_list, 
               &(local_args_info.particles_given), optarg, 0, 0, ARG_INT,
@@ -890,9 +898,9 @@ cmdline_parser_internal (
         case 'm':	/* maximum number of particles to intersect DirC (for anlytical-control puposes).  */
         
         
-          if (update_arg( 0 , 
-               0 , &(args_info->maxpars_given),
-              &(local_args_info.maxpars_given), optarg, 0, 0, ARG_NO,
+          if (update_arg( (void *)&(args_info->maxpars_arg), 
+               &(args_info->maxpars_orig), &(args_info->maxpars_given),
+              &(local_args_info.maxpars_given), optarg, 0, 0, ARG_INT,
               check_ambiguity, override, 0, 0,
               "maxpars", 'm',
               additional_error))
@@ -919,6 +927,18 @@ cmdline_parser_internal (
               &(local_args_info.filename_given), optarg, 0, 0, ARG_STRING,
               check_ambiguity, override, 0, 0,
               "filename", 'f',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'v':	/* print data.  */
+        
+        
+          if (update_arg( 0 , 
+               0 , &(args_info->verbose_given),
+              &(local_args_info.verbose_given), optarg, 0, 0, ARG_NO,
+              check_ambiguity, override, 0, 0,
+              "verbose", 'v',
               additional_error))
             goto failure;
         

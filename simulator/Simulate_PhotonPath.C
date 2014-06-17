@@ -8,11 +8,12 @@
 using namespace std;
 
 /*================================================================================================
-Simulate the trajectories for a single Photon of a single "Event"
+Simulate the trajectories for a single Photon of a single Event
 ================================================================================================*/
 
-void Simulate_PhotonPath(Detector d, Photon &photon, Displayer Output)
+void Simulate_PhotonPath(Detector d, Photon &photon)
 {
+	Displayer Output;
 	if (Output.Main == "yes")
 	{
 		TabToLevel(3); cout << "Simulate_PhotonPath:\n";

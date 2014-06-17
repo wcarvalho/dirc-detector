@@ -4,3 +4,5 @@ By Wilka Carvalho <wcarvalho92@gmail.com>"
 
 # Options
 option "new" n "runs all programs before it, i.e generator, simulator" optional
+option "verbose" v "print data" optional
+option "event" e "print data for specific event (starting at 0th event)" int optional
