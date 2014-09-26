@@ -53,6 +53,7 @@ int main(int argc, char** argv)
 	cout << "\nSIMULATOR\n";
 	//___for convenience__________________________
 	vector<Particle> *pars = &ParEvent->Particles;
+	double *par_theta, *par_phi;
 	double *pho_theta, *pho_phi;
 	//____________________________________________
 	
@@ -69,10 +70,16 @@ int main(int argc, char** argv)
 
 		for (unsigned int par = 0; par < ParEvent->Particles.size(); par++)
 		{
-			Simulate_ParticlePath(*d, ParEvent->Particles[par], photon_event, print);
-			r.Feed_Particle(ParEvent->Particles[par].Theta, ParEvent->Particles[par].Phi);
+			par_theta = &ParEvent->Particles[par].Theta;
+			par_phi = &ParEvent->Particles[par].Phi;
+			if (print){
+				printf("\t\tparticle theta = %f, phi = %f\n", *par_theta, *par_phi);
+			}
+			Simulate_ParticlePath(*d, ParEvent->Particles[par], photon_event, 1, print);
+			r.Feed_Particle(*par_theta, *par_phi);
 			for(int &pho = photon_event.iterator; pho < photon_event.Photons.size(); pho++)
 			{
+
 				pho_theta = &photon_event.Photons[pho].Theta;
 				pho_phi = &photon_event.Photons[pho].Phi;
 				r.Rotate_Photon(*pho_theta, *pho_phi);
@@ -87,7 +94,7 @@ int main(int argc, char** argv)
 			Simulate_PhotonPath(*d, photon_event.Photons[i]);
 			CheckForFlag(photon_event, i, Output.Trivial);
 		}
-		if (print == true)
+		if (print)
 		{
 			printf("\t\t%i passed (%f percent)\n\n", int(photon_event.Photons.size()), photon_event.Photons.size()/totalphotons*100.);
 		}

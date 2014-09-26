@@ -38,11 +38,12 @@ const char *gengetopt_args_info_help[] = {
   "  -V, --version                 Print version and exit",
   "  -e, --events=INT              Number of events",
   "  -P, --particles=INT           Takes in two arguments for the range in the\n                                  number of particles per event",
-  "  -m, --maxpars=INT             maximum number of particles to intersect DirC\n                                  (for anlytical-control puposes)",
-  "  -r, --random=INT              value for seed of random numbers",
+  "  -m, --maxpars=INT             Maximum number of particles to intersect DirC\n                                  (for anlytical-control puposes)",
+  "  -r, --random=INT              Value for seed of random numbers",
   "  -f, --filename=STRING         root filename (relative or absolute path). By\n                                  default written to\n                                  ../../root_files/generator.root",
-  "  -v, --verbose                 print data",
+  "  -v, --verbose                 Print data",
   "  -d, --dirc-properties=STRING  file with dirc properties (in this order):\n                                  Length, Width, Height, Radial Distance,\n                                  Magnetic Field",
+  "  -c, --custom-set=STRING       Takes a filename with parameters for the\n                                  experiment including number of particles,\n                                  range in eta, pt, and phi, and particle\n                                  charge and type",
     0
 };
 
@@ -78,6 +79,7 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->filename_given = 0 ;
   args_info->verbose_given = 0 ;
   args_info->dirc_properties_given = 0 ;
+  args_info->custom_set_given = 0 ;
 }
 
 static
@@ -93,6 +95,8 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->filename_orig = NULL;
   args_info->dirc_properties_arg = NULL;
   args_info->dirc_properties_orig = NULL;
+  args_info->custom_set_arg = NULL;
+  args_info->custom_set_orig = NULL;
   
 }
 
@@ -112,6 +116,7 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->filename_help = gengetopt_args_info_help[6] ;
   args_info->verbose_help = gengetopt_args_info_help[7] ;
   args_info->dirc_properties_help = gengetopt_args_info_help[8] ;
+  args_info->custom_set_help = gengetopt_args_info_help[9] ;
   
 }
 
@@ -249,6 +254,8 @@ cmdline_parser_release (struct gengetopt_args_info *args_info)
   free_string_field (&(args_info->filename_orig));
   free_string_field (&(args_info->dirc_properties_arg));
   free_string_field (&(args_info->dirc_properties_orig));
+  free_string_field (&(args_info->custom_set_arg));
+  free_string_field (&(args_info->custom_set_orig));
   
   
 
@@ -304,6 +311,8 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "verbose", 0, 0 );
   if (args_info->dirc_properties_given)
     write_into_file(outfile, "dirc-properties", args_info->dirc_properties_orig, 0);
+  if (args_info->custom_set_given)
+    write_into_file(outfile, "custom-set", args_info->custom_set_orig, 0);
   
 
   i = EXIT_SUCCESS;
@@ -855,10 +864,11 @@ cmdline_parser_internal (
         { "filename",	1, NULL, 'f' },
         { "verbose",	0, NULL, 'v' },
         { "dirc-properties",	1, NULL, 'd' },
+        { "custom-set",	1, NULL, 'c' },
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVe:P:m:r:f:vd:", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVe:P:m:r:f:vd:c:", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -895,7 +905,7 @@ cmdline_parser_internal (
             goto failure;
         
           break;
-        case 'm':	/* maximum number of particles to intersect DirC (for anlytical-control puposes).  */
+        case 'm':	/* Maximum number of particles to intersect DirC (for anlytical-control puposes).  */
         
         
           if (update_arg( (void *)&(args_info->maxpars_arg), 
@@ -907,7 +917,7 @@ cmdline_parser_internal (
             goto failure;
         
           break;
-        case 'r':	/* value for seed of random numbers.  */
+        case 'r':	/* Value for seed of random numbers.  */
         
         
           if (update_arg( (void *)&(args_info->random_arg), 
@@ -931,7 +941,7 @@ cmdline_parser_internal (
             goto failure;
         
           break;
-        case 'v':	/* print data.  */
+        case 'v':	/* Print data.  */
         
         
           if (update_arg( 0 , 
@@ -951,6 +961,18 @@ cmdline_parser_internal (
               &(local_args_info.dirc_properties_given), optarg, 0, 0, ARG_STRING,
               check_ambiguity, override, 0, 0,
               "dirc-properties", 'd',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'c':	/* Takes a filename with parameters for the experiment including number of particles, range in eta, pt, and phi, and particle charge and type.  */
+        
+        
+          if (update_arg( (void *)&(args_info->custom_set_arg), 
+               &(args_info->custom_set_orig), &(args_info->custom_set_given),
+              &(local_args_info.custom_set_given), optarg, 0, 0, ARG_STRING,
+              check_ambiguity, override, 0, 0,
+              "custom-set", 'c',
               additional_error))
             goto failure;
         

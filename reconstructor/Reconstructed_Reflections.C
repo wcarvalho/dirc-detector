@@ -27,15 +27,16 @@ void Reconstructed_Reflections(vector<PhotonOut> &pho, double theta, double phi,
 		sim.FlipY();
 		PhotonOut y(sim.Theta, sim.Phi);
 		pho.push_back(y);
-
+		// printf("\t\ttheta = %f, phi = %f\n", sim.Theta, sim.Phi);
 		sim.FlipZ();
 		PhotonOut yz(sim.Theta, sim.Phi);
 		pho.push_back(yz);
-	
+		// printf("\t\ttheta = %f, phi = %f\n", sim.Theta, sim.Phi);
 		sim.FlipY();
 		PhotonOut z(sim.Theta, sim.Phi);
 		pho.push_back(z);
-
+		// printf("\t\ttheta = %f, phi = %f\n", sim.Theta, sim.Phi);
+		// cout << "--------\n";
 	// if (sim.Vec.Z() < 0)
 	// {
 		// XY_Reflections(pho, sim, disp);

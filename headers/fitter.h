@@ -29,4 +29,17 @@
 //------------------------------------------
 using namespace std;
 
-void FindLostPhotons(double x, double y, double theta, double phi, double eta, double pt, double l, double w, double h, map<double, double> &projectedlost);
+class Identifier : public TObject 
+{
+public:
+	Identifier(){}
+	~Identifier(){}
+
+	double FitParticle1D(TCanvas* c, TH1D &h, double xlow, double xhi, double center, double width, string name, bool make, bool print);
+
+	std::map<double, std::vector<TObject> > particle1Dfits;
+	std::map<double, std::vector<TObject> > particle2Dfits;
+	std::map<string, double> probabilitymap;
+};
+
+void FindLostPhotons(double x, double y, double theta, double phi, double eta, double pt, double l, double w, double h, map<double, double> &madeit, double &traveled, bool print);

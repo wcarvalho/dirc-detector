@@ -25,7 +25,8 @@ fitter_SOURCES = \
 	../functions/Rotater.C \
 	../functions/TabToLevel.C \
 	../functions/simulate_par.C \
-	../functions/masses.C
+	../functions/masses.C \
+	../functions/identifier.C
 
 cmdline.c: fit-cmd.ggo
   gengetopt --input=fit-cmd.ggo --include-getopt

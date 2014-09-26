@@ -38,6 +38,7 @@ const char *gengetopt_args_info_help[] = {
   "  -V, --version  Print version and exit",
   "  -n, --new      runs all programs before it, i.e generator, simulator",
   "  -v, --verbose  print data",
+  "  -m, --make     print graphs of the fits made",
     0
 };
 
@@ -64,6 +65,7 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->version_given = 0 ;
   args_info->new_given = 0 ;
   args_info->verbose_given = 0 ;
+  args_info->make_given = 0 ;
 }
 
 static
@@ -82,6 +84,7 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->version_help = gengetopt_args_info_help[1] ;
   args_info->new_help = gengetopt_args_info_help[2] ;
   args_info->verbose_help = gengetopt_args_info_help[3] ;
+  args_info->make_help = gengetopt_args_info_help[4] ;
   
 }
 
@@ -194,6 +197,8 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "new", 0, 0 );
   if (args_info->verbose_given)
     write_into_file(outfile, "verbose", 0, 0 );
+  if (args_info->make_given)
+    write_into_file(outfile, "make", 0, 0 );
   
 
   i = EXIT_SUCCESS;
@@ -425,10 +430,11 @@ cmdline_parser_internal (
         { "version",	0, NULL, 'V' },
         { "new",	0, NULL, 'n' },
         { "verbose",	0, NULL, 'v' },
+        { "make",	0, NULL, 'm' },
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVnv", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVnvm", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -464,6 +470,18 @@ cmdline_parser_internal (
               &(local_args_info.verbose_given), optarg, 0, 0, ARG_NO,
               check_ambiguity, override, 0, 0,
               "verbose", 'v',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'm':	/* print graphs of the fits made.  */
+        
+        
+          if (update_arg( 0 , 
+               0 , &(args_info->make_given),
+              &(local_args_info.make_given), optarg, 0, 0, ARG_NO,
+              check_ambiguity, override, 0, 0,
+              "make", 'm',
               additional_error))
             goto failure;
         

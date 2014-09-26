@@ -22,13 +22,13 @@ void ReconstructEvent(Reconstruction &reconstruction, GeneratorOut*& event_outpu
 	int num_photons = event_output->Photons.size();
 	for (i = 0; i < num_photons; i++)
 	{
-		pho.clear();
+		pho.clear(); // empty vector
 		pho_theta = &event_output->Photons[i].Theta;
 		pho_phi = &event_output->Photons[i].Phi;
-		Reconstructed_Reflections(pho, *pho_theta, *pho_phi, disp);
+		Reconstructed_Reflections(pho, *pho_theta, *pho_phi, disp); // add photon with flipped z, y, or both
 		for (j = 0; j < pho.size(); j++)
 		{
-			event_output->Photons.push_back(pho[j]);
+			event_output->Photons.push_back(pho[j]); // append to end of list of photons
 		}
 	}
 

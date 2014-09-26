@@ -24,7 +24,7 @@ void SimulateEvent(Detector d, ParticleEvent &particle_event, PhotonEvent &photo
 	for (i = 0; i < particle_event.Particles.size(); i++)
 	{
 
-		Simulate_ParticlePath(d, particle_event.Particles[i], photon_event, "no");
+		Simulate_ParticlePath(d, particle_event.Particles[i], photon_event, 1, "no");
 	}
   if(Output.Important == "yes"){ Check_PhotonEvent(photon_event); }
 

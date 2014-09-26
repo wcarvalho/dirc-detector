@@ -8,31 +8,58 @@
 #include <cstdlib>
 #include "cmdline.h"
 
+void SetParameterOptions(gParticle& gPar, double etarange[2], double ptrange[2], double phirange[2], double charge, vector<string> types);
+void ResetDoubleArrayParameter(double Default[2], double Used[2]);
+void ResetIntArrayParameter(int Default[2], int Used[2]);
+
 int main(int argc, char** argv)
 {
 	gengetopt_args_info ai;
   if (cmdline_parser (argc, argv, &ai) != 0){ exit(1); }
-	int nparticle_range[2] = {1,10000};										// range in number of particles
-  int nevents = 5;																			// number of events
-  int nparticles = 0;																		// number of particles
+  double pi = TMath::Pi();
   int input = ai.random_given;													// number used for seed of TRandom3
-  int maxPars = 1;																			// maximum number of particles that will be allowed to pass
-  bool print = false;																		// bool for printing purposes
-
+  bool print = ai.verbose_given;																		// bool for printing purposes
+  bool replace = false;
+  
 
   string dirc_prop = "../dirc_prop.txt";
-  string filename = "../../root_files/generator.root";
-  if(ai.events_given){ nevents = ai.events_arg; }
-  if(ai.particles_given)
-  { 
-  	nparticle_range[0] = ai.particles_arg[0];
-		nparticle_range[1] = ai.particles_arg[1];
-	}
-	if(ai.filename_given) filename = ai.filename_arg;
 	if(ai.dirc_properties_given) dirc_prop = ai.dirc_properties_arg;
-	if(ai.maxpars_given) maxPars = ai.maxpars_arg; 
-	if(ai.verbose_given) print = true;
+  
+  string filename = "../../root_files/generator.root";
+	if(ai.filename_given) filename = ai.filename_arg;
+  
+  int nevents = 5;															// number of events
+  if(ai.events_given){ nevents = ai.events_arg; }
+  
+  
+  int nparticles = 0;														// number of particles
+	//______________ default parameters ___________________
 
+  int maxPars_default = 100;														// maximum number of particles that will be allowed to pass
+	int nparticle_range_default[2] = {1,10000};						// range in number of particles
+  if(ai.particles_given){ 
+  	nparticle_range_default[0] = ai.particles_arg[0];
+		nparticle_range_default[1] = ai.particles_arg[1];
+	}
+	double etarange_default[2] = {-.5, .5};
+	double ptrange_default[2] = {.2,10.};
+	double phirange_default[2] = {0.,2*pi};
+	double charge_default = 0;
+	ParticleOut tempP;								// to extract default particle types
+	vector<string> types_default = tempP.types;
+	
+	if(ai.maxpars_given) 
+		maxPars_default = ai.maxpars_arg; 
+  if(ai.particles_given)
+  	ResetIntArrayParameter(ai.particles_arg, nparticle_range_default);
+	//______________ parameters used in program ___________________
+  int maxPars = maxPars_default;
+	int nparticle_range[2]; ResetIntArrayParameter(nparticle_range_default, nparticle_range);
+	double etarange[2]; ResetDoubleArrayParameter(etarange_default, etarange);
+	double ptrange[2]; ResetDoubleArrayParameter(ptrange_default, ptrange);
+	double phirange[2]; ResetDoubleArrayParameter(phirange_default, phirange);
+	double charge = charge_default;
+	vector<string> types = tempP.types;
 
 	//--------------------------------------------------
   //              Beginning of Program;
@@ -40,6 +67,7 @@ int main(int argc, char** argv)
   Detector d;
   ParticleEvent ParEv;
   vector<Particle> &pars = ParEv.Particles;
+  vector<Particle> pars2;
   bool passed = false;
   int passes = 0;
 
@@ -53,7 +81,7 @@ int main(int argc, char** argv)
 
 	gParticle gPar(input); 
 	gParticle *gPar_p = &gPar;
-	Particle *Par = gPar_p;
+	Particle *Par = gPar_p;											// inheritting properties of parent class for use with older libraries
 
 	cout << "\nGENERATOR\n";
 	if (print == true )
@@ -65,54 +93,36 @@ int main(int argc, char** argv)
   //__________________generate________________
   for (unsigned int ev = 0; ev < nevents; ev++)
   {
+  	if (print) cout << "Event " << ev << endl;
   	f.Int(nparticle_range[0], nparticle_range[1], nparticles);
   	pars.clear();
   	passes=0;
-  	if (print == true ) cout << "Event = " << ev << " with " << nparticles << " particles\n";
-  	for (unsigned int par = 0; par < nparticles; par++)
-  	{
-			gPar.gen(); if (input != 0) input++;
+  	
+  	pars = generate(nparticles, gPar, d, maxPars, print);
+  	
+  	if(ai.custom_set_given){
+			TakeInParameters(ai.custom_set_arg, nevents, maxPars, nparticle_range, etarange, ptrange, phirange, charge, types, replace);
+			SetParameterOptions(gPar, etarange, ptrange, phirange, charge, types);
+	  	pars2 = generate(nparticles, gPar, d, maxPars, print);
 
-  		passed = intersect_with_dirc(d.Width, gPar.Eta, gPar.pt, 
-	  				gPar.Phi_i, gPar.m , gPar.Charge, d.Radial_D,
-	  				d.Mag_field, gPar.X, gPar.Y, gPar.Phi, gPar.Theta, gPar.Beta);
-  		gPar.X = gPar.X + d.Length/2;
-  		gPar.Y = gPar.Y + d.Width/2;
+  	  maxPars = maxPars_default;
+			ResetIntArrayParameter(nparticle_range_default, nparticle_range);
+			ResetDoubleArrayParameter(etarange_default, etarange);
+			ResetDoubleArrayParameter(ptrange_default, ptrange);
+			ResetDoubleArrayParameter(phirange_default, phirange);
+			charge = charge_default;
+			types = tempP.types;
+			SetParameterOptions(gPar, etarange, ptrange, phirange, charge, types);
+			if (replace)
+				pars = pars2;
+			else{
+				for (unsigned int i = 0; i<pars2.size(); ++i)
+					pars.push_back(pars2.at(i));
+			}
+		}
 
-  		gPar.getEangle();
-
-  		//			place function that determines the number of photons per cm here
-
-
-  		//_____The following predicts the number of photons a particle will emit;
-  		Simulate simPar(gPar.Theta, gPar.Phi);
-			simPar.SetStart(gPar.X, gPar.Y,0);  simPar.SetDim(d.Length, d.Width, d.Height);
-			simPar.DistancetoWalls( );  simPar.WhichWall( );
-			gPar.NumberofPhotons = int((simPar.WillTravel()+1))*gPar.PhotonsPercm; 					// + 1 accounts for the photons released at the plane of intersection
-			
-  		if ((passed == true) && gPar.Theta < TMath::Pi()/2)
-			{
-				if( gPar.ConeAngle == gPar.ConeAngle )
-				{
-					if (print == true)
-					{
-						printf("\n\tParticle Eta = %f, pt = %f, Phi_i = %f\n", gPar.Eta, gPar.pt, gPar.Phi_i);
-		  			printf("\t\tmass = %f, charge = %i\n", gPar.m, gPar.Charge);
-		  			printf("\tProduced:\n"
-		  				  		"\t\tX = ,%f, Y = %f, Phi = %f, Theta = %f\n"
-		  				  		"\t\tBeta = %f, Emission Angle = %f\n"
-		  				  		"\t\twith %i expected photons\n",
-		  				  		gPar.X, gPar.Y, gPar.Phi, gPar.Theta, gPar.Beta, gPar.ConeAngle, gPar.NumberofPhotons);
-		  		}
-				pars.push_back(*Par);
-				passes++;
-
-				if (passes == maxPars){ break; }
-				}
-  		}
-  	}
   	tree.Fill();
-		if (print == true ) cout << "\t" << maxPars << " particles passed\n";
+
   }
 
   file.Write();
@@ -121,4 +131,23 @@ int main(int argc, char** argv)
   
 
   return 0;
+}
+//---------------------------------------------------------------
+void SetParameterOptions(gParticle& gPar, double etarange[2], double ptrange[2], double phirange[2], double charge, vector<string> types){
+
+	gPar.SetEtaRange(etarange[0], etarange[1]);
+	gPar.SetPhiRange(phirange[0], phirange[1]);
+	gPar.SetPtRange(ptrange[0], ptrange[1]);
+	gPar.SetTypes(types);
+	gPar.SetChargeMarker(charge);
+}
+
+void ResetDoubleArrayParameter(double Default[2], double Used[2]){
+	for (unsigned int i = 0; i<2; ++i)
+		Used[i] = Default[i];
+}
+
+void ResetIntArrayParameter(int Default[2], int Used[2]){
+	for (unsigned int i = 0; i<2; ++i)
+		Used[i] = Default[i];
 }

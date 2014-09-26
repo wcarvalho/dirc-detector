@@ -80,7 +80,7 @@ private:
 	void Set_Matrix();
 };
 
-// class which provides mass information based provided Particle eta and pt
+// class which provides mass information based on provided Particle eta and pt
 class mass
 {
 public:
@@ -93,6 +93,7 @@ public:
 
 	std::map<double, std::string> MasstoName;
 	std::map<double, double> AngletoMass;
+	std::map<std::string, double> NametoMass;
 
 	double eta;
 	double pt;

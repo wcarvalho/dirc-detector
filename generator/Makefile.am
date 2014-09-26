@@ -19,6 +19,8 @@ generator_SOURCES = \
 	generate_particle_data.C \
 	generate_event_data.C \
 	project.cpp \
+	TakeInParameters.C \
+	generate.C \
 ##=====================================
 ##
 ##					Mutual functions

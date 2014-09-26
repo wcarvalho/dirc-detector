@@ -48,7 +48,7 @@ int main(int argc, char** argv)
 	events -> SetBranchAddress("simEvent", &event_output);
 	output -> SetBranchAddress("recEvent", &reconstruction);
 
-  TTree* THists = new TTree("THists", "Histograms and other information for events");
+  TTree* THists = new TTree("THists", "Histograms and other(?) information for events");
 	THists -> Branch("EventHists", &A);
 
   //--------------------------------------------------
