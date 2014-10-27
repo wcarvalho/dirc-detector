@@ -41,6 +41,7 @@ const char *gengetopt_args_info_help[] = {
   "  -v, --verbose           print data",
   "  -R, --readfile=STRING   file to be read from",
   "  -W, --writefile=STRING  file to be written to",
+  "  -A, --Append            append particle and photon generation to current file",
     0
 };
 
@@ -72,6 +73,7 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->verbose_given = 0 ;
   args_info->readfile_given = 0 ;
   args_info->writefile_given = 0 ;
+  args_info->Append_given = 0 ;
 }
 
 static
@@ -98,6 +100,7 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->verbose_help = gengetopt_args_info_help[4] ;
   args_info->readfile_help = gengetopt_args_info_help[5] ;
   args_info->writefile_help = gengetopt_args_info_help[6] ;
+  args_info->Append_help = gengetopt_args_info_help[7] ;
   
 }
 
@@ -230,6 +233,8 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "readfile", args_info->readfile_orig, 0);
   if (args_info->writefile_given)
     write_into_file(outfile, "writefile", args_info->writefile_orig, 0);
+  if (args_info->Append_given)
+    write_into_file(outfile, "Append", 0, 0 );
   
 
   i = EXIT_SUCCESS;
@@ -487,10 +492,11 @@ cmdline_parser_internal (
         { "verbose",	0, NULL, 'v' },
         { "readfile",	1, NULL, 'R' },
         { "writefile",	1, NULL, 'W' },
+        { "Append",	0, NULL, 'A' },
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVnr:vR:W:", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVnr:vR:W:A", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -562,6 +568,18 @@ cmdline_parser_internal (
               &(local_args_info.writefile_given), optarg, 0, 0, ARG_STRING,
               check_ambiguity, override, 0, 0,
               "writefile", 'W',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'A':	/* append particle and photon generation to current file.  */
+        
+        
+          if (update_arg( 0 , 
+               0 , &(args_info->Append_given),
+              &(local_args_info.Append_given), optarg, 0, 0, ARG_NO,
+              check_ambiguity, override, 0, 0,
+              "Append", 'A',
               additional_error))
             goto failure;
         

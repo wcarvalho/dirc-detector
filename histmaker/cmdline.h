@@ -46,12 +46,16 @@ struct gengetopt_args_info
   const char *new_help; /**< @brief runs all programs before it, i.e generator, simulator help description.  */
   const char *make_help; /**< @brief prints histograms to folder ../../Graphs/ help description.  */
   const char *verbose_help; /**< @brief print data help description.  */
+  char * particle_info_modified_arg;	/**< @brief use a different file for to provide the particle information.  */
+  char * particle_info_modified_orig;	/**< @brief use a different file for to provide the particle information original value given at command line.  */
+  const char *particle_info_modified_help; /**< @brief use a different file for to provide the particle information help description.  */
   
   unsigned int help_given ;	/**< @brief Whether help was given.  */
   unsigned int version_given ;	/**< @brief Whether version was given.  */
   unsigned int new_given ;	/**< @brief Whether new was given.  */
   unsigned int make_given ;	/**< @brief Whether make was given.  */
   unsigned int verbose_given ;	/**< @brief Whether verbose was given.  */
+  unsigned int particle_info_modified_given ;	/**< @brief Whether particle-info-modified was given.  */
 
 } ;
 

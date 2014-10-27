@@ -6,3 +6,7 @@ By Wilka Carvalho <wcarvalho92@gmail.com>"
 option "new" n "runs all programs before it, i.e generator, simulator" optional
 option "verbose" v "print data" optional
 option "make" m "print graphs of the fits made" optional
+option "particle-info-modified" p "use a different file for to provide the particle information" string optional
+option "writefile" w "file to write identification information to" string optional
+option "New-Batch" N "clear batch file" optional
+option "Batch" B "defines the Batch file (normally '../../root_files/fits.txt')" string optional

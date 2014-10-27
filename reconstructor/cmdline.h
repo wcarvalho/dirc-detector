@@ -48,12 +48,20 @@ struct gengetopt_args_info
   int event_arg;	/**< @brief print data for specific event (starting at 0th event).  */
   char * event_orig;	/**< @brief print data for specific event (starting at 0th event) original value given at command line.  */
   const char *event_help; /**< @brief print data for specific event (starting at 0th event) help description.  */
+  int last_arg;	/**< @brief only reconstructs the last l particles.  */
+  char * last_orig;	/**< @brief only reconstructs the last l particles original value given at command line.  */
+  const char *last_help; /**< @brief only reconstructs the last l particles help description.  */
+  char * modified_particle_info_arg;	/**< @brief output file for modified particle information i.e removing some particles to only track the remaining.  */
+  char * modified_particle_info_orig;	/**< @brief output file for modified particle information i.e removing some particles to only track the remaining original value given at command line.  */
+  const char *modified_particle_info_help; /**< @brief output file for modified particle information i.e removing some particles to only track the remaining help description.  */
   
   unsigned int help_given ;	/**< @brief Whether help was given.  */
   unsigned int version_given ;	/**< @brief Whether version was given.  */
   unsigned int new_given ;	/**< @brief Whether new was given.  */
   unsigned int verbose_given ;	/**< @brief Whether verbose was given.  */
   unsigned int event_given ;	/**< @brief Whether event was given.  */
+  unsigned int last_given ;	/**< @brief Whether last was given.  */
+  unsigned int modified_particle_info_given ;	/**< @brief Whether modified-particle-info was given.  */
 
 } ;
 

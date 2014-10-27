@@ -34,15 +34,18 @@ const char *gengetopt_args_info_versiontext = "";
 const char *gengetopt_args_info_description = "";
 
 const char *gengetopt_args_info_help[] = {
-  "  -h, --help       Print help and exit",
-  "  -V, --version    Print version and exit",
-  "  -n, --new        runs all programs before it, i.e generator, simulator",
-  "  -v, --verbose    print data",
-  "  -e, --event=INT  print data for specific event (starting at 0th event)",
+  "  -h, --help                    Print help and exit",
+  "  -V, --version                 Print version and exit",
+  "  -n, --new                     runs all programs before it, i.e generator,\n                                  simulator",
+  "  -v, --verbose                 print data",
+  "  -e, --event=INT               print data for specific event (starting at 0th\n                                  event)",
+  "  -l, --last=INT                only reconstructs the last l particles",
+  "  -m, --modified-particle-info=STRING\n                                output file for modified particle information\n                                  i.e removing some particles to only track the\n                                  remaining",
     0
 };
 
 typedef enum {ARG_NO
+  , ARG_STRING
   , ARG_INT
 } cmdline_parser_arg_type;
 
@@ -67,6 +70,8 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->new_given = 0 ;
   args_info->verbose_given = 0 ;
   args_info->event_given = 0 ;
+  args_info->last_given = 0 ;
+  args_info->modified_particle_info_given = 0 ;
 }
 
 static
@@ -74,6 +79,9 @@ void clear_args (struct gengetopt_args_info *args_info)
 {
   FIX_UNUSED (args_info);
   args_info->event_orig = NULL;
+  args_info->last_orig = NULL;
+  args_info->modified_particle_info_arg = NULL;
+  args_info->modified_particle_info_orig = NULL;
   
 }
 
@@ -87,6 +95,8 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->new_help = gengetopt_args_info_help[2] ;
   args_info->verbose_help = gengetopt_args_info_help[3] ;
   args_info->event_help = gengetopt_args_info_help[4] ;
+  args_info->last_help = gengetopt_args_info_help[5] ;
+  args_info->modified_particle_info_help = gengetopt_args_info_help[6] ;
   
 }
 
@@ -171,6 +181,9 @@ cmdline_parser_release (struct gengetopt_args_info *args_info)
 {
 
   free_string_field (&(args_info->event_orig));
+  free_string_field (&(args_info->last_orig));
+  free_string_field (&(args_info->modified_particle_info_arg));
+  free_string_field (&(args_info->modified_particle_info_orig));
   
   
 
@@ -211,6 +224,10 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "verbose", 0, 0 );
   if (args_info->event_given)
     write_into_file(outfile, "event", args_info->event_orig, 0);
+  if (args_info->last_given)
+    write_into_file(outfile, "last", args_info->last_orig, 0);
+  if (args_info->modified_particle_info_given)
+    write_into_file(outfile, "modified-particle-info", args_info->modified_particle_info_orig, 0);
   
 
   i = EXIT_SUCCESS;
@@ -346,6 +363,7 @@ int update_arg(void *field, char **orig_field,
   char *stop_char = 0;
   const char *val = value;
   int found;
+  char **string_field;
   FIX_UNUSED (field);
 
   stop_char = 0;
@@ -378,6 +396,14 @@ int update_arg(void *field, char **orig_field,
   switch(arg_type) {
   case ARG_INT:
     if (val) *((int *)field) = strtol (val, &stop_char, 0);
+    break;
+  case ARG_STRING:
+    if (val) {
+      string_field = (char **)field;
+      if (!no_free && *string_field)
+        free (*string_field); /* free previous string */
+      *string_field = gengetopt_strdup (val);
+    }
     break;
   default:
     break;
@@ -457,10 +483,12 @@ cmdline_parser_internal (
         { "new",	0, NULL, 'n' },
         { "verbose",	0, NULL, 'v' },
         { "event",	1, NULL, 'e' },
+        { "last",	1, NULL, 'l' },
+        { "modified-particle-info",	1, NULL, 'm' },
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVnve:", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVnve:l:m:", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -508,6 +536,30 @@ cmdline_parser_internal (
               &(local_args_info.event_given), optarg, 0, 0, ARG_INT,
               check_ambiguity, override, 0, 0,
               "event", 'e',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'l':	/* only reconstructs the last l particles.  */
+        
+        
+          if (update_arg( (void *)&(args_info->last_arg), 
+               &(args_info->last_orig), &(args_info->last_given),
+              &(local_args_info.last_given), optarg, 0, 0, ARG_INT,
+              check_ambiguity, override, 0, 0,
+              "last", 'l',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'm':	/* output file for modified particle information i.e removing some particles to only track the remaining.  */
+        
+        
+          if (update_arg( (void *)&(args_info->modified_particle_info_arg), 
+               &(args_info->modified_particle_info_orig), &(args_info->modified_particle_info_given),
+              &(local_args_info.modified_particle_info_given), optarg, 0, 0, ARG_STRING,
+              check_ambiguity, override, 0, 0,
+              "modified-particle-info", 'm',
               additional_error))
             goto failure;
         

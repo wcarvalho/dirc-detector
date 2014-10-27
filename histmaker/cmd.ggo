@@ -6,3 +6,4 @@ By Wilka Carvalho <wcarvalho92@gmail.com>"
 option "new" n "runs all programs before it, i.e generator, simulator" optional
 option "make" m "prints histograms to folder ../../Graphs/" optional
 option "verbose" v "print data" optional
+option "particle-info-modified" p "use a different file for to provide the particle information" string optional

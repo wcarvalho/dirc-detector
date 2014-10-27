@@ -44,3 +44,8 @@ simulator/config/
 simulator/configure
 simulator/functions/
 generator/parameters.txt
+*temp*
+*.sh
+*.png
+massrun
+scripts

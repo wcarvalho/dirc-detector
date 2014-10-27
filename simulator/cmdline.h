@@ -54,6 +54,7 @@ struct gengetopt_args_info
   char * writefile_arg;	/**< @brief file to be written to.  */
   char * writefile_orig;	/**< @brief file to be written to original value given at command line.  */
   const char *writefile_help; /**< @brief file to be written to help description.  */
+  const char *Append_help; /**< @brief append particle and photon generation to current file help description.  */
   
   unsigned int help_given ;	/**< @brief Whether help was given.  */
   unsigned int version_given ;	/**< @brief Whether version was given.  */
@@ -62,6 +63,7 @@ struct gengetopt_args_info
   unsigned int verbose_given ;	/**< @brief Whether verbose was given.  */
   unsigned int readfile_given ;	/**< @brief Whether readfile was given.  */
   unsigned int writefile_given ;	/**< @brief Whether writefile was given.  */
+  unsigned int Append_given ;	/**< @brief Whether Append was given.  */
 
 } ;
 

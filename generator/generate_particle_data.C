@@ -24,6 +24,7 @@ void gParticle::genMass()
 	int i = 0;
 	r.Int(0,types.size(),i);
 	m = massmap[types[i]];
+	name = types[i];
 }
 
 void gParticle::genPT()
@@ -34,6 +35,8 @@ void gParticle::genPT()
 
 void gParticle::genCharge()
 {
+	bool t = chargeMarker==0;
+	// cout << "chargeMarker = 0 " << t << endl;
 	if (chargeMarker < 0) Charge = -1;
 	if (chargeMarker > 0) Charge = 1;
 	if (chargeMarker == 0){

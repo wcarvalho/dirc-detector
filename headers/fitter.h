@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <fstream>
 #include <iomanip>
 #include <sstream> 
 
@@ -36,10 +37,12 @@ public:
 	~Identifier(){}
 
 	double FitParticle1D(TCanvas* c, TH1D &h, double xlow, double xhi, double center, double width, string name, bool make, bool print);
+	void reverseprobabilitymap();
 
 	std::map<double, std::vector<TObject> > particle1Dfits;
 	std::map<double, std::vector<TObject> > particle2Dfits;
 	std::map<string, double> probabilitymap;
+	std::map<double, string> rprobabilitymap; 	// reversed for finding key associated with value
 };
 
 void FindLostPhotons(double x, double y, double theta, double phi, double eta, double pt, double l, double w, double h, map<double, double> &madeit, double &traveled, bool print);

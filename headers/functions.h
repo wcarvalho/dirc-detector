@@ -108,6 +108,7 @@ void Print_2D_Vector(vector< vector<double> > array);
 void Introduce(string title, string Output);
 void Check_PhotonEvent(PhotonEvent event);
 void Check_ParticleEvent(ParticleEvent event);
+void addtoFile(std::string file, std::string toAdd);
 
 
 
@@ -131,11 +132,13 @@ int Corresponding_Photons(PhotonEvent photon_event, int focus);
 int Photons_Rest(PhotonEvent photon_event, int focus);
 double *ExtractTheta(vector<Photon> v, string Output);
 double *ExtractPhi(vector<Photon> v, string Output);
-
+double getMin(std::map<std::string, double> mymap);
 
 
 // void RandomGaus(double &value, double sigma, string Output);
 string fixedLength(int value, int digits = 3);
-
-
+string returnEnd(std::string of, std::string from);
+string returnBeg(std::string of, std::string from);
+string copyFile(std::string file, std::string suffix, std::string ending = "1");
+std::string getFilename(std::string path);
 #endif

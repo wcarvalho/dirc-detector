@@ -71,7 +71,9 @@ simulator_SOURCES = \
 	../functions/GraphFocus.C \
 	../functions/GraphRest.C \
 	../functions/GraphBounds.C \
-	../functions/Rotater.C
+	../functions/Rotater.C \
+	../functions/returnEnd.cpp \
+	../functions/addtoFile.cpp
 
 cmdline.c: sim-cmd.ggo
   gengetopt --input=sim-cmd.ggo --include-getopt

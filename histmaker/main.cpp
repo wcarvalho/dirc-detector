@@ -16,20 +16,16 @@ int main(int argc, char** argv)
 	  system("exec ./../../generator/build/generator");
 	  system("exec ./../../simulator/build/simulator");
 	  system("exec ./../../reconstructor/build/reconstructor");
-	  system("exec rm -rf ../../Graphs/*");
+	  // system("exec rm -rf ../../Graphs/*");
 	}
 
 
   GeneratorOut* event_output = 0;
 	Reconstruction* reconstruction = 0;
 	Analysis *A = 0;
-	bool make = false;
-	bool print = false;
-
-	if (ai.make_given) make = true;
-	if (ai.verbose_given) print = true;
-  
-  if (make == true) system("exec rm -rf ../../Graphs/*");
+	bool make = ai.make_given;
+	bool print = ai.verbose_given;
+	bool modified_tracks = ai.particle_info_modified_given;
 
 	int xbins = 1000;
 	int ybins = 1000;
@@ -37,20 +33,26 @@ int main(int argc, char** argv)
 	string readf1 = "../../root_files/simulator.root";
 	string readf2 = "../../root_files/reconstructor.root";
 	string writef = "../../root_files/analysis.root";
+  
+  if (modified_tracks) 
+  	readf1 = ai.particle_info_modified_arg;
+  // if (make) system("exec rm -rf ../../Graphs/*");
+
 
 
 	TFile f1(readf1.c_str(), "read");
 	TFile f2(readf2.c_str(), "read");
 	TFile wf(writef.c_str(), "recreate");
-
-	TTree *events = (TTree*)f1.Get("sim_out");
-  TTree *output = (TTree*)f2.Get("output");
+	
+	TTree *events = 0;
+	events = (TTree*)f1.Get("sim_out");
 	events -> SetBranchAddress("simEvent", &event_output);
+
+  	TTree *output = (TTree*)f2.Get("output");
 	output -> SetBranchAddress("recEvent", &reconstruction);
 
-  TTree* THists = new TTree("THists", "Histograms and other(?) information for events");
+  	TTree* THists = new TTree("THists", "Histograms and other(?) information for events");
 	THists -> Branch("EventHists", &A);
-
   //--------------------------------------------------
   //              Beginning of Program;
   //--------------------------------------------------
@@ -58,6 +60,8 @@ int main(int argc, char** argv)
 	double pi = TMath::Pi();
 	for (unsigned int ev = 0; ev < events->GetEntries(); ev++)
 	{
+		// if (ev == 10) {break;}
+		cout << "Event = " << ev << endl;
 	  Printer *printer = new Printer();
 		events->GetEntry(ev);
 	  output->GetEntry(ev);
@@ -108,6 +112,7 @@ int main(int argc, char** argv)
 		delete printer;
 	}
 
+wf.cd();
 wf.Write();
 wf.Close();
 

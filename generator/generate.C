@@ -1,6 +1,5 @@
 #include "dirc_objects.h"
 #include "../headers/generator.h"
-#include <vector>
 
 vector<Particle> generate(int nparticles, gParticle& gPar, Detector d, int maxPars, bool print){
 
@@ -9,6 +8,7 @@ vector<Particle> generate(int nparticles, gParticle& gPar, Detector d, int maxPa
 	gParticle *gPar_p = &gPar;
 	Particle *Par = gPar_p;
 	int passes = 0;
+	double pi = TMath::Pi();
 
 	for (unsigned int par = 0; par < nparticles; par++)
   	{
@@ -23,23 +23,27 @@ vector<Particle> generate(int nparticles, gParticle& gPar, Detector d, int maxPa
 
   		gPar.getEangle();
 
-  		//			place function that determines the number of photons per cm here
-
-
-  		//_____The following predicts the number of photons a particle will emit;
-  		Simulate simPar(gPar.Theta, gPar.Phi);
-			simPar.SetStart(gPar.X, gPar.Y,0);
-			simPar.SetDim(d.Length, d.Width, d.Height);
-			simPar.DistancetoWalls( );  simPar.WhichWall( );
-			gPar.NumberofPhotons = int((simPar.WillTravel()+1))*gPar.PhotonsPercm; 					// + 1 accounts for the photons released at the plane of intersection
+  		// determines the number of photons per cm here
+  		double xlow = 200e-9;
+  		double xhigh = 1000e-9;
+  		double z = 1.;
+  		double alpha = 1./137;
+  		double n = d.n;
+  		double beta = gPar.Beta;
+  		double nu = (1-(1/(beta*beta*n*n)));
+  		double Constant = 2*pi*alpha*nu*nu;
+  		TF1 f("dNdx", "1/x/x", xlow, xhigh);
+  		
+  		double dNdx = 1e-2*Constant*f.Integral(xlow, xhigh);
+  		gPar.PhotonsPercm = dNdx;
 			
-  		if (passed && (gPar.Theta < TMath::Pi()/2))
+  		if (passed && (gPar.Theta < pi/2))
 			{
 				if( gPar.ConeAngle == gPar.ConeAngle )
 				{
 					if (print)
 					{
-						printf("\n\tParticle: Eta = %f, pt = %f, Phi_i = %f\n", gPar.Eta, gPar.pt, gPar.Phi_i);
+						printf("\n\tParticle: %s, Eta = %f, pt = %f, Phi_i = %f\n", gPar.name.c_str(), gPar.Eta, gPar.pt, gPar.Phi_i);
 		  			printf("\t\tmass = %f, charge = %i\n", gPar.m, gPar.Charge);
 		  			printf("\tCollided with detector with:\n"
 		  				  		"\t\tX = %f, Y = %f, Phi = %f, Theta = %f\n"
@@ -55,6 +59,6 @@ vector<Particle> generate(int nparticles, gParticle& gPar, Detector d, int maxPa
   		}
   	}
 
-  	if (print) cout << "\t" << passes << " particles passed\n";
+  	cout << "\t" << pars.size() << " particles passed\n";
   	return pars;
 }

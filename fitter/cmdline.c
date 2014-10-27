@@ -34,15 +34,20 @@ const char *gengetopt_args_info_versiontext = "";
 const char *gengetopt_args_info_description = "";
 
 const char *gengetopt_args_info_help[] = {
-  "  -h, --help     Print help and exit",
-  "  -V, --version  Print version and exit",
-  "  -n, --new      runs all programs before it, i.e generator, simulator",
-  "  -v, --verbose  print data",
-  "  -m, --make     print graphs of the fits made",
+  "  -h, --help                    Print help and exit",
+  "  -V, --version                 Print version and exit",
+  "  -n, --new                     runs all programs before it, i.e generator,\n                                  simulator",
+  "  -v, --verbose                 print data",
+  "  -m, --make                    print graphs of the fits made",
+  "  -p, --particle-info-modified=STRING\n                                use a different file for to provide the\n                                  particle information",
+  "  -w, --writefile=STRING        file to write identification information to",
+  "  -N, --New-Batch               clear batch file",
+  "  -B, --Batch=STRING            defines the Batch file (normally\n                                  '../../root_files/fits.txt')",
     0
 };
 
 typedef enum {ARG_NO
+  , ARG_STRING
 } cmdline_parser_arg_type;
 
 static
@@ -66,12 +71,22 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->new_given = 0 ;
   args_info->verbose_given = 0 ;
   args_info->make_given = 0 ;
+  args_info->particle_info_modified_given = 0 ;
+  args_info->writefile_given = 0 ;
+  args_info->New_Batch_given = 0 ;
+  args_info->Batch_given = 0 ;
 }
 
 static
 void clear_args (struct gengetopt_args_info *args_info)
 {
   FIX_UNUSED (args_info);
+  args_info->particle_info_modified_arg = NULL;
+  args_info->particle_info_modified_orig = NULL;
+  args_info->writefile_arg = NULL;
+  args_info->writefile_orig = NULL;
+  args_info->Batch_arg = NULL;
+  args_info->Batch_orig = NULL;
   
 }
 
@@ -85,6 +100,10 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->new_help = gengetopt_args_info_help[2] ;
   args_info->verbose_help = gengetopt_args_info_help[3] ;
   args_info->make_help = gengetopt_args_info_help[4] ;
+  args_info->particle_info_modified_help = gengetopt_args_info_help[5] ;
+  args_info->writefile_help = gengetopt_args_info_help[6] ;
+  args_info->New_Batch_help = gengetopt_args_info_help[7] ;
+  args_info->Batch_help = gengetopt_args_info_help[8] ;
   
 }
 
@@ -153,12 +172,27 @@ cmdline_parser_params_create(void)
   return params;
 }
 
+static void
+free_string_field (char **s)
+{
+  if (*s)
+    {
+      free (*s);
+      *s = 0;
+    }
+}
 
 
 static void
 cmdline_parser_release (struct gengetopt_args_info *args_info)
 {
 
+  free_string_field (&(args_info->particle_info_modified_arg));
+  free_string_field (&(args_info->particle_info_modified_orig));
+  free_string_field (&(args_info->writefile_arg));
+  free_string_field (&(args_info->writefile_orig));
+  free_string_field (&(args_info->Batch_arg));
+  free_string_field (&(args_info->Batch_orig));
   
   
 
@@ -199,6 +233,14 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "verbose", 0, 0 );
   if (args_info->make_given)
     write_into_file(outfile, "make", 0, 0 );
+  if (args_info->particle_info_modified_given)
+    write_into_file(outfile, "particle-info-modified", args_info->particle_info_modified_orig, 0);
+  if (args_info->writefile_given)
+    write_into_file(outfile, "writefile", args_info->writefile_orig, 0);
+  if (args_info->New_Batch_given)
+    write_into_file(outfile, "New-Batch", 0, 0 );
+  if (args_info->Batch_given)
+    write_into_file(outfile, "Batch", args_info->Batch_orig, 0);
   
 
   i = EXIT_SUCCESS;
@@ -334,6 +376,7 @@ int update_arg(void *field, char **orig_field,
   char *stop_char = 0;
   const char *val = value;
   int found;
+  char **string_field;
   FIX_UNUSED (field);
 
   stop_char = 0;
@@ -364,6 +407,14 @@ int update_arg(void *field, char **orig_field,
     val = possible_values[found];
 
   switch(arg_type) {
+  case ARG_STRING:
+    if (val) {
+      string_field = (char **)field;
+      if (!no_free && *string_field)
+        free (*string_field); /* free previous string */
+      *string_field = gengetopt_strdup (val);
+    }
+    break;
   default:
     break;
   };
@@ -431,10 +482,14 @@ cmdline_parser_internal (
         { "new",	0, NULL, 'n' },
         { "verbose",	0, NULL, 'v' },
         { "make",	0, NULL, 'm' },
+        { "particle-info-modified",	1, NULL, 'p' },
+        { "writefile",	1, NULL, 'w' },
+        { "New-Batch",	0, NULL, 'N' },
+        { "Batch",	1, NULL, 'B' },
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVnvm", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVnvmp:w:NB:", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -482,6 +537,54 @@ cmdline_parser_internal (
               &(local_args_info.make_given), optarg, 0, 0, ARG_NO,
               check_ambiguity, override, 0, 0,
               "make", 'm',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'p':	/* use a different file for to provide the particle information.  */
+        
+        
+          if (update_arg( (void *)&(args_info->particle_info_modified_arg), 
+               &(args_info->particle_info_modified_orig), &(args_info->particle_info_modified_given),
+              &(local_args_info.particle_info_modified_given), optarg, 0, 0, ARG_STRING,
+              check_ambiguity, override, 0, 0,
+              "particle-info-modified", 'p',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'w':	/* file to write identification information to.  */
+        
+        
+          if (update_arg( (void *)&(args_info->writefile_arg), 
+               &(args_info->writefile_orig), &(args_info->writefile_given),
+              &(local_args_info.writefile_given), optarg, 0, 0, ARG_STRING,
+              check_ambiguity, override, 0, 0,
+              "writefile", 'w',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'N':	/* clear batch file.  */
+        
+        
+          if (update_arg( 0 , 
+               0 , &(args_info->New_Batch_given),
+              &(local_args_info.New_Batch_given), optarg, 0, 0, ARG_NO,
+              check_ambiguity, override, 0, 0,
+              "New-Batch", 'N',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'B':	/* defines the Batch file (normally '../../root_files/fits.txt').  */
+        
+        
+          if (update_arg( (void *)&(args_info->Batch_arg), 
+               &(args_info->Batch_orig), &(args_info->Batch_given),
+              &(local_args_info.Batch_given), optarg, 0, 0, ARG_STRING,
+              check_ambiguity, override, 0, 0,
+              "Batch", 'B',
               additional_error))
             goto failure;
         

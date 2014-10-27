@@ -34,24 +34,27 @@ void Simulate_ParticlePath(Detector d, Particle particle, PhotonEvent &photon_ev
 
 	double PhotonsPerStep = photons_released/steps;
 	
-	if (print) printf("Typcially %f photons\n", avg_photons_released);
+	// if (print) printf("\t\tphoton emissions at:\n");
 
-	if (print){
-		printf("\t\tphoton emissions at:\n");
-	}
 	vector<Photon> &numpho = photon_event.Photons;
 	int numPho0 = numpho.size();
 	
-	for (unsigned int i = 0; i < steps; ++i)
+	for (unsigned int i = 0; i < photons_released; ++i)
 	{
-		Release_Photons(simPar, photon_event, PhotonsPerStep, particle.ConeAngle);
-		// if (print) Check_PhotonEvent(photon_event);
-		simPar.TravelDistance(Path_length/steps);
-		if (print){
-			printf("\t\t\tx = %f, y = %f, z = %f\n", simPar.coord[0], simPar.coord[1], simPar.coord[2]);
-		}
-		howmany = numpho.size() - numPho0;
+		simPar.SetStart(particle.X, particle.Y, 0);
+		double distance = r.Uniform(Path_length);
+		simPar.TravelDistance(distance);
+
+		Photon P(particle.ConeAngle, r.Uniform(2*TMath::Pi()));
+		P.X = simPar.coord[0];
+		P.Y = simPar.coord[1];
+		P.Z = simPar.coord[2];
+		photon_event.Photons.push_back(P);
+
+		// if (print)
+			// printf("\t\t\tx = %f, y = %f, z = %f\n", simPar.coord[0], simPar.coord[1], simPar.coord[2]);
+		
 	}
-	if (print) printf("released %i photons\n", howmany);
+	// if (print) cout << "\t\treleased " << photons_released << "photons\n";
 
 }

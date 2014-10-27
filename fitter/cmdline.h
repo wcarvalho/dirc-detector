@@ -46,12 +46,26 @@ struct gengetopt_args_info
   const char *new_help; /**< @brief runs all programs before it, i.e generator, simulator help description.  */
   const char *verbose_help; /**< @brief print data help description.  */
   const char *make_help; /**< @brief print graphs of the fits made help description.  */
+  char * particle_info_modified_arg;	/**< @brief use a different file for to provide the particle information.  */
+  char * particle_info_modified_orig;	/**< @brief use a different file for to provide the particle information original value given at command line.  */
+  const char *particle_info_modified_help; /**< @brief use a different file for to provide the particle information help description.  */
+  char * writefile_arg;	/**< @brief file to write identification information to.  */
+  char * writefile_orig;	/**< @brief file to write identification information to original value given at command line.  */
+  const char *writefile_help; /**< @brief file to write identification information to help description.  */
+  const char *New_Batch_help; /**< @brief clear batch file help description.  */
+  char * Batch_arg;	/**< @brief defines the Batch file (normally '../../root_files/fits.txt').  */
+  char * Batch_orig;	/**< @brief defines the Batch file (normally '../../root_files/fits.txt') original value given at command line.  */
+  const char *Batch_help; /**< @brief defines the Batch file (normally '../../root_files/fits.txt') help description.  */
   
   unsigned int help_given ;	/**< @brief Whether help was given.  */
   unsigned int version_given ;	/**< @brief Whether version was given.  */
   unsigned int new_given ;	/**< @brief Whether new was given.  */
   unsigned int verbose_given ;	/**< @brief Whether verbose was given.  */
   unsigned int make_given ;	/**< @brief Whether make was given.  */
+  unsigned int particle_info_modified_given ;	/**< @brief Whether particle-info-modified was given.  */
+  unsigned int writefile_given ;	/**< @brief Whether writefile was given.  */
+  unsigned int New_Batch_given ;	/**< @brief Whether New-Batch was given.  */
+  unsigned int Batch_given ;	/**< @brief Whether Batch was given.  */
 
 } ;
 

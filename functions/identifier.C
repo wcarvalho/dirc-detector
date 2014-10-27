@@ -16,7 +16,7 @@ double Identifier::FitParticle1D(TCanvas* c, TH1D &h, double xlow, double xhi, d
   f1name.append("initial_fit");
 	TF1 f1(f1name.c_str(), function.str().c_str() , xlow, xhi);
 	h.Fit(&f1, "QR");
-	TF1 f2(name.c_str(), "[0]*exp( -(x-[1])*(x-[1])/(2.*[2]*[2]) ) + [3] + [4]*x + [5]*x*x", xlow, xhi);
+	TF1 f2(name.c_str(), "[0]*exp( -(x-[1])*(x-[1])/(2.*[2]*[2]) ) + [3]+[4]*x + [5]*x*x", xlow, xhi);
 	f2.SetParameter(0,f1.GetParameter(0));
 	f2.SetParameter(1, center);
 	f2.SetParLimits(1,center-0.005, center+0.005);
@@ -38,11 +38,15 @@ double Identifier::FitParticle1D(TCanvas* c, TH1D &h, double xlow, double xhi, d
 	string prefix = "../../Graphs/";
 	prefix.append(name);
 	
-	h.GetXaxis()->SetRangeUser(xlow, xhi);
-	h.Draw();
 	if (make) {
 		c->Print(prefix.append(".png").c_str());	
 	}
 
 	return numberofphotons;
+}
+
+void Identifier::reverseprobabilitymap(){
+	map<string, double> &pm = probabilitymap;
+	for (map<string, double>::iterator i = pm.begin(); i != pm.end(); ++i)
+		rprobabilitymap[i->second] = i->first;
 }

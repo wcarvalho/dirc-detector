@@ -8,10 +8,6 @@
 #include <cstdlib>
 #include "cmdline.h"
 
-void SetParameterOptions(gParticle& gPar, double etarange[2], double ptrange[2], double phirange[2], double charge, vector<string> types);
-void ResetDoubleArrayParameter(double Default[2], double Used[2]);
-void ResetIntArrayParameter(int Default[2], int Used[2]);
-
 int main(int argc, char** argv)
 {
 	gengetopt_args_info ai;
@@ -42,7 +38,7 @@ int main(int argc, char** argv)
 		nparticle_range_default[1] = ai.particles_arg[1];
 	}
 	double etarange_default[2] = {-.5, .5};
-	double ptrange_default[2] = {.2,10.};
+	double ptrange_default[2] = {.2,1.};
 	double phirange_default[2] = {0.,2*pi};
 	double charge_default = 0;
 	ParticleOut tempP;								// to extract default particle types
@@ -93,7 +89,7 @@ int main(int argc, char** argv)
   //__________________generate________________
   for (unsigned int ev = 0; ev < nevents; ev++)
   {
-  	if (print) cout << "Event " << ev << endl;
+  	cout << "Event " << ev << endl;
   	f.Int(nparticle_range[0], nparticle_range[1], nparticles);
   	pars.clear();
   	passes=0;

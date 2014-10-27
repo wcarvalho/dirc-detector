@@ -26,7 +26,10 @@ fitter_SOURCES = \
 	../functions/TabToLevel.C \
 	../functions/simulate_par.C \
 	../functions/masses.C \
-	../functions/identifier.C
+	../functions/identifier.C \ 
+	../functions/min_map.C \
+	../functions/addtoFile.cpp \
+	../functions/returnEnd.cpp
 
 cmdline.c: fit-cmd.ggo
   gengetopt --input=fit-cmd.ggo --include-getopt

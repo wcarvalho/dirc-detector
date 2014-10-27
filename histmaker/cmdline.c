@@ -34,15 +34,17 @@ const char *gengetopt_args_info_versiontext = "";
 const char *gengetopt_args_info_description = "";
 
 const char *gengetopt_args_info_help[] = {
-  "  -h, --help     Print help and exit",
-  "  -V, --version  Print version and exit",
-  "  -n, --new      runs all programs before it, i.e generator, simulator",
-  "  -m, --make     prints histograms to folder ../../Graphs/",
-  "  -v, --verbose  print data",
+  "  -h, --help                    Print help and exit",
+  "  -V, --version                 Print version and exit",
+  "  -n, --new                     runs all programs before it, i.e generator,\n                                  simulator",
+  "  -m, --make                    prints histograms to folder ../../Graphs/",
+  "  -v, --verbose                 print data",
+  "  -p, --particle-info-modified=STRING\n                                use a different file for to provide the\n                                  particle information",
     0
 };
 
 typedef enum {ARG_NO
+  , ARG_STRING
 } cmdline_parser_arg_type;
 
 static
@@ -66,12 +68,15 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->new_given = 0 ;
   args_info->make_given = 0 ;
   args_info->verbose_given = 0 ;
+  args_info->particle_info_modified_given = 0 ;
 }
 
 static
 void clear_args (struct gengetopt_args_info *args_info)
 {
   FIX_UNUSED (args_info);
+  args_info->particle_info_modified_arg = NULL;
+  args_info->particle_info_modified_orig = NULL;
   
 }
 
@@ -85,6 +90,7 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->new_help = gengetopt_args_info_help[2] ;
   args_info->make_help = gengetopt_args_info_help[3] ;
   args_info->verbose_help = gengetopt_args_info_help[4] ;
+  args_info->particle_info_modified_help = gengetopt_args_info_help[5] ;
   
 }
 
@@ -153,12 +159,23 @@ cmdline_parser_params_create(void)
   return params;
 }
 
+static void
+free_string_field (char **s)
+{
+  if (*s)
+    {
+      free (*s);
+      *s = 0;
+    }
+}
 
 
 static void
 cmdline_parser_release (struct gengetopt_args_info *args_info)
 {
 
+  free_string_field (&(args_info->particle_info_modified_arg));
+  free_string_field (&(args_info->particle_info_modified_orig));
   
   
 
@@ -199,6 +216,8 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "make", 0, 0 );
   if (args_info->verbose_given)
     write_into_file(outfile, "verbose", 0, 0 );
+  if (args_info->particle_info_modified_given)
+    write_into_file(outfile, "particle-info-modified", args_info->particle_info_modified_orig, 0);
   
 
   i = EXIT_SUCCESS;
@@ -334,6 +353,7 @@ int update_arg(void *field, char **orig_field,
   char *stop_char = 0;
   const char *val = value;
   int found;
+  char **string_field;
   FIX_UNUSED (field);
 
   stop_char = 0;
@@ -364,6 +384,14 @@ int update_arg(void *field, char **orig_field,
     val = possible_values[found];
 
   switch(arg_type) {
+  case ARG_STRING:
+    if (val) {
+      string_field = (char **)field;
+      if (!no_free && *string_field)
+        free (*string_field); /* free previous string */
+      *string_field = gengetopt_strdup (val);
+    }
+    break;
   default:
     break;
   };
@@ -431,10 +459,11 @@ cmdline_parser_internal (
         { "new",	0, NULL, 'n' },
         { "make",	0, NULL, 'm' },
         { "verbose",	0, NULL, 'v' },
+        { "particle-info-modified",	1, NULL, 'p' },
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVnmv", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVnmvp:", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -482,6 +511,18 @@ cmdline_parser_internal (
               &(local_args_info.verbose_given), optarg, 0, 0, ARG_NO,
               check_ambiguity, override, 0, 0,
               "verbose", 'v',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'p':	/* use a different file for to provide the particle information.  */
+        
+        
+          if (update_arg( (void *)&(args_info->particle_info_modified_arg), 
+               &(args_info->particle_info_modified_orig), &(args_info->particle_info_modified_given),
+              &(local_args_info.particle_info_modified_given), optarg, 0, 0, ARG_STRING,
+              check_ambiguity, override, 0, 0,
+              "particle-info-modified", 'p',
               additional_error))
             goto failure;
         

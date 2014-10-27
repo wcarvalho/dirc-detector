@@ -8,3 +8,4 @@ option "random" r "value for seed of random numbers" int optional
 option "verbose" v "print data" optional
 option "readfile" R "file to be read from" string optional
 option "writefile" W "file to be written to" string optional
+option "Append" A "append particle and photon generation to current file" optional
