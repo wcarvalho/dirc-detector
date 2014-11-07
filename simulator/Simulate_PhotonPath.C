@@ -26,8 +26,8 @@ void Simulate_PhotonPath(Detector d, Photon &photon)
 		Move_Photon(photon, Output.Trivial);
 		if ((photon.X == d.Length) || (photon.X == 0))
 		{
-			photon.Theta += r.Gaus(0., .06);
-			photon.Phi += r.Gaus(0., .06);
+			photon.Theta += r.Gaus(0., .01);
+			photon.Phi += r.Gaus(0., .01);
 			
 			if (Output.Important == "yes"){
 				TabToLevel(4); cout << "Simulation for Photon "<< photon.Which <<" is Complete. It took " << photon.Reflections << " Reflections.\n";

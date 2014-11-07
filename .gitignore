@@ -49,3 +49,5 @@ generator/parameters.txt
 *.png
 massrun
 scripts
+builder
+tester.C

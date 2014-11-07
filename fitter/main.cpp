@@ -86,12 +86,11 @@ int main(int argc, char** argv)
 	// Now there are 5 histograms and 5 Emission Angles
 	for (unsigned int ev = 0; ev < Analyses->GetEntries(); ev++)
 	{
-		// if (ev == 10) {exit(1);}
 		cout << "Event " << ev << endl;
 		//----- ERROR HERE. Seems if histograms are printed in histmaker, this messed up and starts calling errors...-----
 		Analyses->GetEntry(ev);
-		//-----------------------------------------------------
 
+		//-----------------------------------------------------
 		TrackRecon guess;
 
 		EventOutput->GetEntry(ev);
@@ -99,15 +98,14 @@ int main(int argc, char** argv)
 		unsigned int npars = pars.size();
 		vector<TH1D> &hists1 = A->Hists1D;
 		vector<TH2D> &hists2 = A->Hists2D;
-		
 		// Fit *F = new Fit();
 		// F->NumPar(npars);
+		if (hists1.size() == 0) continue;
 		for (unsigned int par = 0; par < pars.size(); par++) // (one particle per histogram)
 		{
 			Identifier guesser;
 			TH1D *h1_p = &hists1.at(par);
 			ParticleOut &P = pars.at(par);
-			
 			if (print)
 			{
 				printf("\tpar = %i: eta = %f, pt = %f\n", par+1, P.Eta, P.pt);// F->SetPrint();

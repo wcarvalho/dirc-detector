@@ -49,6 +49,7 @@ int main(int argc, char** argv)
   GeneratorOut *event_output = 0;
 	GeneratorOut *modified_event_output = 0;
 
+	cout << "readfile = " << rf <<
   TFile file(rf.c_str(), "read");
 	TTree *events = (TTree*)file.Get("sim_out");
 	events->SetBranchAddress("simEvent", &event_output);
@@ -76,6 +77,7 @@ int main(int argc, char** argv)
   	if (i != checker) disp = disp_def;
 	  events->GetEntry(i);
 
+	  cout << "# of partices: " << event_output->Particles.size() << endl;
 	  // cout << i <<"--------> problems is after this?\n";
     if (ai.last_given){
       beginning = event_output->Particles.size() - last;

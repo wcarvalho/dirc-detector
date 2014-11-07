@@ -119,7 +119,6 @@ int main(int argc, char** argv)
 		// {
 			printf("event %i\n", ev);
 		// }
-			if (ev == 10) break;
 		gen_out->GetEntry(ev);
 		
 		if (Append)	{
