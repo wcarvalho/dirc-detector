@@ -6,7 +6,7 @@ bin_PROGRAMS = generator
 include_HEADERS = \
 	$(H)/generator.h \
 	$(H)/functions.h \
-	$(H)/random.h \
+	$(H)/myrandom.h \
 	$(H)/Simulate.h
 
 generator_LDADD = \

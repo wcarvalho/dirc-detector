@@ -12,11 +12,6 @@ int main(int argc, char** argv)
 {
 	gengetopt_args_info ai;  
 	if (cmdline_parser (argc, argv, &ai) != 0){ exit(1); }
-	if (ai.new_given)
-	{
-	  system("exec ./../../generator/build/generator");
-	  system("exec ./../../simulator/build/simulator");
-	}
 
 	int i=0, j=0;
   int input = 4;
@@ -30,16 +25,26 @@ int main(int argc, char** argv)
   Displayer disp_def;
   bool print = ai.verbose_given;
 	int checker = -1;
-  string rf_default = "../../root_files/simulator.root";
-  string wf_default = "../../root_files/reconstructor.root"; 
+  string rf_default = ai.input_arg;
+  string wf_default = "reconstructor.root"; 
 	string rf = rf_default;
   string wf = wf_default;
-  string modified_eventoutput_file = "../../root_files/modified_particle_info.root";
+  string modified_eventoutput_file = "modified_particle_info.root";
+
+  FileProperties readf_prop(rf);
+  string directory = readf_prop.directory;
 
 	if (ai.event_given) checker = ai.event_arg;
   if (ai.last_given) last = ai.last_arg;
   if (modified)
   	modified_eventoutput_file = ai.modified_particle_info_arg;
+
+  if (ai.write_file_given) wf = ai.write_file_arg;
+
+	if(ai.Directory_given) directory = ai.Directory_arg;
+  readf_prop.appendFileToDirectory(directory, wf);
+  readf_prop.appendFileToDirectory(directory, modified_eventoutput_file);
+
 
   Reconstruction reconstruction;
 	ReconstructionData data;
@@ -49,7 +54,7 @@ int main(int argc, char** argv)
   GeneratorOut *event_output = 0;
 	GeneratorOut *modified_event_output = 0;
 
-	cout << "readfile = " << rf <<
+	// cout << "readfile = " << rf <<x
   TFile file(rf.c_str(), "read");
 	TTree *events = (TTree*)file.Get("sim_out");
 	events->SetBranchAddress("simEvent", &event_output);
@@ -77,7 +82,6 @@ int main(int argc, char** argv)
   	if (i != checker) disp = disp_def;
 	  events->GetEntry(i);
 
-	  cout << "# of partices: " << event_output->Particles.size() << endl;
 	  // cout << i <<"--------> problems is after this?\n";
     if (ai.last_given){
       beginning = event_output->Particles.size() - last;

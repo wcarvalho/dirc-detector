@@ -43,27 +43,33 @@ struct gengetopt_args_info
 {
   const char *help_help; /**< @brief Print help and exit help description.  */
   const char *version_help; /**< @brief Print version and exit help description.  */
-  const char *new_help; /**< @brief runs all programs before it, i.e generator help description.  */
+  char * input_arg;	/**< @brief path of particle-generated data.  */
+  char * input_orig;	/**< @brief path of particle-generated data original value given at command line.  */
+  const char *input_help; /**< @brief path of particle-generated data help description.  */
+  char * Directory_arg;	/**< @brief Sets the directory in which files will be saved (by default saves in current directory.  */
+  char * Directory_orig;	/**< @brief Sets the directory in which files will be saved (by default saves in current directory original value given at command line.  */
+  const char *Directory_help; /**< @brief Sets the directory in which files will be saved (by default saves in current directory help description.  */
   int random_arg;	/**< @brief value for seed of random numbers.  */
   char * random_orig;	/**< @brief value for seed of random numbers original value given at command line.  */
   const char *random_help; /**< @brief value for seed of random numbers help description.  */
   const char *verbose_help; /**< @brief print data help description.  */
-  char * readfile_arg;	/**< @brief file to be read from.  */
-  char * readfile_orig;	/**< @brief file to be read from original value given at command line.  */
-  const char *readfile_help; /**< @brief file to be read from help description.  */
   char * writefile_arg;	/**< @brief file to be written to.  */
   char * writefile_orig;	/**< @brief file to be written to original value given at command line.  */
   const char *writefile_help; /**< @brief file to be written to help description.  */
   const char *Append_help; /**< @brief append particle and photon generation to current file help description.  */
+  double smear_arg;	/**< @brief change the smearing value.  */
+  char * smear_orig;	/**< @brief change the smearing value original value given at command line.  */
+  const char *smear_help; /**< @brief change the smearing value help description.  */
   
   unsigned int help_given ;	/**< @brief Whether help was given.  */
   unsigned int version_given ;	/**< @brief Whether version was given.  */
-  unsigned int new_given ;	/**< @brief Whether new was given.  */
+  unsigned int input_given ;	/**< @brief Whether input was given.  */
+  unsigned int Directory_given ;	/**< @brief Whether Directory was given.  */
   unsigned int random_given ;	/**< @brief Whether random was given.  */
   unsigned int verbose_given ;	/**< @brief Whether verbose was given.  */
-  unsigned int readfile_given ;	/**< @brief Whether readfile was given.  */
   unsigned int writefile_given ;	/**< @brief Whether writefile was given.  */
   unsigned int Append_given ;	/**< @brief Whether Append was given.  */
+  unsigned int smear_given ;	/**< @brief Whether smear was given.  */
 
 } ;
 

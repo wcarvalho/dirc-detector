@@ -11,7 +11,7 @@ using namespace std;
 Simulate the trajectory for a single Particle of a single "Event"
 ================================================================================================*/
 
-void Simulate_ParticlePath(Detector d, Particle particle, PhotonEvent &photon_event, double avg_d, bool print)
+void Simulate_ParticlePath(Detector d, Particle &particle, int parnum, PhotonEvent &photon_event, double avg_d, bool print)
 {
 	Random r;
 	double Path_length = 0.;
@@ -32,7 +32,9 @@ void Simulate_ParticlePath(Detector d, Particle particle, PhotonEvent &photon_ev
 	avg_photons_released = Path_length*particle.PhotonsPercm;
 	photons_released = r.Poisson(avg_photons_released);
 
-	double PhotonsPerStep = photons_released/steps;
+	particle.nPhotonsPassed = photons_released;
+
+	// double PhotonsPerStep = photons_released/steps;
 	
 	// if (print) printf("\t\tphoton emissions at:\n");
 
@@ -49,6 +51,7 @@ void Simulate_ParticlePath(Detector d, Particle particle, PhotonEvent &photon_ev
 		P.X = simPar.coord[0];
 		P.Y = simPar.coord[1];
 		P.Z = simPar.coord[2];
+		P.WhichParticle = parnum;
 		photon_event.Photons.push_back(P);
 
 		// if (print)

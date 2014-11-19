@@ -21,6 +21,7 @@
 #include "dirc_objects.h"
 #include "functions.h"
 #include "Simulate.h"
+#include "file-properties.h"
 
 //------------------------------------------
 //		Functions

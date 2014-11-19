@@ -25,6 +25,7 @@ void ReconstructTrack(Reconstruction &reconstruction, ParticleOut particle, vect
 	if (disp.Action == "yes"){ TabToLevel(2); cout << "Reconstructing Track " << reconstruction.Photons.size() <<"\n"; }
 
 	reconstruction.Photons.push_back(photons);														// store photons so original photons aren't manipulated, basically resets the photons every time this function is called
+	// cout << "# of reconstructed photons = " << reconstruction.Photons.back().size() << endl;
 	
 	r.Direction = "Into";
 	r.Feed_Particle(particle.Theta, particle.Phi);

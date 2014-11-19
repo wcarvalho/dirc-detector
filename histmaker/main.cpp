@@ -11,14 +11,6 @@ int main(int argc, char** argv)
 {
 	gengetopt_args_info ai;  
 	if (cmdline_parser (argc, argv, &ai) != 0){ exit(1); }
-	if (ai.new_given)
-	{
-	  system("exec ./../../generator/build/generator");
-	  system("exec ./../../simulator/build/simulator");
-	  system("exec ./../../reconstructor/build/reconstructor");
-	  // system("exec rm -rf ../../Graphs/*");
-	}
-
 
   GeneratorOut* event_output = 0;
 	Reconstruction* reconstruction = 0;
@@ -30,15 +22,21 @@ int main(int argc, char** argv)
 	int xbins = 1000;
 	int ybins = 1000;
 
-	string readf1 = "../../root_files/simulator.root";
-	string readf2 = "../../root_files/reconstructor.root";
-	string writef = "../../root_files/analysis.root";
+	string readf1 = ai.input_generation_arg;
+	string readf2 = ai.input_reconstruction_arg;
+	string writef = "analysis.root";
   
   if (modified_tracks) 
   	readf1 = ai.particle_info_modified_arg;
   // if (make) system("exec rm -rf ../../Graphs/*");
+  if (ai.write_file_given) writef = ai.write_file_arg;
 
 
+	FileProperties readf_prop(readf2);
+	string directory = readf_prop.directory;
+
+	if(ai.Directory_given) directory = ai.Directory_arg;
+	readf_prop.appendFileToDirectory(directory, writef);
 
 	TFile f1(readf1.c_str(), "read");
 	TFile f2(readf2.c_str(), "read");
@@ -68,6 +66,7 @@ int main(int argc, char** argv)
 
 	  for (unsigned int par = 0; par < event_output->Particles.size(); par++)
 	  {
+	  	cout << "\tParticle " << par << endl;
   		vector<PhotonOut> &phos = reconstruction->Photons.at(par);
 	  	vector< vector<double> > data; data.clear();
 	  	vector<double> data_sub; data_sub.clear();

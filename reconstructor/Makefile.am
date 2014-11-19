@@ -4,7 +4,9 @@ bin_PROGRAMS = reconstructor
 
 include_HEADERS = ../headers/reconstructor.h \
 ../headers/functions.h \
-../headers/Simulate.h
+../headers/Simulate.h \
+../headers/file-properties.h
+
 
 reconstructor_LDADD = $(ROOT_LIBS) \
 $(LIB)
@@ -42,7 +44,8 @@ Reconstructed_Reflections.C \
 ../functions/ExtractArray.C \
 ../functions/Print_Histogram.C \
 ../functions/Rotater.C \
-../functions/Displayer.C
+../functions/Displayer.C \
+../functions/file-properties.cpp
 
 cmdline.c: cmd.ggo
   gengetopt --input=cmd.ggo --include-getopt

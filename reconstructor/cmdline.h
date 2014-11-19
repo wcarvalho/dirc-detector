@@ -43,6 +43,12 @@ struct gengetopt_args_info
 {
   const char *help_help; /**< @brief Print help and exit help description.  */
   const char *version_help; /**< @brief Print version and exit help description.  */
+  char * input_arg;	/**< @brief path of particle-generated data.  */
+  char * input_orig;	/**< @brief path of particle-generated data original value given at command line.  */
+  const char *input_help; /**< @brief path of particle-generated data help description.  */
+  char * Directory_arg;	/**< @brief Sets the directory in which files will be saved (by default saves in current directory.  */
+  char * Directory_orig;	/**< @brief Sets the directory in which files will be saved (by default saves in current directory original value given at command line.  */
+  const char *Directory_help; /**< @brief Sets the directory in which files will be saved (by default saves in current directory help description.  */
   const char *new_help; /**< @brief runs all programs before it, i.e generator, simulator help description.  */
   const char *verbose_help; /**< @brief print data help description.  */
   int event_arg;	/**< @brief print data for specific event (starting at 0th event).  */
@@ -54,14 +60,20 @@ struct gengetopt_args_info
   char * modified_particle_info_arg;	/**< @brief output file for modified particle information i.e removing some particles to only track the remaining.  */
   char * modified_particle_info_orig;	/**< @brief output file for modified particle information i.e removing some particles to only track the remaining original value given at command line.  */
   const char *modified_particle_info_help; /**< @brief output file for modified particle information i.e removing some particles to only track the remaining help description.  */
+  char * write_file_arg;	/**< @brief write file for reconstruction.  */
+  char * write_file_orig;	/**< @brief write file for reconstruction original value given at command line.  */
+  const char *write_file_help; /**< @brief write file for reconstruction help description.  */
   
   unsigned int help_given ;	/**< @brief Whether help was given.  */
   unsigned int version_given ;	/**< @brief Whether version was given.  */
+  unsigned int input_given ;	/**< @brief Whether input was given.  */
+  unsigned int Directory_given ;	/**< @brief Whether Directory was given.  */
   unsigned int new_given ;	/**< @brief Whether new was given.  */
   unsigned int verbose_given ;	/**< @brief Whether verbose was given.  */
   unsigned int event_given ;	/**< @brief Whether event was given.  */
   unsigned int last_given ;	/**< @brief Whether last was given.  */
   unsigned int modified_particle_info_given ;	/**< @brief Whether modified-particle-info was given.  */
+  unsigned int write_file_given ;	/**< @brief Whether write-file was given.  */
 
 } ;
 

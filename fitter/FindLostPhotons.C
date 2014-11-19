@@ -26,7 +26,7 @@ void FindLostPhotons(double x, double y, double theta, double phi, double eta, d
 	int total = 0;
 	int passed = 0;
 	int PathSteps = 100;
-	int PhiSteps = 1000;
+	int PhiSteps = 50;
 	double phi_measure = 0;
 
 	Simulate simPar(theta, phi);
@@ -36,7 +36,6 @@ void FindLostPhotons(double x, double y, double theta, double phi, double eta, d
 	simPar.WhichWall( );
 	Path_length = simPar.WillTravel();
 	traveled = Path_length;
-
 	for (std::map<double,double>::iterator it=atm.begin(); it!=atm.end(); ++it)
 	{
 		total = 0;
@@ -54,17 +53,27 @@ void FindLostPhotons(double x, double y, double theta, double phi, double eta, d
 				Simulate simPho(th, ph);
 				simPho.SetStart(simPar.coord[0],simPar.coord[1],simPar.coord[2]);
 				simPho.SetDim(l, w, h);
-				simPho.GotoWall("no");
-				double &x_p = simPho.coord[0];
-				if((x_p == 0 ) || (x_p == l)){ ++passed; break; } 
-				Photon photon(th, ph);
-				CheckAngel(d, photon, "no");
-				if(!photon.Flag){ ++passed; }
+				bool cut = false;
+				for(unsigned int reflections = 0; reflections< 4; ++reflections){
+					// cout << "\treflections = " << reflections << endl;
+					simPho.GotoWall("no");
+					double &x_p = simPho.coord[0];
+					if((x_p == 0 ) || (x_p == l)){ break; } 
+					Photon photon(th, ph);
+					photon.Wall = simPho.wall;
+					d.get_Critical_Angle(1.);
+					CheckAngel(d, photon, "no");
+					if(photon.Flag){
+						cut = true;
+						// cout << "\t\tcut\n";
+					}
+				}
+				if (!cut) ++passed;
 			}
 			simPar.TravelDistance(Path_length/PathSteps);
 		}
-		
 		madeit[it->first] = double(passed)/total;
+		// cout << "percent = " << double(passed)/total << endl;
 	}
 
 }

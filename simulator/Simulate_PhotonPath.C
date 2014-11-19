@@ -11,7 +11,7 @@ using namespace std;
 Simulate the trajectories for a single Photon of a single Event
 ================================================================================================*/
 
-void Simulate_PhotonPath(Detector d, Photon &photon)
+void Simulate_PhotonPath(Detector d, Photon &photon, double smear)
 {
 	Displayer Output;
 	if (Output.Main == "yes")
@@ -26,9 +26,8 @@ void Simulate_PhotonPath(Detector d, Photon &photon)
 		Move_Photon(photon, Output.Trivial);
 		if ((photon.X == d.Length) || (photon.X == 0))
 		{
-			photon.Theta += r.Gaus(0., .01);
-			photon.Phi += r.Gaus(0., .01);
-			
+			photon.Theta += r.Gaus(0., smear);
+			photon.Phi += r.Gaus(0., smear);
 			if (Output.Important == "yes"){
 				TabToLevel(4); cout << "Simulation for Photon "<< photon.Which <<" is Complete. It took " << photon.Reflections << " Reflections.\n";
 			}

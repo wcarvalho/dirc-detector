@@ -8,7 +8,7 @@ AC_PROG_CXX
 AC_PROG_LIBTOOL
 
 ##CXXFLAGS="-Wall -Werror -O2 ${CXXFLAGS}"
-CPPFLAGS="${CPPFLAGS} -I`root-config --incdir` `pkg-config --cflags DircObjs`"
+CPPFLAGS="${CPPFLAGS} -O3 -march=native -I`root-config --incdir` `pkg-config --cflags DircObjs`"
 
 ROOT_LIBS=`root-config --libs`
 LIB=`pkg-config --libs DircObjs`

@@ -23,6 +23,10 @@ void Printer::PrintTH1D(unsigned int par)
   h1.SetYTitle("Entries");
   h1.Draw();
   
+  TFile f(h1.GetName(), "recreate");
+  h1.Write();
+  f.Close();
+
   string temp_f = filename;
   temp_f.append("_1D.png");
 	c.Print(temp_f.c_str());  

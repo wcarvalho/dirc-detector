@@ -3,6 +3,9 @@ purpose "Simulator for DirC.
 By Wilka Carvalho <wcarvalho92@gmail.com>"
 
 # Options
+option "input-analysis" i "path of analysis data" string
+option "input-reconstruction" I "path of reconstruction data" string
+option "Directory" D "Sets the directory in which files will be saved (by default saves in current directory" string optional
 option "new" n "runs all programs before it, i.e generator, simulator" optional
 option "verbose" v "print data" optional
 option "make" m "print graphs of the fits made" optional
@@ -10,3 +13,5 @@ option "particle-info-modified" p "use a different file for to provide the parti
 option "writefile" w "file to write identification information to" string optional
 option "New-Batch" N "clear batch file" optional
 option "Batch" B "defines the Batch file (normally '../../root_files/fits.txt')" string optional
+option "Smear" S "the smearing applied to the fitting (used for width of gaussian)" double optional
+option "graph-prefix" g "directory where graphs will be stored" string optional

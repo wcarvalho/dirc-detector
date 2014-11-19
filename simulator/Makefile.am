@@ -4,7 +4,8 @@ bin_PROGRAMS = simulator
 
 include_HEADERS = ../headers/simulator.h \
 ../headers/functions.h \
-../headers/Parameters.h
+../headers/Parameters.h \
+../headers/file-properties.h
 
 simulator_LDADD = \
 $(ROOT_LIBS) \
@@ -73,7 +74,8 @@ simulator_SOURCES = \
 	../functions/GraphBounds.C \
 	../functions/Rotater.C \
 	../functions/returnEnd.cpp \
-	../functions/addtoFile.cpp
+	../functions/addtoFile.cpp \
+	../functions/file-properties.cpp
 
 cmdline.c: sim-cmd.ggo
   gengetopt --input=sim-cmd.ggo --include-getopt

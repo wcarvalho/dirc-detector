@@ -43,19 +43,33 @@ struct gengetopt_args_info
 {
   const char *help_help; /**< @brief Print help and exit help description.  */
   const char *version_help; /**< @brief Print version and exit help description.  */
-  const char *new_help; /**< @brief runs all programs before it, i.e generator, simulator help description.  */
+  char * input_generation_arg;	/**< @brief path of particle-photon data.  */
+  char * input_generation_orig;	/**< @brief path of particle-photon data original value given at command line.  */
+  const char *input_generation_help; /**< @brief path of particle-photon data help description.  */
+  char * input_reconstruction_arg;	/**< @brief input of reconstruction data.  */
+  char * input_reconstruction_orig;	/**< @brief input of reconstruction data original value given at command line.  */
+  const char *input_reconstruction_help; /**< @brief input of reconstruction data help description.  */
+  char * Directory_arg;	/**< @brief Sets the directory in which files will be saved (by default saves in current directory.  */
+  char * Directory_orig;	/**< @brief Sets the directory in which files will be saved (by default saves in current directory original value given at command line.  */
+  const char *Directory_help; /**< @brief Sets the directory in which files will be saved (by default saves in current directory help description.  */
   const char *make_help; /**< @brief prints histograms to folder ../../Graphs/ help description.  */
   const char *verbose_help; /**< @brief print data help description.  */
   char * particle_info_modified_arg;	/**< @brief use a different file for to provide the particle information.  */
   char * particle_info_modified_orig;	/**< @brief use a different file for to provide the particle information original value given at command line.  */
   const char *particle_info_modified_help; /**< @brief use a different file for to provide the particle information help description.  */
+  char * write_file_arg;	/**< @brief write file for histograms.  */
+  char * write_file_orig;	/**< @brief write file for histograms original value given at command line.  */
+  const char *write_file_help; /**< @brief write file for histograms help description.  */
   
   unsigned int help_given ;	/**< @brief Whether help was given.  */
   unsigned int version_given ;	/**< @brief Whether version was given.  */
-  unsigned int new_given ;	/**< @brief Whether new was given.  */
+  unsigned int input_generation_given ;	/**< @brief Whether input-generation was given.  */
+  unsigned int input_reconstruction_given ;	/**< @brief Whether input-reconstruction was given.  */
+  unsigned int Directory_given ;	/**< @brief Whether Directory was given.  */
   unsigned int make_given ;	/**< @brief Whether make was given.  */
   unsigned int verbose_given ;	/**< @brief Whether verbose was given.  */
   unsigned int particle_info_modified_given ;	/**< @brief Whether particle-info-modified was given.  */
+  unsigned int write_file_given ;	/**< @brief Whether write-file was given.  */
 
 } ;
 

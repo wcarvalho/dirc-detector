@@ -48,7 +48,7 @@ void FillTree(TTree &tree, ParticleEvent particle_event, PhotonEvent photon_even
 	}
 	
 	cout << "\tphotons post: " << phos.size() << endl;
-	cout << "\tparticles post: " << pars.size() << "\n\n";
+	cout << "\tparticles post: " << pars.size() << "\n";
 	
 	tree.Fill();
 

@@ -38,5 +38,9 @@ void ReconstructEvent(Reconstruction &reconstruction, GeneratorOut*& event_outpu
 		disp.location = i;
 		ReconstructTrack(reconstruction, event_output->Particles.at(i), event_output->Photons, disp);
 	}
+	if (reconstruction.Photons.size() != 0){
+		cout << "\t" << reconstruction.Photons.size() << " reconstructions, each with ";
+		cout << reconstruction.Photons.back().size() << " photons\n";
+	}
 
 }

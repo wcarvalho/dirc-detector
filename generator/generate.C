@@ -36,7 +36,6 @@ vector<Particle> generate(int nparticles, gParticle& gPar, Detector d, int maxPa
   		
   		double dNdx = 1e-2*Constant*f.Integral(xlow, xhigh);
   		gPar.PhotonsPercm = dNdx;
-			
   		if (passed && (gPar.Theta < pi/2))
 			{
 				if( gPar.ConeAngle == gPar.ConeAngle )
@@ -48,8 +47,8 @@ vector<Particle> generate(int nparticles, gParticle& gPar, Detector d, int maxPa
 		  			printf("\tCollided with detector with:\n"
 		  				  		"\t\tX = %f, Y = %f, Phi = %f, Theta = %f\n"
 		  				  		"\t\tBeta = %f, Emission Angle = %f\n"
-		  				  		"\t\twith %i expected photons\n",
-		  				  		gPar.X, gPar.Y, gPar.Phi, gPar.Theta, gPar.Beta, gPar.ConeAngle, gPar.NumberofPhotons);
+		  				  		"\t\twith %i PhotonsPercm\n",
+		  				  		gPar.X, gPar.Y, gPar.Phi, gPar.Theta, gPar.Beta, gPar.ConeAngle, gPar.PhotonsPercm);
 		  		}
 				pars.push_back(*Par);
 				passes++;

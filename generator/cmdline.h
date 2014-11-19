@@ -57,9 +57,9 @@ struct gengetopt_args_info
   int random_arg;	/**< @brief Value for seed of random numbers.  */
   char * random_orig;	/**< @brief Value for seed of random numbers original value given at command line.  */
   const char *random_help; /**< @brief Value for seed of random numbers help description.  */
-  char * filename_arg;	/**< @brief root filename (relative or absolute path). By default written to ../../root_files/generator.root.  */
-  char * filename_orig;	/**< @brief root filename (relative or absolute path). By default written to ../../root_files/generator.root original value given at command line.  */
-  const char *filename_help; /**< @brief root filename (relative or absolute path). By default written to ../../root_files/generator.root help description.  */
+  char * filename_arg;	/**< @brief root filename (relative or absolute path). By default written within directory as generator.root.  */
+  char * filename_orig;	/**< @brief root filename (relative or absolute path). By default written within directory as generator.root original value given at command line.  */
+  const char *filename_help; /**< @brief root filename (relative or absolute path). By default written within directory as generator.root help description.  */
   const char *verbose_help; /**< @brief Print data help description.  */
   char * dirc_properties_arg;	/**< @brief file with dirc properties (in this order): Length, Width, Height, Radial Distance, Magnetic Field.  */
   char * dirc_properties_orig;	/**< @brief file with dirc properties (in this order): Length, Width, Height, Radial Distance, Magnetic Field original value given at command line.  */
@@ -67,6 +67,9 @@ struct gengetopt_args_info
   char * custom_set_arg;	/**< @brief Takes a filename with parameters for the experiment including number of particles, range in eta, pt, and phi, and particle charge and type.  */
   char * custom_set_orig;	/**< @brief Takes a filename with parameters for the experiment including number of particles, range in eta, pt, and phi, and particle charge and type original value given at command line.  */
   const char *custom_set_help; /**< @brief Takes a filename with parameters for the experiment including number of particles, range in eta, pt, and phi, and particle charge and type help description.  */
+  char * Directory_arg;	/**< @brief Sets the directory in which files will be saved (by default saves in current directory.  */
+  char * Directory_orig;	/**< @brief Sets the directory in which files will be saved (by default saves in current directory original value given at command line.  */
+  const char *Directory_help; /**< @brief Sets the directory in which files will be saved (by default saves in current directory help description.  */
   
   unsigned int help_given ;	/**< @brief Whether help was given.  */
   unsigned int version_given ;	/**< @brief Whether version was given.  */
@@ -78,6 +81,7 @@ struct gengetopt_args_info
   unsigned int verbose_given ;	/**< @brief Whether verbose was given.  */
   unsigned int dirc_properties_given ;	/**< @brief Whether dirc-properties was given.  */
   unsigned int custom_set_given ;	/**< @brief Whether custom-set was given.  */
+  unsigned int Directory_given ;	/**< @brief Whether Directory was given.  */
 
 } ;
 

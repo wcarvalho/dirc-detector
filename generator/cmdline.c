@@ -40,10 +40,11 @@ const char *gengetopt_args_info_help[] = {
   "  -P, --particles=INT           Takes in two arguments for the range in the\n                                  number of particles per event",
   "  -m, --maxpars=INT             Maximum number of particles to intersect DirC\n                                  (for anlytical-control puposes)",
   "  -r, --random=INT              Value for seed of random numbers",
-  "  -f, --filename=STRING         root filename (relative or absolute path). By\n                                  default written to\n                                  ../../root_files/generator.root",
+  "  -f, --filename=STRING         root filename (relative or absolute path). By\n                                  default written within directory as\n                                  generator.root",
   "  -v, --verbose                 Print data",
   "  -d, --dirc-properties=STRING  file with dirc properties (in this order):\n                                  Length, Width, Height, Radial Distance,\n                                  Magnetic Field",
   "  -c, --custom-set=STRING       Takes a filename with parameters for the\n                                  experiment including number of particles,\n                                  range in eta, pt, and phi, and particle\n                                  charge and type",
+  "  -D, --Directory=STRING        Sets the directory in which files will be saved\n                                  (by default saves in current directory",
     0
 };
 
@@ -80,6 +81,7 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->verbose_given = 0 ;
   args_info->dirc_properties_given = 0 ;
   args_info->custom_set_given = 0 ;
+  args_info->Directory_given = 0 ;
 }
 
 static
@@ -97,6 +99,8 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->dirc_properties_orig = NULL;
   args_info->custom_set_arg = NULL;
   args_info->custom_set_orig = NULL;
+  args_info->Directory_arg = NULL;
+  args_info->Directory_orig = NULL;
   
 }
 
@@ -117,6 +121,7 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->verbose_help = gengetopt_args_info_help[7] ;
   args_info->dirc_properties_help = gengetopt_args_info_help[8] ;
   args_info->custom_set_help = gengetopt_args_info_help[9] ;
+  args_info->Directory_help = gengetopt_args_info_help[10] ;
   
 }
 
@@ -256,6 +261,8 @@ cmdline_parser_release (struct gengetopt_args_info *args_info)
   free_string_field (&(args_info->dirc_properties_orig));
   free_string_field (&(args_info->custom_set_arg));
   free_string_field (&(args_info->custom_set_orig));
+  free_string_field (&(args_info->Directory_arg));
+  free_string_field (&(args_info->Directory_orig));
   
   
 
@@ -313,6 +320,8 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "dirc-properties", args_info->dirc_properties_orig, 0);
   if (args_info->custom_set_given)
     write_into_file(outfile, "custom-set", args_info->custom_set_orig, 0);
+  if (args_info->Directory_given)
+    write_into_file(outfile, "Directory", args_info->Directory_orig, 0);
   
 
   i = EXIT_SUCCESS;
@@ -865,10 +874,11 @@ cmdline_parser_internal (
         { "verbose",	0, NULL, 'v' },
         { "dirc-properties",	1, NULL, 'd' },
         { "custom-set",	1, NULL, 'c' },
+        { "Directory",	1, NULL, 'D' },
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVe:P:m:r:f:vd:c:", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVe:P:m:r:f:vd:c:D:", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -929,7 +939,7 @@ cmdline_parser_internal (
             goto failure;
         
           break;
-        case 'f':	/* root filename (relative or absolute path). By default written to ../../root_files/generator.root.  */
+        case 'f':	/* root filename (relative or absolute path). By default written within directory as generator.root.  */
         
         
           if (update_arg( (void *)&(args_info->filename_arg), 
@@ -973,6 +983,18 @@ cmdline_parser_internal (
               &(local_args_info.custom_set_given), optarg, 0, 0, ARG_STRING,
               check_ambiguity, override, 0, 0,
               "custom-set", 'c',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'D':	/* Sets the directory in which files will be saved (by default saves in current directory.  */
+        
+        
+          if (update_arg( (void *)&(args_info->Directory_arg), 
+               &(args_info->Directory_orig), &(args_info->Directory_given),
+              &(local_args_info.Directory_given), optarg, 0, 0, ARG_STRING,
+              check_ambiguity, override, 0, 0,
+              "Directory", 'D',
               additional_error))
             goto failure;
         

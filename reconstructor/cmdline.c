@@ -36,11 +36,14 @@ const char *gengetopt_args_info_description = "";
 const char *gengetopt_args_info_help[] = {
   "  -h, --help                    Print help and exit",
   "  -V, --version                 Print version and exit",
+  "  -i, --input=STRING            path of particle-generated data",
+  "  -D, --Directory=STRING        Sets the directory in which files will be saved\n                                  (by default saves in current directory",
   "  -n, --new                     runs all programs before it, i.e generator,\n                                  simulator",
   "  -v, --verbose                 print data",
   "  -e, --event=INT               print data for specific event (starting at 0th\n                                  event)",
   "  -l, --last=INT                only reconstructs the last l particles",
   "  -m, --modified-particle-info=STRING\n                                output file for modified particle information\n                                  i.e removing some particles to only track the\n                                  remaining",
+  "  -W, --write-file=STRING       write file for reconstruction",
     0
 };
 
@@ -58,6 +61,8 @@ static int
 cmdline_parser_internal (int argc, char **argv, struct gengetopt_args_info *args_info,
                         struct cmdline_parser_params *params, const char *additional_error);
 
+static int
+cmdline_parser_required2 (struct gengetopt_args_info *args_info, const char *prog_name, const char *additional_error);
 
 static char *
 gengetopt_strdup (const char *s);
@@ -67,21 +72,30 @@ void clear_given (struct gengetopt_args_info *args_info)
 {
   args_info->help_given = 0 ;
   args_info->version_given = 0 ;
+  args_info->input_given = 0 ;
+  args_info->Directory_given = 0 ;
   args_info->new_given = 0 ;
   args_info->verbose_given = 0 ;
   args_info->event_given = 0 ;
   args_info->last_given = 0 ;
   args_info->modified_particle_info_given = 0 ;
+  args_info->write_file_given = 0 ;
 }
 
 static
 void clear_args (struct gengetopt_args_info *args_info)
 {
   FIX_UNUSED (args_info);
+  args_info->input_arg = NULL;
+  args_info->input_orig = NULL;
+  args_info->Directory_arg = NULL;
+  args_info->Directory_orig = NULL;
   args_info->event_orig = NULL;
   args_info->last_orig = NULL;
   args_info->modified_particle_info_arg = NULL;
   args_info->modified_particle_info_orig = NULL;
+  args_info->write_file_arg = NULL;
+  args_info->write_file_orig = NULL;
   
 }
 
@@ -92,11 +106,14 @@ void init_args_info(struct gengetopt_args_info *args_info)
 
   args_info->help_help = gengetopt_args_info_help[0] ;
   args_info->version_help = gengetopt_args_info_help[1] ;
-  args_info->new_help = gengetopt_args_info_help[2] ;
-  args_info->verbose_help = gengetopt_args_info_help[3] ;
-  args_info->event_help = gengetopt_args_info_help[4] ;
-  args_info->last_help = gengetopt_args_info_help[5] ;
-  args_info->modified_particle_info_help = gengetopt_args_info_help[6] ;
+  args_info->input_help = gengetopt_args_info_help[2] ;
+  args_info->Directory_help = gengetopt_args_info_help[3] ;
+  args_info->new_help = gengetopt_args_info_help[4] ;
+  args_info->verbose_help = gengetopt_args_info_help[5] ;
+  args_info->event_help = gengetopt_args_info_help[6] ;
+  args_info->last_help = gengetopt_args_info_help[7] ;
+  args_info->modified_particle_info_help = gengetopt_args_info_help[8] ;
+  args_info->write_file_help = gengetopt_args_info_help[9] ;
   
 }
 
@@ -180,10 +197,16 @@ static void
 cmdline_parser_release (struct gengetopt_args_info *args_info)
 {
 
+  free_string_field (&(args_info->input_arg));
+  free_string_field (&(args_info->input_orig));
+  free_string_field (&(args_info->Directory_arg));
+  free_string_field (&(args_info->Directory_orig));
   free_string_field (&(args_info->event_orig));
   free_string_field (&(args_info->last_orig));
   free_string_field (&(args_info->modified_particle_info_arg));
   free_string_field (&(args_info->modified_particle_info_orig));
+  free_string_field (&(args_info->write_file_arg));
+  free_string_field (&(args_info->write_file_orig));
   
   
 
@@ -218,6 +241,10 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "help", 0, 0 );
   if (args_info->version_given)
     write_into_file(outfile, "version", 0, 0 );
+  if (args_info->input_given)
+    write_into_file(outfile, "input", args_info->input_orig, 0);
+  if (args_info->Directory_given)
+    write_into_file(outfile, "Directory", args_info->Directory_orig, 0);
   if (args_info->new_given)
     write_into_file(outfile, "new", 0, 0 );
   if (args_info->verbose_given)
@@ -228,6 +255,8 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "last", args_info->last_orig, 0);
   if (args_info->modified_particle_info_given)
     write_into_file(outfile, "modified-particle-info", args_info->modified_particle_info_orig, 0);
+  if (args_info->write_file_given)
+    write_into_file(outfile, "write-file", args_info->write_file_orig, 0);
   
 
   i = EXIT_SUCCESS;
@@ -323,9 +352,37 @@ cmdline_parser2 (int argc, char **argv, struct gengetopt_args_info *args_info, i
 int
 cmdline_parser_required (struct gengetopt_args_info *args_info, const char *prog_name)
 {
-  FIX_UNUSED (args_info);
-  FIX_UNUSED (prog_name);
-  return EXIT_SUCCESS;
+  int result = EXIT_SUCCESS;
+
+  if (cmdline_parser_required2(args_info, prog_name, 0) > 0)
+    result = EXIT_FAILURE;
+
+  if (result == EXIT_FAILURE)
+    {
+      cmdline_parser_free (args_info);
+      exit (EXIT_FAILURE);
+    }
+  
+  return result;
+}
+
+int
+cmdline_parser_required2 (struct gengetopt_args_info *args_info, const char *prog_name, const char *additional_error)
+{
+  int error_occurred = 0;
+  FIX_UNUSED (additional_error);
+
+  /* checks for required options */
+  if (! args_info->input_given)
+    {
+      fprintf (stderr, "%s: '--input' ('-i') option required%s\n", prog_name, (additional_error ? additional_error : ""));
+      error_occurred = 1;
+    }
+  
+  
+  /* checks for dependences among options */
+
+  return error_occurred;
 }
 
 
@@ -480,15 +537,18 @@ cmdline_parser_internal (
       static struct option long_options[] = {
         { "help",	0, NULL, 'h' },
         { "version",	0, NULL, 'V' },
+        { "input",	1, NULL, 'i' },
+        { "Directory",	1, NULL, 'D' },
         { "new",	0, NULL, 'n' },
         { "verbose",	0, NULL, 'v' },
         { "event",	1, NULL, 'e' },
         { "last",	1, NULL, 'l' },
         { "modified-particle-info",	1, NULL, 'm' },
+        { "write-file",	1, NULL, 'W' },
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVnve:l:m:", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVi:D:nve:l:m:W:", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -504,6 +564,30 @@ cmdline_parser_internal (
           cmdline_parser_free (&local_args_info);
           exit (EXIT_SUCCESS);
 
+        case 'i':	/* path of particle-generated data.  */
+        
+        
+          if (update_arg( (void *)&(args_info->input_arg), 
+               &(args_info->input_orig), &(args_info->input_given),
+              &(local_args_info.input_given), optarg, 0, 0, ARG_STRING,
+              check_ambiguity, override, 0, 0,
+              "input", 'i',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'D':	/* Sets the directory in which files will be saved (by default saves in current directory.  */
+        
+        
+          if (update_arg( (void *)&(args_info->Directory_arg), 
+               &(args_info->Directory_orig), &(args_info->Directory_given),
+              &(local_args_info.Directory_given), optarg, 0, 0, ARG_STRING,
+              check_ambiguity, override, 0, 0,
+              "Directory", 'D',
+              additional_error))
+            goto failure;
+        
+          break;
         case 'n':	/* runs all programs before it, i.e generator, simulator.  */
         
         
@@ -564,6 +648,18 @@ cmdline_parser_internal (
             goto failure;
         
           break;
+        case 'W':	/* write file for reconstruction.  */
+        
+        
+          if (update_arg( (void *)&(args_info->write_file_arg), 
+               &(args_info->write_file_orig), &(args_info->write_file_given),
+              &(local_args_info.write_file_given), optarg, 0, 0, ARG_STRING,
+              check_ambiguity, override, 0, 0,
+              "write-file", 'W',
+              additional_error))
+            goto failure;
+        
+          break;
 
         case 0:	/* Long option with no short option */
         case '?':	/* Invalid option.  */
@@ -578,6 +674,10 @@ cmdline_parser_internal (
 
 
 
+  if (check_required)
+    {
+      error_occurred += cmdline_parser_required2 (args_info, argv[0], additional_error);
+    }
 
   cmdline_parser_release (&local_args_info);
 

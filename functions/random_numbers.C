@@ -1,7 +1,7 @@
 #include <iostream>
 #include <math.h>
 #include "TRandom3.h"
-#include "../headers/random.h"
+#include "../headers/myrandom.h"
 
 
 using namespace std;

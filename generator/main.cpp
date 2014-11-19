@@ -16,15 +16,22 @@ int main(int argc, char** argv)
   int input = ai.random_given;													// number used for seed of TRandom3
   bool print = ai.verbose_given;																		// bool for printing purposes
   bool replace = false;
-  
+  int nevents = 5;															// number of events
+  string directory = "";
 
   string dirc_prop = "../dirc_prop.txt";
-	if(ai.dirc_properties_given) dirc_prop = ai.dirc_properties_arg;
+	if(ai.dirc_properties_given) 
+		dirc_prop = ai.dirc_properties_arg;
   
-  string filename = "../../root_files/generator.root";
-	if(ai.filename_given) filename = ai.filename_arg;
+  string filename = "generator.root";
+	if(ai.filename_given) 
+		filename = ai.filename_arg;
   
-  int nevents = 5;															// number of events
+  if(ai.Directory_given){
+  	directory = ai.Directory_arg;
+  	filename = directory.append(filename);
+  }
+
   if(ai.events_given){ nevents = ai.events_arg; }
   
   
@@ -38,7 +45,7 @@ int main(int argc, char** argv)
 		nparticle_range_default[1] = ai.particles_arg[1];
 	}
 	double etarange_default[2] = {-.5, .5};
-	double ptrange_default[2] = {.2,1.};
+	double ptrange_default[2] = {.2,10.};
 	double phirange_default[2] = {0.,2*pi};
 	double charge_default = 0;
 	ParticleOut tempP;								// to extract default particle types
@@ -91,33 +98,46 @@ int main(int argc, char** argv)
   {
   	cout << "Event " << ev << endl;
   	f.Int(nparticle_range[0], nparticle_range[1], nparticles);
-  	pars.clear();
+  	pars.clear(); pars2.clear();
   	passes=0;
   	
-  	pars = generate(nparticles, gPar, d, maxPars, print);
+	if(ai.custom_set_given){
+		TakeInParameters(ai.custom_set_arg, nevents, maxPars, nparticle_range, etarange, ptrange, phirange, charge, types, replace);
+		maxPars = maxPars_default;
+		ResetIntArrayParameter(nparticle_range_default, nparticle_range);
+		ResetDoubleArrayParameter(etarange_default, etarange);
+		ResetDoubleArrayParameter(ptrange_default, ptrange);
+		ResetDoubleArrayParameter(phirange_default, phirange);
+		charge = charge_default;
+		types = tempP.types;
+	}
+
+	if (!replace)
+	  	pars = generate(nparticles, gPar, d, maxPars, print);
   	
-  	if(ai.custom_set_given){
-			TakeInParameters(ai.custom_set_arg, nevents, maxPars, nparticle_range, etarange, ptrange, phirange, charge, types, replace);
-			SetParameterOptions(gPar, etarange, ptrange, phirange, charge, types);
-	  	pars2 = generate(nparticles, gPar, d, maxPars, print);
+	if(ai.custom_set_given){
+		TakeInParameters(ai.custom_set_arg, nevents, maxPars, nparticle_range, etarange, ptrange, phirange, charge, types, replace);
+		SetParameterOptions(gPar, etarange, ptrange, phirange, charge, types);
+		pars2 = generate(nparticles, gPar, d, maxPars, print);
 
-  	  maxPars = maxPars_default;
-			ResetIntArrayParameter(nparticle_range_default, nparticle_range);
-			ResetDoubleArrayParameter(etarange_default, etarange);
-			ResetDoubleArrayParameter(ptrange_default, ptrange);
-			ResetDoubleArrayParameter(phirange_default, phirange);
-			charge = charge_default;
-			types = tempP.types;
-			SetParameterOptions(gPar, etarange, ptrange, phirange, charge, types);
-			if (replace)
-				pars = pars2;
-			else{
-				for (unsigned int i = 0; i<pars2.size(); ++i)
-					pars.push_back(pars2.at(i));
-			}
+		maxPars = maxPars_default;
+		ResetIntArrayParameter(nparticle_range_default, nparticle_range);
+		ResetDoubleArrayParameter(etarange_default, etarange);
+		ResetDoubleArrayParameter(ptrange_default, ptrange);
+		ResetDoubleArrayParameter(phirange_default, phirange);
+		charge = charge_default;
+		types = tempP.types;
+		SetParameterOptions(gPar, etarange, ptrange, phirange, charge, types);
+		if (!replace){
+			for (unsigned int i = 0; i<pars2.size(); ++i)
+				pars.push_back(pars2.at(i));
 		}
-
-  	tree.Fill();
+		else{
+			pars = pars2;
+		}
+	}
+	cout << "\ttotal particles: " << pars.size() << endl;
+   	tree.Fill();
 
   }
 

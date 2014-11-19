@@ -43,6 +43,15 @@ struct gengetopt_args_info
 {
   const char *help_help; /**< @brief Print help and exit help description.  */
   const char *version_help; /**< @brief Print version and exit help description.  */
+  char * input_analysis_arg;	/**< @brief path of analysis data.  */
+  char * input_analysis_orig;	/**< @brief path of analysis data original value given at command line.  */
+  const char *input_analysis_help; /**< @brief path of analysis data help description.  */
+  char * input_reconstruction_arg;	/**< @brief path of reconstruction data.  */
+  char * input_reconstruction_orig;	/**< @brief path of reconstruction data original value given at command line.  */
+  const char *input_reconstruction_help; /**< @brief path of reconstruction data help description.  */
+  char * Directory_arg;	/**< @brief Sets the directory in which files will be saved (by default saves in current directory.  */
+  char * Directory_orig;	/**< @brief Sets the directory in which files will be saved (by default saves in current directory original value given at command line.  */
+  const char *Directory_help; /**< @brief Sets the directory in which files will be saved (by default saves in current directory help description.  */
   const char *new_help; /**< @brief runs all programs before it, i.e generator, simulator help description.  */
   const char *verbose_help; /**< @brief print data help description.  */
   const char *make_help; /**< @brief print graphs of the fits made help description.  */
@@ -56,9 +65,18 @@ struct gengetopt_args_info
   char * Batch_arg;	/**< @brief defines the Batch file (normally '../../root_files/fits.txt').  */
   char * Batch_orig;	/**< @brief defines the Batch file (normally '../../root_files/fits.txt') original value given at command line.  */
   const char *Batch_help; /**< @brief defines the Batch file (normally '../../root_files/fits.txt') help description.  */
+  double Smear_arg;	/**< @brief the smearing applied to the fitting (used for width of gaussian).  */
+  char * Smear_orig;	/**< @brief the smearing applied to the fitting (used for width of gaussian) original value given at command line.  */
+  const char *Smear_help; /**< @brief the smearing applied to the fitting (used for width of gaussian) help description.  */
+  char * graph_prefix_arg;	/**< @brief directory where graphs will be stored.  */
+  char * graph_prefix_orig;	/**< @brief directory where graphs will be stored original value given at command line.  */
+  const char *graph_prefix_help; /**< @brief directory where graphs will be stored help description.  */
   
   unsigned int help_given ;	/**< @brief Whether help was given.  */
   unsigned int version_given ;	/**< @brief Whether version was given.  */
+  unsigned int input_analysis_given ;	/**< @brief Whether input-analysis was given.  */
+  unsigned int input_reconstruction_given ;	/**< @brief Whether input-reconstruction was given.  */
+  unsigned int Directory_given ;	/**< @brief Whether Directory was given.  */
   unsigned int new_given ;	/**< @brief Whether new was given.  */
   unsigned int verbose_given ;	/**< @brief Whether verbose was given.  */
   unsigned int make_given ;	/**< @brief Whether make was given.  */
@@ -66,6 +84,8 @@ struct gengetopt_args_info
   unsigned int writefile_given ;	/**< @brief Whether writefile was given.  */
   unsigned int New_Batch_given ;	/**< @brief Whether New-Batch was given.  */
   unsigned int Batch_given ;	/**< @brief Whether Batch was given.  */
+  unsigned int Smear_given ;	/**< @brief Whether Smear was given.  */
+  unsigned int graph_prefix_given ;	/**< @brief Whether graph-prefix was given.  */
 
 } ;
 

@@ -1,5 +1,5 @@
-#ifndef random
-#define random
+#ifndef wilkasrandom
+#define wilkasrandom
 
 #include <iostream>
 #include "TMath.h"

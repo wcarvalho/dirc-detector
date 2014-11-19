@@ -25,7 +25,7 @@
 //		mine
 //------------------------------------------
 #include "dirc_objects.h"
-#include "random.h"
+#include "myrandom.h"
 // #include "Rotater.h"
 
 using namespace std;

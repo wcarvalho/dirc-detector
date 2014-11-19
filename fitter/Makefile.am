@@ -5,15 +5,18 @@ bin_PROGRAMS = fitter
 include_HEADERS = \
 	../headers/fitter.h \
 	../headers/functions.h \
-	../headers/Simulate.h
+	../headers/Simulate.h \
+	../headers/file-properties.h
 
 fitter_LDADD = \
 	$(ROOT_LIBS) -lSpectrum \
-	$(DIRC_LIB)
+	$(DIRC_LIB) \
+	$(NEWTON_LIB) \
+	$(SEAMSTRESS_LIB)
 
 fitter_SOURCES = \
 	main.cpp \
-	cmdline.c \
+	cmdline.cpp \
 	FindLostPhotons.C \
 ##=====================================
 ##
@@ -26,13 +29,11 @@ fitter_SOURCES = \
 	../functions/TabToLevel.C \
 	../functions/simulate_par.C \
 	../functions/masses.C \
-	../functions/identifier.C \ 
+	../functions/identifier.C \
 	../functions/min_map.C \
 	../functions/addtoFile.cpp \
-	../functions/returnEnd.cpp
-
-cmdline.c: fit-cmd.ggo
-  gengetopt --input=fit-cmd.ggo --include-getopt
+	../functions/returnEnd.cpp \
+	../functions/file-properties.cpp
 
 clear-local:
 	rm -f $(BUILT_SOURCES) *Dict*

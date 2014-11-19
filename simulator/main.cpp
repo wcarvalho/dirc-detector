@@ -13,19 +13,19 @@ int main(int argc, char** argv)
 {
 	gengetopt_args_info ai;  
 	if (cmdline_parser (argc, argv, &ai) != 0){ exit(1); }
-	if (ai.new_given)
-	{
-	  system("exec ./../../generator/build/generator");
-	}
 	int input = ai.random_given;
-	string readf = "../../root_files/generator.root";
-	string writef = "../../root_files/simulator.root";
-	string writef2 = "../../root_files/cheat.root";
+
+	string readf = ai.input_arg;
+	FileProperties readf_prop(readf);
+	string directory = readf_prop.directory;
+
+	string writef = "simulator.root";
+	string writef2 = "cheat.root";
 	string inputs = "inputs.txt";
 	string status = "recreate";
 	string non_cheatCopyFile = "";
 	string cheatCopyFile = "";
-	
+	double smear = .01;
 
 	//_______Declarations__________
 	bool print = ai.verbose_given;
@@ -39,14 +39,17 @@ int main(int argc, char** argv)
   
   Displayer Output;
 	Rotater r;
+	FileProperties &f = readf_prop;
 
-	if(ai.readfile_given) readf = ai.readfile_arg;
 	if(ai.writefile_given) writef = ai.writefile_arg;
 
-	string prefix = returnBeg(readf, returnEnd(readf, "/"));
-	string tempfile = returnEnd(readf, "/");				// get file name for input
-	string inputpath = prefix; inputpath.append(inputs);
-	addtoFile(inputpath, tempfile);
+	if(ai.Directory_given) directory = ai.Directory_arg;
+	f.appendFileToDirectory(directory, writef);
+	FileProperties writef_prop(writef);
+	f.appendFileToDirectory(writef_prop.directory, writef2);
+	
+	if(ai.smear_given) smear = ai.smear_arg;
+
 	if (Append){
 		non_cheatCopyFile = copyFile(writef, ".root");
 		cheatCopyFile = copyFile(writef2, ".root");
@@ -112,13 +115,12 @@ int main(int argc, char** argv)
 	}
 	//------------------------------------------------
 
-	d->get_Critical_Angle(1.);
+	if (print == true){
+		cout << "Smearing = " <<  smear << endl;
+	}
 	for (int ev = 0; ev < gen_out->GetEntries(); ev++)
 	{
-		// if (print == true)
-		// {
-			printf("event %i\n", ev);
-		// }
+		printf("Event %i\n", ev);
 		gen_out->GetEntry(ev);
 		
 		if (Append)	{
@@ -130,6 +132,7 @@ int main(int argc, char** argv)
 		photon_event.Photons.clear();
 		photon_event.iterator = 0;
 
+		d->get_Critical_Angle(1.);
 		for (unsigned int par = 0; par < ParEvent->Particles.size(); par++)
 		{
 			par_theta = &ParEvent->Particles[par].Theta;
@@ -137,7 +140,7 @@ int main(int argc, char** argv)
 			// if (print){
 				// printf("\t\tparticle theta = %f, phi = %f\n", *par_theta, *par_phi);
 			// }
-			Simulate_ParticlePath(*d, ParEvent->Particles[par], photon_event, 1, print);
+			Simulate_ParticlePath(*d, ParEvent->Particles[par], par, photon_event, 1, print);
 			r.Feed_Particle(*par_theta, *par_phi);
 			for(int &pho = photon_event.iterator; pho < photon_event.Photons.size(); pho++)
 			{
@@ -148,19 +151,24 @@ int main(int argc, char** argv)
 				photon_event.Photons[pho].UnitVector = Get_UnitVector(*pho_theta, *pho_phi);
 			}
 		}
-		double totalphotons = photon_event.Photons.size();
 
+
+		double totalphotons = photon_event.Photons.size();
 		for (int i = 0; i < photon_event.Photons.size(); i++)
 		{
-			Simulate_PhotonPath(*d, photon_event.Photons[i]);
+			Simulate_PhotonPath(*d, photon_event.Photons[i], smear);
+			if (photon_event.Photons[i].Flag == 1){
+				// cout << "Flag = " << photon_event.Photons[i].Flag << endl;
+				ParEvent->Particles.at(photon_event.Photons[i].WhichParticle).nPhotonsPassed -= 1;
+				// cout << "ParEvent->Particles.at(photon_event.Photons[i].WhichParticle).nPhotonsPassed = " << ParEvent->Particles.at(photon_event.Photons[i].WhichParticle).nPhotonsPassed << endl;
+			}
 			CheckForFlag(photon_event, i, Output.Trivial);
 		}
-		if (print)
-		{
-			printf("\t\t%i passed (%f percent)\n\n", int(photon_event.Photons.size()), photon_event.Photons.size()/totalphotons*100.);
-		}
-		
+
 		FillTree(sim_out, *ParEvent, photon_event, *event_output, Output.Important, event_outputCopy, Append);
+		if (print){
+			printf("\t\t(%f percent)\n\n", photon_event.Photons.size()/totalphotons*100.);
+		}
 		cheat_info.Fill();
 	}
   

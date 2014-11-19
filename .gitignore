@@ -51,3 +51,13 @@ massrun
 scripts
 builder
 tester.C
+Singlerun
+a.out
+configurer
+data/
+electrons/
+generate_photons.cpp
+parameters.txt
+pions/
+scripts_old/
+test/

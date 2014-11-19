@@ -26,7 +26,6 @@ void CheckAngel(Detector d, Photon &photon, string Output)
   TVector3 x_normal(-1,0,0);
   TVector3 y_normal(0,-1,0);
   TVector3 z_normal(0,0,-1);
-
   if(photon.Wall == 1)
   {
   	normal_vector = x_normal;
@@ -49,13 +48,13 @@ void CheckAngel(Detector d, Photon &photon, string Output)
   dotproduct = photon.UnitVector.Dot(normal_vector);
   magnitudeproduct = photon.UnitVector.Mag()*normal_vector.Mag();
   angle = acos (dotproduct / magnitudeproduct);
-  if (Output == "yes")
-  {
+  // if (Output == "yes")
+  // {
 		// TabToLevel(5); cout << "dotproduct = " << dotproduct << endl;
 		// TabToLevel(5); cout << "magnitudeproduct = " << magnitudeproduct << endl;
-		TabToLevel(5); cout << "Photon Angle = " << angle << endl;
-		TabToLevel(5); cout << "Critical Angle = " << d.CriticalAngle << ", " << pi - d.CriticalAngle << endl;
-  }
+		// TabToLevel(5); cout << "Photon Angle = " << angle << endl;
+		// TabToLevel(5); cout << "Critical Angle = " << d.CriticalAngle << ", " << pi - d.CriticalAngle << endl;
+  // }
  //  if (photon.Flag == 1)
 	// {
 	// 	cout << "photon " << photon.Which << endl;
@@ -65,7 +64,7 @@ void CheckAngel(Detector d, Photon &photon, string Output)
   {
     // if (Output == "yes")
     // {
-      TabToLevel(3); cout << "CRITICAL ANGLE ERROR!!\n";
+      // TabToLevel(3); cout << "CRITICAL ANGLE ERROR!!\n";
     // }
     photon.Flag = 1;
   }
