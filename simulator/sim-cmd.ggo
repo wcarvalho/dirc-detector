@@ -11,5 +11,5 @@ option "writefile" W "file to be written to" string optional
 option "Append" A "append particle and photon generation to current file" optional
 option "smear" S "change the smearing value" double optional
 option "quiet" q "turn off all printing" optional
-option "print-photons" - "only print photon information per event" optional
+option "print-photons" p "only print photon information per event" optional
 option "file-write-off" - "Turn off file writing" optional

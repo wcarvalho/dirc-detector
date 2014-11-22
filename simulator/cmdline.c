@@ -44,7 +44,7 @@ const char *gengetopt_args_info_help[] = {
   "  -A, --Append            append particle and photon generation to current file",
   "  -S, --smear=DOUBLE      change the smearing value",
   "  -q, --quiet             turn off all printing",
-  "      --print-photons     only print photon information per event",
+  "  -p, --print-photons     only print photon information per event",
   "      --file-write-off    Turn off file writing",
     0
 };
@@ -556,12 +556,12 @@ cmdline_parser_internal (
         { "Append",	0, NULL, 'A' },
         { "smear",	1, NULL, 'S' },
         { "quiet",	0, NULL, 'q' },
-        { "print-photons",	0, NULL, 0 },
+        { "print-photons",	0, NULL, 'p' },
         { "file-write-off",	0, NULL, 0 },
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVi:D:r:vW:AS:q", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVi:D:r:vW:AS:qp", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -673,24 +673,22 @@ cmdline_parser_internal (
             goto failure;
         
           break;
+        case 'p':	/* only print photon information per event.  */
+        
+        
+          if (update_arg( 0 , 
+               0 , &(args_info->print_photons_given),
+              &(local_args_info.print_photons_given), optarg, 0, 0, ARG_NO,
+              check_ambiguity, override, 0, 0,
+              "print-photons", 'p',
+              additional_error))
+            goto failure;
+        
+          break;
 
         case 0:	/* Long option with no short option */
-          /* only print photon information per event.  */
-          if (strcmp (long_options[option_index].name, "print-photons") == 0)
-          {
-          
-          
-            if (update_arg( 0 , 
-                 0 , &(args_info->print_photons_given),
-                &(local_args_info.print_photons_given), optarg, 0, 0, ARG_NO,
-                check_ambiguity, override, 0, 0,
-                "print-photons", '-',
-                additional_error))
-              goto failure;
-          
-          }
           /* Turn off file writing.  */
-          else if (strcmp (long_options[option_index].name, "file-write-off") == 0)
+          if (strcmp (long_options[option_index].name, "file-write-off") == 0)
           {
           
           

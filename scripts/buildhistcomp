@@ -1,0 +1,3 @@
+#!/bin/bash
+
+g++ -O3 -march=native -w -Wall photonComparison.cpp `root-config --libs` -I`root-config --incdir` `pkg-config --libs DircObjs` `pkg-config --cflags DircObjs` -o histcomp
