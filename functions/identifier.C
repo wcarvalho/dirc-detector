@@ -118,7 +118,7 @@ double Identifier::FitParticle1D(TCanvas* c, TH1D &h, vector< double > &params, 
   // FIXME these bounds should not be hard-coded
   // this routine needs to know about the resolution of the 
   // photon angle for the width and the tracking for the center
-  gpc.setCenterBounds( center - 0.01, center + 0.01 );
+  gpc.setCenterBounds( center - width, center + width );
   gpc.setWidthBounds( width*0.5, width*1.5);
   
   
@@ -131,13 +131,18 @@ double Identifier::FitParticle1D(TCanvas* c, TH1D &h, vector< double > &params, 
   VectorXd min_point = VectorXd::Zero(4);
   
   unsigned int count = 0;
-  while( minimizer.minimize( start, min_point, 1.0e-9 ) == false )
+  bool converged = false;
+  while( converged == false )
   {
+    converged = minimizer.minimize( start, min_point, 1.0e-9 );
     count += 1;
     start = min_point;
     if(count == 4){break;}
   }
-  
+  if(converged == false)
+  {
+    min_point = VectorXd::Zero(4);
+  }
   
   
 	static TF1 f2(name.c_str(), "[0]*exp( -(x-[1])*(x-[1])/(2.*[2]*[2]) ) + [3]", xlow, xhi);
@@ -156,14 +161,14 @@ double Identifier::FitParticle1D(TCanvas* c, TH1D &h, vector< double > &params, 
 
 	double numberofphotons = f3.Integral(xlow, xhi)/h.GetBinWidth(1);
   
-	for(int i=0;i<4;++i){
-    params.push_back(f2.GetParameter(i));
+  for(int i=0;i<4;++i){
+      params.push_back(f2.GetParameter(i));
   }
 
   params.push_back(xlow);
   params.push_back(xhi);
 
-	return numberofphotons;
+	return numberofphotons*width*sqrt(2*TMath::Pi());
 }
 
 void Identifier::reverseprobabilitymap(){

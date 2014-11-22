@@ -30,7 +30,8 @@ int main(int argc, char** argv)
 	//_______Declarations__________
 	bool print = ai.verbose_given;
 	bool Append = ai.Append_given;
-
+	bool quiet = ai.quiet_given;
+	bool write = !ai.file_write_off_given;
 	Detector *d = 0;
 	ParticleEvent *ParEvent = 0;
 	PhotonEvent photon_event; photon_event.Photons.clear();
@@ -98,9 +99,9 @@ int main(int argc, char** argv)
   //              Beginning of Program;
   //--------------------------------------------------
 
+	double pi = TMath::Pi();
 
-
-	cout << "\nSIMULATOR\n";
+	if(!quiet) cout << "\nSIMULATOR\n";
 	//___for convenience__________________________
 	vector<Particle> *pars = &ParEvent->Particles;
 	double *par_theta, *par_phi;
@@ -120,7 +121,7 @@ int main(int argc, char** argv)
 	}
 	for (int ev = 0; ev < gen_out->GetEntries(); ev++)
 	{
-		printf("Event %i\n", ev);
+		if(!quiet) printf("Event %i\n", ev);
 		gen_out->GetEntry(ev);
 		
 		if (Append)	{
@@ -135,8 +136,9 @@ int main(int argc, char** argv)
 		d->get_Critical_Angle(1.);
 		for (unsigned int par = 0; par < ParEvent->Particles.size(); par++)
 		{
-			par_theta = &ParEvent->Particles[par].Theta;
+ 			par_theta = &ParEvent->Particles[par].Theta;
 			par_phi = &ParEvent->Particles[par].Phi;
+			if (print) cout << "\tParticle = " << par << " with Theta, Phi = " << *par_theta/pi << "pi, " << *par_phi/pi << "pi\n";
 			// if (print){
 				// printf("\t\tparticle theta = %f, phi = %f\n", *par_theta, *par_phi);
 			// }
@@ -144,7 +146,6 @@ int main(int argc, char** argv)
 			r.Feed_Particle(*par_theta, *par_phi);
 			for(int &pho = photon_event.iterator; pho < photon_event.Photons.size(); pho++)
 			{
-
 				pho_theta = &photon_event.Photons[pho].Theta;
 				pho_phi = &photon_event.Photons[pho].Phi;
 				r.Rotate_Photon(*pho_theta, *pho_phi);
@@ -158,14 +159,12 @@ int main(int argc, char** argv)
 		{
 			Simulate_PhotonPath(*d, photon_event.Photons[i], smear);
 			if (photon_event.Photons[i].Flag == 1){
-				// cout << "Flag = " << photon_event.Photons[i].Flag << endl;
 				ParEvent->Particles.at(photon_event.Photons[i].WhichParticle).nPhotonsPassed -= 1;
-				// cout << "ParEvent->Particles.at(photon_event.Photons[i].WhichParticle).nPhotonsPassed = " << ParEvent->Particles.at(photon_event.Photons[i].WhichParticle).nPhotonsPassed << endl;
 			}
 			CheckForFlag(photon_event, i, Output.Trivial);
 		}
-
-		FillTree(sim_out, *ParEvent, photon_event, *event_output, Output.Important, event_outputCopy, Append);
+		if (ai.print_photons_given) cout << "total photons: " << photon_event.Photons.size() << endl;
+		FillTree(sim_out, *ParEvent, photon_event, *event_output, Output.Important, event_outputCopy, Append, quiet);
 		if (print){
 			printf("\t\t(%f percent)\n\n", photon_event.Photons.size()/totalphotons*100.);
 		}
@@ -190,7 +189,7 @@ int main(int argc, char** argv)
 
   rf.cd();
   rf.Close();
-  cout << "file: " << writef << endl;
+  if(!quiet) cout << "file: " << writef << endl;
   
   return 0;
 }

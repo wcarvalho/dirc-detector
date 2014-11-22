@@ -11,7 +11,7 @@ using namespace std;
 Fill Tree`
 ================================================================================================*/
 
-void FillTree(TTree &tree, ParticleEvent particle_event, PhotonEvent photon_event, GeneratorOut& event_output, string Output, GeneratorOut* event_outputCopy, bool Append)
+void FillTree(TTree &tree, ParticleEvent particle_event, PhotonEvent photon_event, GeneratorOut& event_output, string Output, GeneratorOut* event_outputCopy, bool Append, bool quiet)
 {
 	Pull_Photons(photon_event, event_output, Output);
 	
@@ -33,8 +33,10 @@ void FillTree(TTree &tree, ParticleEvent particle_event, PhotonEvent photon_even
 		phos = event_outputCopy->Photons;
 	}
 
-	cout << "\tphotons pre: " << phos.size() << endl;
-	cout << "\tparticles pre: " << pars.size() << "\n\n";
+	if(!quiet) {
+		cout << "\n\tphotons pre: " << phos.size() << endl;
+		cout << "\tparticles pre: " << pars.size() << "\n\n";
+	}
 
 	for (unsigned int par = 0; par < particle_event.Particles.size(); par++)
 	{
@@ -46,10 +48,10 @@ void FillTree(TTree &tree, ParticleEvent particle_event, PhotonEvent photon_even
 		Pho = &photon_event.Photons.at(pho);
 		phos.push_back(*Pho);
 	}
-	
-	cout << "\tphotons post: " << phos.size() << endl;
-	cout << "\tparticles post: " << pars.size() << "\n";
-	
+	if(!quiet){ 
+		cout << "\tphotons post: " << phos.size() << endl;
+		cout << "\tparticles post: " << pars.size() << "\n";
+	}
 	tree.Fill();
 
 }

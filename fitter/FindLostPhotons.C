@@ -13,7 +13,7 @@ void RiemannSum(double x, double y, double stepsize){
 }
 
 void FindLostPhotons(double x, double y, double theta, double phi, double eta, double pt, double l, double w, double h, map<double, double> &madeit, double &traveled, bool print){
-	
+	// hard code l, w, h
 	double pi = TMath::Pi();
 	double Path_length = 0.;
 

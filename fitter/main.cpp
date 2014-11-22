@@ -9,8 +9,11 @@
 
 using namespace std;
 
+
 int main(int argc, char** argv)
 {
+	// Case statement for my current function or to the function that alan gives
+	// void* fun = asjkajs(); 
   // system("rm *.png");
 	gengetopt_args_info ai;  
 	if (cmdline_parser (argc, argv, &ai) != 0){ exit(1); }

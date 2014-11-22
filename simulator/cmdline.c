@@ -43,6 +43,9 @@ const char *gengetopt_args_info_help[] = {
   "  -W, --writefile=STRING  file to be written to",
   "  -A, --Append            append particle and photon generation to current file",
   "  -S, --smear=DOUBLE      change the smearing value",
+  "  -q, --quiet             turn off all printing",
+  "      --print-photons     only print photon information per event",
+  "      --file-write-off    Turn off file writing",
     0
 };
 
@@ -79,6 +82,9 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->writefile_given = 0 ;
   args_info->Append_given = 0 ;
   args_info->smear_given = 0 ;
+  args_info->quiet_given = 0 ;
+  args_info->print_photons_given = 0 ;
+  args_info->file_write_off_given = 0 ;
 }
 
 static
@@ -110,6 +116,9 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->writefile_help = gengetopt_args_info_help[6] ;
   args_info->Append_help = gengetopt_args_info_help[7] ;
   args_info->smear_help = gengetopt_args_info_help[8] ;
+  args_info->quiet_help = gengetopt_args_info_help[9] ;
+  args_info->print_photons_help = gengetopt_args_info_help[10] ;
+  args_info->file_write_off_help = gengetopt_args_info_help[11] ;
   
 }
 
@@ -249,6 +258,12 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "Append", 0, 0 );
   if (args_info->smear_given)
     write_into_file(outfile, "smear", args_info->smear_orig, 0);
+  if (args_info->quiet_given)
+    write_into_file(outfile, "quiet", 0, 0 );
+  if (args_info->print_photons_given)
+    write_into_file(outfile, "print-photons", 0, 0 );
+  if (args_info->file_write_off_given)
+    write_into_file(outfile, "file-write-off", 0, 0 );
   
 
   i = EXIT_SUCCESS;
@@ -540,10 +555,13 @@ cmdline_parser_internal (
         { "writefile",	1, NULL, 'W' },
         { "Append",	0, NULL, 'A' },
         { "smear",	1, NULL, 'S' },
+        { "quiet",	0, NULL, 'q' },
+        { "print-photons",	0, NULL, 0 },
+        { "file-write-off",	0, NULL, 0 },
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVi:D:r:vW:AS:", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVi:D:r:vW:AS:q", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -643,8 +661,50 @@ cmdline_parser_internal (
             goto failure;
         
           break;
+        case 'q':	/* turn off all printing.  */
+        
+        
+          if (update_arg( 0 , 
+               0 , &(args_info->quiet_given),
+              &(local_args_info.quiet_given), optarg, 0, 0, ARG_NO,
+              check_ambiguity, override, 0, 0,
+              "quiet", 'q',
+              additional_error))
+            goto failure;
+        
+          break;
 
         case 0:	/* Long option with no short option */
+          /* only print photon information per event.  */
+          if (strcmp (long_options[option_index].name, "print-photons") == 0)
+          {
+          
+          
+            if (update_arg( 0 , 
+                 0 , &(args_info->print_photons_given),
+                &(local_args_info.print_photons_given), optarg, 0, 0, ARG_NO,
+                check_ambiguity, override, 0, 0,
+                "print-photons", '-',
+                additional_error))
+              goto failure;
+          
+          }
+          /* Turn off file writing.  */
+          else if (strcmp (long_options[option_index].name, "file-write-off") == 0)
+          {
+          
+          
+            if (update_arg( 0 , 
+                 0 , &(args_info->file_write_off_given),
+                &(local_args_info.file_write_off_given), optarg, 0, 0, ARG_NO,
+                check_ambiguity, override, 0, 0,
+                "file-write-off", '-',
+                additional_error))
+              goto failure;
+          
+          }
+          
+          break;
         case '?':	/* Invalid option.  */
           /* `getopt_long' already printed an error message.  */
           goto failure;

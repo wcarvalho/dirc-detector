@@ -61,7 +61,7 @@ void Move_Photon(Photon &photon, string Output);
 void Change_Angle(Photon &photon, string Output);
 void GenerateEvent(Detector detector, vector<ParticleEvent> &particle_events, vector<PhotonEvent> &photon_events,
                    Parameter param, TTree* tree, int input, Displayer Output);
-void FillTree(TTree &tree, ParticleEvent particle_event, PhotonEvent photon_event, GeneratorOut& event_output, string Output, GeneratorOut* event_outputCopy = 0, bool Append = false);
+void FillTree(TTree &tree, ParticleEvent particle_event, PhotonEvent photon_event, GeneratorOut& event_output, string Output, GeneratorOut* event_outputCopy = 0, bool Append = false, bool quiet = false);
 void ScanTheta(Detector detector, vector<ParticleEvent> &particle_events, vector<PhotonEvent> &photon_events,
               Parameter param, GeneratorOut& event_output,
               double beginning_theta, double ending_theta, double theta_step,
@@ -82,7 +82,5 @@ void ScanPhi(Detector detector, vector<ParticleEvent> &particle_events, vector<P
 
 void Pull_Particles(ParticleEvent particle_event, GeneratorOut& event_output, string Output);
 void Pull_Photons(PhotonEvent photon_event, GeneratorOut& event_output, string Output);
-
-
 
 // void Scan_X(double x_low, double x_high, vector< vector<Particle> > &particle_events, vector< vector<Photon> > &photon_events, Dector &detector);

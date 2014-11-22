@@ -28,10 +28,10 @@ void Simulate_ParticlePath(Detector d, Particle &particle, int parnum, PhotonEve
 	simPar.DistancetoWalls( );
 	simPar.WhichWall( );
 	Path_length = simPar.WillTravel();
-
+	if (print) cout << "\tTravling distance: " << Path_length << endl;
 	avg_photons_released = Path_length*particle.PhotonsPercm;
 	photons_released = r.Poisson(avg_photons_released);
-
+	if (print) cout << "\tReleasing " << photons_released << " photons\n";
 	particle.nPhotonsPassed = photons_released;
 
 	// double PhotonsPerStep = photons_released/steps;

@@ -60,6 +60,9 @@ struct gengetopt_args_info
   double smear_arg;	/**< @brief change the smearing value.  */
   char * smear_orig;	/**< @brief change the smearing value original value given at command line.  */
   const char *smear_help; /**< @brief change the smearing value help description.  */
+  const char *quiet_help; /**< @brief turn off all printing help description.  */
+  const char *print_photons_help; /**< @brief only print photon information per event help description.  */
+  const char *file_write_off_help; /**< @brief Turn off file writing help description.  */
   
   unsigned int help_given ;	/**< @brief Whether help was given.  */
   unsigned int version_given ;	/**< @brief Whether version was given.  */
@@ -70,6 +73,9 @@ struct gengetopt_args_info
   unsigned int writefile_given ;	/**< @brief Whether writefile was given.  */
   unsigned int Append_given ;	/**< @brief Whether Append was given.  */
   unsigned int smear_given ;	/**< @brief Whether smear was given.  */
+  unsigned int quiet_given ;	/**< @brief Whether quiet was given.  */
+  unsigned int print_photons_given ;	/**< @brief Whether print-photons was given.  */
+  unsigned int file_write_off_given ;	/**< @brief Whether file-write-off was given.  */
 
 } ;
 
