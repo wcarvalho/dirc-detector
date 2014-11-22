@@ -13,12 +13,13 @@ CPPFLAGS="${CPPFLAGS} -std=c++11 -pipe -Wno-deprecated-register -O3 -march=nativ
 ROOT_LIBS=`root-config --libs`
 DIRC_LIB=`pkg-config --libs DircObjs`
 NEWTON_LIB=`pkg-config --libs fitnewton`
-SEAMSTRESS_LIB=`pkg-config --libs seamstress`
 
 AC_SUBST(ROOT_LIBS)
 AC_SUBST(DIRC_LIB)
 AC_SUBST(NEWTON_LIB)
 AC_SUBST(SEAMSTRESS_LIB)
+
+PKG_CHECK_MODULES([Fitnewton], [fitnewton])
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
