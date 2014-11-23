@@ -153,13 +153,13 @@ double Identifier::FitParticle1D(TCanvas* c, TH1D &h, vector< double > &params, 
   f2.FixParameter(2, min_point(2));
   f2.FixParameter(3, min_point(3));
   
-  string f3name = name;
-	f3name.append("integral");
-	static TF1 f3(f3name.c_str(), "[0]*exp( -(x-[1])*(x-[1])/(2.*[2]*[2]) )", xlow, xhi);
-  f3.SetRange(xlow, xhi);
-	for (unsigned int i=0; i<3;i++) f3.FixParameter(i,f2.GetParameter(i));
-
-	double numberofphotons = f3.Integral(xlow, xhi)/h.GetBinWidth(1);
+//   string f3name = name;
+// 	f3name.append("integral");
+// 	static TF1 f3(f3name.c_str(), "[0]*exp( -(x-[1])*(x-[1])/(2.*[2]*[2]) )", xlow, xhi);
+//   f3.SetRange(xlow, xhi);
+// 	for (unsigned int i=0; i<3;i++) f3.FixParameter(i,f2.GetParameter(i));
+// 
+// 	double numberofphotons = f3.Integral(xlow, xhi)/h.GetBinWidth(1);
   
   for(int i=0;i<4;++i){
       params.push_back(f2.GetParameter(i));
@@ -167,8 +167,8 @@ double Identifier::FitParticle1D(TCanvas* c, TH1D &h, vector< double > &params, 
 
   params.push_back(xlow);
   params.push_back(xhi);
-
-	return numberofphotons*width*sqrt(2*TMath::Pi());
+  
+  return min_point(0) * min_point(2) * sqrt(2*TMath::Pi()) / h.GetBinWidth(1);
 }
 
 void Identifier::reverseprobabilitymap(){
