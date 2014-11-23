@@ -1,6 +1,6 @@
 b=build
 original='../..'
-make="../configure --prefix=$MYAPPS"
+make="../configure"
 
 cd generator
 pwd
