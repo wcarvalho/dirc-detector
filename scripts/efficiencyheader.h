@@ -50,7 +50,7 @@ vector< vector< double > > filearray(string file){
 
 
 // get general array and data-specfic array
-void fillparameters(string const &settings, string &pre, string &data_dir){
+void fillparameters(string const &settings, string &pre, string &data_dir, string &fit_dir, string &graph_dir){
 
 	ifstream f;
 	f.open(settings.c_str());
@@ -61,10 +61,11 @@ void fillparameters(string const &settings, string &pre, string &data_dir){
 		f.getline(val, size);
 		if (i == 0) pre = val;
 		if (i == 1)	data_dir = val;
+		if (i == 2)	graph_dir = val;
+		if (i == 3)	fit_dir = val;
 		++i;
 	}
-	cout << "pre = " << pre << endl;
-	cout << "data_dir " << data_dir << endl;
+
 }
 
 

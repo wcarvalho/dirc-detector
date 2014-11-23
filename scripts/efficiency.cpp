@@ -18,7 +18,7 @@ int main()
 	
 	double pi = TMath::Pi();
 
-	fillparameters("directories", pre, data_dir);
+	fillparameters("directories", pre, data_dir, fit_dir, graph_dir);
 	vector< vector< double > > momentum = filearray("momentum");
 	vector< vector< double > > multiplicity = filearray("multiplicity");
 	vector< vector< double > > settings = filearray("settings");
@@ -39,12 +39,12 @@ int main()
 	ParticleEvent *originals = 0;
 	TrackRecons *reconstructions = 0;
 	
-	string file1 = appendStrings(pre, cheatdata);
 	
 	data_dir = appendStrings(pre, data_dir);
-	string file2 = appendStrings(data_dir, fitdata);
 	fit_dir = appendStrings(data_dir, fit_dir);
 
+	string file1 = appendStrings(pre, cheatdata);
+	string file2 = appendStrings(data_dir, fitdata);
 
 	TCanvas C("C", "C", 1000, 600);
 
