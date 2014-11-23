@@ -96,9 +96,12 @@ void TakeInParameters(string file, int& nevents, int& maxPars, int nparticle_ran
 
 	char marker[256];
 	char value[256];
+	// cout << "ifs.good() = " << ifs.good() << endl;
 	while (ifs.good()){
 		ifs.getline(marker, 256, ':');
 		ifs.getline(value, 256);
+		// cout << "marker = " << marker;
+		// cout << "vale = " << value << endl;
 		SetParameter(marker, value, nevents, maxPars, nparticle_range, etarange, ptrange, phirange, charge, types, replace);
 	}
 }

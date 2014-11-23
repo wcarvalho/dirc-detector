@@ -60,7 +60,9 @@ int main(int argc, char** argv)
 	{
 		// if (ev == 10) {break;}
 		cout << "Event = " << ev << endl;
-	  Printer *printer = new Printer();
+	  Printer p_np;
+	  Printer* printer = &p_np;
+	  
 		events->GetEntry(ev);
 	  output->GetEntry(ev);
 
@@ -108,7 +110,6 @@ int main(int argc, char** argv)
 	  }
 	  A = printer;
 		THists -> Fill();
-		delete printer;
 	}
 
 wf.cd();

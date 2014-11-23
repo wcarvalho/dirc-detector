@@ -28,7 +28,7 @@ void Printer::PrintTH1D(unsigned int par)
   f.Close();
 
   string temp_f = filename;
-  temp_f.append("_1D.png");
+  temp_f.append("_1D.pdf");
 	c.Print(temp_f.c_str());  
 
 }
@@ -43,7 +43,7 @@ void Printer::PrintTH2D(unsigned int par)
   h2.Draw("colz");
   
   string temp_f = filename;
-  temp_f.append("_2D.png");
+  temp_f.append("_2D.pdf");
 	c.Print(temp_f.c_str());  
 
 }

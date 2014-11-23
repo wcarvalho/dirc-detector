@@ -100,7 +100,6 @@ int main(int argc, char** argv)
   	f.Int(nparticle_range[0], nparticle_range[1], nparticles);
   	pars.clear(); pars2.clear();
   	passes=0;
-  	
 	if(ai.custom_set_given){
 		TakeInParameters(ai.custom_set_arg, nevents, maxPars, nparticle_range, etarange, ptrange, phirange, charge, types, replace);
 		maxPars = maxPars_default;
@@ -111,7 +110,7 @@ int main(int argc, char** argv)
 		charge = charge_default;
 		types = tempP.types;
 	}
-
+	cout << "replace = " << replace << endl;
 	if (!replace)
 	  	pars = generate(nparticles, gPar, d, maxPars, print);
   	

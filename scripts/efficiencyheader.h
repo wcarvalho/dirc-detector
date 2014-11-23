@@ -187,16 +187,25 @@ void FillHist(TH1D &H, vector< pair<int, pair <Particle, TrackRecon> > > const &
 
 
 
-TGraphAsymmErrors graphASymm(TCanvas &c, double low, double hi, double nbins, vector< pair<int, pair <Particle, TrackRecon> > > const & Num, vector< pair<int, pair <Particle, TrackRecon> > > const & Den, int Case, vector< double > range, bool &makegraph, bool print){
+TGraphAsymmErrors graphASymm(TCanvas &c, double low, double hi, double nbins, vector< pair<int, pair <Particle, TrackRecon> > > const & Num, vector< pair<int, pair <Particle, TrackRecon> > > const & Den, int Case, vector< double > range, bool &makegraph, bool print, string graph_name){
 
 	TH1D NumHist("Num", "Num", nbins, low, hi);
-	TH1D DenHist("Den", "Den", nbins, low, hi);
+	string numfile = appendStrings(graph_name, "_Num.root");
 	
+	TH1D DenHist("Den", "Den", nbins, low, hi);
+	string denfile = appendStrings(graph_name, "_Den.root");
+
 	if (print) cout << "Numerator:\n";
 	FillHist(NumHist, Num, Case, range, print);
+	TFile f1(numfile.c_str(), "recreate");
+	NumHist.Write();
+	f1.Close();
 	
 	if (print) cout << "Denominator:\n";
 	FillHist(DenHist, Den, Case, range, print);
+	TFile f2(denfile.c_str(), "recreate");
+	DenHist.Write();
+	f2.Close();
 
 	TGraphAsymmErrors graph;
 	
@@ -266,7 +275,8 @@ void makePlots(TCanvas &C, vector< vector <double> > &bounds, string xtitle, str
 
 		string filename = GraphFileName(data_dir, graph_dir, matchgraph_filebase, xtitle, filenumber, ".pdf");
 		string rootfilename = GraphFileName(data_dir, graph_dir, matchgraph_filebase, xtitle,filenumber, ".root");
-		TGraphAsymmErrors match_graph = graphASymm(C, histlow, histhi, nbins, numMatch, denMatch, Case, bounds[i], makegraph, print);
+		string graph_name = GraphFileName(data_dir, graph_dir, matchgraph_filebase, xtitle,filenumber, "");
+		TGraphAsymmErrors match_graph = graphASymm(C, histlow, histhi, nbins, numMatch, denMatch, Case, bounds[i], makegraph, print, graph_name);
 		match_graph.SetName(GraphFileName("", "", matchgraph_filebase, xtitle,filenumber, "").c_str());
 		GraphXYTitle(match_graph, "Efficiency for Identifying Electrons", xaxis.c_str(), "Efficiency");
 		
@@ -283,7 +293,8 @@ void makePlots(TCanvas &C, vector< vector <double> > &bounds, string xtitle, str
 		
 		filename = GraphFileName(data_dir, graph_dir, falsegraph_filebase, xtitle,filenumber, ".pdf");
 		rootfilename = GraphFileName(data_dir, graph_dir, falsegraph_filebase, xtitle,filenumber, ".root");
-		TGraphAsymmErrors false_graph = graphASymm(C, histlow, histhi, nbins, numFalse, denFalse, Case, bounds[i], makegraph, print);
+		graph_name = GraphFileName(data_dir, graph_dir, falsegraph_filebase, xtitle,filenumber, "");
+		TGraphAsymmErrors false_graph = graphASymm(C, histlow, histhi, nbins, numFalse, denFalse, Case, bounds[i], makegraph, print, graph_name);
 		false_graph.SetName(GraphFileName(data_dir, graph_dir, falsegraph_filebase, xtitle,filenumber, "").c_str());
 		
 		GraphXYTitle(false_graph, "False Positive for Identifying Electrons", xaxis.c_str(), "False Positive");
