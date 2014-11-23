@@ -1,0 +1,132 @@
+Smearing and plot generation are accomplished by scripts in the "scripts" directory. Copy this directory into whatever directory you are generating data or set the settings  of these scripts (via textfile options) to point to the directory(ies) in which you are generating data.
+
+Generating Particles
+	- To generate particles, run the "generator" executable. You can control
+		- the number of events by setting the 'e' command line option
+		- the maximum number of particles per event by setting the 'm' command line option
+		- the output filename by setting the 'c' command line option (by default generator.root)
+		- the directory by setting the 'D' command line option (must end in '/')
+		
+		- Additionally you can pass the 'c' command line option for custom event options. (Number of events is still set by 'e'). This option takes in a text file with the following keys and values
+			- maxpars : the maximum number of particles accepted by the DIRC
+				- option: int number
+			- nparticles : the number of particles generated from a beam collision
+				- options: two int numbers. lower bound and upper bound. ex: 0, 10000
+			- eta: the eta range
+				- options: two double numbers. lower bound and upper bound. ex: -.5, .5
+			- pt: pt range
+				- options: two double numbers. lower bound and upper bound. ex: .2, .3
+			- phi: range for phi angle at which particles travel towards detector
+				- options: two double numbers. lower bound and upper bound. Can accept a number times pi. ex: 0, 1.5pi
+			- charge: the charge of the particles
+				options: 0 makes the charge randomly negative or positive. -1 corresponds to a negative charge and +1 to a positive charge.
+			- types: what type of particles will be "thrown"
+				-option: pion, kaon, electron, muon, proton
+			- if "replace" is a line in the file, then only particles generated with these settings will be output. If it is not, these particles will be appended to the end of list of particles with a more random distribution
+
+Generating Photons
+	- To generate a set of photons, run the "simulator" executable. You must provide a particle file via the input 'i' command line option. You can control
+		- the writefile of the photons by setting the command line option 'W' (by default stored as simulator.root) 
+			- will add an option to control the cheat data (cheat.root) writefile.
+		- the directory in which files are saved by setting the command line option 'D' (cheat data by default is stored in the location chosen for the non-cheat data [simulator.root])
+		- printing
+			- 'V' : turns on extra printing (currently just the percent that passed)
+			- 'q' : turns off all printing
+			- 'p' : turns on printing of total number of photons released each event
+
+Smear Photons
+	- To smear the photons you will need to compile the "Smearer.cpp" script
+	- There is a textfile labeled "smearsettings.txt" with 3 options (one option per line)
+		- line 1: the full or relative path of the photon data (simulator.root) is
+		- line 2: the full or relative path of the smeared photon data file
+		- line 3: the value by which the photon data will be smeared
+
+Reconstructing Particles
+	- To reconstruct the photon you must run three executables in order (this will later be one step)
+
+		1st: the "reconstructor" executable. You must supply
+			- the photon data file (normally "simulator.root") via command line option 'i' (required)
+		- You can control
+			- the directory with the command line option 'D'
+			- the output file name with command line option 'w'
+
+		2nd: the "histmaker" executable. You must supply
+			- the photon data file (normally "simulator.root") via command line option 'i' (required)
+			- the reconstruction data file (normally "reconstructor.root") via command line option 'I' (required)
+
+		3nd: the "fitter" executable. You must supply
+			- the histogram data file (normally "analysis.root") via command line option 'i' (required)
+			- the photon data file (normally "simulator.root") via command line option 'I' (required)
+		- You can change the resolution used for fitting with the command line option 'S'
+
+Getting Plots
+	- To generate plots you will need to compile the efficiency.cpp script
+	- It accepts settings from three textfiles: "directories", "momentum", "multiplicity"
+	directories:
+		- line 1: full or relative path of cheat data ("cheat.root")
+		following paths are relative to path of cheat data
+		- line 2: path of fit data ("fitresults.root")
+		- line 3: directory in which plots will be stored
+		- line 4: directory in which fits will be stored
+	momentum:
+		- each line is a comma-delimited momentum slice setting for a plot
+	multiplicty:
+		- each line is a comma-delimited multiplicity slice setting for a plot
+	settings (two options per line):
+		- line 1, option 1: delta sigma threshold
+		- line 1, option 2: number of momentum bins used in plots
+		- line 2, option 1: boolean for printing (1=true, 0=false)
+		- line 2, option 1: boolean for making fit plots (1=true, 0=false)
+		- line 3: the event range over which fits will be printed (ex: 10, 23 prints fits for events 10 to 23, inclusive)
+
+
+
+
+Full Example Run in directory "example":
+
+generator -e 5 -m 10
+##	- outputs: example/generator.root
+
+simulator -i generator.root 
+##	- outputs: example/simulator.root	
+
+cd example/scripts/
+## in smearsettings set:
+- line 1: ../simulator.root
+- line 2: ../simulator04.root
+- line 3: .04 
+##
+./smearer 
+cd ..
+
+reconstructor -i simulator.root 
+##	- outputs: example/reconstructor.root	
+
+histmaker -i simulator.root -I reconstructor.root 
+##	- outputs: example/analysis.root	
+
+fitter -i analysis.root -I simulator.root 
+##	- outputs: example/fitresults.root	
+
+cd scripts/
+## 	directories:
+		- line 1: ../cheat.root
+		- line 2: ./
+		- line 3: plots/
+		- line 4: fits/
+	momentum:
+		- line 1: 0, .5
+		- line 2: .5, 2
+		- line 3: 4, 5
+	multiplicty:
+		- line 1: 1, 15
+		- line 2: 16, 30
+		- line 3: 1, 20
+	settings
+		- line 1: 5, 100
+		- line 2: 0, 1
+		- line 3: 0, 40
+##
+./eff
+##	- outputs: example/fits/*fit histograms*	
+##	- outputs: example/plots/*Efficiency and False Positive Graphs*
