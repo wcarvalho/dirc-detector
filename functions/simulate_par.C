@@ -94,10 +94,9 @@ void Simulate::GotoWall(string Output)
 void Simulate::TravelDistance(double D)
 {
 	double dist[3];
-	dist[0] = D*cos(Theta);
-	dist[1] = D*sin(Theta)*sin(Phi);
-	dist[2] = D*sin(Theta)*cos(Phi);
-
+	dist[0] = D*sin(Theta)*sin(Phi);
+	dist[1] = D*sin(Theta)*cos(Phi);
+	dist[2] = D*cos(Theta);
 	for (unsigned int i = 0; i<3;i++)
 	{
 		coord[i] = coord[i] + dist[i];

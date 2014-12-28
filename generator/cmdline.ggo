@@ -5,10 +5,11 @@ By Wilka Carvalho <wcarvalho92@gmail.com>"
 # Options
 option "events" e "Number of events" int optional
 option "particles" P "Takes in two arguments for the range in the number of particles per event" int optional multiple
-option "maxpars" m "Maximum number of particles to intersect DirC (for anlytical-control puposes)" int optional
-option "random" r "Value for seed of random numbers" int optional
+option "maxpars" m "maximum number of particles to intersect DirC (for anlytical-control puposes)" int optional
+option "random" r "value for seed of random numbers" int optional
 option "filename" f "root filename (relative or absolute path). By default written within directory as generator.root" string optional
-option "verbose" v "Print data" optional 
+option "verbose" v "print data" optional 
+option "quiet" q "suppress all printing" optional
 option "dirc-properties" d "file with dirc properties (in this order): Length, Width, Height, Radial Distance, Magnetic Field" string optional 
 option "custom-set" c "Takes a filename with parameters for the experiment including number of particles, range in eta, pt, and phi, and particle charge and type" string optional
 option "Directory" D "Sets the directory in which files will be saved (by default saves in current directory" string optional

@@ -61,16 +61,18 @@ struct gengetopt_args_info
   char * writefile_arg;	/**< @brief file to write identification information to.  */
   char * writefile_orig;	/**< @brief file to write identification information to original value given at command line.  */
   const char *writefile_help; /**< @brief file to write identification information to help description.  */
-  const char *New_Batch_help; /**< @brief clear batch file help description.  */
-  char * Batch_arg;	/**< @brief defines the Batch file (normally '../../root_files/fits.txt').  */
-  char * Batch_orig;	/**< @brief defines the Batch file (normally '../../root_files/fits.txt') original value given at command line.  */
-  const char *Batch_help; /**< @brief defines the Batch file (normally '../../root_files/fits.txt') help description.  */
   double Smear_arg;	/**< @brief the smearing applied to the fitting (used for width of gaussian).  */
   char * Smear_orig;	/**< @brief the smearing applied to the fitting (used for width of gaussian) original value given at command line.  */
   const char *Smear_help; /**< @brief the smearing applied to the fitting (used for width of gaussian) help description.  */
   char * graph_prefix_arg;	/**< @brief directory where graphs will be stored.  */
   char * graph_prefix_orig;	/**< @brief directory where graphs will be stored original value given at command line.  */
   const char *graph_prefix_help; /**< @brief directory where graphs will be stored help description.  */
+  int expected_photons_case_arg;	/**< @brief case 1: look-up table. case 2: riemann sum calculation. (default='1').  */
+  char * expected_photons_case_orig;	/**< @brief case 1: look-up table. case 2: riemann sum calculation. original value given at command line.  */
+  const char *expected_photons_case_help; /**< @brief case 1: look-up table. case 2: riemann sum calculation. help description.  */
+  char * LookUpTable_arg;	/**< @brief file for look-up table (default='LookUpTable').  */
+  char * LookUpTable_orig;	/**< @brief file for look-up table original value given at command line.  */
+  const char *LookUpTable_help; /**< @brief file for look-up table help description.  */
   
   unsigned int help_given ;	/**< @brief Whether help was given.  */
   unsigned int version_given ;	/**< @brief Whether version was given.  */
@@ -82,10 +84,10 @@ struct gengetopt_args_info
   unsigned int make_given ;	/**< @brief Whether make was given.  */
   unsigned int particle_info_modified_given ;	/**< @brief Whether particle-info-modified was given.  */
   unsigned int writefile_given ;	/**< @brief Whether writefile was given.  */
-  unsigned int New_Batch_given ;	/**< @brief Whether New-Batch was given.  */
-  unsigned int Batch_given ;	/**< @brief Whether Batch was given.  */
   unsigned int Smear_given ;	/**< @brief Whether Smear was given.  */
   unsigned int graph_prefix_given ;	/**< @brief Whether graph-prefix was given.  */
+  unsigned int expected_photons_case_given ;	/**< @brief Whether expected-photons-case was given.  */
+  unsigned int LookUpTable_given ;	/**< @brief Whether LookUpTable was given.  */
 
 } ;
 

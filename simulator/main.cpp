@@ -30,7 +30,7 @@ int main(int argc, char** argv)
 	//_______Declarations__________
 	bool print = ai.verbose_given;
 	bool Append = ai.Append_given;
-	bool quiet = ai.quiet_given;
+  bool quiet = ai.quiet_given; if (quiet) print = !quiet;
 	bool write = !ai.file_write_off_given;
 	Detector *d = 0;
 	ParticleEvent *ParEvent = 0;

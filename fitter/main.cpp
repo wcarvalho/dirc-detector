@@ -12,9 +12,8 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-	// Case statement for my current function or to the function that alan gives
-	// void* fun = asjkajs(); 
-  // system("rm *.png");
+
+
 	gengetopt_args_info ai;  
 	if (cmdline_parser (argc, argv, &ai) != 0){ exit(1); }
 
@@ -22,29 +21,34 @@ int main(int argc, char** argv)
 	bool print = ai.verbose_given;
 	bool modified = ai.particle_info_modified_given;
 	bool writefile = ai.writefile_given;
-	bool NewBatch = ai.New_Batch_given;
 	double smear = .01;
 	string graphprefix = "";
- 	
+ 	int Case = 0;
+	double pi = TMath::Pi();
  	timeval t1, t2;
 	double time1 = 0;
 	double time2 = 0;
 	double fit_time=0.;
-	double lost_time=0.;
 
 	string analysisf = ai.input_analysis_arg;									// file with created histograms
 	string recf = ai.input_reconstruction_arg;									// file with particleOut data
 	string wf = "fitresults.root";							// file with results on identification 
-	string batch = "fits.txt";
-	
-	if(ai.Batch_given) batch = ai.Batch_arg;
+
+	double (*ExpectedNumberofPhotons)(double const&, double const&, double const&, double const&, double const&);
+
 	if(ai.Smear_given) smear = ai.Smear_arg;
 	if(ai.graph_prefix_given) graphprefix = ai.graph_prefix_arg;
 
-	if (NewBatch){
-		string cm = "rm ";
-		cm.append(batch);
-		system(cm.c_str());
+	if(ai.expected_photons_case_given) Case = ai.expected_photons_case_arg;
+	switch(Case) {
+		case 1: // look-up table
+			cout << "LookUpTable\n";
+			ExpectedNumberofPhotons = &LookUpTableWrapper;
+		break;
+		case 2: // riemansum
+			cout << "RiemannSum\n";
+			ExpectedNumberofPhotons = &RiemannSum;
+		break;
 	}
 
 	if (modified){
@@ -129,18 +133,21 @@ int main(int argc, char** argv)
 
 			double travels = 0.;
 			
-			gettimeofday(&t1, NULL);
-			FindLostPhotons(P.X, P.Y, P.Theta, P.Phi, P.Eta, P.pt, d.Length, d.Width, d.Height, projectedpass, travels, print);
-			gettimeofday(&t2, NULL);
-			time1 = (double)(t1.tv_sec) + (double)(t1.tv_usec)/1.0e6;
-			time2 = (double)(t2.tv_sec) + (double)(t2.tv_usec)/1.0e6;
-			lost_time += (time2-time1);
+			// gettimeofday(&t1, NULL);
+			// FindLostPhotons(P.X, P.Y, P.Theta, P.Phi, P.Eta, P.pt, d.Length, d.Width, d.Height, projectedpass, travels, print);
+			// gettimeofday(&t2, NULL);
+			// time1 = (double)(t1.tv_sec) + (double)(t1.tv_usec)/1.0e6;
+			// time2 = (double)(t2.tv_sec) + (double)(t2.tv_usec)/1.0e6;
+			// lost_time += (time2-time1);
 
 
 			vector<TH1D> tempVector;
 			string defaultname = h1_p->GetName(); 
 
+			int tester = 0;
 			for(map<double, double>::iterator i = atm.begin(); i != atm.end(); ++i){
+				++tester;
+				// if (tester > 2) continue;
 				params.clear();
 				TCanvas c1("c1","c1",10,10,800,600);
 				TCanvas *c1_p = &c1;
@@ -161,11 +168,16 @@ int main(int argc, char** argv)
 			  time2 = (double)(t2.tv_sec) + (double)(t2.tv_usec)/1.0e6;
 			  fit_time += (time2-time1);
 
+		  	double ThetaBeam = 2*atan(exp(-P.Eta));
+				double momentum = P.pt/sin(ThetaBeam);
+			  double Beta = momentum/pow(( mass*mass + momentum*momentum ),.5);
 
-				double N = projectedpass[angle]*travels*P.PhotonsPercm;	// expected number of photons
+			  double N = ExpectedNumberofPhotons(P.X, P.Y, P.Theta, P.Phi, Beta);
+			  // cout << "Look Up Table N = " << N << endl;
+			  // cout << "RiemannSum N = " << RiemannSum(P.X, P.Y, P.Theta, P.Phi, Beta) << "\n\n";
+
 				d.get_Critical_Angle(1);
 				double pi2 = TMath::Pi()/2;
-				double &p = projectedpass[angle];
 				double Sigma = sqrt(N);
 				double nSigma = (abs(N-A))/Sigma;
 
@@ -183,11 +195,12 @@ int main(int argc, char** argv)
 				guess.Params.push_back(params);
 			}
 			Tracks.Recon.push_back(guess);
+			// cout << setfill ('-') << setw (30) << "\n\n";
 		}
 		tree.Fill();
 		Tracks.Recon.clear();
 	}
-			cout << "time for FindLostPhotons " << lost_time << endl;
+			// cout << "time for FindLostPhotons " << lost_time << endl;
 			cout << "time for Fitting " << fit_time << endl;
 	writef.cd();
 	writef.Write();

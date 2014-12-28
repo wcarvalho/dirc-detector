@@ -29,7 +29,7 @@ vector< vector< double > > filearray(string file){
 	vector< vector< double > > x; x.clear();
 	vector< double > temp; temp.clear();
 	
-	int size = 256;
+	int size = pow(2,5);
 	char val1[size];
 	char val2[size];
 
@@ -197,15 +197,15 @@ TGraphAsymmErrors graphASymm(TCanvas &c, double low, double hi, double nbins, ve
 
 	if (print) cout << "Numerator:\n";
 	FillHist(NumHist, Num, Case, range, print);
-	TFile f1(numfile.c_str(), "recreate");
-	NumHist.Write();
-	f1.Close();
+	// TFile f1(numfile.c_str(), "recreate");
+	// NumHist.Write();
+	// f1.Close();
 	
 	if (print) cout << "Denominator:\n";
 	FillHist(DenHist, Den, Case, range, print);
-	TFile f2(denfile.c_str(), "recreate");
-	DenHist.Write();
-	f2.Close();
+	// TFile f2(denfile.c_str(), "recreate");
+	// DenHist.Write();
+	// f2.Close();
 
 	TGraphAsymmErrors graph;
 	
@@ -273,7 +273,7 @@ void makePlots(TCanvas &C, vector< vector <double> > &bounds, string xtitle, str
 		ss << xtitle << "( " << parameter << " = [" << bounds[i][0] << " : " << bounds[i][1] << "] )";
 		string xaxis = ss.str();
 
-		string filename = GraphFileName(data_dir, graph_dir, matchgraph_filebase, xtitle, filenumber, ".pdf");
+		string filename = GraphFileName(data_dir, graph_dir, matchgraph_filebase, xtitle, filenumber, ".root");
 		string rootfilename = GraphFileName(data_dir, graph_dir, matchgraph_filebase, xtitle,filenumber, ".root");
 		string graph_name = GraphFileName(data_dir, graph_dir, matchgraph_filebase, xtitle,filenumber, "");
 		TGraphAsymmErrors match_graph = graphASymm(C, histlow, histhi, nbins, numMatch, denMatch, Case, bounds[i], makegraph, print, graph_name);
@@ -290,8 +290,7 @@ void makePlots(TCanvas &C, vector< vector <double> > &bounds, string xtitle, str
 		C.Clear();
 		makegraph = true;
 		if (print) cout << "-----False----\n";
-		
-		filename = GraphFileName(data_dir, graph_dir, falsegraph_filebase, xtitle,filenumber, ".pdf");
+		filename = GraphFileName(data_dir, graph_dir, falsegraph_filebase, xtitle,filenumber, ".root");
 		rootfilename = GraphFileName(data_dir, graph_dir, falsegraph_filebase, xtitle,filenumber, ".root");
 		graph_name = GraphFileName(data_dir, graph_dir, falsegraph_filebase, xtitle,filenumber, "");
 		TGraphAsymmErrors false_graph = graphASymm(C, histlow, histhi, nbins, numFalse, denFalse, Case, bounds[i], makegraph, print, graph_name);

@@ -13,18 +13,15 @@ int main(int argc, char** argv)
 	gengetopt_args_info ai;  
 	if (cmdline_parser (argc, argv, &ai) != 0){ exit(1); }
 
-	int i=0, j=0;
-  int input = 4;
   int beginning = 0;
   int last = 0;
   bool modified = ai.modified_particle_info_given;
   
   double pi = TMath::Pi();
   
-  Displayer disp;
-  Displayer disp_def;
   bool print = ai.verbose_given;
-	int checker = -1;
+  bool quiet = ai.quiet_given; if (quiet) print = !quiet;
+
   string rf_default = ai.input_arg;
   string wf_default = "reconstructor.root"; 
 	string rf = rf_default;
@@ -34,7 +31,6 @@ int main(int argc, char** argv)
   FileProperties readf_prop(rf);
   string directory = readf_prop.directory;
 
-	if (ai.event_given) checker = ai.event_arg;
   if (ai.last_given) last = ai.last_arg;
   if (modified)
   	modified_eventoutput_file = ai.modified_particle_info_arg;
@@ -71,29 +67,32 @@ int main(int argc, char** argv)
   //--------------------------------------------------
 	cout << "\nRECONSTRUCTOR\n";
 
-	disp.checker = checker;
-  for (i = 0; i < events->GetEntries(); i++)
+  for (unsigned int ev = 0; ev < events->GetEntries(); ++ev)
   {
-		cout << "Event " << i << "\n";
-    if (print == true)
-    {
-  		disp.Main = "yes"; disp.Action = "yes"; disp.Specific = "no"; disp.General = "yes"; disp.Data = "yes"; 
-  	}
-  	if (i != checker) disp = disp_def;
-	  events->GetEntry(i);
+		if (!quiet) cout << "Event " << ev << "\n";
+		events->GetEntry(ev);
 
-	  // cout << i <<"--------> problems is after this?\n";
+	  // remove all particles except for last particles determined by option 'l'
     if (ai.last_given){
       beginning = event_output->Particles.size() - last;
       if (beginning>0){
-	      for (unsigned j = 0; j < beginning; ++j)
+	      for (unsigned int j = 0; j < beginning; ++j)
 	      	event_output->Particles.erase(event_output->Particles.begin());
       }
     }
-    // cout << i <<"--------> problems is before this?\n";
-	  ReconstructEvent(reconstruction, event_output, disp);
-	  if ((print == true) && (reconstruction.Photons.size() == 0)) 
+	  ReconstructEvent(reconstruction, event_output, print);
+	  
+	  if (print && (reconstruction.Photons.size() == 0)) 
 	  	printf("\tEvent had no reconstructions");
+  	
+	  // create histograms
+
+	  // fit histograms
+
+
+
+
+
   	modified_event_output = event_output;
 	  if (modified)
 		  modified_events->Fill();
@@ -114,10 +113,9 @@ int main(int argc, char** argv)
 
 
   // modified_events->Print();
-  cout << "reconstruction file: " << wf << endl;
+  if (!quiet) cout << "reconstruction file: " << wf << endl;
   if (modified)
-
-	  cout << "modified particles file: " << modified_eventoutput_file << endl;
+  	if (!quiet) cout << "modified particles file: " << modified_eventoutput_file << endl;
 
   return 0;
 }

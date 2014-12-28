@@ -40,6 +40,7 @@ const char *gengetopt_args_info_help[] = {
   "  -D, --Directory=STRING        Sets the directory in which files will be saved\n                                  (by default saves in current directory",
   "  -n, --new                     runs all programs before it, i.e generator,\n                                  simulator",
   "  -v, --verbose                 print data",
+  "  -q, --quiet                   suppress all printing",
   "  -e, --event=INT               print data for specific event (starting at 0th\n                                  event)",
   "  -l, --last=INT                only reconstructs the last l particles",
   "  -m, --modified-particle-info=STRING\n                                output file for modified particle information\n                                  i.e removing some particles to only track the\n                                  remaining",
@@ -76,6 +77,7 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->Directory_given = 0 ;
   args_info->new_given = 0 ;
   args_info->verbose_given = 0 ;
+  args_info->quiet_given = 0 ;
   args_info->event_given = 0 ;
   args_info->last_given = 0 ;
   args_info->modified_particle_info_given = 0 ;
@@ -110,10 +112,11 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->Directory_help = gengetopt_args_info_help[3] ;
   args_info->new_help = gengetopt_args_info_help[4] ;
   args_info->verbose_help = gengetopt_args_info_help[5] ;
-  args_info->event_help = gengetopt_args_info_help[6] ;
-  args_info->last_help = gengetopt_args_info_help[7] ;
-  args_info->modified_particle_info_help = gengetopt_args_info_help[8] ;
-  args_info->write_file_help = gengetopt_args_info_help[9] ;
+  args_info->quiet_help = gengetopt_args_info_help[6] ;
+  args_info->event_help = gengetopt_args_info_help[7] ;
+  args_info->last_help = gengetopt_args_info_help[8] ;
+  args_info->modified_particle_info_help = gengetopt_args_info_help[9] ;
+  args_info->write_file_help = gengetopt_args_info_help[10] ;
   
 }
 
@@ -249,6 +252,8 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "new", 0, 0 );
   if (args_info->verbose_given)
     write_into_file(outfile, "verbose", 0, 0 );
+  if (args_info->quiet_given)
+    write_into_file(outfile, "quiet", 0, 0 );
   if (args_info->event_given)
     write_into_file(outfile, "event", args_info->event_orig, 0);
   if (args_info->last_given)
@@ -541,6 +546,7 @@ cmdline_parser_internal (
         { "Directory",	1, NULL, 'D' },
         { "new",	0, NULL, 'n' },
         { "verbose",	0, NULL, 'v' },
+        { "quiet",	0, NULL, 'q' },
         { "event",	1, NULL, 'e' },
         { "last",	1, NULL, 'l' },
         { "modified-particle-info",	1, NULL, 'm' },
@@ -548,7 +554,7 @@ cmdline_parser_internal (
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVi:D:nve:l:m:W:", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVi:D:nvqe:l:m:W:", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -608,6 +614,18 @@ cmdline_parser_internal (
               &(local_args_info.verbose_given), optarg, 0, 0, ARG_NO,
               check_ambiguity, override, 0, 0,
               "verbose", 'v',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'q':	/* suppress all printing.  */
+        
+        
+          if (update_arg( 0 , 
+               0 , &(args_info->quiet_given),
+              &(local_args_info.quiet_given), optarg, 0, 0, ARG_NO,
+              check_ambiguity, override, 0, 0,
+              "quiet", 'q',
               additional_error))
             goto failure;
         

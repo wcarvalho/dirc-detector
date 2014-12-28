@@ -51,6 +51,7 @@ struct gengetopt_args_info
   const char *Directory_help; /**< @brief Sets the directory in which files will be saved (by default saves in current directory help description.  */
   const char *new_help; /**< @brief runs all programs before it, i.e generator, simulator help description.  */
   const char *verbose_help; /**< @brief print data help description.  */
+  const char *quiet_help; /**< @brief suppress all printing help description.  */
   int event_arg;	/**< @brief print data for specific event (starting at 0th event).  */
   char * event_orig;	/**< @brief print data for specific event (starting at 0th event) original value given at command line.  */
   const char *event_help; /**< @brief print data for specific event (starting at 0th event) help description.  */
@@ -70,6 +71,7 @@ struct gengetopt_args_info
   unsigned int Directory_given ;	/**< @brief Whether Directory was given.  */
   unsigned int new_given ;	/**< @brief Whether new was given.  */
   unsigned int verbose_given ;	/**< @brief Whether verbose was given.  */
+  unsigned int quiet_given ;	/**< @brief Whether quiet was given.  */
   unsigned int event_given ;	/**< @brief Whether event was given.  */
   unsigned int last_given ;	/**< @brief Whether last was given.  */
   unsigned int modified_particle_info_given ;	/**< @brief Whether modified-particle-info was given.  */

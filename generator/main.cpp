@@ -15,6 +15,7 @@ int main(int argc, char** argv)
   double pi = TMath::Pi();
   int input = ai.random_given;													// number used for seed of TRandom3
   bool print = ai.verbose_given;																		// bool for printing purposes
+  bool quiet = ai.quiet_given; if (quiet) print = !quiet;
   bool replace = false;
   int nevents = 5;															// number of events
   string directory = "";
@@ -86,7 +87,7 @@ int main(int argc, char** argv)
 	gParticle *gPar_p = &gPar;
 	Particle *Par = gPar_p;											// inheritting properties of parent class for use with older libraries
 
-	cout << "\nGENERATOR\n";
+	if(!quiet) cout << "\nGENERATOR\n";
 	if (print == true )
 	{
 		printf("Detector Properties:\n");
@@ -96,7 +97,7 @@ int main(int argc, char** argv)
   //__________________generate________________
   for (unsigned int ev = 0; ev < nevents; ev++)
   {
-  	cout << "Event " << ev << endl;
+  	if(!quiet) cout << "Event " << ev << endl;
   	f.Int(nparticle_range[0], nparticle_range[1], nparticles);
   	pars.clear(); pars2.clear();
   	passes=0;
@@ -110,7 +111,7 @@ int main(int argc, char** argv)
 		charge = charge_default;
 		types = tempP.types;
 	}
-	cout << "replace = " << replace << endl;
+
 	if (!replace)
 	  	pars = generate(nparticles, gPar, d, maxPars, print);
   	
@@ -135,13 +136,13 @@ int main(int argc, char** argv)
 			pars = pars2;
 		}
 	}
-	cout << "\ttotal particles: " << pars.size() << endl;
+	if(!quiet) cout << "\ttotal particles: " << pars.size() << endl;
    	tree.Fill();
 
   }
 
   file.Write();
-	cout << "file: " << filename << endl;
+	if(!quiet) cout << "file: " << filename << endl;
   file.Close();
   
 

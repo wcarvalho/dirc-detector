@@ -28,9 +28,9 @@
 //------------------------------------------
 using namespace std;
 
-void ReconstructEvent(Reconstruction &reconstruction, GeneratorOut*& event_output, Displayer disp);
-void ReconstructTrack(Reconstruction &reconstruction, ParticleOut particle, vector<PhotonOut> photons, Displayer &disp);
-void Reconstructed_Reflections(vector<PhotonOut> &pho, double theta, double phi, Displayer disp);
-void XY_Reflections(vector<PhotonOut> &pho, Simulate sim, Displayer disp);
+void ReconstructEvent(Reconstruction &reconstruction, GeneratorOut*& event_output, bool print = false);
+void ReconstructTrack(Reconstruction &reconstruction, ParticleOut particle, vector<PhotonOut> photons, bool print = false);
+void Reconstructed_Reflections(vector<PhotonOut> &pho, double theta, double phi, bool print = false);
+// void XY_Reflections(vector<PhotonOut> &pho, Simulate sim, bool print = false);
 
 

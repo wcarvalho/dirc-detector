@@ -43,15 +43,16 @@ const char *gengetopt_args_info_help[] = {
   "  -m, --make                    print graphs of the fits made",
   "  -p, --particle-info-modified=STRING\n                                use a different file for to provide the\n                                  particle information",
   "  -w, --writefile=STRING        file to write identification information to",
-  "  -N, --New-Batch               clear batch file",
-  "  -B, --Batch=STRING            defines the Batch file (normally\n                                  '../../root_files/fits.txt')",
   "  -S, --Smear=DOUBLE            the smearing applied to the fitting (used for\n                                  width of gaussian)",
   "  -g, --graph-prefix=STRING     directory where graphs will be stored",
+  "  -e, --expected-photons-case[=INT]\n                                case 1: look-up table. case 2: riemann sum\n                                  calculation.  (default=`1')",
+  "  -L, --LookUpTable[=STRING]    file for look-up table  (default=`LookUpTable')",
     0
 };
 
 typedef enum {ARG_NO
   , ARG_STRING
+  , ARG_INT
   , ARG_DOUBLE
 } cmdline_parser_arg_type;
 
@@ -83,10 +84,10 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->make_given = 0 ;
   args_info->particle_info_modified_given = 0 ;
   args_info->writefile_given = 0 ;
-  args_info->New_Batch_given = 0 ;
-  args_info->Batch_given = 0 ;
   args_info->Smear_given = 0 ;
   args_info->graph_prefix_given = 0 ;
+  args_info->expected_photons_case_given = 0 ;
+  args_info->LookUpTable_given = 0 ;
 }
 
 static
@@ -103,11 +104,13 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->particle_info_modified_orig = NULL;
   args_info->writefile_arg = NULL;
   args_info->writefile_orig = NULL;
-  args_info->Batch_arg = NULL;
-  args_info->Batch_orig = NULL;
   args_info->Smear_orig = NULL;
   args_info->graph_prefix_arg = NULL;
   args_info->graph_prefix_orig = NULL;
+  args_info->expected_photons_case_arg = 1;
+  args_info->expected_photons_case_orig = NULL;
+  args_info->LookUpTable_arg = gengetopt_strdup ("LookUpTable");
+  args_info->LookUpTable_orig = NULL;
   
 }
 
@@ -126,10 +129,10 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->make_help = gengetopt_args_info_help[7] ;
   args_info->particle_info_modified_help = gengetopt_args_info_help[8] ;
   args_info->writefile_help = gengetopt_args_info_help[9] ;
-  args_info->New_Batch_help = gengetopt_args_info_help[10] ;
-  args_info->Batch_help = gengetopt_args_info_help[11] ;
-  args_info->Smear_help = gengetopt_args_info_help[12] ;
-  args_info->graph_prefix_help = gengetopt_args_info_help[13] ;
+  args_info->Smear_help = gengetopt_args_info_help[10] ;
+  args_info->graph_prefix_help = gengetopt_args_info_help[11] ;
+  args_info->expected_photons_case_help = gengetopt_args_info_help[12] ;
+  args_info->LookUpTable_help = gengetopt_args_info_help[13] ;
   
 }
 
@@ -223,11 +226,12 @@ cmdline_parser_release (struct gengetopt_args_info *args_info)
   free_string_field (&(args_info->particle_info_modified_orig));
   free_string_field (&(args_info->writefile_arg));
   free_string_field (&(args_info->writefile_orig));
-  free_string_field (&(args_info->Batch_arg));
-  free_string_field (&(args_info->Batch_orig));
   free_string_field (&(args_info->Smear_orig));
   free_string_field (&(args_info->graph_prefix_arg));
   free_string_field (&(args_info->graph_prefix_orig));
+  free_string_field (&(args_info->expected_photons_case_orig));
+  free_string_field (&(args_info->LookUpTable_arg));
+  free_string_field (&(args_info->LookUpTable_orig));
   
   
 
@@ -278,14 +282,14 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "particle-info-modified", args_info->particle_info_modified_orig, 0);
   if (args_info->writefile_given)
     write_into_file(outfile, "writefile", args_info->writefile_orig, 0);
-  if (args_info->New_Batch_given)
-    write_into_file(outfile, "New-Batch", 0, 0 );
-  if (args_info->Batch_given)
-    write_into_file(outfile, "Batch", args_info->Batch_orig, 0);
   if (args_info->Smear_given)
     write_into_file(outfile, "Smear", args_info->Smear_orig, 0);
   if (args_info->graph_prefix_given)
     write_into_file(outfile, "graph-prefix", args_info->graph_prefix_orig, 0);
+  if (args_info->expected_photons_case_given)
+    write_into_file(outfile, "expected-photons-case", args_info->expected_photons_case_orig, 0);
+  if (args_info->LookUpTable_given)
+    write_into_file(outfile, "LookUpTable", args_info->LookUpTable_orig, 0);
   
 
   i = EXIT_SUCCESS;
@@ -416,6 +420,11 @@ cmdline_parser_required2 (struct gengetopt_args_info *args_info, const char *pro
   
   
   /* checks for dependences among options */
+  if (args_info->LookUpTable_given && ! args_info->expected_photons_case_given)
+    {
+      fprintf (stderr, "%s: '--LookUpTable' ('-L') option depends on option 'expected-photons-case'%s\n", prog_name, (additional_error ? additional_error : ""));
+      error_occurred = 1;
+    }
 
   return error_occurred;
 }
@@ -1078,6 +1087,9 @@ int update_arg(void *field, char **orig_field,
     val = possible_values[found];
 
   switch(arg_type) {
+  case ARG_INT:
+    if (val) *((int *)field) = strtol (val, &stop_char, 0);
+    break;
   case ARG_DOUBLE:
     if (val) *((double *)field) = strtod (val, &stop_char);
     break;
@@ -1095,6 +1107,7 @@ int update_arg(void *field, char **orig_field,
 
   /* check numeric conversion */
   switch(arg_type) {
+  case ARG_INT:
   case ARG_DOUBLE:
     if (val && !(stop_char && *stop_char == '\0')) {
       fprintf(stderr, "%s: invalid numeric value: %s\n", package_name, val);
@@ -1177,10 +1190,10 @@ cmdline_parser_internal (
         { "make",	0, NULL, 'm' },
         { "particle-info-modified",	1, NULL, 'p' },
         { "writefile",	1, NULL, 'w' },
-        { "New-Batch",	0, NULL, 'N' },
-        { "Batch",	1, NULL, 'B' },
         { "Smear",	1, NULL, 'S' },
         { "graph-prefix",	1, NULL, 'g' },
+        { "expected-photons-case",	2, NULL, 'e' },
+        { "LookUpTable",	2, NULL, 'L' },
         { 0,  0, 0, 0 }
       };
 
@@ -1189,7 +1202,7 @@ cmdline_parser_internal (
       custom_opterr = opterr;
       custom_optopt = optopt;
 
-      c = custom_getopt_long (argc, argv, "hVi:I:D:nvmp:w:NB:S:g:", long_options, &option_index);
+      c = custom_getopt_long (argc, argv, "hVi:I:D:nvmp:w:S:g:e::L::", long_options, &option_index);
 
       optarg = custom_optarg;
       optind = custom_optind;
@@ -1306,30 +1319,6 @@ cmdline_parser_internal (
             goto failure;
         
           break;
-        case 'N':	/* clear batch file.  */
-        
-        
-          if (update_arg( 0 , 
-               0 , &(args_info->New_Batch_given),
-              &(local_args_info.New_Batch_given), optarg, 0, 0, ARG_NO,
-              check_ambiguity, override, 0, 0,
-              "New-Batch", 'N',
-              additional_error))
-            goto failure;
-        
-          break;
-        case 'B':	/* defines the Batch file (normally '../../root_files/fits.txt').  */
-        
-        
-          if (update_arg( (void *)&(args_info->Batch_arg), 
-               &(args_info->Batch_orig), &(args_info->Batch_given),
-              &(local_args_info.Batch_given), optarg, 0, 0, ARG_STRING,
-              check_ambiguity, override, 0, 0,
-              "Batch", 'B',
-              additional_error))
-            goto failure;
-        
-          break;
         case 'S':	/* the smearing applied to the fitting (used for width of gaussian).  */
         
         
@@ -1350,6 +1339,30 @@ cmdline_parser_internal (
               &(local_args_info.graph_prefix_given), optarg, 0, 0, ARG_STRING,
               check_ambiguity, override, 0, 0,
               "graph-prefix", 'g',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'e':	/* case 1: look-up table. case 2: riemann sum calculation..  */
+        
+        
+          if (update_arg( (void *)&(args_info->expected_photons_case_arg), 
+               &(args_info->expected_photons_case_orig), &(args_info->expected_photons_case_given),
+              &(local_args_info.expected_photons_case_given), optarg, 0, "1", ARG_INT,
+              check_ambiguity, override, 0, 0,
+              "expected-photons-case", 'e',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'L':	/* file for look-up table.  */
+        
+        
+          if (update_arg( (void *)&(args_info->LookUpTable_arg), 
+               &(args_info->LookUpTable_orig), &(args_info->LookUpTable_given),
+              &(local_args_info.LookUpTable_given), optarg, 0, "LookUpTable", ARG_STRING,
+              check_ambiguity, override, 0, 0,
+              "LookUpTable", 'L',
               additional_error))
             goto failure;
         

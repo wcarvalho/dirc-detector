@@ -7,6 +7,7 @@ option "input" i "path of particle-generated data" string
 option "Directory" D "Sets the directory in which files will be saved (by default saves in current directory" string optional
 option "new" n "runs all programs before it, i.e generator, simulator" optional
 option "verbose" v "print data" optional
+option "quiet" q "suppress all printing" optional
 option "event" e "print data for specific event (starting at 0th event)" int optional
 option "last" l "only reconstructs the last l particles" int optional
 option "modified-particle-info" m "output file for modified particle information i.e removing some particles to only track the remaining" string optional

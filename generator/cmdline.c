@@ -38,10 +38,11 @@ const char *gengetopt_args_info_help[] = {
   "  -V, --version                 Print version and exit",
   "  -e, --events=INT              Number of events",
   "  -P, --particles=INT           Takes in two arguments for the range in the\n                                  number of particles per event",
-  "  -m, --maxpars=INT             Maximum number of particles to intersect DirC\n                                  (for anlytical-control puposes)",
-  "  -r, --random=INT              Value for seed of random numbers",
+  "  -m, --maxpars=INT             maximum number of particles to intersect DirC\n                                  (for anlytical-control puposes)",
+  "  -r, --random=INT              value for seed of random numbers",
   "  -f, --filename=STRING         root filename (relative or absolute path). By\n                                  default written within directory as\n                                  generator.root",
-  "  -v, --verbose                 Print data",
+  "  -v, --verbose                 print data",
+  "  -q, --quiet                   turns off all printing",
   "  -d, --dirc-properties=STRING  file with dirc properties (in this order):\n                                  Length, Width, Height, Radial Distance,\n                                  Magnetic Field",
   "  -c, --custom-set=STRING       Takes a filename with parameters for the\n                                  experiment including number of particles,\n                                  range in eta, pt, and phi, and particle\n                                  charge and type",
   "  -D, --Directory=STRING        Sets the directory in which files will be saved\n                                  (by default saves in current directory",
@@ -79,6 +80,7 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->random_given = 0 ;
   args_info->filename_given = 0 ;
   args_info->verbose_given = 0 ;
+  args_info->quiet_given = 0 ;
   args_info->dirc_properties_given = 0 ;
   args_info->custom_set_given = 0 ;
   args_info->Directory_given = 0 ;
@@ -119,9 +121,10 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->random_help = gengetopt_args_info_help[5] ;
   args_info->filename_help = gengetopt_args_info_help[6] ;
   args_info->verbose_help = gengetopt_args_info_help[7] ;
-  args_info->dirc_properties_help = gengetopt_args_info_help[8] ;
-  args_info->custom_set_help = gengetopt_args_info_help[9] ;
-  args_info->Directory_help = gengetopt_args_info_help[10] ;
+  args_info->quiet_help = gengetopt_args_info_help[8] ;
+  args_info->dirc_properties_help = gengetopt_args_info_help[9] ;
+  args_info->custom_set_help = gengetopt_args_info_help[10] ;
+  args_info->Directory_help = gengetopt_args_info_help[11] ;
   
 }
 
@@ -316,6 +319,8 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "filename", args_info->filename_orig, 0);
   if (args_info->verbose_given)
     write_into_file(outfile, "verbose", 0, 0 );
+  if (args_info->quiet_given)
+    write_into_file(outfile, "quiet", 0, 0 );
   if (args_info->dirc_properties_given)
     write_into_file(outfile, "dirc-properties", args_info->dirc_properties_orig, 0);
   if (args_info->custom_set_given)
@@ -872,13 +877,14 @@ cmdline_parser_internal (
         { "random",	1, NULL, 'r' },
         { "filename",	1, NULL, 'f' },
         { "verbose",	0, NULL, 'v' },
+        { "quiet",	0, NULL, 'q' },
         { "dirc-properties",	1, NULL, 'd' },
         { "custom-set",	1, NULL, 'c' },
         { "Directory",	1, NULL, 'D' },
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVe:P:m:r:f:vd:c:D:", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVe:P:m:r:f:vqd:c:D:", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -915,7 +921,7 @@ cmdline_parser_internal (
             goto failure;
         
           break;
-        case 'm':	/* Maximum number of particles to intersect DirC (for anlytical-control puposes).  */
+        case 'm':	/* maximum number of particles to intersect DirC (for anlytical-control puposes).  */
         
         
           if (update_arg( (void *)&(args_info->maxpars_arg), 
@@ -927,7 +933,7 @@ cmdline_parser_internal (
             goto failure;
         
           break;
-        case 'r':	/* Value for seed of random numbers.  */
+        case 'r':	/* value for seed of random numbers.  */
         
         
           if (update_arg( (void *)&(args_info->random_arg), 
@@ -951,7 +957,7 @@ cmdline_parser_internal (
             goto failure;
         
           break;
-        case 'v':	/* Print data.  */
+        case 'v':	/* print data.  */
         
         
           if (update_arg( 0 , 
@@ -959,6 +965,18 @@ cmdline_parser_internal (
               &(local_args_info.verbose_given), optarg, 0, 0, ARG_NO,
               check_ambiguity, override, 0, 0,
               "verbose", 'v',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'q':	/* turns off all printing.  */
+        
+        
+          if (update_arg( 0 , 
+               0 , &(args_info->quiet_given),
+              &(local_args_info.quiet_given), optarg, 0, 0, ARG_NO,
+              check_ambiguity, override, 0, 0,
+              "quiet", 'q',
               additional_error))
             goto failure;
         

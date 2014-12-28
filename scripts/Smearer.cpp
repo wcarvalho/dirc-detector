@@ -22,16 +22,16 @@ int main(){
 	TTree *t2 = &outputTree;
 	t2->Branch("simEvent", &event_output);
 
-	cout << "\nSMEARER: smearing " << smear << endl;
+	// cout << "\nSMEARER: smearing " << smear << endl;
 	// iterate over events
 	for (unsigned int ev = 0; ev < t1->GetEntries(); ++ev){
-		cout << "Event " << ev << endl;
+		// cout << "Event " << ev << endl;
 		t1->GetEntry(ev);
 		t2->GetEntry(ev);
 
 		// for each event, iterate over the photons
 		vector<PhotonOut> &Photons = event_output->Photons;
-		cout << "\tPhotons " << Photons.size() << endl;
+		// cout << "\tPhotons " << Photons.size() << endl;
 		for (unsigned int pho = 0; pho < Photons.size(); ++pho){
 			double &theta = Photons.at(pho).Theta;
 			double &phi = Photons.at(pho).Phi;
@@ -49,5 +49,5 @@ int main(){
 	f2.cd();
 	f2.Write();
 	f2.Close();
-	cout << "file: " << outputfile << endl;
+	// cout << "file: " << outputfile << endl;
 }

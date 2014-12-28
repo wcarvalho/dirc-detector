@@ -23,7 +23,9 @@ void Printer::PrintTH1D(unsigned int par)
   h1.SetYTitle("Entries");
   h1.Draw();
   
-  TFile f(h1.GetName(), "recreate");
+  string hist_rootname = h1.GetName();
+  hist_rootname.append(".root");
+  TFile f(hist_rootname.c_str(), "recreate");
   h1.Write();
   f.Close();
 

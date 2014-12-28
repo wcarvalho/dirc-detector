@@ -1,6 +1,6 @@
 b=build
 original='../..'
-make="make install"
+make="make -j 4 install"
 
 cd generator
 pwd

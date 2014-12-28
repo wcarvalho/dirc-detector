@@ -11,7 +11,7 @@ option "verbose" v "print data" optional
 option "make" m "print graphs of the fits made" optional
 option "particle-info-modified" p "use a different file for to provide the particle information" string optional
 option "writefile" w "file to write identification information to" string optional
-option "New-Batch" N "clear batch file" optional
-option "Batch" B "defines the Batch file (normally '../../root_files/fits.txt')" string optional
 option "Smear" S "the smearing applied to the fitting (used for width of gaussian)" double optional
 option "graph-prefix" g "directory where graphs will be stored" string optional
+option "expected-photons-case" e "case 1: look-up table. case 2: riemann sum calculation." argoptional int optional default="1" 
+option "LookUpTable" L "file for look-up table" string default="LookUpTable" argoptional optional dependon="expected-photons-case"

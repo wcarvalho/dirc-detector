@@ -18,6 +18,7 @@ fitter_SOURCES = \
 	main.cpp \
 	cmdline.cpp \
 	FindLostPhotons.C \
+	LookUpTable.cpp \
 ##=====================================
 ##
 ##					Mutual functions

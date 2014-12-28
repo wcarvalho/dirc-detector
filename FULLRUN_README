@@ -1,6 +1,7 @@
 Smearing and plot generation are accomplished by scripts in the "scripts" directory. Copy this directory into whatever directory you are generating data or set the settings  of these scripts (via textfile options) to point to the directory(ies) in which you are generating data.
-
+----------------------------
 Generating Particles
+----------------------------
 	- To generate particles, run the "generator" executable. You can control
 		- the number of events by setting the 'e' command line option
 		- the maximum number of particles per event by setting the 'm' command line option
@@ -25,8 +26,9 @@ Generating Particles
 			- if "replace" is a line in the file, then only particles generated with these settings will be output. If it is not, these particles will be appended to the end of list of particles with a more random distribution
 
 	outputs: generator.root
-
+----------------------------
 Generating Photons
+----------------------------
 	- To generate a set of photons, run the "simulator" executable. You must provide a particle file via the input 'i' command line option. You can control
 		- the writefile of the photons by setting the command line option 'W' (by default stored as simulator.root) 
 			- will add an option to control the cheat data (cheat.root) writefile.
@@ -37,15 +39,17 @@ Generating Photons
 			- 'p' : turns on printing of total number of photons released each event
 
 	outputs: simulator.root
-
+----------------------------
 Smear Photons
+----------------------------
 	- To smear the photons you will need to compile the "Smearer.cpp" script
 	- There is a textfile labeled "smearsettings.txt" with 3 options (one option per line)
 		- line 1: the full or relative path of the photon data (simulator.root) is
 		- line 2: the full or relative path of the smeared photon data file
 		- line 3: the value by which the photon data will be smeared
-
+----------------------------
 Reconstructing Particles
+----------------------------
 	- To reconstruct the photon you must run three executables in order (this will later be one step)
 
 		1st: the "reconstructor" executable. You must supply
@@ -63,10 +67,13 @@ Reconstructing Particles
 		3nd: the "fitter" executable. You must supply
 			- the histogram data file (normally "analysis.root") via command line option 'i' (required)
 			- the photon data file (normally "simulator.root") via command line option 'I' (required)
-		- You can change the resolution used for fitting with the command line option 'S'
+			- You can change the resolution used for fitting with the command line option 'S'
+			- The method by which the expected number of photons is calculated is controlled by the command line option 'e'. It defaults to a Look Up Table, whose input file can be supplied via command line option 'L'. This defaults to file 'LookUpTable' in the current directory
+				Note: when you specify the argument at command line, please use = in case you use a long option, and avoid spaces if you use short option. For instance, if you would like to run calculated the expected number of photons via a riemman sum, use the following command line syntax: -e2 or --expected-photons-case=2, and NOT the following one -e 15 nor --expected-photons-case 15.
 		outputs: fitresults.root
-
+----------------------------
 Getting Plots
+----------------------------
 	- To generate plots you will need to compile the efficiency.cpp script
 	- It accepts settings from three textfiles: "directories", "momentum", "multiplicity"
 	directories:

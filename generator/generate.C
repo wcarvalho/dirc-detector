@@ -58,6 +58,6 @@ vector<Particle> generate(int nparticles, gParticle& gPar, Detector d, int maxPa
   		}
   	}
 
-  	cout << "\t" << pars.size() << " particles passed\n";
+  	// cout << "\t" << pars.size() << " particles passed\n";
   	return pars;
 }

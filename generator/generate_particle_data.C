@@ -35,8 +35,6 @@ void gParticle::genPT()
 
 void gParticle::genCharge()
 {
-	bool t = chargeMarker==0;
-	// cout << "chargeMarker = 0 " << t << endl;
 	if (chargeMarker < 0) Charge = -1;
 	if (chargeMarker > 0) Charge = 1;
 	if (chargeMarker == 0){

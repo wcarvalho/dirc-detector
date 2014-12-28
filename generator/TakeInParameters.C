@@ -47,56 +47,62 @@ void ReadFloats(double into[2], vector<string> from){
 }
 
 
-void SetParameter(char marker[256], char value[256], int& nevents, int& maxPars, int nparticle_range[2], double etarange[2], double ptrange[2], double phirange[2], double charge, vector<string> &types, bool& replace){
+void SetParameter(char marker[256], char value[256], int& nevents, int& maxPars, int nparticle_range[2], double etarange[2], double ptrange[2], double phirange[2], double &charge, vector<string> &types, bool& replace){
 
 	vector<string> values = ReadValues(value);
 
 	int cmpsize = 20;				// compare size
 
-	if (!strncmp(marker, "maxpars",cmpsize)){
+	string temp_marker = marker;
+
+
+	if (temp_marker.find("maxpars") < 100 ){
 		maxPars = atoi(values[0].c_str());
 	}
 
-	if (!strncmp(marker, "nparticles",cmpsize)){
+	if (temp_marker.find("nparticles") < 100){
 		for (unsigned int val = 0; val < values.size(); ++val){
 			nparticle_range[val] = atoi(values[val].c_str());
 		}
 	}
 
-	if (!strncmp(marker, "eta",cmpsize)){
+	if (temp_marker.find("eta") < 100){
 		ReadFloats(etarange, values);
 	}
 
-	if (!strncmp(marker, "pt",cmpsize)){
+	if (temp_marker.find("pt") < 100){
 		ReadFloats(ptrange, values);
 	}
 
-	if (!strncmp(marker, "phi",cmpsize)){
+	if (temp_marker.find("phi") < 100){
 		ReadFloats(phirange, values);
 	}
 
-	if (!strncmp(marker, "charge",cmpsize)){
+	if (temp_marker.find("charge") < 100){
 		charge = atof(values[0].c_str());
 	}
 
-	if (!strncmp(marker, "types",cmpsize)){
+	if (temp_marker.find("types") < 100){
 		types = values;
 	}
 
-	if (!strncmp(marker, "replace",cmpsize)){
+	if (temp_marker.find("replace") < 100){
 		replace = true;
 	}
 
 }
 
-void TakeInParameters(string file, int& nevents, int& maxPars, int nparticle_range[2], double etarange[2], double ptrange[2], double phirange[2], double charge, vector<string> &types, bool& replace){
+void TakeInParameters(string file, int& nevents, int& maxPars, int nparticle_range[2], double etarange[2], double ptrange[2], double phirange[2], double &charge, vector<string> &types, bool& replace){
 
 	ifstream ifs;
 	ifs.open(file.c_str());
 
 	char marker[256];
 	char value[256];
-	// cout << "ifs.good() = " << ifs.good() << endl;
+	if(!ifs.good()){
+		cout << "ERROR: There is something wrong with this file\n";
+		exit(1);
+	}
 	while (ifs.good()){
 		ifs.getline(marker, 256, ':');
 		ifs.getline(value, 256);
