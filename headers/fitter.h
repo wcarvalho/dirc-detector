@@ -30,7 +30,6 @@
 //------------------------------------------
 //		Functions
 //------------------------------------------
-using namespace std;
 
 class Identifier : public TObject 
 {

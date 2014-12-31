@@ -13,55 +13,76 @@ int main(int argc, char** argv)
 	gengetopt_args_info ai;  
 	if (cmdline_parser (argc, argv, &ai) != 0){ exit(1); }
 
-  int beginning = 0;
-  int last = 0;
-  bool modified = ai.modified_particle_info_given;
-  
   double pi = TMath::Pi();
-  
-  bool print = ai.verbose_given;
-  bool quiet = ai.quiet_given; if (quiet) print = !quiet;
 
+  //FIXME: read in detector from generator out in the future
+  Detector d;
+  //
+  int last = 0;
+
+  int xbins = 1000;
+	int ybins = 1000;
+
+	double smear = .01;
+
+ 	int ExpectedPhotonCase = ai.expected_photons_case_arg;
+
+ 	// i/o setup
+	string graphprefix = "";
   string rf_default = ai.input_arg;
-  string wf_default = "reconstructor.root"; 
+  string wf_default = "fitresults.root"; 
 	string rf = rf_default;
   string wf = wf_default;
-  string modified_eventoutput_file = "modified_particle_info.root";
 
-  FileProperties readf_prop(rf);
+  wul::FileProperties readf_prop(rf);
   string directory = readf_prop.directory;
 
+  // parse ai arguments
+	bool print = ai.verbose_given;
+  bool quiet = ai.quiet_given; if (quiet) print = !quiet;
+	bool make = ai.make_given;
   if (ai.last_given) last = ai.last_arg;
-  if (modified)
-  	modified_eventoutput_file = ai.modified_particle_info_arg;
-
   if (ai.write_file_given) wf = ai.write_file_arg;
+	if (ai.Directory_given) directory = ai.Directory_arg; readf_prop.appendFileToDirectory(directory, wf);
+	if (ai.Smear_given) smear = ai.Smear_arg;
+	if (ai.graph_prefix_given) graphprefix = ai.graph_prefix_arg;
 
-	if(ai.Directory_given) directory = ai.Directory_arg;
-  readf_prop.appendFileToDirectory(directory, wf);
-  readf_prop.appendFileToDirectory(directory, modified_eventoutput_file);
+	
+	// Function Pointer(s)
+	double (*ExpectedNumberofPhotons)(double const&, double const&, double const&, double const&, double const&);
+
+
+	// determine which function will be used to determine the expected number of photons
+	switch(ExpectedPhotonCase) {
+		case 1: // look-up table
+			cout << "LookUpTable\n";
+			ExpectedNumberofPhotons = &LookUpTableWrapper;
+		break;
+		case 2: // riemansum
+			cout << "RiemannSum\n";
+			ExpectedNumberofPhotons = &RiemannSum;
+		break;
+	}
 
 
   Reconstruction reconstruction;
 	ReconstructionData data;
 	reconstruction.Track.push_back(data);
+	Analysis A;
+	TrackRecons Tracks; Tracks.Recon.clear();		// stores information on particle guesses
 
   // pointers to data from ROOT File
   GeneratorOut *event_output = 0;
-	GeneratorOut *modified_event_output = 0;
 
-	// cout << "readfile = " << rf <<x
   TFile file(rf.c_str(), "read");
 	TTree *events = (TTree*)file.Get("sim_out");
 	events->SetBranchAddress("simEvent", &event_output);
 
 	TFile file2(wf.c_str(), "recreate");
-  TTree *tree = new TTree("output", "a tree of Reconstruction Data");
+  TTree tree_np("output", "a tree of Reconstruction Data");
+	TTree* tree = &tree_np;
 	tree->Branch("recEvent", &reconstruction);
 
-	TFile file3(modified_eventoutput_file.c_str(), "recreate");
-	TTree *modified_events = new TTree("sim_out", "a tree of the modified particle information");
-	modified_events->Branch("simEvent", &modified_event_output);
   //--------------------------------------------------
   //              Beginning of Program;
   //--------------------------------------------------
@@ -72,37 +93,123 @@ int main(int argc, char** argv)
 		if (!quiet) cout << "Event " << ev << "\n";
 		events->GetEntry(ev);
 
+		// Declarations
+		TrackRecon guess;
+		guess.Options.clear();
+		guess.Sigmas.clear();
+		guess.Areas.clear();
+		guess.ExpectedNumber.clear();
+		guess.Params.clear();
+		vector< double > params;
+		vector<ParticleOut> &pars = event_output->Particles;
+		// ---------------
+
 	  // remove all particles except for last particles determined by option 'l'
-    if (ai.last_given){
-      beginning = event_output->Particles.size() - last;
-      if (beginning>0){
-	      for (unsigned int j = 0; j < beginning; ++j)
-	      	event_output->Particles.erase(event_output->Particles.begin());
-      }
-    }
+    removeFirstParticles(ai.last_given, event_output, last);
 	  ReconstructEvent(reconstruction, event_output, print);
 	  
-	  if (print && (reconstruction.Photons.size() == 0)) 
-	  	printf("\tEvent had no reconstructions");
+	  if (print && !(reconstruction.Photons.size())){
+	  	printf("\tEvent %i had no reconstructions", ev);
+	  	continue;
+	  }
   	
 	  // create histograms
+	  for (unsigned int par = 0; par < pars.size(); par++){
+	  	if (!quiet) cout << "\tParticle " << par << endl;
+  		
+  		vector<PhotonOut> &phos = reconstruction.Photons.at(par);
+	  	vector< vector<double> > data; data.clear();
+	  	vector<double> data_sub; data_sub.clear();
+
+	  	for (unsigned int i = 0; i < phos.size(); i++)
+	  	{
+	  		data.push_back(data_sub);
+	  			data.back().push_back(phos.at(i).Phi);
+	  			data.back().push_back(phos.at(i).Theta);
+	  	}
+	  	A.SetData(data);
+	  	
+	  	string histTitle = wul::appendStrings(wul::stringDouble("Event ", ev), wul::stringDouble(", Particle ", par+1));
+			string histname = histName0(ev, par);
+		  string TH1Name = histname; TH1Name.append("_1D");
+		  string TH2Name = histname; TH2Name.append("_2D");
+
+		  if (phos.size()){
+			  A.AddTH1D(TH1Name.c_str(), histTitle.c_str(), xbins, 0, pi, 1);
+			  A.AddTH2D(TH2Name.c_str(), histTitle.c_str(), xbins, -pi, pi, ybins, 0, pi);
+			}
+			else
+				continue;
+
+			Identifier guesser;
+			TH1D *h1_p = &A.Hists1D.back();
+			guess.Hist = *h1_p;
+			ParticleOut &P = pars.at(par);
+			if (print){
+				printf("\tpar = %i: eta = %f, pt = %f\n", par+1, P.Eta, P.pt);
+			}
+
+			cout << "eta = " << P.Eta << ", pt = " << P.pt << endl;
+			mass m(P.Eta, P.pt);
+			map<double, double> &atm = m.AngletoMass;
+			map<double, string> &mtn = m.MasstoName;
+			map<string, double> &pm = guesser.probabilitymap;
+
+			double travels = 0.;
+
+			string defaultname = h1_p->GetName(); 
+
+			for(map<double, double>::iterator i = atm.begin(); i != atm.end(); ++i){
+				TCanvas c1("c1","c1",10,10,800,600);
+				TCanvas *c1_p = &c1;
+				const double &angle = i->first;
+				const double &mass = i->second;
+				double r = .1;		// range
+				string name = mtn[mass];
+
+				stringstream currentname;
+				currentname << defaultname << "_" << name;
+				string newhname = currentname.str();
+
+				// cout << "name = " << name << endl;			  
+				// cout << "angle = " << angle << endl;
+				double Area = guesser.FitParticle1D(c1_p, *h1_p, params, angle-r, angle+r, angle, smear, newhname, graphprefix, make, print);	// area under gaussian (calculated number of photons)
+				// cout << "Area = " << Area << endl;
+		  	double ThetaBeam = 2*atan(exp(-P.Eta));
+				double momentum = P.pt/sin(ThetaBeam);
+			  double Beta = momentum/pow(( mass*mass + momentum*momentum ),.5);
+			  double N = ExpectedNumberofPhotons(P.X, P.Y, P.Theta, P.Phi, Beta);
+			  // cout << "Look Up Table N = " << N << endl;
+			  // cout << "RiemannSum N = " << RiemannSum(P.X, P.Y, P.Theta, P.Phi, Beta) << "\n\n";
+				d.get_Critical_Angle(1);
+				double pi2 = TMath::Pi()/2;
+				double Sigma = sqrt(N);
+				double nSigma = (abs(N-Area))/Sigma;
+
+				pm[name] = nSigma;
+				if (print) {
+					printf("\t\t%s: Area = %f, Expected = %f, sigma = %f\n", name.c_str(), Area, N, nSigma);
+					cout << "\t\t\ttotal photons = " << travels*P.PhotonsPercm << endl;
+					cout << "\t\t\tAngle = " << angle << endl;
+				}
+
+				guess.Options.push_back(name);
+				guess.Sigmas.push_back(pm[name]);
+				guess.Areas.push_back(Area);
+				guess.ExpectedNumber.push_back(N);
+				guess.Params.push_back(params);
+			}
+			Tracks.Recon.push_back(guess);
+
+	  }
+
 
 	  // fit histograms
 
 
-
-
-
-  	modified_event_output = event_output;
-	  if (modified)
-		  modified_events->Fill();
 	  tree->Fill();
+		Tracks.Recon.clear();
   }
-
-  file3.cd();
-  if (modified)
-	  file3.Write();
-  file3.Close();
 
   file2.cd();
   file2.Write();
@@ -112,10 +219,7 @@ int main(int argc, char** argv)
   file.Close();
 
 
-  // modified_events->Print();
   if (!quiet) cout << "reconstruction file: " << wf << endl;
-  if (modified)
-  	if (!quiet) cout << "modified particles file: " << modified_eventoutput_file << endl;
 
   return 0;
 }

@@ -123,7 +123,7 @@ int main(int argc, char** argv)
 				printf("\tpar = %i: eta = %f, pt = %f\n", par+1, P.Eta, P.pt);// F->SetPrint();
 			}
 		// 	TH2D *h2_p = &hists2.at(par);
-			
+			cout << "eta = " << P.Eta << ", pt = " << P.pt << endl;
 			mass m(P.Eta, P.pt);
 			map<double, double> &atm = m.AngletoMass;
 			map<double, string> mtn = m.MasstoName;
@@ -162,7 +162,10 @@ int main(int argc, char** argv)
 			  
 
         gettimeofday(&t1, NULL);
+				// cout << "name = " << name << endl;			  
+				// cout << "angle = " << angle << endl;
 				double A = guesser.FitParticle1D(c1_p, *h1_p, params, angle-r, angle+r, angle, smear, newhname, graphprefix, make, print);	// area under gaussian (calculated number of photons)
+				// cout << "A = " << A << endl;
 				gettimeofday(&t2, NULL);
 				time1 = (double)(t1.tv_sec) + (double)(t1.tv_usec)/1.0e6;
 			  time2 = (double)(t2.tv_sec) + (double)(t2.tv_usec)/1.0e6;

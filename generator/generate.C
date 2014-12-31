@@ -40,6 +40,7 @@ vector<Particle> generate(int nparticles, gParticle& gPar, Detector d, int maxPa
 			{
 				if( gPar.ConeAngle == gPar.ConeAngle )
 				{
+					cout << "eta = " << gPar.Eta << ", pt = " << gPar.pt << endl;
 					if (print)
 					{
 						printf("\n\tParticle: %s, Eta = %f, pt = %f, Phi_i = %f\n", gPar.name.c_str(), gPar.Eta, gPar.pt, gPar.Phi_i);

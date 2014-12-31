@@ -154,8 +154,8 @@ double Identifier::FitParticle1D(TCanvas* c, TH1D &h, vector< double > &params, 
   f2.FixParameter(1, min_point(1));
   f2.FixParameter(2, min_point(2));
   f2.FixParameter(3, min_point(3));
-  cout << "original center = " << center << endl;
-  cout << "found center = " << min_point(1) << endl;
+  // cout << "original center = " << center << endl;
+  // cout << "found center = " << min_point(1) << endl;
   for(int i=0;i<4;++i){
       params.push_back(f2.GetParameter(i));
   }

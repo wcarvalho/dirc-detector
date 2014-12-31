@@ -138,6 +138,8 @@ int main(int argc, char** argv)
 		{
  			par_theta = &ParEvent->Particles[par].Theta;
 			par_phi = &ParEvent->Particles[par].Phi;
+			cout << "eta = " << ParEvent->Particles[par].Eta << ", pt = " << ParEvent->Particles[par].pt << endl;
+
 			if (print) cout << "\tParticle = " << par << " with Theta, Phi = " << *par_theta/pi << "pi, " << *par_phi/pi << "pi\n";
 			// if (print){
 				// printf("\t\tparticle theta = %f, phi = %f\n", *par_theta, *par_phi);

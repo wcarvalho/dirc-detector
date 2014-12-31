@@ -8,15 +8,22 @@ include_HEADERS = ../headers/reconstructor.h \
 ../headers/file-properties.h
 
 
-reconstructor_LDADD = $(ROOT_LIBS) \
-$(LIB)
+reconstructor_LDADD = \
+$(ROOT_LIBS) \
+$(DIRC_LIB) \
+$(UTIL_LIB) \
+$(NEWTON_LIB)
 
 reconstructor_SOURCES = main.cpp \
-cmdline.c \
+cmdline.cpp \
+reconstructor.cpp \
 ReconstructEvent.C \
 ReconstructTrack.C \
 CreateHistogram.C \
 Reconstructed_Reflections.C \
+histograms.cpp \
+FindLostPhotons.C \
+LookUpTable.cpp \
 ##=====================================
 ##
 ##					Mutual functions
@@ -45,10 +52,15 @@ Reconstructed_Reflections.C \
 ../functions/Print_Histogram.C \
 ../functions/Rotater.C \
 ../functions/Displayer.C \
+../simulator/CheckAngel.C \
+../simulator/Check_PhotonDirection.C \
+../functions/simulate_par.C \
+../functions/masses.C \
+../functions/identifier.C \
+../functions/min_map.C \
+../functions/addtoFile.cpp \
+../functions/returnEnd.cpp \
 ../functions/file-properties.cpp
-
-cmdline.c: cmd.ggo
-  gengetopt --input=cmd.ggo --include-getopt
 
 clear-local:
 	rm -f $(BUILT_SOURCES) *Dict*

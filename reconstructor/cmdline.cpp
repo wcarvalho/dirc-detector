@@ -38,19 +38,22 @@ const char *gengetopt_args_info_help[] = {
   "  -V, --version                 Print version and exit",
   "  -i, --input=STRING            path of particle-generated data",
   "  -D, --Directory=STRING        Sets the directory in which files will be saved\n                                  (by default saves in current directory",
-  "  -n, --new                     runs all programs before it, i.e generator,\n                                  simulator",
+  "  -W, --write-file=STRING       write file for reconstruction",
   "  -v, --verbose                 print data",
   "  -q, --quiet                   suppress all printing",
-  "  -e, --event=INT               print data for specific event (starting at 0th\n                                  event)",
+  "  -m, --make                    print graphs of the fits made",
+  "  -g, --graph-prefix=STRING     directory where graphs will be stored",
   "  -l, --last=INT                only reconstructs the last l particles",
-  "  -m, --modified-particle-info=STRING\n                                output file for modified particle information\n                                  i.e removing some particles to only track the\n                                  remaining",
-  "  -W, --write-file=STRING       write file for reconstruction",
+  "  -S, --Smear=DOUBLE            the smearing applied to the fitting (used for\n                                  width of gaussian)",
+  "  -e, --expected-photons-case[=INT]\n                                case 1: look-up table. case 2: riemann sum\n                                  calculation.  (default=`1')",
+  "  -L, --LookUpTable[=STRING]    file for look-up table  (default=`LookUpTable')",
     0
 };
 
 typedef enum {ARG_NO
   , ARG_STRING
   , ARG_INT
+  , ARG_DOUBLE
 } cmdline_parser_arg_type;
 
 static
@@ -75,13 +78,15 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->version_given = 0 ;
   args_info->input_given = 0 ;
   args_info->Directory_given = 0 ;
-  args_info->new_given = 0 ;
+  args_info->write_file_given = 0 ;
   args_info->verbose_given = 0 ;
   args_info->quiet_given = 0 ;
-  args_info->event_given = 0 ;
+  args_info->make_given = 0 ;
+  args_info->graph_prefix_given = 0 ;
   args_info->last_given = 0 ;
-  args_info->modified_particle_info_given = 0 ;
-  args_info->write_file_given = 0 ;
+  args_info->Smear_given = 0 ;
+  args_info->expected_photons_case_given = 0 ;
+  args_info->LookUpTable_given = 0 ;
 }
 
 static
@@ -92,12 +97,16 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->input_orig = NULL;
   args_info->Directory_arg = NULL;
   args_info->Directory_orig = NULL;
-  args_info->event_orig = NULL;
-  args_info->last_orig = NULL;
-  args_info->modified_particle_info_arg = NULL;
-  args_info->modified_particle_info_orig = NULL;
   args_info->write_file_arg = NULL;
   args_info->write_file_orig = NULL;
+  args_info->graph_prefix_arg = NULL;
+  args_info->graph_prefix_orig = NULL;
+  args_info->last_orig = NULL;
+  args_info->Smear_orig = NULL;
+  args_info->expected_photons_case_arg = 1;
+  args_info->expected_photons_case_orig = NULL;
+  args_info->LookUpTable_arg = gengetopt_strdup ("LookUpTable");
+  args_info->LookUpTable_orig = NULL;
   
 }
 
@@ -110,13 +119,15 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->version_help = gengetopt_args_info_help[1] ;
   args_info->input_help = gengetopt_args_info_help[2] ;
   args_info->Directory_help = gengetopt_args_info_help[3] ;
-  args_info->new_help = gengetopt_args_info_help[4] ;
+  args_info->write_file_help = gengetopt_args_info_help[4] ;
   args_info->verbose_help = gengetopt_args_info_help[5] ;
   args_info->quiet_help = gengetopt_args_info_help[6] ;
-  args_info->event_help = gengetopt_args_info_help[7] ;
-  args_info->last_help = gengetopt_args_info_help[8] ;
-  args_info->modified_particle_info_help = gengetopt_args_info_help[9] ;
-  args_info->write_file_help = gengetopt_args_info_help[10] ;
+  args_info->make_help = gengetopt_args_info_help[7] ;
+  args_info->graph_prefix_help = gengetopt_args_info_help[8] ;
+  args_info->last_help = gengetopt_args_info_help[9] ;
+  args_info->Smear_help = gengetopt_args_info_help[10] ;
+  args_info->expected_photons_case_help = gengetopt_args_info_help[11] ;
+  args_info->LookUpTable_help = gengetopt_args_info_help[12] ;
   
 }
 
@@ -204,12 +215,15 @@ cmdline_parser_release (struct gengetopt_args_info *args_info)
   free_string_field (&(args_info->input_orig));
   free_string_field (&(args_info->Directory_arg));
   free_string_field (&(args_info->Directory_orig));
-  free_string_field (&(args_info->event_orig));
-  free_string_field (&(args_info->last_orig));
-  free_string_field (&(args_info->modified_particle_info_arg));
-  free_string_field (&(args_info->modified_particle_info_orig));
   free_string_field (&(args_info->write_file_arg));
   free_string_field (&(args_info->write_file_orig));
+  free_string_field (&(args_info->graph_prefix_arg));
+  free_string_field (&(args_info->graph_prefix_orig));
+  free_string_field (&(args_info->last_orig));
+  free_string_field (&(args_info->Smear_orig));
+  free_string_field (&(args_info->expected_photons_case_orig));
+  free_string_field (&(args_info->LookUpTable_arg));
+  free_string_field (&(args_info->LookUpTable_orig));
   
   
 
@@ -248,20 +262,24 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "input", args_info->input_orig, 0);
   if (args_info->Directory_given)
     write_into_file(outfile, "Directory", args_info->Directory_orig, 0);
-  if (args_info->new_given)
-    write_into_file(outfile, "new", 0, 0 );
+  if (args_info->write_file_given)
+    write_into_file(outfile, "write-file", args_info->write_file_orig, 0);
   if (args_info->verbose_given)
     write_into_file(outfile, "verbose", 0, 0 );
   if (args_info->quiet_given)
     write_into_file(outfile, "quiet", 0, 0 );
-  if (args_info->event_given)
-    write_into_file(outfile, "event", args_info->event_orig, 0);
+  if (args_info->make_given)
+    write_into_file(outfile, "make", 0, 0 );
+  if (args_info->graph_prefix_given)
+    write_into_file(outfile, "graph-prefix", args_info->graph_prefix_orig, 0);
   if (args_info->last_given)
     write_into_file(outfile, "last", args_info->last_orig, 0);
-  if (args_info->modified_particle_info_given)
-    write_into_file(outfile, "modified-particle-info", args_info->modified_particle_info_orig, 0);
-  if (args_info->write_file_given)
-    write_into_file(outfile, "write-file", args_info->write_file_orig, 0);
+  if (args_info->Smear_given)
+    write_into_file(outfile, "Smear", args_info->Smear_orig, 0);
+  if (args_info->expected_photons_case_given)
+    write_into_file(outfile, "expected-photons-case", args_info->expected_photons_case_orig, 0);
+  if (args_info->LookUpTable_given)
+    write_into_file(outfile, "LookUpTable", args_info->LookUpTable_orig, 0);
   
 
   i = EXIT_SUCCESS;
@@ -386,6 +404,11 @@ cmdline_parser_required2 (struct gengetopt_args_info *args_info, const char *pro
   
   
   /* checks for dependences among options */
+  if (args_info->LookUpTable_given && ! args_info->expected_photons_case_given)
+    {
+      fprintf (stderr, "%s: '--LookUpTable' ('-L') option depends on option 'expected-photons-case'%s\n", prog_name, (additional_error ? additional_error : ""));
+      error_occurred = 1;
+    }
 
   return error_occurred;
 }
@@ -459,6 +482,9 @@ int update_arg(void *field, char **orig_field,
   case ARG_INT:
     if (val) *((int *)field) = strtol (val, &stop_char, 0);
     break;
+  case ARG_DOUBLE:
+    if (val) *((double *)field) = strtod (val, &stop_char);
+    break;
   case ARG_STRING:
     if (val) {
       string_field = (char **)field;
@@ -474,6 +500,7 @@ int update_arg(void *field, char **orig_field,
   /* check numeric conversion */
   switch(arg_type) {
   case ARG_INT:
+  case ARG_DOUBLE:
     if (val && !(stop_char && *stop_char == '\0')) {
       fprintf(stderr, "%s: invalid numeric value: %s\n", package_name, val);
       return 1; /* failure */
@@ -544,17 +571,19 @@ cmdline_parser_internal (
         { "version",	0, NULL, 'V' },
         { "input",	1, NULL, 'i' },
         { "Directory",	1, NULL, 'D' },
-        { "new",	0, NULL, 'n' },
+        { "write-file",	1, NULL, 'W' },
         { "verbose",	0, NULL, 'v' },
         { "quiet",	0, NULL, 'q' },
-        { "event",	1, NULL, 'e' },
+        { "make",	0, NULL, 'm' },
+        { "graph-prefix",	1, NULL, 'g' },
         { "last",	1, NULL, 'l' },
-        { "modified-particle-info",	1, NULL, 'm' },
-        { "write-file",	1, NULL, 'W' },
+        { "Smear",	1, NULL, 'S' },
+        { "expected-photons-case",	2, NULL, 'e' },
+        { "LookUpTable",	2, NULL, 'L' },
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVi:D:nvqe:l:m:W:", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVi:D:W:vqmg:l:S:e::L::", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -594,14 +623,14 @@ cmdline_parser_internal (
             goto failure;
         
           break;
-        case 'n':	/* runs all programs before it, i.e generator, simulator.  */
+        case 'W':	/* write file for reconstruction.  */
         
         
-          if (update_arg( 0 , 
-               0 , &(args_info->new_given),
-              &(local_args_info.new_given), optarg, 0, 0, ARG_NO,
+          if (update_arg( (void *)&(args_info->write_file_arg), 
+               &(args_info->write_file_orig), &(args_info->write_file_given),
+              &(local_args_info.write_file_given), optarg, 0, 0, ARG_STRING,
               check_ambiguity, override, 0, 0,
-              "new", 'n',
+              "write-file", 'W',
               additional_error))
             goto failure;
         
@@ -630,14 +659,26 @@ cmdline_parser_internal (
             goto failure;
         
           break;
-        case 'e':	/* print data for specific event (starting at 0th event).  */
+        case 'm':	/* print graphs of the fits made.  */
         
         
-          if (update_arg( (void *)&(args_info->event_arg), 
-               &(args_info->event_orig), &(args_info->event_given),
-              &(local_args_info.event_given), optarg, 0, 0, ARG_INT,
+          if (update_arg( 0 , 
+               0 , &(args_info->make_given),
+              &(local_args_info.make_given), optarg, 0, 0, ARG_NO,
               check_ambiguity, override, 0, 0,
-              "event", 'e',
+              "make", 'm',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'g':	/* directory where graphs will be stored.  */
+        
+        
+          if (update_arg( (void *)&(args_info->graph_prefix_arg), 
+               &(args_info->graph_prefix_orig), &(args_info->graph_prefix_given),
+              &(local_args_info.graph_prefix_given), optarg, 0, 0, ARG_STRING,
+              check_ambiguity, override, 0, 0,
+              "graph-prefix", 'g',
               additional_error))
             goto failure;
         
@@ -654,26 +695,38 @@ cmdline_parser_internal (
             goto failure;
         
           break;
-        case 'm':	/* output file for modified particle information i.e removing some particles to only track the remaining.  */
+        case 'S':	/* the smearing applied to the fitting (used for width of gaussian).  */
         
         
-          if (update_arg( (void *)&(args_info->modified_particle_info_arg), 
-               &(args_info->modified_particle_info_orig), &(args_info->modified_particle_info_given),
-              &(local_args_info.modified_particle_info_given), optarg, 0, 0, ARG_STRING,
+          if (update_arg( (void *)&(args_info->Smear_arg), 
+               &(args_info->Smear_orig), &(args_info->Smear_given),
+              &(local_args_info.Smear_given), optarg, 0, 0, ARG_DOUBLE,
               check_ambiguity, override, 0, 0,
-              "modified-particle-info", 'm',
+              "Smear", 'S',
               additional_error))
             goto failure;
         
           break;
-        case 'W':	/* write file for reconstruction.  */
+        case 'e':	/* case 1: look-up table. case 2: riemann sum calculation..  */
         
         
-          if (update_arg( (void *)&(args_info->write_file_arg), 
-               &(args_info->write_file_orig), &(args_info->write_file_given),
-              &(local_args_info.write_file_given), optarg, 0, 0, ARG_STRING,
+          if (update_arg( (void *)&(args_info->expected_photons_case_arg), 
+               &(args_info->expected_photons_case_orig), &(args_info->expected_photons_case_given),
+              &(local_args_info.expected_photons_case_given), optarg, 0, "1", ARG_INT,
               check_ambiguity, override, 0, 0,
-              "write-file", 'W',
+              "expected-photons-case", 'e',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'L':	/* file for look-up table.  */
+        
+        
+          if (update_arg( (void *)&(args_info->LookUpTable_arg), 
+               &(args_info->LookUpTable_orig), &(args_info->LookUpTable_given),
+              &(local_args_info.LookUpTable_given), optarg, 0, "LookUpTable", ARG_STRING,
+              check_ambiguity, override, 0, 0,
+              "LookUpTable", 'L',
               additional_error))
             goto failure;
         

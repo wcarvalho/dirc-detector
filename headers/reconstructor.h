@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <iomanip>
+#include <sstream>      // std::stringstream
 
 //------------------------------------------
 //		ROOT
@@ -19,9 +21,12 @@
 //		mine
 //------------------------------------------
 #include "dirc_objects.h"
+#include "utility_library.h"
+#include "FileProperties.h"
+// #include "file-properties.h"
 #include "functions.h"
 #include "Simulate.h"
-#include "file-properties.h"
+#include "fitter.h"
 
 //------------------------------------------
 //		Functions
@@ -33,4 +38,5 @@ void ReconstructTrack(Reconstruction &reconstruction, ParticleOut particle, vect
 void Reconstructed_Reflections(vector<PhotonOut> &pho, double theta, double phi, bool print = false);
 // void XY_Reflections(vector<PhotonOut> &pho, Simulate sim, bool print = false);
 
-
+string histName0(int event, int particle);
+void removeFirstParticles(bool Remove, GeneratorOut*& event_output, int last);
