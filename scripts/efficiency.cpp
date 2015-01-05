@@ -7,7 +7,7 @@ int main()
 	string data_dir = "";
 	string graph_dir = "graphs/";
 	string fit_dir = "fits/";
-	string fitdata = "fitresults.root";
+	string fitdata = "reconstruction.root";
 	string cheatdata = "cheat.root";
 
 	string matchgraph_filebase = "match";

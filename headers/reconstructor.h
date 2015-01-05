@@ -31,12 +31,14 @@
 //------------------------------------------
 //		Functions
 //------------------------------------------
-using namespace std;
 
 void ReconstructEvent(Reconstruction &reconstruction, GeneratorOut*& event_output, bool print = false);
-void ReconstructTrack(Reconstruction &reconstruction, ParticleOut particle, vector<PhotonOut> photons, bool print = false);
-void Reconstructed_Reflections(vector<PhotonOut> &pho, double theta, double phi, bool print = false);
-// void XY_Reflections(vector<PhotonOut> &pho, Simulate sim, bool print = false);
+void ReconstructTrack(Reconstruction &reconstruction, ParticleOut particle, std::vector<PhotonOut> photons, bool print = false);
+void Reconstructed_Reflections(std::vector<PhotonOut> &pho, double theta, double phi, bool print = false);
+// void XY_Reflections(std::vector<PhotonOut> &pho, Simulate sim, bool print = false);
 
-string histName0(int event, int particle);
+std::string histName0(int event, int particle);
 void removeFirstParticles(bool Remove, GeneratorOut*& event_output, int last);
+void CreateHistogram_1D2D(int ev, int par, Analysis &A, std::vector<PhotonOut> &phos, int xbins, int ybins);
+
+void CalculateParticleFits(double (*ExpectedNumberofPhotons)(double const&, double const&, double const&, double const&, double const&), ParticleOut &P, TH1D*& h, TrackRecon &guess, double range, double smear, bool print = false);

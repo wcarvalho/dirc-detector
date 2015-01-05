@@ -37,7 +37,7 @@ public:
 	Identifier(){}
 	~Identifier(){}
 
-	double FitParticle1D(TCanvas* c, TH1D &h, vector< double > &params, double xlow, double xhi, double center, double width, string name, string prefix, bool make, bool print);
+	double FitParticle1D(TCanvas* c, TH1D &h, vector< double > &params, double xlow, double xhi, double center, double width, string name, bool print);
 	void reverseprobabilitymap();
 
 	std::map<double, std::vector<TObject> > particle1Dfits;

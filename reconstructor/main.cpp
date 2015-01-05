@@ -27,7 +27,7 @@ int main(int argc, char** argv)
  	// i/o setup
 	string graphprefix = "";
   string rf_default = ai.input_arg;
-  string wf_default = "fitresults.root"; 
+  string wf_default = "reconstruction.root"; 
 	string rf = rf_default;
   string wf = wf_default;
 
@@ -50,23 +50,24 @@ int main(int argc, char** argv)
 
 
 	// determine which function will be used to determine the expected number of photons
+	if (print) cout << "ExpectedPhotonCase = ";
 	switch(ExpectedPhotonCase) {
 		case 1: // look-up table
-			cout << "LookUpTable\n";
+			if (print) cout << "LookUpTable\n";
 			ExpectedNumberofPhotons = &LookUpTableWrapper;
 		break;
 		case 2: // riemansum
-			cout << "RiemannSum\n";
+			if (print) cout << "RiemannSum\n";
 			ExpectedNumberofPhotons = &RiemannSum;
 		break;
 	}
 
-
-  Reconstruction reconstruction;
+	// Classes used for analysis
+  Reconstruction reconstruction;							// used to reconstruct original photon trajectories
 	ReconstructionData data;
-	reconstruction.Track.push_back(data);
-	Analysis A;
-	TrackRecons Tracks; Tracks.Recon.clear();		// stores information on particle guesses
+	reconstruction.Track.push_back(data);				
+	Analysis A;																	// class used to create histograms												
+	TrackRecons Tracks; Tracks.Recon.clear();		// stores information on particle identity guesses
 
   // pointers to data from ROOT File
   GeneratorOut *event_output = 0;
@@ -87,7 +88,6 @@ int main(int argc, char** argv)
   //--------------------------------------------------
   //              Beginning of Program;
   //--------------------------------------------------
-	cout << "\nRECONSTRUCTOR\n";
 
   for (unsigned int ev = 0; ev < events->GetEntries(); ++ev)
   {
@@ -96,17 +96,11 @@ int main(int argc, char** argv)
 
 		// Declarations
 		TrackRecon guess;
-		guess.Options.clear();
-		guess.Sigmas.clear();
-		guess.Areas.clear();
-		guess.ExpectedNumber.clear();
-		guess.Params.clear();
-		vector< double > params;
+		guess.clear();
 		vector<ParticleOut> &pars = event_output->Particles;
 		// ---------------
 
-	  // remove all particles except for last particles determined by option 'l'
-    removeFirstParticles(ai.last_given, event_output, last);
+    removeFirstParticles(ai.last_given, event_output, last); 	// remove all particles except for last particles determined by option 'l'
 	  ReconstructEvent(reconstruction, event_output, print);
 	  
 	  if (print && !(reconstruction.Photons.size())){
@@ -114,91 +108,20 @@ int main(int argc, char** argv)
 	  	continue;
 	  }
   	
-	  // create histograms
 	  for (unsigned int par = 0; par < pars.size(); par++){
 	  	if (!quiet) cout << "\tParticle " << par << endl;
   		
   		vector<PhotonOut> &phos = reconstruction.Photons.at(par);
-	  	vector< vector<double> > data; data.clear();
-	  	vector<double> data_sub; data_sub.clear();
+			if ( !(phos.size()) ) continue;
+			CreateHistogram_1D2D(ev, par, A, phos, xbins, ybins);
 
-	  	for (unsigned int i = 0; i < phos.size(); i++)
-	  	{
-	  		data.push_back(data_sub);
-	  			data.back().push_back(phos.at(i).Phi);
-	  			data.back().push_back(phos.at(i).Theta);
-	  	}
-	  	A.SetData(data);
-	  	
-	  	string histTitle = wul::appendStrings(wul::stringDouble("Event ", ev), wul::stringDouble(", Particle ", par+1));
-			string histname = histName0(ev, par);
-		  string TH1Name = histname; TH1Name.append("_1D");
-		  string TH2Name = histname; TH2Name.append("_2D");
-
-		  if (phos.size()){
-			  A.AddTH1D(TH1Name.c_str(), histTitle.c_str(), xbins, 0, pi, 1);
-			  A.AddTH2D(TH2Name.c_str(), histTitle.c_str(), xbins, -pi, pi, ybins, 0, pi);
-			}
-			else
-				continue;
-
-			Identifier guesser;
 			TH1D *h1_p = &A.Hists1D.back();
 			guess.Hist = *h1_p;
 			ParticleOut &P = pars.at(par);
-			if (print){
-				printf("\tpar = %i: eta = %f, pt = %f\n", par+1, P.Eta, P.pt);
-			}
+			
+			if (print) printf("\tpar = %i: eta = %f, pt = %f\n", par+1, P.Eta, P.pt);
 
-			mass m(P.Eta, P.pt);
-			map<double, double> &atm = m.AngletoMass;
-			map<double, string> &mtn = m.MasstoName;
-			map<string, double> &pm = guesser.probabilitymap;
-
-			double travels = 0.;
-
-			string defaultname = h1_p->GetName(); 
-
-			for(map<double, double>::iterator i = atm.begin(); i != atm.end(); ++i){
-				TCanvas c1("c1","c1",10,10,800,600);
-				TCanvas *c1_p = &c1;
-				const double &angle = i->first;
-				const double &mass = i->second;
-				double r = .1;		// range
-				string name = mtn[mass];
-
-				stringstream currentname;
-				currentname << defaultname << "_" << name;
-				string newhname = currentname.str();
-
-				// cout << "name = " << name << endl;			  
-				// cout << "angle = " << angle << endl;
-				double Area = guesser.FitParticle1D(c1_p, *h1_p, params, angle-r, angle+r, angle, smear, newhname, graphprefix, make, print);	// area under gaussian (calculated number of photons)
-				// cout << "Area = " << Area << endl;
-		  	double ThetaBeam = 2*atan(exp(-P.Eta));
-				double momentum = P.pt/sin(ThetaBeam);
-			  double Beta = momentum/pow(( mass*mass + momentum*momentum ),.5);
-			  double N = ExpectedNumberofPhotons(P.X, P.Y, P.Theta, P.Phi, Beta);
-			  // cout << "Look Up Table N = " << N << endl;
-			  // cout << "RiemannSum N = " << RiemannSum(P.X, P.Y, P.Theta, P.Phi, Beta) << "\n\n";
-
-				double pi2 = TMath::Pi()/2;
-				double Sigma = sqrt(N);
-				double nSigma = (abs(N-Area))/Sigma;
-
-				pm[name] = nSigma;
-				if (print) {
-					printf("\t\t%s: Area = %f, Expected = %f, sigma = %f\n", name.c_str(), Area, N, nSigma);
-					cout << "\t\t\ttotal photons = " << travels*P.PhotonsPercm << endl;
-					cout << "\t\t\tAngle = " << angle << endl;
-				}
-
-				guess.Options.push_back(name);
-				guess.Sigmas.push_back(pm[name]);
-				guess.Areas.push_back(Area);
-				guess.ExpectedNumber.push_back(N);
-				guess.Params.push_back(params);
-			}
+			CalculateParticleFits(ExpectedNumberofPhotons, P, h1_p, guess, .1, smear, print);				// for one particle, 1 fit is calculated for every possible mass (5 masses means 5 fits for 1 particle)
 			Tracks.Recon.push_back(guess);
 	  }
 

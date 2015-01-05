@@ -62,7 +62,7 @@ public:
 };
 
 
-double Identifier::FitParticle1D(TCanvas* c, TH1D &h, vector< double > &params, double xlow, double xhi, double center, double width, string name, string prefix, bool make, bool print){
+double Identifier::FitParticle1D(TCanvas* c, TH1D &h, vector< double > &params, double xlow, double xhi, double center, double width, string name, bool print){
   
   static NewtonMinimizerGradHessian minimizer;
   static GaussianPlusConstant gpc;
