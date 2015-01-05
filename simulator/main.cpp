@@ -87,11 +87,13 @@ int main(int argc, char** argv)
 	TFile wf(writef.c_str(), status.c_str());
 	TTree sim_out("sim_out", "simulation output");
 	sim_out.Branch("simEvent", &event_output);
+	sim_out.Branch("detector", &d);
 
 	TFile wf2(writef2.c_str(), status.c_str());
 	TTree cheat_info("cheat_info", "all information for event");
 	cheat_info.Branch("Particle Event", &ParEvent);
 	cheat_info.Branch("simEvent", &event_output);
+	cheat_info.Branch("detector", &d);
 
 
 
@@ -138,7 +140,6 @@ int main(int argc, char** argv)
 		{
  			par_theta = &ParEvent->Particles[par].Theta;
 			par_phi = &ParEvent->Particles[par].Phi;
-			cout << "eta = " << ParEvent->Particles[par].Eta << ", pt = " << ParEvent->Particles[par].pt << endl;
 
 			if (print) cout << "\tParticle = " << par << " with Theta, Phi = " << *par_theta/pi << "pi, " << *par_phi/pi << "pi\n";
 			// if (print){
@@ -172,7 +173,6 @@ int main(int argc, char** argv)
 		}
 		cheat_info.Fill();
 	}
-  
   if (Append){
   	non_cheatCopy->cd();
 	  non_cheatCopy->Close();

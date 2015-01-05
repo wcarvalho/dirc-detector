@@ -11,16 +11,19 @@ int main(){
 	// read in input file, outputfile and smearing value
 	fillparameters(settingsfile, inputfile, outputfile, smear);
 	GeneratorOut *event_output = 0;
+	Detector *d = 0;
 
 	// create Tfile for input and output files
 	TFile f1(inputfile.c_str(), "read");
 	TTree *t1 = (TTree*)f1.Get("sim_out");
 	t1->SetBranchAddress("simEvent", &event_output);
+	t1->SetBranchAddress("detector", &d);
 
 	TFile f2(outputfile.c_str(), "recreate");
 	TTree outputTree("sim_out", "smeared simulation output");
 	TTree *t2 = &outputTree;
 	t2->Branch("simEvent", &event_output);
+	t2->Branch("detector", &d);
 
 	// cout << "\nSMEARER: smearing " << smear << endl;
 	// iterate over events
@@ -42,7 +45,6 @@ int main(){
 		}
 		t2->Fill();
 	}
-
 	f1.cd();
 	f1.Close();
 

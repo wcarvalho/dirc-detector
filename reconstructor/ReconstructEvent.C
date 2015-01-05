@@ -37,7 +37,7 @@ void ReconstructEvent(Reconstruction &reconstruction, GeneratorOut*& event_outpu
 	{
 		ReconstructTrack(reconstruction, event_output->Particles.at(i), event_output->Photons, print);
 	}
-	if (reconstruction.Photons.size() != 0){
+	if (!(reconstruction.Photons.size()) && print){
 		cout << "\t" << reconstruction.Photons.size() << " reconstructions, each with ";
 		cout << reconstruction.Photons.back().size() << " photons\n";
 	}

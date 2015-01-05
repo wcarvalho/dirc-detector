@@ -19,15 +19,3 @@ pwd
 cd $b
 $make
 cd $original
-
-cd histmaker
-pwd
-cd $b
-$make
-cd $original
-
-cd fitter
-pwd
-cd $b
-$make
-cd $original

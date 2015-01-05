@@ -15,9 +15,6 @@ int main(int argc, char** argv)
 
   double pi = TMath::Pi();
 
-  //FIXME: read in detector from generator out in the future
-  Detector d;
-  //
   int last = 0;
 
   int xbins = 1000;
@@ -73,15 +70,19 @@ int main(int argc, char** argv)
 
   // pointers to data from ROOT File
   GeneratorOut *event_output = 0;
+  Detector* d = 0;
 
   TFile file(rf.c_str(), "read");
 	TTree *events = (TTree*)file.Get("sim_out");
 	events->SetBranchAddress("simEvent", &event_output);
+	events->SetBranchAddress("detector", &d);
+	
 
 	TFile file2(wf.c_str(), "recreate");
-  TTree tree_np("output", "a tree of Reconstruction Data");
+  TTree tree_np("identifications", "information on what particles tracks were reconstructed into, and with what probability");
 	TTree* tree = &tree_np;
-	tree->Branch("recEvent", &reconstruction);
+	tree->Branch("guesses", &Tracks);
+	tree->Branch("detector", &d);
 
   //--------------------------------------------------
   //              Beginning of Program;
@@ -109,7 +110,7 @@ int main(int argc, char** argv)
 	  ReconstructEvent(reconstruction, event_output, print);
 	  
 	  if (print && !(reconstruction.Photons.size())){
-	  	printf("\tEvent %i had no reconstructions", ev);
+	  	printf("\tEvent %i had no reconstructions\n", ev);
 	  	continue;
 	  }
   	
@@ -149,7 +150,6 @@ int main(int argc, char** argv)
 				printf("\tpar = %i: eta = %f, pt = %f\n", par+1, P.Eta, P.pt);
 			}
 
-			cout << "eta = " << P.Eta << ", pt = " << P.pt << endl;
 			mass m(P.Eta, P.pt);
 			map<double, double> &atm = m.AngletoMass;
 			map<double, string> &mtn = m.MasstoName;
@@ -181,7 +181,7 @@ int main(int argc, char** argv)
 			  double N = ExpectedNumberofPhotons(P.X, P.Y, P.Theta, P.Phi, Beta);
 			  // cout << "Look Up Table N = " << N << endl;
 			  // cout << "RiemannSum N = " << RiemannSum(P.X, P.Y, P.Theta, P.Phi, Beta) << "\n\n";
-				d.get_Critical_Angle(1);
+
 				double pi2 = TMath::Pi()/2;
 				double Sigma = sqrt(N);
 				double nSigma = (abs(N-Area))/Sigma;
@@ -200,11 +200,7 @@ int main(int argc, char** argv)
 				guess.Params.push_back(params);
 			}
 			Tracks.Recon.push_back(guess);
-
 	  }
-
-
-	  // fit histograms
 
 
 	  tree->Fill();
