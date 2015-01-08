@@ -24,6 +24,13 @@ int main(int argc, char** argv)
 
  	int ExpectedPhotonCase = ai.expected_photons_case_arg;
 
+
+ 	// measuring time
+ 	timeval t1, t2;
+  double time1 = 0;
+  double time2 = 0;
+  double calculateFits_time=0.;
+ 	//
  	// i/o setup
 	string graphprefix = "";
   string rf_default = ai.input_arg;
@@ -121,7 +128,14 @@ int main(int argc, char** argv)
 			
 			if (print) printf("\tpar = %i: eta = %f, pt = %f\n", par+1, P.Eta, P.pt);
 
+
+                          
+			gettimeofday(&t1, NULL);
 			CalculateParticleFits(ExpectedNumberofPhotons, P, h1_p, guess, .1, smear, print);				// for one particle, 1 fit is calculated for every possible mass (5 masses means 5 fits for 1 particle)
+			gettimeofday(&t2, NULL);
+			time1 = (double)(t1.tv_sec) + (double)(t1.tv_usec)/1.0e6;
+			time2 = (double)(t2.tv_sec) + (double)(t2.tv_usec)/1.0e6;
+			calculateFits_time += (time2-time1);
 			Tracks.Recon.push_back(guess);
 	  }
 
@@ -137,7 +151,7 @@ int main(int argc, char** argv)
   file.cd();
   file.Close();
 
-
+  if (!quiet) cout << "Time to calculate fits = " << calculateFits_time << endl;
   if (!quiet) cout << "reconstruction file: " << wf << endl;
 
   return 0;

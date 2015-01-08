@@ -60,7 +60,7 @@ double RiemannSum(double const& x, double const& y, double const& theta, double 
 	simPar.Traveled = 0.;
 	
 	int PathSteps = 100;
-	int PhiSteps = 1000;
+	int PhiSteps = 50;
 	
 	double phi_measure = 0.;
 	// while(simPar.Traveled < Path_length){

@@ -54,7 +54,6 @@ int main(int argc, char* argv[])
 	TFile f2(recdata.c_str(), "read");
 	TTree *t2 = (TTree*)f2.Get("identifications");
 	t2 -> SetBranchAddress("guesses", &reconstructions);
-
 	int nentries = t2->GetEntries();
 	
 	vector<Particle> *pars = &originals->Particles;
