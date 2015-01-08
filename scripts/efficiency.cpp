@@ -21,7 +21,7 @@ int main()
 	fillparameters("directories", pre, data_dir, fit_dir, graph_dir);
 	vector< vector< double > > momentum = filearray("momentum");
 	vector< vector< double > > multiplicity = filearray("multiplicity");
-	vector< vector< double > > settings = filearray("settings");
+	vector< vector< double > > settings = filearray("effsettings");
 	double threshold = settings.at(0).at(0);
 	int nptBins = int(settings.at(0).at(1));
 	// vector< double > events = settings.at(1);
