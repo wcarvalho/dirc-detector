@@ -42,16 +42,19 @@ public:
 	void FlipX(){ Vec.SetX(-Vec.X()); GetTheta(); GetPhi(); } 	
 	void FlipY(){ Vec.SetY(-Vec.Y()); GetTheta(); GetPhi(); }
 	void FlipZ(){ Vec.SetZ(-Vec.Z()); GetTheta(); GetPhi(); }
-	void DistancetoWalls(string Output = "no");
-	void WhichWall(string Output = "no");
-	double WillTravel(){ return sqrt(
+	void DistancetoWalls(bool print = false);
+	void WhichWall(bool print = false);
+	double WillTravel(){ 
+		return sqrt(
+	    Vec(0)*TimeToWall*Vec(0)*TimeToWall+
 	    Vec(1)*TimeToWall*Vec(1)*TimeToWall+
-	    Vec(2)*TimeToWall*Vec(2)*TimeToWall+
-	    Vec(0)*TimeToWall*Vec(0)*TimeToWall
-	                           ); }
-	void TravelDistance(double d);
-
-	void GotoWall(string Output);
+	    Vec(2)*TimeToWall*Vec(2)*TimeToWall);
+	}
+	double TimeForDistance(double D, bool print = false);
+	void TravelDistance(double d, bool print = false);
+	void GotoWall(bool print = false);
+	void Reflect(bool print = false);
+	void PrintVec();
 
 	double Distance[3];
 	double Dim[3];

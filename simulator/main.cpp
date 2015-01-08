@@ -141,7 +141,7 @@ int main(int argc, char** argv)
  			par_theta = &ParEvent->Particles[par].Theta;
 			par_phi = &ParEvent->Particles[par].Phi;
 
-			if (print) cout << "\tParticle = " << par << " with Theta, Phi = " << *par_theta/pi << "pi, " << *par_phi/pi << "pi\n";
+			if (print) cout << "\tParticle = " << par << " with Theta, Phi = " << *par_theta << ", " << *par_phi << "\n";
 			// if (print){
 				// printf("\t\tparticle theta = %f, phi = %f\n", *par_theta, *par_phi);
 			// }
@@ -160,7 +160,7 @@ int main(int argc, char** argv)
 		double totalphotons = photon_event.Photons.size();
 		for (int i = 0; i < photon_event.Photons.size(); i++)
 		{
-			Simulate_PhotonPath(*d, photon_event.Photons[i], smear);
+			Simulate_PhotonPath(*d, photon_event.Photons[i], smear, print);
 			if (photon_event.Photons[i].Flag == 1){
 				ParEvent->Particles.at(photon_event.Photons[i].WhichParticle).nPhotonsPassed -= 1;
 			}

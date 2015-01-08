@@ -1,30 +1,57 @@
 #include "efficiencyheader.h"
+#include "folders.h"
+#include "FileProperties.h"
+#include "utility_library.h"
 
-int main()
-{	
+int main(int argc, char* argv[])
+{
+  argc-=(argc>0); argv+=(argc>0); // skip program name argv[0] if present
+  option::Stats  stats(usage, argc, argv);
+  option::Option* options = new option::Option[stats.options_max];
+  option::Option* buffer  = new option::Option[stats.buffer_max];
+  option::Parser parse(usage, argc, argv, options, buffer);
 
-	string pre = "";
-	string data_dir = "";
-	string graph_dir = "graphs/";
-	string fit_dir = "fits/";
-	string fitdata = "fitresults.root";
-	string cheatdata = "cheat.root";
+  if (parse.error())
+    return 1;
 
-	fillparameters("directories", pre, data_dir);
+  if (options[HELP] || argc == 0) {
+    option::printUsage(std::cout, usage);
+    return 0;
+  }
+  
+	for (int i = 0; i < parse.nonOptionsCount(); ++i)
+	  std::cout << "Non-option #" << i << ": " << parse.nonOption(i) << "\n";
 
-	string file1 = appendStrings(pre, cheatdata);	
-	data_dir = appendStrings(pre, data_dir);
-	string file2 = appendStrings(data_dir, fitdata);
-	fit_dir = appendStrings(data_dir, fit_dir);
+	string defaultdir = "";
+	string graphdir = "comparison/";
+	string simdata = "cheat.root";
+	string recdata = "reconstruction.root";
+	string area_sim_ouput = "area_vs_simulation.pdf";
+	string sim_exp_ouput = "simulation_vs_expectation.pdf";
+	string area_exp_ouput = "area_vs_expectation.pdf";
 
+	if(options[DIRECTORY]) defaultdir = options[DIRECTORY].arg;
+	if(options[SIMDATA]) simdata = options[SIMDATA].arg;
+	if(options[RECDATA]) recdata = options[RECDATA].arg;
+	if(options[GRAPHDIR]) graphdir = options[GRAPHDIR].arg;
+	else wul::appendStrings(defaultdir, graphdir); // make graph directory appropriate
+
+	wul::FileProperties area_sim_prop(area_sim_ouput);
+	
+	
+	area_sim_prop.change_directory(graphdir);
+	area_sim_prop.appendFileToDirectory(graphdir, sim_exp_ouput);
+	area_sim_prop.appendFileToDirectory(graphdir, area_exp_ouput);
+	area_sim_ouput = area_sim_prop.file();
+	
 	ParticleEvent *originals = 0;
 	TrackRecons *reconstructions = 0;
 	
-	TFile f1(file1.c_str(), "read");
+	TFile f1(simdata.c_str(), "read");
 	TTree *t1 = (TTree*)f1.Get("cheat_info");
 	t1 -> SetBranchAddress("Particle Event", &originals);
 
-	TFile f2(file2.c_str(), "read");
+	TFile f2(recdata.c_str(), "read");
 	TTree *t2 = (TTree*)f2.Get("identifications");
 	t2 -> SetBranchAddress("guesses", &reconstructions);
 
@@ -33,24 +60,21 @@ int main()
 	vector<Particle> *pars = &originals->Particles;
 	vector<TrackRecon> *recons = &reconstructions->Recon;
 
-	int i = 0;
-	vector<int> vec_passed;
-	vector<int> vec_expected;
+	vector<int> vec_area; 						// photons from area
+	vector<int> vec_sim; 					// photons from simulation
+	vector<int> vec_expected; 						// photons from expectations
 	for (unsigned int ev = 0; ev < nentries; ++ev){
-		cout << "Event = " << ev << endl;
 		t1->GetEntry(ev); t2->GetEntry(ev);
 
 		int size_difference = matchDataSize(*recons, *pars);
 		for (unsigned int p = 0; p < recons->size(); ++p){
-			++i;
-			Particle* P = &pars->at(p);
-			TrackRecon* R = &recons->at(p);
-			vec_passed.push_back(P->nPhotonsPassed);
-			// cout << vec_passed.back() << endl;
+			Particle* P = &pars->at(p);								// holds passed amount
+			TrackRecon* R = &recons->at(p); 					// holds expected and area
+			vec_sim.push_back(P->nPhotonsPassed);
 			for (unsigned int opt = 0; opt < R->Options.size(); ++opt){
 				if (R->Options.at(opt) == P->name){
 					vec_expected.push_back(R->ExpectedNumber.at(opt));
-					// cout << vec_expected.back() << endl << endl;
+					vec_area.push_back(R->Areas.at(opt));
 				}
 			}
 		}
@@ -59,44 +83,34 @@ int main()
 
 
 	int bin_low = 1;
-	int bin_high = vec_passed.size();
-	TH1D photons_passed("Passed Photons", "Passed Photons", bin_high, bin_low, bin_high);
-	TH1D photons_expected("Expected Photons", "Expected Photons vs. ", bin_high, bin_low, bin_high);
+	int bin_high = vec_sim.size();
+	
+	TH1D sim_exp_disc("sim_exp_disc", "Discrepancy in Expected vs. Simulated Number of photons (Expected - Simulated) ", 1200, -100, 100);
+	TH1D area_sim_disc("area_sim_disc", "Discrepancy in Simulated Number of photons vs. Area under fit (Simulated - Area)", 1200, -100, 100);
+	TH1D area_exp_disc("area_exp_disc", "Discrepancy in Expected Number of photons vs. Area under fit (Expected - Area)", 1200, -100, 100);
 
-	TH1D disc("discrepancy", "Discrepancy in Expected vs. Actual ", 1200, -400, 400);
-
-	vector<int> discrepancy;
 	for (unsigned int i = 0; i < bin_high; ++i){
-		photons_passed.SetBinContent(i, vec_passed.at(i));
-		photons_expected.SetBinContent(i, vec_expected.at(i));
-		int dif = vec_expected.at(i) - vec_passed.at(i);
-		discrepancy.push_back(dif);	
-		disc.Fill(dif);
+		int sim_exp_dif = vec_expected.at(i) - vec_sim.at(i);
+		int area_sim_dif = -(vec_area.at(i) - vec_sim.at(i));
+		int area_exp_dif = vec_expected.at(i) - vec_area.at(i);
+
+		sim_exp_disc.Fill(sim_exp_dif);
+		area_sim_disc.Fill(area_sim_dif);
+		area_exp_disc.Fill(area_exp_dif);
 	}
 
 
 	TCanvas C("C", "C", 1000, 600);
-	disc.Draw();
-	// photons_expected.SetTitle("Expected Number of Photons vs. Actual Number of Photons");
-	// photons_expected.GetXaxis()->SetTitle("Particle #");
-	// photons_expected.GetYaxis()->SetTitle("Number of Photons");
-	// photons_expected.Draw();
-	// photons_passed.SetLineColor(kRed);
-	// photons_passed.Draw("same");
-	C.Print("hell.pdf");
+	sim_exp_disc.Draw();
+	C.Print(sim_exp_ouput.c_str());
+	C.Clear();
+	area_sim_disc.Draw();
+	C.Print(area_sim_ouput.c_str());
+	C.Clear();
+	area_exp_disc.Draw();
+	C.Print(area_exp_ouput.c_str());
 
-   // // scale hint1 to the pad coordinates
-   // Float_t rightmax = 1.1*photons_expected->GetMaximum();
-   // Float_t scale = gPad->GetUymax()/rightmax;
-   // hint1->SetLineColor(kRed);
-   // hint1->Scale(scale);
-   // hint1->Draw("same");
-
-   // draw an axis on the right side
-   // TGaxis *axis = new TGaxis(gPad->GetUxmax(),gPad->GetUymin(),
-   // gPad->GetUxmax(), gPad->GetUymax(),0,rightmax,510,"+L");
-   // axis->SetLineColor(kRed);
-   // axis->SetTextColor(kRed);
-   // axis->Draw();
-   // return c1;
+	delete options;
+	delete buffer;
+	return 0;
 }

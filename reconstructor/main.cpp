@@ -53,11 +53,11 @@ int main(int argc, char** argv)
 	if (print) cout << "ExpectedPhotonCase = ";
 	switch(ExpectedPhotonCase) {
 		case 1: // look-up table
-			if (print) cout << "LookUpTable\n";
+			if (!quiet) cout << "LookUpTable\n";
 			ExpectedNumberofPhotons = &LookUpTableWrapper;
 		break;
 		case 2: // riemansum
-			if (print) cout << "RiemannSum\n";
+			if (!quiet) cout << "RiemannSum\n";
 			ExpectedNumberofPhotons = &RiemannSum;
 		break;
 	}

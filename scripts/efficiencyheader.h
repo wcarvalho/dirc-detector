@@ -109,7 +109,7 @@ void getMatch(Particle *P, string search, string tomatch, double threshold, Trac
 
 	vector<double> &sigmas = R->Sigmas;
 	vector<string> &names = R->Options;
-
+	// cout << "mass = " << P->m << endl;
 	if(P->name == search){
 		pair <Particle, TrackRecon> PR; PR.first = *P; PR.second = *R;
 		pair <int, pair <Particle, TrackRecon> > den(multiplicity, PR);
@@ -273,8 +273,8 @@ void makePlots(TCanvas &C, vector< vector <double> > &bounds, string xtitle, str
 		ss << xtitle << "( " << parameter << " = [" << bounds[i][0] << " : " << bounds[i][1] << "] )";
 		string xaxis = ss.str();
 
-		string filename = GraphFileName(data_dir, graph_dir, matchgraph_filebase, xtitle, filenumber, ".root");
-		string rootfilename = GraphFileName(data_dir, graph_dir, matchgraph_filebase, xtitle,filenumber, ".root");
+		string filename = GraphFileName(data_dir, graph_dir, matchgraph_filebase, xtitle, filenumber, ".pdf");
+		string rootfilename = GraphFileName(data_dir, graph_dir, matchgraph_filebase, xtitle,filenumber, ".pdf");
 		string graph_name = GraphFileName(data_dir, graph_dir, matchgraph_filebase, xtitle,filenumber, "");
 		TGraphAsymmErrors match_graph = graphASymm(C, histlow, histhi, nbins, numMatch, denMatch, Case, bounds[i], makegraph, print, graph_name);
 		match_graph.SetName(GraphFileName("", "", matchgraph_filebase, xtitle,filenumber, "").c_str());
@@ -290,8 +290,8 @@ void makePlots(TCanvas &C, vector< vector <double> > &bounds, string xtitle, str
 		C.Clear();
 		makegraph = true;
 		if (print) cout << "-----False----\n";
-		filename = GraphFileName(data_dir, graph_dir, falsegraph_filebase, xtitle,filenumber, ".root");
-		rootfilename = GraphFileName(data_dir, graph_dir, falsegraph_filebase, xtitle,filenumber, ".root");
+		filename = GraphFileName(data_dir, graph_dir, falsegraph_filebase, xtitle,filenumber, ".pdf");
+		rootfilename = GraphFileName(data_dir, graph_dir, falsegraph_filebase, xtitle,filenumber, ".pdf");
 		graph_name = GraphFileName(data_dir, graph_dir, falsegraph_filebase, xtitle,filenumber, "");
 		TGraphAsymmErrors false_graph = graphASymm(C, histlow, histhi, nbins, numFalse, denFalse, Case, bounds[i], makegraph, print, graph_name);
 		false_graph.SetName(GraphFileName(data_dir, graph_dir, falsegraph_filebase, xtitle,filenumber, "").c_str());
@@ -387,6 +387,7 @@ void printfits(TCanvas &C, int Event, int par, Particle const &P, TrackRecon &R,
 		static double center = 0;
 		static double width = 0;
 		double &N = R.ExpectedNumber.at(i);
+		double &Area = R.Areas.at(i);
 
 		for (unsigned int j = 0; j < 4; j++){
 			f2.SetParameter(j, R.Params.at(i).at(j));
@@ -423,6 +424,8 @@ void printfits(TCanvas &C, int Event, int par, Particle const &P, TrackRecon &R,
 		             stringDouble("pt = ", P.pt).c_str()); latmax -= .05;
 		T1.DrawLatex(2, latmax*h.GetMaximum(), 
 		             stringDouble("Expected Photons = ", N).c_str()); latmax -= .05;
+		T1.DrawLatex(2, latmax*h.GetMaximum(), 
+		             stringDouble("Area = ", Area).c_str()); latmax -= .05;
 		double IncidentTheta = P.Theta/TMath::Pi();
 		double IncidentPhi = P.Phi/TMath::Pi();
 		string IncidentAngleStr = appendStrings(stringDouble("Incident #theta, #phi = ", IncidentTheta), "#pi, ");

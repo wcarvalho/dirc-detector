@@ -13,30 +13,27 @@ Simulate the trajectory for a single Particle of a single "Event"
 
 void Simulate_ParticlePath(Detector d, Particle &particle, int parnum, PhotonEvent &photon_event, double avg_d, bool print)
 {
+	print = false; //TEMPORARY 
 	Random r;
 	double Path_length = 0.;
 	double avg_photons_released = 0.;
 	double photons_released = 0.;
-	int original_photon_count = 0;
-	int howmany = 0;
-	int steps = 100;
 
 	Simulate simPar(particle.Theta, particle.Phi);
 
 	simPar.SetDim(d.Length, d.Width, d.Height);
 	simPar.SetStart(particle.X, particle.Y, 0);
-	simPar.DistancetoWalls( );
-	simPar.WhichWall( );
+	simPar.DistancetoWalls(print);
+	simPar.WhichWall(print);
 	Path_length = simPar.WillTravel();
+	
 	if (print) cout << "\tTravling distance: " << Path_length << endl;
+
 	avg_photons_released = Path_length*particle.PhotonsPercm;
 	photons_released = r.Poisson(avg_photons_released);
+	
 	if (print) cout << "\tReleasing " << photons_released << " photons\n";
 	particle.nPhotonsPassed = photons_released;
-
-	// double PhotonsPerStep = photons_released/steps;
-	
-	// if (print) printf("\t\tphoton emissions at:\n");
 
 	vector<Photon> &numpho = photon_event.Photons;
 	int numPho0 = numpho.size();
@@ -45,7 +42,8 @@ void Simulate_ParticlePath(Detector d, Particle &particle, int parnum, PhotonEve
 	{
 		simPar.SetStart(particle.X, particle.Y, 0);
 		double distance = r.Uniform(Path_length);
-		simPar.TravelDistance(distance);
+
+		simPar.TravelDistance(distance, print);
 
 		Photon P(particle.ConeAngle, r.Uniform(2*TMath::Pi()));
 		P.X = simPar.coord[0];
@@ -54,10 +52,6 @@ void Simulate_ParticlePath(Detector d, Particle &particle, int parnum, PhotonEve
 		P.WhichParticle = parnum;
 		photon_event.Photons.push_back(P);
 
-		// if (print)
-			// printf("\t\t\tx = %f, y = %f, z = %f\n", simPar.coord[0], simPar.coord[1], simPar.coord[2]);
 		
 	}
-	// if (print) cout << "\t\treleased " << photons_released << "photons\n";
-
 }

@@ -37,7 +37,7 @@ void CreateHistogram_1D2D(int ev, int par, Analysis &A, std::vector<PhotonOut> &
 	}
 }
 
-// something
+// for one particle this function will calculate the histogram fit, the area under the fit, the expected number of photons for each mass. the area and expected number of photons are compared and a delta sigma is delta_Sigma is calculated
 void CalculateParticleFits(double (*ExpectedNumberofPhotons)(double const&, double const&, double const&, double const&, double const&),
                            ParticleOut &P, TH1D*& h, TrackRecon &guess, double range, double smear, bool print){
 
@@ -64,20 +64,23 @@ void CalculateParticleFits(double (*ExpectedNumberofPhotons)(double const&, doub
 		currentname << defaultname << "_" << name;
 		string newhname = currentname.str();
 
-		double Area = guesser.FitParticle1D(c1_p, *h, params, angle-r, angle+r, angle, smear, newhname, print);	// area under gaussian (calculated number of photons)
+		// FIXME Hardcoded xlow=0, xhi=pi. maybe change later
+		double Area = guesser.FitParticle1D(c1_p, *h, params, 0, TMath::Pi(), angle, smear, newhname, print);	// area under gaussian (calculated number of photons)
 	  double Beta = P.CalculateBeta(mass);
 	  double N = ExpectedNumberofPhotons(P.X, P.Y, P.Theta, P.Phi, Beta);
 
+	  // sigma = sqrt (sigma_C*sigma_C + sigma_N*sigma_N)
+
+
 		double pi2 = TMath::Pi()/2;
-		double Sigma = sqrt(N);
+		double Sigma_N = sqrt(N);
+		double Sigma_C = (angle - params.at(1))/smear;
+		double Sigma = sqrt(Sigma_N*Sigma_N + Sigma_C*Sigma_C);
+		// cout << "old sigma = " << Sigma_N << endl;
+		// cout << "new sigma = " << Sigma << endl;
 		double nSigma = (abs(N-Area))/Sigma;
 
 		pm[name] = nSigma;
-		// if (print) {
-		// 	printf("\t\t%s: Area = %f, Expected = %f, sigma = %f\n", name.c_str(), Area, N, nSigma);
-		// 	cout << "\t\t\ttotal photons = " << travels*P.PhotonsPercm << endl;
-		// 	cout << "\t\t\tAngle = " << angle << endl;
-		// }
 
 		guess.Options.push_back(name);
 		guess.Sigmas.push_back(pm[name]);

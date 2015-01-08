@@ -80,6 +80,9 @@ double Identifier::FitParticle1D(TCanvas* c, TH1D &h, vector< double > &params, 
   data.clear();
   errors.clear();
   
+  // xlow = 0;
+  // xhi = pi;
+  // width = .03;
   int lbin = h.FindBin(xlow);
   int hbin = h.FindBin(xhi);
   
@@ -120,15 +123,15 @@ double Identifier::FitParticle1D(TCanvas* c, TH1D &h, vector< double > &params, 
   // FIXME these bounds should not be hard-coded
   // this routine needs to know about the resolution of the 
   // photon angle for the width and the tracking for the center
-  gpc.setCenterBounds( -pi, pi );
-  gpc.setWidthBounds( width*0.5, width*1.5);
+  gpc.setCenterBounds(xlow, xhi);
+  gpc.setWidthBounds(.25*width, 2*width);
   
   
   VectorXd start = VectorXd::Zero(4);
-  start[0] = (yhi - ylo)/h.GetBinWidth(lbin);
+  start[0] = (yhi)/h.GetBinWidth(lbin);
   start[1] = center;
   start[2] = width;
-  start[3] = ylo/h.GetBinWidth(lbin);
+  start[3] = 0;//ylo/h.GetBinWidth(lbin);
   
   VectorXd min_point = VectorXd::Zero(4);
   
@@ -163,6 +166,7 @@ double Identifier::FitParticle1D(TCanvas* c, TH1D &h, vector< double > &params, 
   params.push_back(xlow);
   params.push_back(xhi);
   
+  // height * width * sqrt(2pi) (divided by bin width to go from counts to amount)
   return min_point(0) * min_point(2) * sqrt(2*pi) / h.GetBinWidth(1);
 }
 

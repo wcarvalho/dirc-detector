@@ -2,20 +2,26 @@
 #include "../headers/functions.h"
 #include "../headers/simulator.h"
 #include "../headers/Simulate.h"
+#include <iomanip>
 
-void Simulate::DistancetoWalls(string Output)
+void Simulate::DistancetoWalls(bool print)
 {
 	for (unsigned int comp = 0; comp < 3; comp++)
 	{
-		if (Vec(comp) >= 0 ) { Distance[comp] = Dim[comp] - coord[comp]; }
-		else { Distance[comp] = -Dim[comp]; }
-		if (Output == "yes"){ TabToLevel(3); cout << "Distance " << comp << " = " << Distance[comp] << endl; }
+		if (Vec(comp) >= 0 ) Distance[comp] = Dim[comp] - coord[comp];
+		else Distance[comp] = -coord[comp];
 	}
+
+	if (print) { TabToLevel(3); cout << "Dist = "; }
+	for (unsigned int comp = 0; comp < 3; comp++){
+		if (print) cout <<setw(10)<< Distance[comp];
+	}
+	if (print) cout << endl;
 }
 
 //======================================================================
 //_____________check which wall will be hit__________________
-void Simulate::WhichWall(string Output)
+void Simulate::WhichWall(bool print)
 {
 	double key1, key2;
   double velocity_map_first = 0, velocity_map_second = 0;
@@ -25,7 +31,7 @@ std::multimap<double, int> time_map;
 
   for (unsigned int comp = 0; comp < 3; comp++)
   {
-  	TimesToWall[comp] = fabs(Distance[comp]/Vec(comp));
+  	TimesToWall[comp] = Distance[comp]/Vec(comp);
 		time_map.insert(std::make_pair(TimesToWall[comp], comp+1));
 	  velocity_map[comp] = Vec(comp);
   }
@@ -35,13 +41,12 @@ std::multimap<double, int> time_map;
   // set wall to first wall of time_map
   wall = it->second;
   TimeToWall = it->first;
-  if (Output == "yes")
-	{
-		for (unsigned int comp = 0; comp < 3; comp++){
-			TabToLevel(3); cout << "Time "<< comp+1 << " = " << TimesToWall[comp] << endl;		
-		}
-	}
 
+	if (print) { TabToLevel(3); cout << "Time = "; }
+	for (unsigned int comp = 0; comp < 3; comp++){
+		if (print) cout <<setw(10)<< TimesToWall[comp];
+	}
+	if (print) cout << endl;
   // check if the first two wall times are equal, if so find wall based on velocity
 	key1 = it->first;
   ++it;
@@ -56,50 +61,83 @@ std::multimap<double, int> time_map;
     velocity_map_second = velocity_map[key2];
     if (velocity_map_first > velocity_map_second) { wall = key1; }
     if (velocity_map_second > velocity_map_first) { wall = key2; }
-		if (Output == "yes")
+		if (print)
 		{
 			for (unsigned int comp = 0; comp < 3; comp++){
 				TabToLevel(3); cout << "Velocity"<< comp << " = " << Vec(comp) << endl;		
 			}
 		}
   }
-	if (Output == "yes")
-	{
-		TabToLevel(3); cout << "Wall = " << wall << endl;
-	}
+	if (print) { TabToLevel(3); cout << "Wall = " << wall << endl; }
 }
 
-void Simulate::GotoWall(string Output)
-{
-	DistancetoWalls(Output);
-	WhichWall(Output);
+double Simulate::TimeForDistance(double D, bool print){
 
-	for (unsigned int i = 0; i < 3; i++)
-	{
-		coord[i] = coord[i] + Vec(i)*TimeToWall;
-	}
-	Traveled = WillTravel();
-	if (Output == "yes")
-	{
-		TabToLevel(3); cout << "X,Y,Z = ";
-		for (unsigned int i = 0; i < 3; i++)
-		{
-			cout << coord[i] << " ";
-		}
-		cout << endl;
-		TabToLevel(3); cout << "Total Distance Traveled = " << Traveled << endl;
-	}
+	double t = D; // normally divided by v but v is always one because its a unit vector
+	// if (print) cout << "\t\tTime = " << t << endl;
+	return t;
+
 }
 
-void Simulate::TravelDistance(double D)
+void Simulate::TravelDistance(double D, bool print)
 {
+	double t = TimeForDistance(D, print);
 	double dist[3];
-	dist[0] = D*sin(Theta)*sin(Phi);
-	dist[1] = D*sin(Theta)*cos(Phi);
-	dist[2] = D*cos(Theta);
-	for (unsigned int i = 0; i<3;i++)
-	{
-		coord[i] = coord[i] + dist[i];
+	dist[0] = t*Vec(0);
+	dist[1] = t*Vec(1);
+	dist[2] = t*Vec(2);
+	
+	if (print) { TabToLevel(3); cout << "WillTravel = " << D << endl; }
+	if (print) PrintVec();
+	if (print) { TabToLevel(3); cout << "Init = "; }
+	for (unsigned int comp = 0; comp < 3; comp++){
+		if (print) cout <<setw(10)<< coord[comp];
 	}
+	if (print) cout << endl;
+
+
+
+	// non-printing-----
+	for (unsigned int i = 0; i<3;i++)
+		coord[i] = coord[i] + dist[i];
+	// ---------------
+
+
+
+	if (print) { TabToLevel(3); cout << "Final = "; }
+	for (unsigned int comp = 0; comp < 3; comp++){
+		if (print) cout <<setw(10)<< coord[comp];
+	}
+	if (print) cout << endl;
 	Traveled = Traveled + D;
+}
+
+void Simulate::GotoWall(bool print)
+{
+	DistancetoWalls(print);
+	WhichWall(print);
+	TravelDistance(WillTravel(), print);
+}
+
+void Simulate::Reflect(bool print)
+{
+	if (print) PrintVec();
+	if (wall == 1)
+		FlipX();
+
+	if (wall == 2)
+		FlipY();
+
+	if (wall == 3)
+		FlipZ();
+
+	if (print) PrintVec();
+}
+
+void Simulate::PrintVec(){
+	TabToLevel(3); cout << "Vector = ";
+	for (unsigned int comp = 0; comp < 3; comp++){
+		cout <<setw(10)<< Vec(comp);
+	}
+	cout << endl;	
 }
