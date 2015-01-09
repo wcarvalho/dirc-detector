@@ -3,7 +3,7 @@
 nevents=2000
 ptype="Electrons"
 # ptype="Pions"
-Case=1					# 1: lookuptable, 2: riemann sum
+Case=2					# 1: lookuptable, 2: riemann sum
 # nparticles=3
 
 smear=.01
@@ -12,7 +12,7 @@ t=$nevents$ptype
 runGen=false
 runSim=false
 runSmear=false
-runRec=true
+runRec=false
 runphotoncomp=true
 runEff=false
 
@@ -105,29 +105,33 @@ if [ -e $t/$sim_out_smeared ]; then
 	sim_out=$sim_out_smeared
 fi
 
+if [ ! -d $t/$s/$Case ]; then
+	mkdir $t/$s/$Case
+fi
+
+recon=$t/$s/$Case/"reconstruction.root"
 if [ "$runRec" = true ] ; then
 	## FIXME: when efficiency header accepts variable for fitresults change this to variable
-	recon=$t/$s/"reconstruction.root"
 	if [ -e $recon ]; then	
 		rm $recon
 	fi
 	echo "reconstructor"
 	if [ "$print" = true ] ; then
-		reconstructor -i $t/$sim_out -e$Case -v
+		reconstructor -i $t/$sim_out -e$Case -D $t/$s/$Case/ -v
 	elif [ "$quiet" = true ] ; then		
-		reconstructor -i $t/$sim_out -e$Case -q
+		reconstructor -i $t/$sim_out -e$Case -D $t/$s/$Case/ -q
 	else
-		reconstructor -i $t/$sim_out -e$Case
+		reconstructor -i $t/$sim_out -e$Case -D $t/$s/$Case/
 	fi
 fi
 
 if [ "$runphotoncomp" = true ] ; then
 	echo "photon comparison"
-	graphdir=$t/$s/"photon_comp_graphs/"
+	graphdir=$t/$s/$Case/"photon_comp_graphs/"
 	if [ ! -d $graphdir ]; then 
 		mkdir $graphdir
 	fi	
-	./scripts/histcomp -S$t/$cheat_out -R$t/$s/$rec_out -g$graphdir
+	./scripts/histcomp -S$t/$cheat_out -R$recon -g$graphdir
 fi
 
 if [ "$runEff" = true ] ; then

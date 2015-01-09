@@ -12,5 +12,7 @@ const option::Descriptor usage[] =
  {FITDIR, 0,"f","fits_directory",option::Arg::Optional, " -f  \tDirectory where graphs are saved." },
  {GRAPHDIR, 0,"g","graphs_directory",option::Arg::Optional, " -g  \tDirectory where graphs are saved." },
  
+ {GRAPHDIR, 0,"g","graphs_directory",option::Arg::Optional, " -g  \tDirectory where graphs are saved." },
+
  {0,0,0,0,0,0}
 };

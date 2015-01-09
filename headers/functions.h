@@ -67,12 +67,12 @@ public:
 	void Rotate_Photon(double &pho_theta, double &pho_phi);
 	void Feed_Particle(double par_theta, double par_phi);
 
-	string Direction;
 	TVector3 RotationVector;
 	TVector3 Zero;
   TVector3 X;
   TVector3 Y;
   TVector3 Z;
+	string Direction;
 	double Angle;
 	double Matrix[3][3];
 
