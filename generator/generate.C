@@ -24,18 +24,7 @@ vector<Particle> generate(int nparticles, gParticle& gPar, Detector d, int maxPa
   		gPar.getEangle();
 
   		// determines the number of photons per cm here
-  		double xlow = 200e-9;
-  		double xhigh = 1000e-9;
-  		double z = 1.;
-  		double alpha = 1./137;
-  		double n = d.n;
-  		double beta = gPar.Beta;
-  		double nu = (1-(1/(beta*beta*n*n)));
-  		double Constant = 2*pi*alpha*nu*nu;
-  		TF1 f("dNdx", "1/x/x", xlow, xhigh);
-  		
-  		double dNdx = 1e-2*Constant*f.Integral(xlow, xhigh);
-  		gPar.PhotonsPercm = dNdx;
+			gPar.CalculatePhotonsPercm(200e-9, 1000e-9, d.n);
   		if (passed && (gPar.Theta < pi/2))
 			{
 				if( gPar.ConeAngle == gPar.ConeAngle )
@@ -47,7 +36,7 @@ vector<Particle> generate(int nparticles, gParticle& gPar, Detector d, int maxPa
 		  			printf("\tCollided with detector with:\n"
 		  				  		"\t\tX = %f, Y = %f, Phi = %f, Theta = %f\n"
 		  				  		"\t\tBeta = %f, Emission Angle = %f\n"
-		  				  		"\t\twith %i PhotonsPercm\n",
+		  				  		"\t\twith %f PhotonsPercm\n",
 		  				  		gPar.X, gPar.Y, gPar.Phi, gPar.Theta, gPar.Beta, gPar.ConeAngle, gPar.PhotonsPercm);
 		  		}
 				pars.push_back(*Par);

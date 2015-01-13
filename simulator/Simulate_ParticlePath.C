@@ -13,7 +13,6 @@ Simulate the trajectory for a single Particle of a single "Event"
 
 void Simulate_ParticlePath(Detector d, Particle &particle, int parnum, PhotonEvent &photon_event, double avg_d, bool print)
 {
-	print = false; //TEMPORARY 
 	Random r;
 	double Path_length = 0.;
 	double avg_photons_released = 0.;
@@ -28,11 +27,13 @@ void Simulate_ParticlePath(Detector d, Particle &particle, int parnum, PhotonEve
 	Path_length = simPar.WillTravel();
 	
 	if (print) cout << "\tTravling distance: " << Path_length << endl;
+	if (print) cout << "\tPhotonsPercm: " << particle.PhotonsPercm << endl;
 
 	avg_photons_released = Path_length*particle.PhotonsPercm;
 	photons_released = r.Poisson(avg_photons_released);
 	
 	if (print) cout << "\tReleasing " << photons_released << " photons\n";
+	print = false; //TEMPORARY 
 	particle.nPhotonsPassed = photons_released;
 
 	vector<Photon> &numpho = photon_event.Photons;

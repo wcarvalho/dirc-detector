@@ -68,7 +68,7 @@ void CalculateParticleFits(double (*ExpectedNumberofPhotons)(double const&, doub
 		double Area = guesser.FitParticle1D(c1_p, *h, params, 0, TMath::Pi(), angle, smear, newhname, print);	// area under gaussian (calculated number of photons)
 	  double Beta = P.CalculateBeta(mass);
 	  double N = ExpectedNumberofPhotons(P.X, P.Y, P.Theta, P.Phi, Beta);
-
+	  if (print) cout << "X, Y, Theta, Phi, Beta = " << P.X << ", " << P.Y << ", " << P.Theta << ", " << P.Phi << ", " << Beta << endl;
 	  // sigma = sqrt (sigma_C*sigma_C + sigma_N*sigma_N)
 
 

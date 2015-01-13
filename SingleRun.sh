@@ -1,25 +1,26 @@
-# nevents=4
+nevents=1
 # nevents=1000
-nevents=2000
+# nevents=2000
 ptype="Electrons"
 # ptype="Pions"
-Case=2					# 1: lookuptable, 2: riemann sum
+Case=1				# 1: lookuptable, 2: riemann sum
 # nparticles=3
 
-smear=.01
+smear=0.01
 t=$nevents$ptype
 
-runGen=false
-runSim=false
+runGen=true
+runSim=true
 runSmear=false
+runPixelate=false
 runRec=false
-runphotoncomp=true
+runphotoncomp=false
 runEff=false
 
-print=false
+print=true
 quiet=true
 
-g="graphs"
+g="matchfalse_graphs"
 f="fits"
 scripts="scripts"
 b=build
@@ -65,13 +66,14 @@ s="for_smear_"$smear
 if [ ! -d $t/$s ]; then	
 	mkdir $t/$s
 fi
+
 # for efficiency and false positive rate plots
-if [ ! -d $t/$s/$g ]; then	
-	mkdir $t/$s/$g
+if [ ! -d $t/$s/$Case/$g ]; then	
+	mkdir $t/$s/$Case/$g
 fi
 # for fits to histogram
-if [ ! -d $t/$s/$f ]; then	
-	mkdir $t/$s/$f
+if [ ! -d $t/$s/$Case/$f ]; then	
+	mkdir $t/$s/$Case/$f
 fi
 
 if [ "$runSim" = true ] ; then
@@ -91,19 +93,31 @@ fi
 
 sim_out_smeared=$s/$sim"_"$smear$appendage
 if [ "$runSmear" = true ] ; then
-	echo "smearer"
+	echo "smear"
 	rm $smearsettingsfile
 	touch $smearsettingsfile
 	echo $t/$sim_out >> $smearsettingsfile
 	echo $t/$sim_out_smeared >> $smearsettingsfile
 	echo $smear >> $smearsettingsfile
-	./$scripts/smearer
+	./$scripts/smear
 fi
 
 ## if photons have been smeared, set sim file to smeared file
 if [ -e $t/$sim_out_smeared ]; then	
 	sim_out=$sim_out_smeared
 fi
+
+sim_out_pix=$s/$sim"_"$smear"pix"$appendage
+if [ "$runPixelate" = true ] ; then
+	echo "pixelate"
+	./$scripts/"pixelate" -S$t/$sim_out_smeared -o$t/$sim_out_pix -T$smear
+fi
+
+## if photons have been pixelated, set sim file to pixelated file
+if [ -e $t/$sim_out_pix ]; then	
+	sim_out=$sim_out_pix
+fi
+
 
 if [ ! -d $t/$s/$Case ]; then
 	mkdir $t/$s/$Case
@@ -131,7 +145,7 @@ if [ "$runphotoncomp" = true ] ; then
 	if [ ! -d $graphdir ]; then 
 		mkdir $graphdir
 	fi	
-	./scripts/histcomp -S$t/$cheat_out -R$recon -g$graphdir
+	./scripts/photoncomp -S$t/$cheat_out -R$recon -g$graphdir
 fi
 
 if [ "$runEff" = true ] ; then
@@ -139,7 +153,7 @@ if [ "$runEff" = true ] ; then
 	rm directories
 	touch directories
 	echo $t"/" >> directories 
-	echo $s"/" >> directories
+	echo $s/$Case"/" >> directories
 	echo $g"/" >> directories
 	echo $f"/" >> directories
 	./$scripts/eff

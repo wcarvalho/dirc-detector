@@ -138,7 +138,6 @@ int main(int argc, char** argv)
 	}
 	if(!quiet) cout << "\ttotal particles: " << pars.size() << endl;
    	tree.Fill();
-
   }
 
   file.Write();

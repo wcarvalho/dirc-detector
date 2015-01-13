@@ -21,11 +21,10 @@ int main(int argc, char** argv)
 
 	string writef = "simulator.root";
 	string writef2 = "cheat.root";
-	string inputs = "inputs.txt";
 	string status = "recreate";
 	string non_cheatCopyFile = "";
 	string cheatCopyFile = "";
-	double smear = .01;
+	double smear = .00;
 
 	//_______Declarations__________
 	bool print = ai.verbose_given;
@@ -102,8 +101,6 @@ int main(int argc, char** argv)
   //--------------------------------------------------
 
 	double pi = TMath::Pi();
-
-	if(!quiet) cout << "\nSIMULATOR\n";
 	//___for convenience__________________________
 	vector<Particle> *pars = &ParEvent->Particles;
 	double *par_theta, *par_phi;
@@ -118,14 +115,11 @@ int main(int argc, char** argv)
 	}
 	//------------------------------------------------
 
-	if (print == true){
-		cout << "Smearing = " <<  smear << endl;
-	}
 	for (int ev = 0; ev < gen_out->GetEntries(); ev++)
 	{
 		if(!quiet) printf("Event %i\n", ev);
 		gen_out->GetEntry(ev);
-		
+
 		if (Append)	{
 			non_cheatCopyTree->GetEntry(ev);
 			cheatCopyTree->GetEntry(ev);
@@ -136,12 +130,14 @@ int main(int argc, char** argv)
 		photon_event.iterator = 0;
 
 		d->get_Critical_Angle(1.);
+		if (print) cout << "Number of Particles: " << ParEvent->Particles.size() << endl;
 		for (unsigned int par = 0; par < ParEvent->Particles.size(); par++)
 		{
  			par_theta = &ParEvent->Particles[par].Theta;
 			par_phi = &ParEvent->Particles[par].Phi;
 
-			if (print) cout << "\tParticle = " << par << " with Theta, Phi = " << *par_theta << ", " << *par_phi << "\n";
+			if (print) cout << "\tParticle = " << par << " with X, Y, Theta, Phi, Beta =\n\t\t" << ParEvent->Particles[par].X << ", " << ParEvent->Particles[par].Y << ", " << ParEvent->Particles[par].Theta << ", " << ParEvent->Particles[par].Phi << ", " << ParEvent->Particles[par].Beta << endl;
+			if (print) cout << "\t\tPhotonsPerCm = " << ParEvent->Particles.back().PhotonsPercm << endl;
 			// if (print){
 				// printf("\t\tparticle theta = %f, phi = %f\n", *par_theta, *par_phi);
 			// }
@@ -158,6 +154,7 @@ int main(int argc, char** argv)
 
 
 		double totalphotons = photon_event.Photons.size();
+		if (print) cout << "\t\tTotal photons = " << totalphotons << endl;
 		for (int i = 0; i < photon_event.Photons.size(); i++)
 		{
 			Simulate_PhotonPath(*d, photon_event.Photons[i], smear, print);
