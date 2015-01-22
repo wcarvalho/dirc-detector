@@ -64,25 +64,25 @@ void CalculateParticleFits(double (*ExpectedNumberofPhotons)(double const&, doub
 		currentname << defaultname << "_" << name;
 		string newhname = currentname.str();
 
-		// FIXME Hardcoded xlow=0, xhi=pi. maybe change later
-		double Area = guesser.FitParticle1D(c1_p, *h, params, 0, TMath::Pi(), angle, smear, newhname, print);	// area under gaussian (calculated number of photons)
+		double Area = guesser.FitParticle1D(c1_p, *h, params, angle-r, angle+r, angle, smear, newhname, print);	// area under gaussian (calculated number of photons)
 	  double Beta = P.CalculateBeta(mass);
 	  double N = ExpectedNumberofPhotons(P.X, P.Y, P.Theta, P.Phi, Beta);
 	  if (print) cout << "X, Y, Theta, Phi, Beta = " << P.X << ", " << P.Y << ", " << P.Theta << ", " << P.Phi << ", " << Beta << endl;
-	  // sigma = sqrt (sigma_C*sigma_C + sigma_N*sigma_N)
 
-
+	  //FIXME manual fudging
+	  // Area = 1.2411*Area;
+    // N *= 0.75;
 		double pi2 = TMath::Pi()/2;
 		double Sigma_N = sqrt(N);
-		double Sigma_C = (angle - params.at(1))/smear;
-		double Sigma = sqrt(Sigma_N*Sigma_N + Sigma_C*Sigma_C);
-		// cout << "old sigma = " << Sigma_N << endl;
-		// cout << "new sigma = " << Sigma << endl;
-		double nSigma = (abs(N-Area))/Sigma;
-
+		double delSigTheta = abs(angle - params.at(1))/smear;
+		double delSigA = abs(N-Area)/Sigma_N;
+		if (print) cout << "delSigA = " << delSigA << ", delSigTheta = " << delSigTheta << endl;
+		double nSigma = sqrt(delSigTheta*delSigTheta + delSigA*delSigA);
 		pm[name] = nSigma;
 
 		guess.Options.push_back(name);
+		guess.delSigTheta.push_back(delSigTheta);
+		guess.delSigArea.push_back(delSigA);
 		guess.Sigmas.push_back(pm[name]);
 		guess.Areas.push_back(Area);
 		guess.ExpectedNumber.push_back(N);

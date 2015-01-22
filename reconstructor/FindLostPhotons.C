@@ -18,7 +18,6 @@ bool Cut(double theta, double phi, double x, double y, double z){
 	bool cut = false;
 	for(unsigned int reflections = 0; reflections< 4; ++reflections){
 		simPho.GotoWall(false);
-		// cout << "x, y, z = " << simPho.coord[0] << ", " << simPho.coord[1] << ", " << simPho.coord[2] << endl;
 		double &x_p = simPho.coord[0];
 		if((x_p == 0 ) || (x_p == d.Length)){ break; } 
 		double th = simPho.Theta;
@@ -63,7 +62,7 @@ double RiemannSum(double const& x, double const& y, double const& theta, double 
 	int PhiSteps = 50;
 	
 	double phi_measure = 0.;
-	// while(simPar.Traveled < Path_length){
+	while(simPar.Traveled < Path_length){
 		for(phi_measure = 0;  phi_measure < 2*pi; phi_measure += 2*pi/PhiSteps)
 		{
 			++total;
@@ -74,7 +73,7 @@ double RiemannSum(double const& x, double const& y, double const& theta, double 
 			if (!Cut(th, ph, simPar.coord[0],simPar.coord[1],simPar.coord[2])) ++passed;
 		}
 		simPar.TravelDistance(Path_length/(double)PathSteps);
-	// }
+	}
 	// cout << "passed = " << passed << endl;
 	// cout << "total = " << total << endl;
 
@@ -88,7 +87,10 @@ double RiemannSum(double const& x, double const& y, double const& theta, double 
 	double Constant = 2*pi*alpha*nu*nu;
 	TF1 f("dNdx", "1/x/x", xlow, xhigh);
 
+	// cout << "\ttotal = " << total << endl;
+
 	double percent_passed = double(passed)/total;
+	// cout << "\tpercent passed = " << percent_passed << ": " << passed << endl;
 	double dNdx = 1e-2*Constant*f.Integral(xlow, xhigh);
 	double NPhotons = percent_passed*Path_length*dNdx;
 	return NPhotons;
@@ -137,8 +139,6 @@ void FindLostPhotons(double x, double y, double theta, double phi, double eta, d
 			simPar.TravelDistance(Path_length/PathSteps);
 		}
 		simPar.SetStart(x, y, 0);
-		// cout << "\tpassed = " << passed << endl;
-		// cout << "\ttotal = " << total << endl;
 		madeit[it->first] = double(passed)/total;
 	}
 

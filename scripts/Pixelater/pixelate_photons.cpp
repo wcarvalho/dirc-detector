@@ -1,4 +1,4 @@
-#include "folders.h"
+#include "../folders.h"
 #include "pixelate_photons.h"
 
 int main(int argc, char* argv[]){
@@ -8,10 +8,6 @@ int main(int argc, char* argv[]){
   option::Option* options = new option::Option[stats.options_max];
   option::Option* buffer  = new option::Option[stats.buffer_max];
   option::Parser parse(usage, argc, argv, options, buffer);
-
-  if (parse.error())
-  	std::cout << "parse error\n";
-    return 1;
 
   if (options[HELP] || argc == 0) {
     option::printUsage(std::cout, usage);

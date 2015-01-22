@@ -123,15 +123,16 @@ double Identifier::FitParticle1D(TCanvas* c, TH1D &h, vector< double > &params, 
   // FIXME these bounds should not be hard-coded
   // this routine needs to know about the resolution of the 
   // photon angle for the width and the tracking for the center
-  gpc.setCenterBounds(xlow, xhi);
-  gpc.setWidthBounds(.25*width, 2*width);
+  double weight = .1;
+  gpc.setCenterBounds(center - weight*width, center + weight*width);
+  gpc.setWidthBounds(.8*width, 1.2*width);
   
   
   VectorXd start = VectorXd::Zero(4);
-  start[0] = (yhi)/h.GetBinWidth(lbin);
+  start[0] = (yhi - ylo)/h.GetBinWidth(lbin);
   start[1] = center;
   start[2] = width;
-  start[3] = 0;//ylo/h.GetBinWidth(lbin);
+  start[3] = ylo/h.GetBinWidth(lbin);
   
   VectorXd min_point = VectorXd::Zero(4);
   
@@ -139,7 +140,7 @@ double Identifier::FitParticle1D(TCanvas* c, TH1D &h, vector< double > &params, 
   bool converged = false;
   while( converged == false )
   {
-    converged = minimizer.minimize( start, min_point, 1.0e-9 );
+    converged = minimizer.minimize( start, min_point, 1.0e-5 );
     count += 1;
     start = min_point;
     if(count == 4){break;}
@@ -148,7 +149,17 @@ double Identifier::FitParticle1D(TCanvas* c, TH1D &h, vector< double > &params, 
   {
     min_point = VectorXd::Zero(4);
   }
-  
+  else
+  {
+    double val;
+    Eigen::VectorXd grad = VectorXd::Zero(4);
+    Eigen::MatrixXd hessian = MatrixXd::Zero(4,4);
+    chi2.calcValGradHessian(min_point, val, grad, hessian);
+    val /= (data.size());
+//     cout<<"chi^2/ndf = "<<val<<endl;
+    if(val > 1.4){min_point = VectorXd::Zero(4);}
+  }
+  // double val /= chi2
   
 	static TF1 f2(name.c_str(), "[0]*exp( -(x-[1])*(x-[1])/(2.*[2]*[2]) ) + [3]", xlow, xhi);
   f2.SetRange(xlow, xhi);

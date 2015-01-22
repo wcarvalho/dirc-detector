@@ -1,8 +1,12 @@
-#include "efficiencyheader.h"
-#include "folders.h"
+#include "../folders.h"
 #include "FileProperties.h"
 #include "utility_library.h"
 
+#include "TFile.h"
+#include "TTree.h"
+#include "dirc_objects.h"
+
+using namespace std;
 int main(int argc, char* argv[])
 {
   argc-=(argc>0); argv+=(argc>0); // skip program name argv[0] if present
@@ -23,7 +27,7 @@ int main(int argc, char* argv[])
 	  std::cout << "Non-option #" << i << ": " << parse.nonOption(i) << "\n";
 
 	string defaultdir = "";
-	string graphdir = "comparison/";
+	string graphdir = "comparison";
 	string simdata = "cheat.root";
 	string recdata = "reconstruction.root";
 	string area_sim_ouput = "area_vs_simulation.pdf";
@@ -35,6 +39,7 @@ int main(int argc, char* argv[])
 	if(options[RECDATA]) recdata = options[RECDATA].arg;
 	if(options[GRAPHDIR]) graphdir = options[GRAPHDIR].arg;
 	else wul::appendStrings(defaultdir, graphdir); // make graph directory appropriate
+	graphdir.append("/");
 
 	wul::FileProperties area_sim_prop(area_sim_ouput);
 	
@@ -65,7 +70,8 @@ int main(int argc, char* argv[])
 	for (unsigned int ev = 0; ev < nentries; ++ev){
 		t1->GetEntry(ev); t2->GetEntry(ev);
 
-		int size_difference = matchDataSize(*recons, *pars);
+		if (recons->size() != pars->size())
+			continue;
 		for (unsigned int p = 0; p < recons->size(); ++p){
 			Particle* P = &pars->at(p);								// holds passed amount
 			TrackRecon* R = &recons->at(p); 					// holds expected and area
@@ -83,15 +89,15 @@ int main(int argc, char* argv[])
 
 	int bin_low = 1;
 	int bin_high = vec_sim.size();
-	
-	TH1D sim_exp_disc("sim_exp_disc", "Discrepancy in Expected vs. Simulated Number of photons (Expected - Simulated) ", 1200, -100, 100);
-	TH1D area_sim_disc("area_sim_disc", "Discrepancy in Simulated Number of photons vs. Area under fit (Simulated - Area)", 1200, -100, 100);
-	TH1D area_exp_disc("area_exp_disc", "Discrepancy in Expected Number of photons vs. Area under fit (Expected - Area)", 1200, -100, 100);
+	double range = 5.;
+	TH1D sim_exp_disc("sim_exp_disc", "Discrepancy in Expected vs. Simulated Number of photons (Expected - Simulated)/Simulated ", 1200, -range, range);
+	TH1D area_sim_disc("area_sim_disc", "Discrepancy in Simulated Number of photons vs. Area under fit (Simulated - Area)/Simulated", 1200, -range, range);
+	TH1D area_exp_disc("area_exp_disc", "Discrepancy in Expected Number of photons vs. Area under fit (Expected - Area)/Area", 1200, -range, range);
 
 	for (unsigned int i = 0; i < bin_high; ++i){
-		int sim_exp_dif = vec_expected.at(i) - vec_sim.at(i);
-		int area_sim_dif = -(vec_area.at(i) - vec_sim.at(i));
-		int area_exp_dif = vec_expected.at(i) - vec_area.at(i);
+		double sim_exp_dif = double(vec_expected.at(i) - vec_sim.at(i))/vec_sim.at(i);
+		double area_sim_dif = double(-(vec_area.at(i) - vec_sim.at(i))) / vec_sim.at(i);
+		double area_exp_dif = double(vec_expected.at(i) - vec_area.at(i)) / vec_area.at(i);
 
 		sim_exp_disc.Fill(sim_exp_dif);
 		area_sim_disc.Fill(area_sim_dif);

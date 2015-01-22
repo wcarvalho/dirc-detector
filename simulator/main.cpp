@@ -17,7 +17,7 @@ int main(int argc, char** argv)
 
 	string readf = ai.input_arg;
 	FileProperties readf_prop(readf);
-	string directory = readf_prop.directory;
+	string directory = "";
 
 	string writef = "simulator.root";
 	string writef2 = "cheat.root";
@@ -43,7 +43,12 @@ int main(int argc, char** argv)
 
 	if(ai.writefile_given) writef = ai.writefile_arg;
 
-	if(ai.Directory_given) directory = ai.Directory_arg;
+	if(ai.Directory_given) {
+		string temp_dir = ai.Directory_arg;
+		if (temp_dir.size() != 0)	directory = ai.Directory_arg;
+		else directory = readf_prop.directory;
+	}
+
 	f.appendFileToDirectory(directory, writef);
 	FileProperties writef_prop(writef);
 	f.appendFileToDirectory(writef_prop.directory, writef2);

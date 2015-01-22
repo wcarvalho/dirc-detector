@@ -1,3 +1,0 @@
-../code_test/simulation.root
-../code_test/for_smear_.01/simulation_.01.root
-.01

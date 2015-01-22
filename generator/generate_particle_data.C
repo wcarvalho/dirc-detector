@@ -29,7 +29,7 @@ void gParticle::genMass()
 
 void gParticle::genPT()
 {
-	TF1 f1("momentum", "x/(0.5+x*x*x*x)", ptrange[0], ptrange[1]);
+	TF1 f1("pt", "x/(0.5+x*x*x*x)", ptrange[0], ptrange[1]);
   pt = f1.GetRandom();
 }
 

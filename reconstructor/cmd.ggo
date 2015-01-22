@@ -4,7 +4,7 @@ By Wilka Carvalho <wcarvalho92@gmail.com>"
 
 # Options
 option "input" i "path of particle-generated data" string
-option "Directory" D "Sets the directory in which files will be saved (by default saves in current directory" string optional
+option "Directory" D "Sets the directory in which files will be saved. With this option, with no argument the file is saved in directory of input file. Without this option, it is saved in the current directory" string default="" argoptional optional
 
 option "write-file" W "write file for reconstruction" string optional
 

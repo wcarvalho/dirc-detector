@@ -20,35 +20,6 @@
 
 using namespace std;
 
-// returns n by 2 array for files 
-vector< vector< double > > filearray(string file){
-
-	ifstream f;
-	f.open(file.c_str());
-
-	vector< vector< double > > x; x.clear();
-	vector< double > temp; temp.clear();
-	
-	int size = pow(2,5);
-	char val1[size];
-	char val2[size];
-
-	while(f.good()){
-		f.getline(val1, size, ',');
-		f.getline(val2, size);
-		temp.push_back(atof(val1));
-		temp.push_back(atof(val2));
-		x.push_back(temp);
-		temp.clear();
-		
-	}	
-	return x;
-}
-
-
-
-
-
 // get general array and data-specfic array
 void fillparameters(string const &settings, string &pre, string &data_dir, string &fit_dir, string &graph_dir){
 
@@ -114,14 +85,10 @@ void getMatch(Particle *P, string search, string tomatch, double threshold, Trac
 		pair <Particle, TrackRecon> PR; PR.first = *P; PR.second = *R;
 		pair <int, pair <Particle, TrackRecon> > den(multiplicity, PR);
 		search_den.push_back(den);
-		// if (print) cout << "\t" << P->name << " with pt, multiplicity = " << P->pt << ", " << multiplicity << " and " << sigmas.size() << " options\n";
+
 		if ( sigmas.size() != names.size() ) exit(1);
 		for (unsigned int opt = 0; opt < sigmas.size(); ++opt){
-			// if (print){
-			// 	cout << "\t\t" << names[opt] << ": sigma = " << sigmas[opt] << ", ";
-			// 	cout << "Area = " << R->Areas[opt] << ", ";
-			// 	cout << "Expected = " << R->ExpectedNumber[opt] << endl;
-			// }
+
 			if ((sigmas[opt] < threshold) && (names[opt] == tomatch)){
 				search_num.push_back(den);
 				// if (print) cout << "\tSELECTED\n";
@@ -282,6 +249,7 @@ void makePlots(TCanvas &C, vector< vector <double> > &bounds, string xtitle, str
 		
 		if (makegraph){
 			C.Print(filename.c_str());
+		// cout << "filename = " << filename << endl;
 			// TFile f(rootfilename.c_str(), "recreate");
 			// TFile f("test", "recreate");
 			// match_graph.Write();
@@ -406,6 +374,7 @@ void printfits(TCanvas &C, int Event, int par, Particle const &P, TrackRecon &R,
 		string histitle_part1 = appendStrings("Fit: ", P.name);
 		string histitle_part2 = appendStrings(" as ", R.Options.at(i));
 		h.SetTitle(appendStrings(histitle_part1, histitle_part2).c_str());
+		// h.GetXaxis()->SetRangeUser(center-.25,center+.25);
 		h.Draw();
 		f2.Draw("same");
 
@@ -430,7 +399,10 @@ void printfits(TCanvas &C, int Event, int par, Particle const &P, TrackRecon &R,
 		double IncidentPhi = P.Phi/TMath::Pi();
 		string IncidentAngleStr = appendStrings(stringDouble("Incident #theta, #phi = ", IncidentTheta), "#pi, ");
 		T1.DrawLatex(2, latmax*h.GetMaximum(), appendStrings(stringDouble(IncidentAngleStr, IncidentPhi), "#pi").c_str()); latmax -= .05;
+		
+
 		C.Print(filename.c_str());
+
 		C.Clear();
 	}
 

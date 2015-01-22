@@ -1,15 +1,30 @@
 #include "Smearerheader.h"
+#include "../folders.h"
 
-int main(){
+int main(int argc, char* argv[]){
+  argc-=(argc>0); argv+=(argc>0); // skip program name argv[0] if present
+  option::Stats  stats(usage, argc, argv);
+  option::Option* options = new option::Option[stats.options_max];
+  option::Option* buffer  = new option::Option[stats.buffer_max];
+  option::Parser parse(usage, argc, argv, options, buffer);
 
-	string settingsfile = "smearsettings.txt";
-	string inputfile;
-	string outputfile;
-	double smear;
+  if (options[HELP] || argc == 0) {
+    option::printUsage(std::cout, usage);
+    return 0;
+  }
+  
+	for (int i = 0; i < parse.nonOptionsCount(); ++i)
+	  std::cout << "Non-option #" << i << ": " << parse.nonOption(i) << "\n";
+
+	string inputfile = "";
+	string outputfile = "";
+	double smear = 0.;
+
+	if(options[SIMDATA]) inputfile = options[SIMDATA].arg;
+	if(options[OUTPUT]) outputfile = options[OUTPUT].arg;
+	if(options[THRESHDOUBLE])smear = atof(options[THRESHDOUBLE].arg);
+
 	TRandom3 r;
-
-	// read in input file, outputfile and smearing value
-	fillparameters(settingsfile, inputfile, outputfile, smear);
 	GeneratorOut *event_output = 0;
 	Detector *d = 0;
 
@@ -51,5 +66,10 @@ int main(){
 	f2.cd();
 	f2.Write();
 	f2.Close();
+
+	delete options;
+	delete buffer;
+	return 0;
+
 	// cout << "file: " << outputfile << endl;
 }

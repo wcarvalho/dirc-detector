@@ -46,9 +46,9 @@ struct gengetopt_args_info
   char * input_arg;	/**< @brief path of particle-generated data.  */
   char * input_orig;	/**< @brief path of particle-generated data original value given at command line.  */
   const char *input_help; /**< @brief path of particle-generated data help description.  */
-  char * Directory_arg;	/**< @brief Sets the directory in which files will be saved (by default saves in current directory.  */
-  char * Directory_orig;	/**< @brief Sets the directory in which files will be saved (by default saves in current directory original value given at command line.  */
-  const char *Directory_help; /**< @brief Sets the directory in which files will be saved (by default saves in current directory help description.  */
+  char * Directory_arg;	/**< @brief Sets the directory in which files will be saved. With this option, with no argument the file is saved in directory of input file. Without this option, it is saved in the current directory (default='').  */
+  char * Directory_orig;	/**< @brief Sets the directory in which files will be saved. With this option, with no argument the file is saved in directory of input file. Without this option, it is saved in the current directory original value given at command line.  */
+  const char *Directory_help; /**< @brief Sets the directory in which files will be saved. With this option, with no argument the file is saved in directory of input file. Without this option, it is saved in the current directory help description.  */
   char * write_file_arg;	/**< @brief write file for reconstruction.  */
   char * write_file_orig;	/**< @brief write file for reconstruction original value given at command line.  */
   const char *write_file_help; /**< @brief write file for reconstruction help description.  */

@@ -1,0 +1,3 @@
+source clean_generator.sh
+source clean_simulator.sh
+source clean_reconstructor

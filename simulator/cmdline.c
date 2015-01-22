@@ -34,18 +34,18 @@ const char *gengetopt_args_info_versiontext = "";
 const char *gengetopt_args_info_description = "";
 
 const char *gengetopt_args_info_help[] = {
-  "  -h, --help              Print help and exit",
-  "  -V, --version           Print version and exit",
-  "  -i, --input=STRING      path of particle-generated data",
-  "  -D, --Directory=STRING  Sets the directory in which files will be saved (by\n                            default saves in current directory",
-  "  -r, --random=INT        value for seed of random numbers",
-  "  -v, --verbose           print data",
-  "  -W, --writefile=STRING  file to be written to",
-  "  -A, --Append            append particle and photon generation to current file",
-  "  -S, --smear=DOUBLE      change the smearing value",
-  "  -q, --quiet             turn off all printing",
-  "  -p, --print-photons     only print photon information per event",
-  "      --file-write-off    Turn off file writing",
+  "  -h, --help                Print help and exit",
+  "  -V, --version             Print version and exit",
+  "  -i, --input=STRING        path of particle-generated data",
+  "  -D, --Directory[=STRING]  Sets the directory in which files will be saved.\n                              With with this option, with no argument the file\n                              is saved in directory of input file. Without this\n                              option, it is saved in the current directory\n                              (default=`')",
+  "  -r, --random=INT          value for seed of random numbers",
+  "  -v, --verbose             print data",
+  "  -W, --writefile=STRING    file to be written to",
+  "  -A, --Append              append particle and photon generation to current\n                              file",
+  "  -S, --smear=DOUBLE        change the smearing value",
+  "  -q, --quiet               turn off all printing",
+  "  -p, --print-photons       only print photon information per event",
+  "      --file-write-off      Turn off file writing",
     0
 };
 
@@ -93,7 +93,7 @@ void clear_args (struct gengetopt_args_info *args_info)
   FIX_UNUSED (args_info);
   args_info->input_arg = NULL;
   args_info->input_orig = NULL;
-  args_info->Directory_arg = NULL;
+  args_info->Directory_arg = gengetopt_strdup ("");
   args_info->Directory_orig = NULL;
   args_info->random_orig = NULL;
   args_info->writefile_arg = NULL;
@@ -549,7 +549,7 @@ cmdline_parser_internal (
         { "help",	0, NULL, 'h' },
         { "version",	0, NULL, 'V' },
         { "input",	1, NULL, 'i' },
-        { "Directory",	1, NULL, 'D' },
+        { "Directory",	2, NULL, 'D' },
         { "random",	1, NULL, 'r' },
         { "verbose",	0, NULL, 'v' },
         { "writefile",	1, NULL, 'W' },
@@ -561,7 +561,7 @@ cmdline_parser_internal (
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVi:D:r:vW:AS:qp", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVi:D::r:vW:AS:qp", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -589,12 +589,12 @@ cmdline_parser_internal (
             goto failure;
         
           break;
-        case 'D':	/* Sets the directory in which files will be saved (by default saves in current directory.  */
+        case 'D':	/* Sets the directory in which files will be saved. With with this option, with no argument the file is saved in directory of input file. Without this option, it is saved in the current directory.  */
         
         
           if (update_arg( (void *)&(args_info->Directory_arg), 
                &(args_info->Directory_orig), &(args_info->Directory_given),
-              &(local_args_info.Directory_given), optarg, 0, 0, ARG_STRING,
+              &(local_args_info.Directory_given), optarg, 0, "", ARG_STRING,
               check_ambiguity, override, 0, 0,
               "Directory", 'D',
               additional_error))

@@ -39,7 +39,10 @@ int main(int argc, char** argv)
   string wf = wf_default;
 
   wul::FileProperties readf_prop(rf);
-  string directory = readf_prop.directory;
+  string directory = "";
+
+
+  
 
   // parse ai arguments
 	bool print = ai.verbose_given;
@@ -47,11 +50,18 @@ int main(int argc, char** argv)
 	bool make = ai.make_given;
   if (ai.last_given) last = ai.last_arg;
   if (ai.write_file_given) wf = ai.write_file_arg;
-	if (ai.Directory_given) directory = ai.Directory_arg; readf_prop.appendFileToDirectory(directory, wf);
+	
+  if(ai.Directory_given) {
+		string temp_dir = ai.Directory_arg;
+		if (temp_dir.size() != 0)	directory = ai.Directory_arg;
+		else directory = readf_prop.directory;
+	}
+	readf_prop.appendFileToDirectory(directory, wf);
+	
+
 	if (ai.Smear_given) smear = ai.Smear_arg;
 	if (ai.graph_prefix_given) graphprefix = ai.graph_prefix_arg;
 
-	
 	// Function Pointer(s)
 	double (*ExpectedNumberofPhotons)(double const&, double const&, double const&, double const&, double const&);
 
