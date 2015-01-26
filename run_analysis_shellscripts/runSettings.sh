@@ -16,14 +16,13 @@ main_directory="data"
 script_location="scripts"
 
 ## number of events
-# nevents=5
-nevents=1000
+nevents=5
+# nevents=1000
 # nevents=2000
 
 ## number of particles
 mparticles=1
-
-## type of particle
+# type of particle
 # particle_type="Electrons"
 particle_type="Pions"
 

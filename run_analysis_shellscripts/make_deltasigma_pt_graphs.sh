@@ -1,9 +1,7 @@
 #!/bin/bash
 
-source analysisSettings.sh
-source shell_functions.sh
 source setup_resultsfolders.sh
-source $runOutput
+source current_files.sh
 
 Time=$(timestamp)
 

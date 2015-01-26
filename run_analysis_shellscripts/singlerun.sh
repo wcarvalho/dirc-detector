@@ -24,4 +24,6 @@ if [ "$runRec" = true ] ; then
 	source reconstruct_particles.sh
 fi
 
+
+## FIXME: plays sound to notify me of when executables are finished running. deletion or replacement suggested. can also be found in meta-analysis.sh
 source ~/finish_sound.sh

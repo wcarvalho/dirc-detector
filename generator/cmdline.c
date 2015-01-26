@@ -42,10 +42,11 @@ const char *gengetopt_args_info_help[] = {
   "  -r, --random=INT              value for seed of random numbers",
   "  -f, --filename=STRING         root filename (relative or absolute path). By\n                                  default written within directory as\n                                  generator.root",
   "  -v, --verbose                 print data",
-  "  -q, --quiet                   turns off all printing",
+  "  -q, --quiet                   suppress all printing",
   "  -d, --dirc-properties=STRING  file with dirc properties (in this order):\n                                  Length, Width, Height, Radial Distance,\n                                  Magnetic Field",
   "  -c, --custom-set=STRING       Takes a filename with parameters for the\n                                  experiment including number of particles,\n                                  range in eta, pt, and phi, and particle\n                                  charge and type",
   "  -D, --Directory=STRING        Sets the directory in which files will be saved\n                                  (by default saves in current directory",
+  "      --pt-distribution-function=STRING\n                                The probability distribution that pt will\n                                  follow from pt = 0 to pt = 10GeV",
     0
 };
 
@@ -84,6 +85,7 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->dirc_properties_given = 0 ;
   args_info->custom_set_given = 0 ;
   args_info->Directory_given = 0 ;
+  args_info->pt_distribution_function_given = 0 ;
 }
 
 static
@@ -103,6 +105,8 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->custom_set_orig = NULL;
   args_info->Directory_arg = NULL;
   args_info->Directory_orig = NULL;
+  args_info->pt_distribution_function_arg = NULL;
+  args_info->pt_distribution_function_orig = NULL;
   
 }
 
@@ -125,6 +129,7 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->dirc_properties_help = gengetopt_args_info_help[9] ;
   args_info->custom_set_help = gengetopt_args_info_help[10] ;
   args_info->Directory_help = gengetopt_args_info_help[11] ;
+  args_info->pt_distribution_function_help = gengetopt_args_info_help[12] ;
   
 }
 
@@ -266,6 +271,8 @@ cmdline_parser_release (struct gengetopt_args_info *args_info)
   free_string_field (&(args_info->custom_set_orig));
   free_string_field (&(args_info->Directory_arg));
   free_string_field (&(args_info->Directory_orig));
+  free_string_field (&(args_info->pt_distribution_function_arg));
+  free_string_field (&(args_info->pt_distribution_function_orig));
   
   
 
@@ -327,6 +334,8 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "custom-set", args_info->custom_set_orig, 0);
   if (args_info->Directory_given)
     write_into_file(outfile, "Directory", args_info->Directory_orig, 0);
+  if (args_info->pt_distribution_function_given)
+    write_into_file(outfile, "pt-distribution-function", args_info->pt_distribution_function_orig, 0);
   
 
   i = EXIT_SUCCESS;
@@ -881,6 +890,7 @@ cmdline_parser_internal (
         { "dirc-properties",	1, NULL, 'd' },
         { "custom-set",	1, NULL, 'c' },
         { "Directory",	1, NULL, 'D' },
+        { "pt-distribution-function",	1, NULL, 0 },
         { 0,  0, 0, 0 }
       };
 
@@ -969,7 +979,7 @@ cmdline_parser_internal (
             goto failure;
         
           break;
-        case 'q':	/* turns off all printing.  */
+        case 'q':	/* suppress all printing.  */
         
         
           if (update_arg( 0 , 
@@ -1019,6 +1029,22 @@ cmdline_parser_internal (
           break;
 
         case 0:	/* Long option with no short option */
+          /* The probability distribution that pt will follow from pt = 0 to pt = 10GeV.  */
+          if (strcmp (long_options[option_index].name, "pt-distribution-function") == 0)
+          {
+          
+          
+            if (update_arg( (void *)&(args_info->pt_distribution_function_arg), 
+                 &(args_info->pt_distribution_function_orig), &(args_info->pt_distribution_function_given),
+                &(local_args_info.pt_distribution_function_given), optarg, 0, 0, ARG_STRING,
+                check_ambiguity, override, 0, 0,
+                "pt-distribution-function", '-',
+                additional_error))
+              goto failure;
+          
+          }
+          
+          break;
         case '?':	/* Invalid option.  */
           /* `getopt_long' already printed an error message.  */
           goto failure;

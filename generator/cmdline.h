@@ -61,7 +61,7 @@ struct gengetopt_args_info
   char * filename_orig;	/**< @brief root filename (relative or absolute path). By default written within directory as generator.root original value given at command line.  */
   const char *filename_help; /**< @brief root filename (relative or absolute path). By default written within directory as generator.root help description.  */
   const char *verbose_help; /**< @brief print data help description.  */
-  const char *quiet_help; /**< @brief turns off all printing help description.  */
+  const char *quiet_help; /**< @brief suppress all printing help description.  */
   char * dirc_properties_arg;	/**< @brief file with dirc properties (in this order): Length, Width, Height, Radial Distance, Magnetic Field.  */
   char * dirc_properties_orig;	/**< @brief file with dirc properties (in this order): Length, Width, Height, Radial Distance, Magnetic Field original value given at command line.  */
   const char *dirc_properties_help; /**< @brief file with dirc properties (in this order): Length, Width, Height, Radial Distance, Magnetic Field help description.  */
@@ -71,6 +71,9 @@ struct gengetopt_args_info
   char * Directory_arg;	/**< @brief Sets the directory in which files will be saved (by default saves in current directory.  */
   char * Directory_orig;	/**< @brief Sets the directory in which files will be saved (by default saves in current directory original value given at command line.  */
   const char *Directory_help; /**< @brief Sets the directory in which files will be saved (by default saves in current directory help description.  */
+  char * pt_distribution_function_arg;	/**< @brief The probability distribution that pt will follow from pt = 0 to pt = 10GeV.  */
+  char * pt_distribution_function_orig;	/**< @brief The probability distribution that pt will follow from pt = 0 to pt = 10GeV original value given at command line.  */
+  const char *pt_distribution_function_help; /**< @brief The probability distribution that pt will follow from pt = 0 to pt = 10GeV help description.  */
   
   unsigned int help_given ;	/**< @brief Whether help was given.  */
   unsigned int version_given ;	/**< @brief Whether version was given.  */
@@ -84,6 +87,7 @@ struct gengetopt_args_info
   unsigned int dirc_properties_given ;	/**< @brief Whether dirc-properties was given.  */
   unsigned int custom_set_given ;	/**< @brief Whether custom-set was given.  */
   unsigned int Directory_given ;	/**< @brief Whether Directory was given.  */
+  unsigned int pt_distribution_function_given ;	/**< @brief Whether pt-distribution-function was given.  */
 
 } ;
 

@@ -13,35 +13,35 @@ int main(int argc, char** argv)
 	gengetopt_args_info ai;
   if (cmdline_parser (argc, argv, &ai) != 0){ exit(1); }
   double pi = TMath::Pi();
-  int input = ai.random_given;													// number used for seed of TRandom3
-  bool print = ai.verbose_given;																		// bool for printing purposes
+  int input = ai.random_given;			       // number used for seed of TRandom3
+  bool print = ai.verbose_given;	           // bool for printing purposes
   bool quiet = ai.quiet_given; if (quiet) print = !quiet;
   bool replace = false;
   int nevents = 5;															// number of events
   string directory = "";
 
   string dirc_prop = "../dirc_prop.txt";
-	if(ai.dirc_properties_given) 
+	if(ai.dirc_properties_given)
 		dirc_prop = ai.dirc_properties_arg;
-  
+
   string filename = "generator.root";
-	if(ai.filename_given) 
+	if(ai.filename_given)
 		filename = ai.filename_arg;
-  
+
   if(ai.Directory_given){
   	directory = ai.Directory_arg;
   	filename = directory.append(filename);
   }
 
   if(ai.events_given){ nevents = ai.events_arg; }
-  
-  
+
+
   int nparticles = 0;														// number of particles
 	//______________ default parameters ___________________
 
   int maxPars_default = 100;														// maximum number of particles that will be allowed to pass
 	int nparticle_range_default[2] = {1,10000};						// range in number of particles
-  if(ai.particles_given){ 
+  if(ai.particles_given){
   	nparticle_range_default[0] = ai.particles_arg[0];
 		nparticle_range_default[1] = ai.particles_arg[1];
 	}
@@ -51,9 +51,9 @@ int main(int argc, char** argv)
 	double charge_default = 0;
 	ParticleOut tempP;								// to extract default particle types
 	vector<string> types_default = tempP.types;
-	
-	if(ai.maxpars_given) 
-		maxPars_default = ai.maxpars_arg; 
+
+	if(ai.maxpars_given)
+		maxPars_default = ai.maxpars_arg;
   if(ai.particles_given)
   	ResetIntArrayParameter(ai.particles_arg, nparticle_range_default);
 	//______________ parameters used in program ___________________
@@ -81,18 +81,19 @@ int main(int argc, char** argv)
 	tree.Branch("Particle Event", &ParEv);
 	tree.Branch("detector", &d);
 
-  Random f(input);																				// random number generator
+  Random f(input);						// random number generator
 
-	gParticle gPar(input); 
+	gParticle gPar(input);
 	gParticle *gPar_p = &gPar;
-	Particle *Par = gPar_p;											// inheritting properties of parent class for use with older libraries
+	Particle *Par = gPar_p;                    // inheritting properties of parent class for use with older libraries
+    if (ai.pt_distribution_function_given) gPar.setPtDistributionFunction(ai.pt_distribution_function_arg);
 
 	if(!quiet) cout << "\nGENERATOR\n";
 	if (print == true )
 	{
 		printf("Detector Properties:\n");
-		printf("\tLength(x) = %f, Width(y) = %f, Height(z) = %f\n", d.Length, d.Width, d.Height); 
-		printf("\tMagnetic Field = %f and Radial Distance = %f\n\n", d.Mag_field, d.Radial_D); 
+		printf("\tLength(x) = %f, Width(y) = %f, Height(z) = %f\n", d.Length, d.Width, d.Height);
+		printf("\tMagnetic Field = %f and Radial Distance = %f\n\n", d.Mag_field, d.Radial_D);
 	}
   //__________________generate________________
   for (unsigned int ev = 0; ev < nevents; ev++)
@@ -114,7 +115,7 @@ int main(int argc, char** argv)
 
 	if (!replace)
 	  	pars = generate(nparticles, gPar, d, maxPars, print);
-  	
+
 	if(ai.custom_set_given){
 		TakeInParameters(ai.custom_set_arg, nevents, maxPars, nparticle_range, etarange, ptrange, phirange, charge, types, replace);
 		SetParameterOptions(gPar, etarange, ptrange, phirange, charge, types);
@@ -143,7 +144,7 @@ int main(int argc, char** argv)
   file.Write();
 	if(!quiet) cout << "file: " << filename << endl;
   file.Close();
-  
+
 
   return 0;
 }

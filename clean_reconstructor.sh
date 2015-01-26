@@ -2,7 +2,7 @@ b=build
 original='../..'
 make="make distclean"
 
-cd simulator
+cd reconstructor
 pwd
 cd $b
 $make

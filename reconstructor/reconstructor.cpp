@@ -25,7 +25,7 @@ void CreateHistogram_1D2D(int ev, int par, Analysis &A, std::vector<PhotonOut> &
 			data.back().push_back(phos.at(i).Theta);
 	}
 	A.SetData(data);
-	
+
 	std::string histTitle = wul::appendStrings(wul::stringDouble("Event ", ev), wul::stringDouble(", Particle ", par+1));
 	std::string histname = histName0(ev, par);
   std::string TH1Name = histname; TH1Name.append("_1D");
@@ -38,55 +38,60 @@ void CreateHistogram_1D2D(int ev, int par, Analysis &A, std::vector<PhotonOut> &
 }
 
 // for one particle this function will calculate the histogram fit, the area under the fit, the expected number of photons for each mass. the area and expected number of photons are compared and a delta sigma is delta_Sigma is calculated
-void CalculateParticleFits(double (*ExpectedNumberofPhotons)(double const&, double const&, double const&, double const&, double const&),
-                           ParticleOut &P, TH1D*& h, TrackRecon &guess, double range, double smear, bool print){
+void CalculateParticleFits(double (*ExpectedNumberofPhotons)(double const&, double const&, double const&, double const&, double const&), ParticleOut &P, Analysis &A, double range, double smear, bool print){
 
-	Identifier guesser;
 	mass m(P.Eta, P.pt);
 	map<double, double> &atm = m.AngletoMass;
 	map<double, string> &mtn = m.MasstoName;
-	map<string, double> &pm = guesser.probabilitymap;
 
 	double travels = 0.;
 
-	string defaultname = h->GetName(); 
+	A.AddTrackRecon();
+	TrackRecon &guess = A.Recon.back();
+
+	TH1D& h = A.Hists1D.back();
+	string defaultname = h.GetName();
+
+	guess.Hist = h;
 
 	for(map<double, double>::iterator i = atm.begin(); i != atm.end(); ++i){
 		static TCanvas c1("c1","c1",10,10,800,600);
 		static TCanvas *c1_p = &c1;
-		vector< double > params;				// vector to store parameters for efficiency analysis
 		const double &angle = i->first;
 		const double &mass = i->second;
-		double r = .1;		// range
 		string name = mtn[mass];
 
 		stringstream currentname;
 		currentname << defaultname << "_" << name;
 		string newhname = currentname.str();
+		double Area = 0.;
 
-		double Area = guesser.FitParticle1D(c1_p, *h, params, angle-r, angle+r, angle, smear, newhname, print);	// area under gaussian (calculated number of photons)
-	  double Beta = P.CalculateBeta(mass);
-	  double N = ExpectedNumberofPhotons(P.X, P.Y, P.Theta, P.Phi, Beta);
-	  if (print) cout << "X, Y, Theta, Phi, Beta = " << P.X << ", " << P.Y << ", " << P.Theta << ", " << P.Phi << ", " << Beta << endl;
+		double weight = .1;
+		double centerbounds[2] = {angle - weight*smear, angle + weight*smear};
+		double widthbounds[2] = {.8*smear, 1.2*smear};
 
-	  //FIXME manual fudging
-	  // Area = 1.2411*Area;
-    // N *= 0.75;
+
+		A.FitGaussianPlusConstant(angle-range, angle+range, angle, smear, Area);
+		// Area = guesser.FitParticle1D(c1_p, *h, params, angle-range, angle+range, angle, smear, newhname, print);	// area under gaussian (calculated number of photons)
+		double Beta = P.CalculateBeta(mass);
+		double N = ExpectedNumberofPhotons(P.X, P.Y, P.Theta, P.Phi, Beta);
+		if (print) cout << "X, Y, Theta, Phi, Beta = " << P.X << ", " << P.Y << ", " << P.Theta << ", " << P.Phi << ", " << Beta << endl;
+
+		vector< double > &params = A.Recon.back().Params.back();				// vector to store parameters for efficiency analysis
+
 		double pi2 = TMath::Pi()/2;
 		double Sigma_N = sqrt(N);
-		double delSigTheta = abs(angle - params.at(1))/smear;
-		double delSigA = abs(N-Area)/Sigma_N;
+		double delSigTheta = (angle - params.at(1))/smear;
+		double delSigA = (N-Area)/Sigma_N;
 		if (print) cout << "delSigA = " << delSigA << ", delSigTheta = " << delSigTheta << endl;
-		double nSigma = sqrt(delSigTheta*delSigTheta + delSigA*delSigA);
-		pm[name] = nSigma;
+		double delSigma = sqrt(delSigTheta*delSigTheta + delSigA*delSigA);
 
 		guess.Options.push_back(name);
 		guess.delSigTheta.push_back(delSigTheta);
 		guess.delSigArea.push_back(delSigA);
-		guess.Sigmas.push_back(pm[name]);
+		guess.Sigmas.push_back(delSigma);
 		guess.Areas.push_back(Area);
 		guess.ExpectedNumber.push_back(N);
-		guess.Params.push_back(params);
 		if (print) guess.printLatest();
 	}
 

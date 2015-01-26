@@ -52,11 +52,13 @@ public:
 	void getEangle(){	ConeAngle = acos(1./(1.474*Beta));}
 	void gen(){ genEta(); genMass(); genPT(); genCharge(); getPhi(); }
 
-	void SetPhiRange(double low, double hi){ phirange[0] = low; phirange[1] = hi; }	
+	void setPtDistributionFunction(std::string func = "x/(0.5+x*x*x*x)"){
+		ptdisributionfunction = func; }
 
+	void SetPhiRange(double low, double hi){ phirange[0] = low; phirange[1] = hi; }
 	void SetEtaRange(double low, double hi){ etarange[0] = low; etarange[1] = hi; }
-
 	void SetPtRange(double low, double hi){ ptrange[0] = low; ptrange[1] = hi; }
+
 	void SetTypes(vector<string> newTypes){ types = newTypes; }
 	void SetChargeMarker(double marker){ chargeMarker = marker; }
 
@@ -67,6 +69,9 @@ public:
 	double ptrange[2];
 	map<string, double> massmap;
 	double chargeMarker;
+
+private:
+	std::string ptdisributionfunction;
 };
 
 vector<Particle> generate(int nparticles, gParticle& gPar, Detector d, int maxPars, bool print);

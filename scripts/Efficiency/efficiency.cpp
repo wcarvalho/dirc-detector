@@ -1,9 +1,12 @@
 #include "efficiencyheader.h"
+#include "printFits.h"
+#include "removeEdgeCutters.h"
+#include "efficiencyfake_plots.h"
+#include "calibrateSigmas.h"
 #include "../scripts.h"
 #include <tclap/CmdLine.h>
 
-int main(int argc, char** argv)
-{	
+int main(int argc, char** argv){
 
 	string graph_dir;
 	string fit_dir;
@@ -23,9 +26,10 @@ int main(int argc, char** argv)
 	event_range.push_back(-1);
 	event_range.push_back(-1);
 	vector< int > graph_choice;
-	
+	bool calibrateSigma = true;		// add command line option when you make this a library
+
 TCLAP::CmdLine cmd("Command description message", ' ', "0.1");
-try{   
+try{
 
 	TCLAP::ValueArg<std::string> fitDirectoryArg("f","fit-directory","Directory where fits will be stored",false,"fits","string", cmd);
 
@@ -52,7 +56,7 @@ try{
 TCLAP::ValueArg<std::string> multiplicity_slicesArg("","multiplicity-slices","file with multiplicity slices",false, "multiplicity","string", cmd);
 
 	TCLAP::SwitchArg verboseArg("v","verbose","", cmd, false);
-	
+
 	TCLAP::MultiArg<int> eventRangeArg("e","event-range","events for which you want to print fits", false, "double", cmd);
 
 	TCLAP::MultiArg<int> graphsChoiceArg("c","graphs-choice","determines which graphs are drawn. 1: multiplicity, 2: momentum, 3: theta, 4: phi ", false, "double", cmd);
@@ -85,12 +89,12 @@ TCLAP::ValueArg<std::string> multiplicity_slicesArg("","multiplicity-slices","fi
 }
 catch( TCLAP::ArgException& e )
 { cout << "ERROR: " << e.error() << " " << e.argId() << endl; }
-	
+
 
 	fit_dir.append("/");
 	graph_dir.append("/");
 
-	
+
 	double pi = TMath::Pi();
 
 	vector< vector< double > > momentum = filearray(momentum_slices);
@@ -121,6 +125,10 @@ catch( TCLAP::ArgException& e )
 	vector<Particle> *pars = &originals->Particles;
 	vector<TrackRecon> *recons = &reconstructions->Recon;
 
+	if (calibrateSigma) calibrateSigmas(*t1, *t2, *originals, *reconstructions, matchsearch);
+
+	// exit(1);
+
 	int nentries = t2->GetEntries();
 
 	int i = 0;
@@ -134,7 +142,7 @@ catch( TCLAP::ArgException& e )
 			multiplicity_high = event_multiplicity;
 		if (multiplicity_low > event_multiplicity)
 			multiplicity_low = event_multiplicity;
-		
+
 		int size_difference = matchDataSize(*recons, *pars);
 		for (unsigned int p = 0; p < recons->size(); ++p){
 			Particle* P = &pars->at(p);
@@ -147,25 +155,13 @@ catch( TCLAP::ArgException& e )
 				// print = false;
 
 			++i;
-			getMatch(P, matchsearch, matchsearch, threshold, R, event_multiplicity, numMatch, denMatch, print);				// fills the denominator with all of the electrons and the numerator with all the correct electron identifications 
-			
+			getMatch(P, matchsearch, matchsearch, threshold, R, event_multiplicity, numMatch, denMatch, print);				// fills the denominator with all of the electrons and the numerator with all the correct electron identifications
+
 			getMatch(P, falsesearch, matchsearch, threshold, R, event_multiplicity, numFalse, denFalse, print);				// fills the denominator with all of the pions and the numerator with all the false electron identifications
 		}
 	}
 
 	// cout << "Finished primary Sort\n";
-
-	vector< pair<int, pair <Particle, TrackRecon> > > numMatch_cut; numMatch_cut.clear();
-	clearOuterParticles(numMatch, numMatch_cut, 490, 3.5, .2);
-
-	vector< pair<int, pair <Particle, TrackRecon> > > denMatch_cut; denMatch_cut.clear();
-	clearOuterParticles(denMatch, denMatch_cut, 490, 3.5, .2);
-
-	vector< pair<int, pair <Particle, TrackRecon> > > numFalse_cut; numFalse_cut.clear();
-	clearOuterParticles(numFalse, numFalse_cut, 490, 3.5, .2);
-
-	vector< pair<int, pair <Particle, TrackRecon> > > denFalse_cut; denFalse_cut.clear();
-	clearOuterParticles(denFalse, denFalse_cut, 490, 3.5, .2);
 
 	// cout << "\n--------Finished Making Copies without Edge Cutters\n\n";
 
@@ -185,7 +181,7 @@ catch( TCLAP::ArgException& e )
 		if (print) cout << "Making vs. Momentum Plots\n";
 		makePlots(C, multiplicity, "pt", "multiplicity", "", graph_dir, matchgraph_filebase, falsegraph_filebase, momentum[0][0], momentum.back().back(), nptBins, numMatch, denMatch, numFalse, denFalse, 2, filenumber, print);
 	}
-	
+
 	if (std::find(graph_choice.begin(), graph_choice.end(), 3)!=graph_choice.end()){
 		if (print) cout << "Making vs. Incident Angle Plots\n";
 		makePlots(C, momentum, "incident_theta", "pt", "", graph_dir, matchgraph_filebase, falsegraph_filebase, 0, pi/2, 100, numMatch, denMatch, numFalse, denFalse, 3, filenumber, print);
@@ -197,11 +193,24 @@ catch( TCLAP::ArgException& e )
 	}
 /* ------------------------------------------------------
 										 With Cuts
------------------------------------------------------- */ 
+------------------------------------------------------ */
 	return 0;
+
+	vector< pair<int, pair <Particle, TrackRecon> > > numMatch_cut; numMatch_cut.clear();
+	clearOuterParticles(numMatch, numMatch_cut, 490, 3.5, .2);
+
+	vector< pair<int, pair <Particle, TrackRecon> > > denMatch_cut; denMatch_cut.clear();
+	clearOuterParticles(denMatch, denMatch_cut, 490, 3.5, .2);
+
+	vector< pair<int, pair <Particle, TrackRecon> > > numFalse_cut; numFalse_cut.clear();
+	clearOuterParticles(numFalse, numFalse_cut, 490, 3.5, .2);
+
+	vector< pair<int, pair <Particle, TrackRecon> > > denFalse_cut; denFalse_cut.clear();
+	clearOuterParticles(denFalse, denFalse_cut, 490, 3.5, .2);
+
 	makePlots(C, momentum, "Multiplicity (with Edge Cutters Removed)", "pt", "", graph_dir, matchgraph_filebase, falsegraph_filebase, multiplicity_bin_low, multiplicity_bin_hi, multiplicity_bins, numMatch_cut, denMatch_cut, numFalse_cut, denFalse_cut, 1, filenumber, print);
 	cout << "\n--------Finished vs. Multiplicity Plots (with Edge Cutters Removed)\n\n";
-	
+
 	makePlots(C, multiplicity, "pt (with Edge Cutters Removed)", "multiplicity", "", graph_dir, matchgraph_filebase, falsegraph_filebase, momentum[0][0], momentum.back().back(), nptBins, numMatch_cut, denMatch_cut, numFalse_cut, denFalse_cut, 2, filenumber, print);
 	cout << "\n--------Finished vs. Momentum Plots (with Edge Cutters Removed)\n\n";
 
