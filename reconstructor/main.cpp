@@ -80,7 +80,7 @@ int main(int argc, char** argv)
 	ReconstructionData data;
 	reconstruction.Track.push_back(data);
 	Analysis A;																	// class used to create histograms
-	TrackRecons Tracks; Tracks.Recon.clear();		// stores information on particle identity guesses
+	TrackRecons &Tracks = A;		// stores information on particle identity guesses
 
   // pointers to data from ROOT File
   GeneratorOut *event_output = 0;
@@ -136,7 +136,6 @@ int main(int argc, char** argv)
 		time2 = (double)(t2.tv_sec) + (double)(t2.tv_usec)/1.0e6;
 		calculateFits_time += (time2-time1);
 
-		Tracks = A;
 		if (print) cout << "TrackRecons has " << Tracks.Recon.size() << " Tracks\n";
 	  }
 

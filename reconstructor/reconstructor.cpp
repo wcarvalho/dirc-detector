@@ -53,7 +53,6 @@ void CalculateParticleFits(double (*ExpectedNumberofPhotons)(double const&, doub
 	string defaultname = h.GetName();
 
 	guess.Hist = h;
-
 	for(map<double, double>::iterator i = atm.begin(); i != atm.end(); ++i){
 		static TCanvas c1("c1","c1",10,10,800,600);
 		static TCanvas *c1_p = &c1;
@@ -72,7 +71,6 @@ void CalculateParticleFits(double (*ExpectedNumberofPhotons)(double const&, doub
 		double width = smear;
 		double widthbounds[2] = {.8*smear, 1.2*smear};
 
-		A.AddTrackRecon();
 		A.FitGaussianPlusConstant(center-range, center+range, center, centerbounds, width, widthbounds, Area);
 		// Area = guesser.FitParticle1D(c1_p, *h, params, angle-range, angle+range, angle, smear, newhname, print);	// area under gaussian (calculated number of photons)
 		double Beta = P.CalculateBeta(mass);

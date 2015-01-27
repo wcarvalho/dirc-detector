@@ -17,46 +17,46 @@ $(NEWTON_LIB)
 reconstructor_SOURCES = main.cpp \
 cmdline.cpp \
 reconstructor.cpp \
-ReconstructEvent.C \
-ReconstructTrack.C \
-CreateHistogram.C \
-Reconstructed_Reflections.C \
+ReconstructEvent.cpp \
+ReconstructTrack.cpp \
+CreateHistogram.cpp \
+Reconstructed_Reflections.cpp \
 histograms.cpp \
-FindLostPhotons.C \
+FindLostPhotons.cpp \
 LookUpTable.cpp \
 ##=====================================
 ##
 ##					Mutual functions
 ##
 ##=====================================
-../functions/TabToLevel.C \
-../functions/Get_Photon_UnitVector.C \
-../functions/Get_Particle_UnitVector.C \
-../functions/Print_TVector.C \
-../functions/Introduce.C \
-../functions/create_2D_vector.C \
-../functions/Fill_RotationMatrix.C \
-../functions/Print_2D_Vector.C \
-../functions/Rotation_Vector.C \
-../functions/Rotated_Vector.C \
-../functions/Update_Photon_ThetaPhi.C \
-../functions/random_numbers.C \
-../functions/Check_PhotonEvent.C \
-../functions/Corresponding_Photons.C \
-../functions/Photons_Rest.C \
-../functions/Check_ParticleEvent.C \
-../functions/GraphFocus.C \
-../functions/GraphRest.C \
-../functions/GraphBounds.C \
-../functions/ExtractArray.C \
-../functions/Print_Histogram.C \
-../functions/Rotater.C \
-../functions/Displayer.C \
-../simulator/CheckAngel.C \
-../simulator/Check_PhotonDirection.C \
-../functions/simulate_par.C \
-../functions/masses.C \
-../functions/min_map.C \
+../functions/TabToLevel.cpp \
+../functions/Get_Photon_UnitVector.cpp \
+../functions/Get_Particle_UnitVector.cpp \
+../functions/Print_TVector.cpp \
+../functions/Introduce.cpp \
+../functions/create_2D_vector.cpp \
+../functions/Fill_RotationMatrix.cpp \
+../functions/Print_2D_Vector.cpp \
+../functions/Rotation_Vector.cpp \
+../functions/Rotated_Vector.cpp \
+../functions/Update_Photon_ThetaPhi.cpp \
+../functions/random_numbers.cpp \
+../functions/Check_PhotonEvent.cpp \
+../functions/Corresponding_Photons.cpp \
+../functions/Photons_Rest.cpp \
+../functions/Check_ParticleEvent.cpp \
+../functions/GraphFocus.cpp \
+../functions/GraphRest.cpp \
+../functions/GraphBounds.cpp \
+../functions/ExtractArray.cpp \
+../functions/Print_Histogram.cpp \
+../functions/Rotater.cpp \
+../functions/Displayer.cpp \
+../simulator/CheckAngel.cpp \
+../simulator/Check_PhotonDirection.cpp \
+../functions/simulate_par.cpp \
+../functions/masses.cpp \
+../functions/min_map.cpp \
 ../functions/addtoFile.cpp \
 ../functions/returnEnd.cpp \
 ../functions/file-properties.cpp

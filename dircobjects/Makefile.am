@@ -15,7 +15,7 @@ DircObjs_Dict.cpp: \
 
 
 libDircObjs_la_SOURCES = \
-	analysis.C \
+	analysis.cpp \
 	dirc_objects.cpp \
 	particle_objects.cpp \
 	fitgaussianplusconstant.cpp \

@@ -166,7 +166,7 @@ void TrackRecons::FitGaussianPlusConstant(TH1D &h, double xlow, double xhi, doub
   f2.FixParameter(3, min_point(3));
 
   PushBackParams();
-  auto params = Recon.back().Params.back();
+  auto &params = Recon.back().Params.back();
   for(int i=0;i<4;++i){
       params.push_back(f2.GetParameter(i));
   }

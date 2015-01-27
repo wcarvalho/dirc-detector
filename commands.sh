@@ -1,5 +1,5 @@
 make="make -j 4"
-install="make install"
+install="make -j 4 install"
 configure="../configure --prefix"
 uninstall="make uninstall"
 clean="make distclean"
