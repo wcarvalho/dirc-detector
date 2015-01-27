@@ -15637,7 +15637,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 ##CXXFLAGS="-Wall -Werror -O2 ${CXXFLAGS}"
-CPPFLAGS="${CPPFLAGS} -I`root-config --incdir`"
+CPPFLAGS="${CPPFLAGS} -std=c++11 -pipe -Wno-deprecated-register -O3 -march=native -I`root-config --incdir`"
 
 
 ROOT_LIBS=`root-config --libs`

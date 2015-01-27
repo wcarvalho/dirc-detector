@@ -9,10 +9,18 @@ AC_PROG_CXX
 AC_PROG_LIBTOOL
 
 ##CXXFLAGS="-Wall -Werror -O2 ${CXXFLAGS}"
-CPPFLAGS="${CPPFLAGS} -I`root-config --incdir`"
+CPPFLAGS="${CPPFLAGS} -std=c++11 -pipe -Wno-deprecated-register -O3 -march=native -I`root-config --incdir` `pkg-config --cflags wilkasUtilityLib` `pkg-config --cflags fitnewton`"
+
+ROOT_LIBS=`root-config --libs`
+UTIL_LIB=`pkg-config --libs wilkasUtilityLib`
+NEWTON_LIB=`pkg-config --libs fitnewton`
 
 AC_SUBST(ROOT_LIBS)
-ROOT_LIBS=`root-config --libs`
+AC_SUBST(UTIL_LIB)
+AC_SUBST(NEWTON_LIB)
+
+PKG_CHECK_MODULES([Fitnewton], [fitnewton])
+PKG_CHECK_MODULES([WilkasUtilityLib], [wilkasUtilityLib])
 
 AC_CONFIG_FILES([Makefile DircObjs.pc])
 

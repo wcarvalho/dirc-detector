@@ -1,0 +1,4 @@
+source clean_generator.sh
+source clean_simulator.sh
+source clean_reconstructor.sh
+source clean_dircobjects.sh

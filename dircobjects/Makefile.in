@@ -133,9 +133,11 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgconfigdir)" \
 	"$(DESTDIR)$(includedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
-libDircObjs_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
+libDircObjs_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_libDircObjs_la_OBJECTS = analysis.lo dirc_objects.lo \
-	particle_objects.lo DircObjs_Dict.lo
+	particle_objects.lo fitgaussianplusconstant.lo \
+	DircObjs_Dict.lo
 libDircObjs_la_OBJECTS = $(am_libDircObjs_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -263,6 +265,8 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
+Fitnewton_CFLAGS = @Fitnewton_CFLAGS@
+Fitnewton_LIBS = @Fitnewton_LIBS@
 GREP = @GREP@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -280,6 +284,7 @@ LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
+NEWTON_LIB = @NEWTON_LIB@
 NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
@@ -294,13 +299,19 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 RANLIB = @RANLIB@
 ROOT_LIBS = @ROOT_LIBS@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
+UTIL_LIB = @UTIL_LIB@
 VERSION = @VERSION@
+WilkasUtilityLib_CFLAGS = @WilkasUtilityLib_CFLAGS@
+WilkasUtilityLib_LIBS = @WilkasUtilityLib_LIBS@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -367,10 +378,13 @@ libDircObjs_la_SOURCES = \
 	analysis.C \
 	dirc_objects.cpp \
 	particle_objects.cpp \
+	fitgaussianplusconstant.cpp \
 	DircObjs_Dict.cpp
 
 libDircObjs_la_LIBADD = \
-$(ROOT_LIBS)
+$(ROOT_LIBS) \
+$(UTIL_LIB) \
+$(NEWTON_LIB)
 
 libDircObjs_la_LDFLAGS = -version-info 1:0:0
 pkgconfigdir = $(libdir)/pkgconfig
@@ -462,6 +476,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DircObjs_Dict.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/analysis.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dirc_objects.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fitgaussianplusconstant.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/particle_objects.Plo@am__quote@
 
 .C.o:

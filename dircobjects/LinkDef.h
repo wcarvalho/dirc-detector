@@ -24,7 +24,6 @@
 #pragma link C++ class sPhoton+;
 
 #pragma link C++ class Analysis+;
-#pragma link C++ class Fit+;
 #pragma link C++ class TrackRecon+;
 #pragma link C++ class TrackRecons+;
 

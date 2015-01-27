@@ -18,10 +18,13 @@ libDircObjs_la_SOURCES = \
 	analysis.C \
 	dirc_objects.cpp \
 	particle_objects.cpp \
+	fitgaussianplusconstant.cpp \
 	DircObjs_Dict.cpp
 
 libDircObjs_la_LIBADD = \
-$(ROOT_LIBS)
+$(ROOT_LIBS) \
+$(UTIL_LIB) \
+$(NEWTON_LIB)
 
 libDircObjs_la_LDFLAGS = -version-info 1:0:0
 

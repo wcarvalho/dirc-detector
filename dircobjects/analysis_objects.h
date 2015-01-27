@@ -43,8 +43,9 @@ public:
 
 	void AddTrackRecon();
 	void PushBackParams();
+	void FitGaussianPlusConstant(TH1D &h, double xlow, double xhi, double &center, double centerbounds[2], double &width, double widthbounds[2], double &Area);
+
 	std::vector<TrackRecon> Recon;
-	void FitGaussianPlusConstant(TH1D &h, double xlow, double xhi, double center, double centerbounds[2], double width, double widthbounds[2], double &Area);
 
 	ClassDef(TrackRecons, 1);
 };
@@ -60,7 +61,7 @@ public:
 	void AddTH2D(const char* name, const char* title, int nbinsx, double xlow, double xup, int nbinsy, double ylow, double yup);
 
 	void SetPrint(bool p = true) {print = p;}
-	void FitGaussianPlusConstant(double xlow, double xhi, double center, double centerbounds[2], double width, double widthbounds[2], double &Area);
+	void FitGaussianPlusConstant(double xlow, double xhi, double& center, double centerbounds[2], double& width, double widthbounds[2], double &Area);
 
 	std::vector<TH1D> Hists1D;
 	std::vector<TH2D> Hists2D;
@@ -69,16 +70,6 @@ public:
 	bool print;
 
 	ClassDef(Analysis, 1);
-};
-
-// fits histograms to gaussian + constant
-class Fit : public Analysis
-{
-public:
-	Fit(){}
-	~Fit(){}
-
-	ClassDef(Fit, 1);
 };
 
 #endif

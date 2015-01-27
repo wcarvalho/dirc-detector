@@ -133,9 +133,11 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgconfigdir)" \
 	"$(DESTDIR)$(includedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
-libDircObjs_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
+libDircObjs_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_libDircObjs_la_OBJECTS = analysis.lo dirc_objects.lo \
-	particle_objects.lo DircObjs_Dict.lo
+	particle_objects.lo fitgaussianplusconstant.lo \
+	DircObjs_Dict.lo
 libDircObjs_la_OBJECTS = $(am_libDircObjs_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
@@ -246,7 +248,7 @@ CC = gcc
 CCDEPMODE = depmode=gcc3
 CFLAGS = -g -O2
 CPP = gcc -E
-CPPFLAGS =  -I/Users/wilkacarvalho/Applications/root/include
+CPPFLAGS =  -std=c++11 -pipe -Wno-deprecated-register -O3 -march=native -I/Users/wilkacarvalho/Applications/root/include -I/Users/wilkacarvalho/libraries/include  -I/Users/wilkacarvalho/libraries/libseamstress/include -I/Users/wilkacarvalho/libraries/eigen3/include/eigen3 -I/Users/wilkacarvalho/libraries/fitnewton/include 
 CXX = g++
 CXXCPP = g++ -E
 CXXDEPMODE = depmode=gcc3
@@ -263,6 +265,8 @@ ECHO_T =
 EGREP = /usr/bin/grep -E
 EXEEXT = 
 FGREP = /usr/bin/grep -F
+Fitnewton_CFLAGS = -I/Users/wilkacarvalho/libraries/libseamstress/include -I/Users/wilkacarvalho/libraries/eigen3/include/eigen3 -I/Users/wilkacarvalho/libraries/fitnewton/include 
+Fitnewton_LIBS = -L/Users/wilkacarvalho/libraries/libseamstress/lib -L/Users/wilkacarvalho/libraries/fitnewton/lib -lFitNewton -lSeamstress 
 GREP = /usr/bin/grep
 INSTALL = /usr/bin/install -c
 INSTALL_DATA = ${INSTALL} -m 644
@@ -280,6 +284,7 @@ LTLIBOBJS =
 MAKEINFO = ${SHELL} /Users/wilkacarvalho/projects/dirc/dircobjects/config/missing makeinfo
 MANIFEST_TOOL = :
 MKDIR_P = ../config/install-sh -c -d
+NEWTON_LIB = -L/Users/wilkacarvalho/libraries/libseamstress/lib -L/Users/wilkacarvalho/libraries/fitnewton/lib -lFitNewton -lSeamstress 
 NM = /usr/bin/nm
 NMEDIT = nmedit
 OBJDUMP = false
@@ -294,13 +299,19 @@ PACKAGE_TARNAME = dircobjs
 PACKAGE_URL = 
 PACKAGE_VERSION = 0.0.1
 PATH_SEPARATOR = :
+PKG_CONFIG = /usr/local/bin/pkg-config
+PKG_CONFIG_LIBDIR = 
+PKG_CONFIG_PATH = /Users/wilkacarvalho/libraries/lib/pkgconfig:/Users/wilkacarvalho/libraries/libseamstress/lib/pkgconfig:/Users/wilkacarvalho/libraries/dirc/lib/pkgconfig:/Users/wilkacarvalho/libraries/eigen3/share/pkgconfig:/Users/wilkacarvalho/libraries/fitnewton/lib/pkgconfig/
 RANLIB = ranlib
 ROOT_LIBS = -L/Users/wilkacarvalho/Applications/root/lib -lCore -lCint -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -lpthread -Wl,-rpath,/Users/wilkacarvalho/Applications/root/lib -stdlib=libc++ -lm -ldl
 SED = /usr/bin/sed
 SET_MAKE = 
 SHELL = /bin/sh
 STRIP = strip
+UTIL_LIB = -L/Users/wilkacarvalho/libraries/lib -lwilkasUtilityLib 
 VERSION = 0.0.1
+WilkasUtilityLib_CFLAGS = -I/Users/wilkacarvalho/libraries/include 
+WilkasUtilityLib_LIBS = -L/Users/wilkacarvalho/libraries/lib -lwilkasUtilityLib 
 abs_builddir = /Users/wilkacarvalho/projects/dirc/dircobjects/build
 abs_srcdir = /Users/wilkacarvalho/projects/dirc/dircobjects/build/..
 abs_top_builddir = /Users/wilkacarvalho/projects/dirc/dircobjects/build
@@ -367,10 +378,13 @@ libDircObjs_la_SOURCES = \
 	analysis.C \
 	dirc_objects.cpp \
 	particle_objects.cpp \
+	fitgaussianplusconstant.cpp \
 	DircObjs_Dict.cpp
 
 libDircObjs_la_LIBADD = \
-$(ROOT_LIBS)
+$(ROOT_LIBS) \
+$(UTIL_LIB) \
+$(NEWTON_LIB)
 
 libDircObjs_la_LDFLAGS = -version-info 1:0:0
 pkgconfigdir = $(libdir)/pkgconfig
@@ -462,6 +476,7 @@ distclean-compile:
 include ./$(DEPDIR)/DircObjs_Dict.Plo
 include ./$(DEPDIR)/analysis.Plo
 include ./$(DEPDIR)/dirc_objects.Plo
+include ./$(DEPDIR)/fitgaussianplusconstant.Plo
 include ./$(DEPDIR)/particle_objects.Plo
 
 .C.o:
