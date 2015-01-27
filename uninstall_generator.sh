@@ -1,4 +1,4 @@
-directory=$generator
+directory=generator
 source commands.sh
 cmd=$uninstall
-execution.sh
+source execution.sh

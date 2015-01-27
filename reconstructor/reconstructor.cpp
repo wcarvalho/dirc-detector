@@ -1,5 +1,5 @@
 #include "../headers/reconstructor.h"
-
+#include "analysis_objects.h"
 // removes the beginning particles of a particle set. used to analyze only the particles after a certain point
 void removeFirstParticles(bool Remove, GeneratorOut*& event_output, int last){
 	if (Remove){
@@ -67,11 +67,13 @@ void CalculateParticleFits(double (*ExpectedNumberofPhotons)(double const&, doub
 		double Area = 0.;
 
 		double weight = .1;
+		double center = angle;
 		double centerbounds[2] = {angle - weight*smear, angle + weight*smear};
+		double width = smear;
 		double widthbounds[2] = {.8*smear, 1.2*smear};
 
-
-		A.FitGaussianPlusConstant(angle-range, angle+range, angle, smear, Area);
+		A.AddTrackRecon();
+		A.FitGaussianPlusConstant(center-range, center+range, center, centerbounds, width, widthbounds, Area);
 		// Area = guesser.FitParticle1D(c1_p, *h, params, angle-range, angle+range, angle, smear, newhname, print);	// area under gaussian (calculated number of photons)
 		double Beta = P.CalculateBeta(mass);
 		double N = ExpectedNumberofPhotons(P.X, P.Y, P.Theta, P.Phi, Beta);

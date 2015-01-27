@@ -1,4 +1,4 @@
-directory=$simulator
+directory=simulator
 source commands.sh
 cmd=$uninstall
-execution.sh
+source execution.sh

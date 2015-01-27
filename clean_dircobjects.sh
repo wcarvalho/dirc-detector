@@ -1,4 +1,4 @@
-directory=$dircobjects
+directory=dircobjects
 source commands.sh
-cmd=$uninstall
-execution.sh
+cmd=$clean
+source execution.sh

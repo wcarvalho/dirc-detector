@@ -1,4 +1,4 @@
-directory=$reconstructor
+directory=reconstructor
 source commands.sh
 cmd=$uninstall
-execution.sh
+source execution.sh

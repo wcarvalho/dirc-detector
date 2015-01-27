@@ -119,10 +119,6 @@ void TrackRecons::FitGaussianPlusConstant(TH1D &h, double xlow, double xhi, doub
   chi2.setData(data);
   chi2.setErrors(errors);
 
-  // FIXME these bounds should not be hard-coded
-  // this routine needs to know about the resolution of the
-  // photon angle for the width and the tracking for the center
-  double weight = .1;
   gpc.setCenterBounds(centerbounds[0], centerbounds[1]);
   gpc.setWidthBounds(widthbounds[0], widthbounds[1]);
 

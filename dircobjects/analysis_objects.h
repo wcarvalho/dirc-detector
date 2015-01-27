@@ -56,7 +56,9 @@ public:
 	Analysis(bool p = false) : print(p) {}
 	~Analysis(){}
 
-	void SetData(std::vector< std::vector<double> > data2d);
+	void SetData(std::vector< std::vector<double> > data2d){
+		data = data2d;
+	}
 	void AddTH1D(const char* name, const char* title, int nbinsx, double xlow, double xup, int which);
 	void AddTH2D(const char* name, const char* title, int nbinsx, double xlow, double xup, int nbinsy, double ylow, double yup);
 

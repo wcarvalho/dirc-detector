@@ -23,7 +23,6 @@
 #include "dirc_objects.h"
 #include "utility_library.h"
 #include "FileProperties.h"
-// #include "file-properties.h"
 #include "functions.h"
 #include "Simulate.h"
 #include "fitter.h"

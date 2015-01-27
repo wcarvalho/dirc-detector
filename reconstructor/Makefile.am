@@ -56,7 +56,6 @@ LookUpTable.cpp \
 ../simulator/Check_PhotonDirection.C \
 ../functions/simulate_par.C \
 ../functions/masses.C \
-../functions/identifier.C \
 ../functions/min_map.C \
 ../functions/addtoFile.cpp \
 ../functions/returnEnd.cpp \
