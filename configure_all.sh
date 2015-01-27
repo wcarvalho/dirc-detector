@@ -1,0 +1,4 @@
+source configure_generator.sh
+source configure_simulator.sh
+source configure_reconstructor.sh
+source configure_dircobjects.sh

@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: DircObjects
+Description: Objects to hold Detector, Particle, and Photon Data
+Version: @PACKAGE_VERSION@
+Libs: -L${libdir} -lDircObjs
+Cflags: -I${includedir}

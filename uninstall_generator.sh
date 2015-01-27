@@ -1,4 +1,4 @@
-directory=simulator
+directory=generator
 source commands.sh
-cmd=$install
+cmd=$uninstall
 source $execution

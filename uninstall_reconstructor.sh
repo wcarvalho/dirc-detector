@@ -1,4 +1,4 @@
 directory=reconstructor
 source commands.sh
-cmd=$install
+cmd=$uninstall
 source $execution

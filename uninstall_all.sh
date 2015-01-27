@@ -1,0 +1,4 @@
+source uninstall_generator.sh
+source uninstall_simulator.sh
+source uninstall_reconstructor.sh
+source uninstall_dircobjects.sh

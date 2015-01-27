@@ -1,4 +1,4 @@
-directory=simulator
+directory=dircobjects
 source commands.sh
-cmd=$install
+cmd=$uninstall
 source $execution

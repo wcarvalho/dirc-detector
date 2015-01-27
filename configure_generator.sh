@@ -1,4 +1,4 @@
 directory=generator
 source commands.sh
-cmd=$make
+cmd="$configure=$MYAPPS"
 source execution.sh

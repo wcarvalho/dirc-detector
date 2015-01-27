@@ -1,0 +1,10 @@
+prefix=/Users/wilkacarvalho/libraries
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: DircObjects
+Description: Objects to hold Detector, Particle, and Photon Data
+Version: 0.0.1
+Libs: -L${libdir} -lDircObjs
+Cflags: -I${includedir}
