@@ -19,12 +19,14 @@
 
 #pragma link C++ class PhotonOut+;
 #pragma link C++ class Photon+;
+#pragma link C++ class vector<Photon>+;
 #pragma link C++ class PhotonEvent+;
 #pragma link C++ class Photon_new+;
 #pragma link C++ class sPhoton+;
 
 #pragma link C++ class Analysis+;
 #pragma link C++ class TrackRecon+;
+#pragma link C++ class vector<TrackRecon>+;
 #pragma link C++ class TrackRecons+;
 
 #endif

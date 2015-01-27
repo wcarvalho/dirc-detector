@@ -40,7 +40,7 @@ using namespace std;
 class gParticle : public Particle
 {
 public:
-	gParticle(double in = 0) : r(in), chargeMarker(0) { setDefaults(); }
+	gParticle(double in = 0) : r(in), chargeMarker(0) { setDefaults(); setPtDistributionFunction(); }
 	~gParticle(){}
 
 	void setDefaults();
@@ -69,9 +69,10 @@ public:
 	double ptrange[2];
 	map<string, double> massmap;
 	double chargeMarker;
-
-private:
 	std::string ptdisributionfunction;
+
+// private:
+
 };
 
 vector<Particle> generate(int nparticles, gParticle& gPar, Detector d, int maxPars, bool print);

@@ -15,20 +15,19 @@ generator_LDADD = \
 
 generator_SOURCES = \
 	main.cpp \
-	cmdline.c \
-	generate_particle_data.C \
-	generate_event_data.C \
+	cmdline.cpp \
+	generate_particle_data.cpp \
 	project.cpp \
-	TakeInParameters.C \
-	generate.C \
+	TakeInParameters.cpp \
+	generate.cpp \
 ##=====================================
 ##
 ##					Mutual functions
 ##
 ##=====================================
-	../functions/random_numbers.C \
-	../functions/TabToLevel.C \
-	../functions/simulate_par.C
+	../functions/random_numbers.cpp \
+	../functions/TabToLevel.cpp \
+	../functions/simulate_par.cpp
 
 cmdline.c: cmdline.ggo
   gengetopt --input=cmdline.ggo --include-getopt

@@ -1,3 +1,28 @@
+#include "dirc_objects.h"
+#include "utility_library.h"
+
+#include <vector>
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <vector>
+#include <map>
+#include <iomanip>      // std::setfill, std::setw
+#include <sys/time.h>
+#include <sstream>
+
+#include "TLatex.h"
+#include "TMath.h"
+#include "TH1D.h"
+#include "TTree.h"
+#include "TFile.h"
+#include "TGraph.h"
+#include "TCanvas.h"
+#include "TGraphAsymmErrors.h"
+
+
+using namespace std;
+
 // shrinks the original Particle data so it only has the data corresponding to the Reconstructed Data (assuming that info comes from the end of the particle data array)
 int matchDataSize(vector<TrackRecon>& a, vector<Particle>& b){
 
@@ -16,6 +41,10 @@ int matchDataSize(vector<TrackRecon>& a, vector<Particle>& b){
 	}
 	return dif;
 }
+
+
+
+
 
 // finds every case that the name of the particle matches search and the name of the reconstruction matches tomatch. The former fills search_den, and the latter search_num. The multiplicity of the event is recorded for every pair added to either vector.
 void getMatch(Particle *P, string search, string tomatch, double threshold, TrackRecon* R, int multiplicity, vector< pair<int, pair <Particle, TrackRecon> > > &search_num, vector< pair<int, pair <Particle, TrackRecon> > > &search_den, bool print){
@@ -39,4 +68,3 @@ void getMatch(Particle *P, string search, string tomatch, double threshold, Trac
 	}
 
 }
-
