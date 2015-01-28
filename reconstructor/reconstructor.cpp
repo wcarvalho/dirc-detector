@@ -47,12 +47,12 @@ void CalculateParticleFits(double (*ExpectedNumberofPhotons)(double const&, doub
 	double travels = 0.;
 
 	A.AddTrackRecon();
-	TrackRecon &guess = A.Recon.back();
 
-	TH1D& h = A.Hists1D.back();
+	TrackRecon &guess  = A.Recon.back();
+	TH1D& h            = A.Hists1D.back();
 	string defaultname = h.GetName();
+	guess.Hist         = h;
 
-	guess.Hist = h;
 	for(map<double, double>::iterator i = atm.begin(); i != atm.end(); ++i){
 		static TCanvas c1("c1","c1",10,10,800,600);
 		static TCanvas *c1_p = &c1;

@@ -21,8 +21,6 @@ public:
 	std::map <std::string, double > MassMap();
 	std::map <std::string, double > EmissionAngleMap();
 
-	// double CalculatePhotonsPercm(double mass);
-
 	double Theta;
 	double Phi;
 	double X;
@@ -50,10 +48,10 @@ public:
 
   double CalculatePhotonsPercm(double xlow, double xhi, double n, double z = 1., double alpha = 1./137);
 
-  
+
 	Particle To_Particle(ParticleOut p1){ return Particle(p1.Theta, p1.Phi); }
 	ParticleOut To_ParticleOut(Particle p1){ return ParticleOut(p1.Theta, p1.Phi); }
-	
+
 	double m;
   unsigned int Which;
   double Z;
@@ -111,7 +109,7 @@ public:
 	double Phi; //
 	double X;
 	double Y;
-	int Charge; // 
+	int Charge; //
 
 	ClassDef(Particle_new, 1);
 };

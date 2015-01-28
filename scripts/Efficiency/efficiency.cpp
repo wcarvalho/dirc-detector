@@ -125,9 +125,9 @@ catch( TCLAP::ArgException& e )
 	vector<Particle> *pars = &originals->Particles;
 	vector<TrackRecon> *recons = &reconstructions->Recon;
 
-	// if (calibrateSigma) calibrateSigmas(*t1, *t2, *originals, *reconstructions, matchsearch);
+	if (calibrateSigma) calibrateSigmas(*t1, *t2, *originals, *reconstructions, matchsearch);
 
-	// exit(1);
+	exit(1);
 
 	int nentries = t2->GetEntries();
 
