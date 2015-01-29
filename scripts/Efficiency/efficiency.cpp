@@ -10,10 +10,12 @@ int main(int argc, char** argv){
 
 	string graph_dir;
 	string fit_dir;
+	string calibration_dir;
 	string reconstructiondata;
 	string cheatdata;
 	string matchgraph_filebase;
 	string falsegraph_filebase;
+	string calibrationgraph_filebase;
 	string matchsearch;
 	string falsesearch;
 	string momentum_slices;
@@ -31,9 +33,11 @@ int main(int argc, char** argv){
 TCLAP::CmdLine cmd("Command description message", ' ', "0.1");
 try{
 
-	TCLAP::ValueArg<std::string> fitDirectoryArg("f","fit-directory","Directory where fits will be stored",false,"fits","string", cmd);
+	TCLAP::ValueArg<std::string> fitDirectoryArg("F","fit-directory","Directory where fits will be stored",false,"fits","string", cmd);
 
-	TCLAP::ValueArg<std::string> match_fakeDirectoryArg("m","match-fake-directory","Directory where graphs for match rates and fake rated will be stored",false,"graphs","string", cmd);
+	TCLAP::ValueArg<std::string> match_fakeDirectoryArg("M","match-fake-directory","Directory where graphs for match rates and fake rated will be stored",false,"graphs","string", cmd);
+
+	TCLAP::ValueArg<std::string> calibrationDirectoryArg("S","sigma-calibration-directory","Directory where graphs for sigma calibration will be stored",false,"calibration","string", cmd);
 
 	TCLAP::ValueArg<std::string> reconstructileFileArg("r","reconstruction","file with reconstruction data",false,"reconstruction.root","string", cmd);
 
@@ -43,6 +47,7 @@ try{
 
 	TCLAP::ValueArg<std::string> falsePrefixArg("","false-prefix","prefix used for the fake-rate graph file names",false,"false","string", cmd);
 
+	TCLAP::ValueArg<std::string> calibrationPrefixArg("","calibration-prefix","prefix used for the calibratino graph file names",false,"","string", cmd);
 	TCLAP::ValueArg<std::string> matchsearchArg("","match-search","particle which is being matched for",false,"electron","string", cmd);
 
 	TCLAP::ValueArg<std::string> falsesearchArg("","false-search","particle which is being used for the fake rate",false,"pion","string", cmd);
@@ -53,7 +58,7 @@ try{
 
 	TCLAP::ValueArg<std::string> momentum_slicesArg("","momentum-slices","file with momentum slices",false, "momentum","string", cmd);
 
-TCLAP::ValueArg<std::string> multiplicity_slicesArg("","multiplicity-slices","file with multiplicity slices",false, "multiplicity","string", cmd);
+	TCLAP::ValueArg<std::string> multiplicity_slicesArg("","multiplicity-slices","file with multiplicity slices",false, "multiplicity","string", cmd);
 
 	TCLAP::SwitchArg verboseArg("v","verbose","", cmd, false);
 
@@ -64,10 +69,12 @@ TCLAP::ValueArg<std::string> multiplicity_slicesArg("","multiplicity-slices","fi
 	cmd.parse( argc, argv );
 	fit_dir = fitDirectoryArg.getValue();
 	graph_dir = match_fakeDirectoryArg.getValue();
+	calibration_dir = calibrationDirectoryArg.getValue();
 	reconstructiondata = reconstructileFileArg.getValue();
 	cheatdata = particleFileArg.getValue();
 	matchgraph_filebase = matchPrefixArg.getValue();
 	falsegraph_filebase = falsePrefixArg.getValue();
+	calibrationgraph_filebase = calibrationPrefixArg.getValue();
 	matchsearch = matchsearchArg.getValue();
 	falsesearch = falsesearchArg.getValue();
 	threshold = thresholdArg.getValue();
@@ -125,9 +132,8 @@ catch( TCLAP::ArgException& e )
 	vector<Particle> *pars = &originals->Particles;
 	vector<TrackRecon> *recons = &reconstructions->Recon;
 
-	if (calibrateSigma) calibrateSigmas(*t1, *t2, *originals, *reconstructions, matchsearch);
-
-	exit(1);
+	calibrationgraph_filebase = wul::appendStrings(calibration_dir, "/", calibrationgraph_filebase);
+	if (std::find(graph_choice.begin(), graph_choice.end(), 0)!=graph_choice.end()) calibrateSigmas(*t1, *t2, *originals, *reconstructions, matchsearch, calibrationgraph_filebase);
 
 	int nentries = t2->GetEntries();
 
