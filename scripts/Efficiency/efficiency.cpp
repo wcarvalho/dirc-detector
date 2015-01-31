@@ -133,14 +133,19 @@ catch( TCLAP::ArgException& e )
 	vector<TrackRecon> *recons = &reconstructions->Recon;
 
 	calibrationgraph_filebase = wul::appendStrings(calibration_dir, "/", calibrationgraph_filebase);
-	if (std::find(graph_choice.begin(), graph_choice.end(), 0)!=graph_choice.end()) calibrateSigmas(*t1, *t2, *originals, *reconstructions, matchsearch, calibrationgraph_filebase);
 
-	int nentries = t2->GetEntries();
+	int firstevent = 0;
 
+	bool calibrated = std::find(graph_choice.begin(), graph_choice.end(), 0)!=graph_choice.end();
+	if (calibrated){
+		calibrateSigmas(*t1, *t2, *originals, *reconstructions, matchsearch, calibrationgraph_filebase, firstevent);
+	}
+
+	int nentries = t1->GetEntries();
 	int i = 0;
 	int multiplicity_high = 0;
 	int multiplicity_low = 100;
-	for (unsigned int ev = 0; ev < nentries; ++ev){
+	for (unsigned int ev = firstevent; ev < nentries; ++ev){
 		if(print) cout << "Event " << ev << endl;
 		t1->GetEntry(ev); t2->GetEntry(ev);
 		int event_multiplicity = pars->size();

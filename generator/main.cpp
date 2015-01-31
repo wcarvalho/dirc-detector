@@ -95,6 +95,7 @@ int main(int argc, char** argv)
 		printf("\tLength(x) = %f, Width(y) = %f, Height(z) = %f\n", d.Length, d.Width, d.Height);
 		printf("\tMagnetic Field = %f and Radial Distance = %f\n\n", d.Mag_field, d.Radial_D);
 	}
+
   //__________________generate________________
   for (unsigned int ev = 0; ev < nevents; ev++)
   {

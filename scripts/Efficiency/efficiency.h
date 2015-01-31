@@ -47,7 +47,7 @@ int matchDataSize(vector<TrackRecon>& a, vector<Particle>& b){
 
 
 // finds every case that the name of the particle matches search and the name of the reconstruction matches tomatch. The former fills search_den, and the latter search_num. The multiplicity of the event is recorded for every pair added to either vector.
-void getMatch(Particle *P, string search, string tomatch, double threshold, TrackRecon* R, int multiplicity, vector< pair<int, pair <Particle, TrackRecon> > > &search_num, vector< pair<int, pair <Particle, TrackRecon> > > &search_den, bool print){
+void getMatch(Particle* const& P, string search, string tomatch, double threshold, TrackRecon* const& R, int multiplicity, vector< pair<int, pair <Particle, TrackRecon> > > &search_num, vector< pair<int, pair <Particle, TrackRecon> > > &search_den, bool print){
 
 	vector<double> &sigmas = R->Sigmas;
 	vector<string> &names = R->Options;
@@ -59,7 +59,7 @@ void getMatch(Particle *P, string search, string tomatch, double threshold, Trac
 
 		if ( sigmas.size() != names.size() ) exit(1);
 		for (unsigned int opt = 0; opt < sigmas.size(); ++opt){
-
+			// cout << opt << " "<<  names[opt] << " sigma: " << sigmas[opt] << endl;
 			if ((sigmas[opt] < threshold) && (names[opt] == tomatch)){
 				search_num.push_back(den);
 				// if (print) cout << "\tSELECTED\n";

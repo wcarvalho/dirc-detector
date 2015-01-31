@@ -1,6 +1,11 @@
 #include "../headers/reconstructor.h"
 #include "analysis_objects.h"
-// removes the beginning particles of a particle set. used to analyze only the particles after a certain point
+/**
+ * [removeFirstParticles removes the beginning particles of a particle set. used to analyze only the particles after a certain point]
+ * @param Remove       [description]
+ * @param event_output [description]
+ * @param last         [description]
+ */
 void removeFirstParticles(bool Remove, GeneratorOut*& event_output, int last){
 	if (Remove){
       int beginning = event_output->Particles.size() - last;
