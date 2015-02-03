@@ -30,9 +30,9 @@ public:
 	double p[3];
 	int Charge;
 	double masses[5];
-	std::string deftypes[5];
 	double PhotonsPercm;
 	int NumberofPhotons;
+	std::vector<std::string> deftypes;
 	std::vector<std::string> types;
 
   ClassDef(ParticleOut, 1);

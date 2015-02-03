@@ -10,16 +10,16 @@ using namespace std;
 
 void ParticleOut::PossibleMasses(){
 	types.clear();
-	std::string deftypes[5] = {"muon", "electron", "pion", "kaon", "proton"};
 	masses[0]=.105658;
 	masses[1]=.511e-3;
 	masses[2]=.1396;
 	masses[3]=.493667;
 	masses[4]=.938;
 
+	std::string options[5] = {"muon", "electron", "pion", "kaon", "proton"};
 	for (unsigned int l = 0; l < 5; ++l){
-		std::string cur_type = deftypes[l];
-		types.push_back(cur_type);
+		deftypes.push_back(options[l]);
+		types.push_back(options[l]);
 	}
 }
 
@@ -35,8 +35,8 @@ double ParticleOut::CalculateBeta(double mass){
 
 std::map<std::string, double> ParticleOut::MassMap(){
 	map<string, double> massmap;
-	for(unsigned int i = 0; i < types.size(); ++i){
-		massmap[types.at(i)] = masses[i];
+	for(unsigned int i = 0; i < deftypes.size(); ++i){
+		massmap[deftypes.at(i)] = masses[i];
 	}
 	return massmap;
 }
@@ -49,10 +49,9 @@ map<string, double> ParticleOut::EmissionAngleMap(){
 	double thetaC_temp = 0.;
 	double beta_temp = 0.;
 
-	PossibleMasses();
 	std::map<std::string, double> emissionanglemap;
-	for (unsigned int i = 0; i < types.size(); ++i){
-		std::string &name = types.at(i);
+	for (unsigned int i = 0; i < deftypes.size(); ++i){
+		std::string &name = deftypes.at(i);
 		beta_temp = P/pow(( masses[i]*masses[i] + P*P ),.5);
 		thetaC_temp = acos(1./(1.474*beta_temp));
 		if (thetaC_temp == thetaC_temp)
