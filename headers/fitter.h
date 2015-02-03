@@ -6,7 +6,7 @@
 #include <vector>
 #include <fstream>
 #include <iomanip>
-#include <sstream> 
+#include <sstream>
 #include <sys/time.h>
 
 //------------------------------------------
@@ -31,7 +31,7 @@
 //		Functions
 //------------------------------------------
 
-class Identifier : public TObject 
+class Identifier : public TObject
 {
 public:
 	Identifier(){}
@@ -50,7 +50,7 @@ class LookUpTable
 {
 public:
 	LookUpTable(){}
-	LookUpTable(int ndim, double len_low[], double len_hi[], int nbin[], 
+	LookUpTable(int ndim, double len_low[], double len_hi[], int nbin[],
 	            string file, int whichCase) : Case(whichCase), print(false) {
 		setNDimension(ndim);
 		setLengths(len_low, len_hi);
@@ -74,7 +74,7 @@ public:
 	int getGlobalBin(int bin[]);
 	double getMean(int globalBin);
 	double getRMS(int globalBin);
-	
+
 	void Interpolate(double values[], double &mean, double &rms);
 	void NoInterpolation(double values[], double &mean, double &rms);
 	void LinearInterpolation(double values[], double &mean, double &rms);
@@ -82,19 +82,19 @@ public:
 	void close();
 
 	int N;								// number of dimensions
-	int nValues;					// total number of values in lookuptable 
+	int nValues;					// total number of values in lookuptable
 	int Case;
 
-	int* nbins;
-	double* mins;
-	double* lengths;
-	double* steps;
+	std::vector < int > nbins;
+	std::vector < double > mins;
+	std::vector < double > lengths;
+	std::vector < double > steps;
 
-	double* MEAN;
-	double* RMS;
-	
+	std::vector < double > MEAN;
+	std::vector < double > RMS;
+
 	bool print;
-	
+
 
 };
 

@@ -23,5 +23,5 @@ AC_SUBST(NEWTON_LIB)
 PKG_CHECK_MODULES([Fitnewton], [fitnewton])
 PKG_CHECK_MODULES([WilkasUtilityLib], [wilkasUtilityLib])
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile ReconstructionObjs.pc])
 AC_OUTPUT

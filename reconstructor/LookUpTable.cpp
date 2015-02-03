@@ -24,35 +24,26 @@ void bin5D(unsigned int global_bin, unsigned int nbins2, unsigned int nbins3, un
 
 void LookUpTable::setNDimension(int n){
 	N = n;
-	nbins = new int[N];
-	lengths = new double[N];
-	steps = new double[N];
-	mins = new double[N];
+	// nbins = new int[N];
+	// lengths = new double[N];
+	// steps = new double[N];
+	// mins = new double[N];
 }
 
 void LookUpTable::setLengths(double givenLengths_low[], double givenLengths_hi[]){
 	for (unsigned int i = 0; i < N; ++i){
-		lengths[i] = (givenLengths_hi[i]-givenLengths_low[i]);
-		mins[i] = givenLengths_low[i];
+		lengths.push_back(givenLengths_hi[i]-givenLengths_low[i]);
+		mins.push_back(givenLengths_low[i]);
 	}
 }
 
 void LookUpTable::setNBins(int givenBins[]){
 	for (unsigned int i = 0; i < N; ++i){
-		nbins[i] = givenBins[i];
-		steps[i] = (double)(lengths[i])/nbins[i];
+		nbins.push_back(givenBins[i]);
+		steps.push_back((double)(lengths[i])/nbins[i]);
 	}
 }
 
-void LookUpTable::close(){
-	delete nbins;
-	delete mins;
-	delete lengths;
-	delete steps;
-	
-	delete MEAN;
-	delete RMS;
-}
 
 void LookUpTable::tableFromTxt(string file){
 	ifstream f;
@@ -70,12 +61,10 @@ void LookUpTable::tableFromTxt(string file){
 		++nLines;
 
 	nValues = nLines;
-	MEAN = new double[nLines];
-	RMS = new double[nLines];
 
 	// go to beginning
 	f.clear();
-	f.seekg (0, f.beg); 
+	f.seekg (0, f.beg);
 
 	nLines = 0;
 	while(getline(f, line)){
@@ -85,8 +74,8 @@ void LookUpTable::tableFromTxt(string file){
     int which = 0;
     while(lineStream >> value)
     {
-    	if (which == 1) MEAN[nLines] = value;
-  		if (which == 2)	RMS[nLines] = value;
+    	if (which == 1) MEAN.push_back(value);
+  		if (which == 2)	RMS.push_back(value);
     	++which;
     }
 		++nLines;
@@ -130,7 +119,7 @@ double LookUpTable::getMean(int globalBin){
 double LookUpTable::getRMS(int globalBin){
 	return RMS[globalBin];
 }
-	
+
 
 
 void LookUpTable::Interpolate(double values[], double &mean, double &rms){
@@ -172,21 +161,21 @@ void LookUpTable::LinearInterpolation(double values[], double &mean, double &rms
 		double* center = &centers[i];
 		bool greater = *value > *center;
 		bool lessthan = *value < *center;
-		
+
 		if (greater){
 			bin_start[i] = bin[i];
-			bin_end[i] = bin[i] + 1; 
+			bin_end[i] = bin[i] + 1;
 		}
 		else if (lessthan){
 			bin_start[i] = bin[i] - 1;
-			bin_end[i] = bin[i]; 
+			bin_end[i] = bin[i];
 		}
 		else{
 			mean = getMean(getGlobalBin(bin));
 			delete bin_start;
-			delete bin_end; 
+			delete bin_end;
 			delete bin;
-			delete centers; 
+			delete centers;
 			return;
 		}
 	}
@@ -211,7 +200,7 @@ void LookUpTable::LinearInterpolation(double values[], double &mean, double &rms
 	double delta_x = 0.;
 	for(unsigned int i = 0; i < N; ++i)
 		delta_x += (values[i]-centers_start[i])*(values[i]-centers_start[i]);
-	
+
 	delta_x = sqrt(delta_x);
 
 	mean = range_start+delta_x*slope;
@@ -235,15 +224,15 @@ void LookUpTable::LinearInterpolation(double values[], double &mean, double &rms
 	}
 
 	delete bin_start;
-	delete bin_end; 
+	delete bin_end;
 	delete bin;
-	delete centers; 
+	delete centers;
 }
 
 
 std::pair<double, double> LookUpTable::getMeanRmsPair(double values[]){
 
-	int bin[N]; 
+	int bin[N];
 	//------------------------
 	// temporary change to correct for domain of phi, bin 3. It counts from 0, instead of -pi (i.e. made lookuptable for 0->2pi, but values are from -pi->pi)
 	double pi = 3.14159265358979312;
@@ -253,7 +242,7 @@ std::pair<double, double> LookUpTable::getMeanRmsPair(double values[]){
 	double mean = 0.;
 	double rms = 0.;
 	Interpolate(values, mean, rms);
-	
+
 	pair<double, double> MeanRms(mean, rms);
 	return MeanRms;
 }

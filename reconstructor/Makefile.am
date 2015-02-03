@@ -1,20 +1,12 @@
 AUTOMAKE_OPTIONS = subdir-objects
 
-bin_PROGRAMS = reconstructor
-
-include_HEADERS = ../headers/reconstructor.h \
-../headers/functions.h \
-../headers/Simulate.h \
-../headers/file-properties.h
-
-
-reconstructor_LDADD = \
+commonAdds = \
 $(ROOT_LIBS) \
 $(DIRC_LIB) \
 $(UTIL_LIB) \
 $(NEWTON_LIB)
 
-reconstructor_SOURCES = main.cpp \
+commonSources = LookUpTable.cpp \
 cmdline.cpp \
 reconstructor.cpp \
 ReconstructEvent.cpp \
@@ -23,7 +15,6 @@ CreateHistogram.cpp \
 Reconstructed_Reflections.cpp \
 histograms.cpp \
 FindLostPhotons.cpp \
-LookUpTable.cpp \
 ##=====================================
 ##
 ##					Mutual functions
@@ -60,6 +51,25 @@ LookUpTable.cpp \
 ../functions/addtoFile.cpp \
 ../functions/returnEnd.cpp \
 ../functions/file-properties.cpp
+
+include_HEADERS = ../headers/reconstructor.h \
+../headers/functions.h \
+../headers/Simulate.h \
+../headers/file-properties.h
+
+lib_LTLIBRARIES = libReconstructionObjs.la
+libReconstructionObjs_la_SOURCES = $(commonSources)
+libReconstructionObjs_la_LIBADD = $(commonAdds)
+libReconstructionObjs_la_LDFLAGS = -version-info 1:0:0
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = ReconstructionObjs.pc
+
+bin_PROGRAMS = reconstructor
+reconstructor_SOURCES = main.cpp
+reconstructor_LDADD = libReconstructionObjs.la
+reconstructor_CFLAGS = $(AM_CFLAGS)
+
 
 clear-local:
 	rm -f $(BUILT_SOURCES) *Dict*
