@@ -29,6 +29,7 @@ void gParticle::genMass()
 
 void gParticle::genPT()
 {
+	// cout << "ptdisributionfunction = " << ptdisributionfunction << endl;
 	TF1 f1("pt", ptdisributionfunction.c_str(), ptrange[0], ptrange[1]);
 	pt = f1.GetRandom();
 }

@@ -101,8 +101,8 @@ catch( TCLAP::ArgException& e )
 	fit_dir.append("/");
 	graph_dir.append("/");
 
-
 	double pi = TMath::Pi();
+	gErrorIgnoreLevel = 5000;					// turn off all root printing
 
 	vector< vector< double > > momentum = filearray(momentum_slices);
 	vector< vector< double > > multiplicity = filearray(multiplicity_slices);

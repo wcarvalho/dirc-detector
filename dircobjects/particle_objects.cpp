@@ -21,7 +21,6 @@ void ParticleOut::PossibleMasses(){
 		std::string cur_type = deftypes[l];
 		types.push_back(cur_type);
 	}
-
 }
 
 double ParticleOut::CalculateBeta(double mass){
@@ -50,8 +49,8 @@ map<string, double> ParticleOut::EmissionAngleMap(){
 	double thetaC_temp = 0.;
 	double beta_temp = 0.;
 
+	PossibleMasses();
 	std::map<std::string, double> emissionanglemap;
-
 	for (unsigned int i = 0; i < types.size(); ++i){
 		std::string &name = types.at(i);
 		beta_temp = P/pow(( masses[i]*masses[i] + P*P ),.5);
