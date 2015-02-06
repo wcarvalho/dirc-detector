@@ -31,6 +31,7 @@ void Reconstructed_Reflections(vector<PhotonOut> &pho, double theta, double phi,
 		PhotonOut z(sim.Theta, sim.Phi);
 		pho.push_back(z);
 		// printf("\t\ttheta = %f, phi = %f\n", sim.Theta, sim.Phi);
+		// cout << "\n";
 }
 
 // void XY_Reflections(vector<PhotonOut> &pho, Simulate sim, Displayer disp)
@@ -50,4 +51,4 @@ void Reconstructed_Reflections(vector<PhotonOut> &pho, double theta, double phi,
 // 	pho.push_back(y);
 // 	if (disp.Trivial == "yes"){ disp.Angle(y.Theta, y.Phi); }
 
-// }	
+// }

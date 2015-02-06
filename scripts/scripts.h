@@ -5,7 +5,7 @@
 using namespace std;
 
 
-// returns n by 2 array for files 
+// returns n by 2 array for files
 vector< vector< double > > filearray(string file){
 
 	ifstream f;
@@ -13,7 +13,7 @@ vector< vector< double > > filearray(string file){
 
 	vector< vector< double > > x; x.clear();
 	vector< double > temp; temp.clear();
-	
+
 	int size = pow(2,5);
 	char val1[size];
 	char val2[size];
@@ -30,8 +30,8 @@ vector< vector< double > > filearray(string file){
 		temp.push_back(atof(val2));
 		x.push_back(temp);
 		temp.clear();
-		
-	}	
+
+	}
 	return x;
 }
 

@@ -1,5 +1,45 @@
 #include "FileProperties.h"
 #include "TError.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /**
  * [fillvectors description]
  * @param expected               [description]
@@ -329,7 +369,7 @@ void calibrateSigmas(TTree& t1, TTree& t2, ParticleEvent& originals, TrackRecons
 
 					// recon.delSigTheta.at(i) -= theta_fit_difference;
 					// (theta_fit_difference - old_theta_difference)/theta_fit_sigma;
-					recon.delSigTheta.at(i) = recon.delSigTheta.at(i);
+					// recon.delSigTheta.at(i) = recon.delSigTheta.at(i);
 					recon.Sigmas.at(i) = sqrt(pow(recon.delSigTheta.at(i),2)+pow(recon.delSigArea.at(i),2));
 
 					bool print = true;

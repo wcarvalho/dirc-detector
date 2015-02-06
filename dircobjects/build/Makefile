@@ -136,7 +136,7 @@ am__DEPENDENCIES_1 =
 libDircObjs_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_libDircObjs_la_OBJECTS = analysis.lo dirc_objects.lo \
-	particle_objects.lo fitgaussianplusconstant.lo \
+	particle_objects.lo fitgaussianplusconstant.lo graphing.lo \
 	DircObjs_Dict.lo
 libDircObjs_la_OBJECTS = $(am_libDircObjs_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
@@ -372,13 +372,15 @@ include_HEADERS = \
 	dirc_objects.h \
 	particle_objects.h \
 	photon_objects.h \
-	analysis_objects.h
+	analysis_objects.h \
+	graphing.h
 
 libDircObjs_la_SOURCES = \
 	analysis.cpp \
 	dirc_objects.cpp \
 	particle_objects.cpp \
 	fitgaussianplusconstant.cpp \
+	graphing.cpp \
 	DircObjs_Dict.cpp
 
 libDircObjs_la_LIBADD = \
@@ -477,6 +479,7 @@ include ./$(DEPDIR)/DircObjs_Dict.Plo
 include ./$(DEPDIR)/analysis.Plo
 include ./$(DEPDIR)/dirc_objects.Plo
 include ./$(DEPDIR)/fitgaussianplusconstant.Plo
+include ./$(DEPDIR)/graphing.Plo
 include ./$(DEPDIR)/particle_objects.Plo
 
 .cpp.o:

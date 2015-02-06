@@ -5,6 +5,8 @@
 #include "../headers/reconstructor.h"
 #include <cstdlib>
 #include "cmdline.h"
+#include "boost/bind.hpp"
+#include "boost/function.hpp"
 
 int main(int argc, char** argv)
 {
@@ -18,7 +20,7 @@ int main(int argc, char** argv)
     int ybins    = 1000;
     double smear = .01;
 
- 	int ExpectedPhotonCase = ai.expected_photons_case_arg;
+ 		int ExpectedPhotonCase = ai.expected_photons_case_arg;
 
 
     // measuring time
@@ -58,15 +60,29 @@ int main(int argc, char** argv)
 	if (ai.Smear_given) smear = ai.Smear_arg;
 	if (ai.graph_prefix_given) graphprefix = ai.graph_prefix_arg;
 
-	// Function Pointer(s)
-	double (*ExpectedNumberofPhotons)(double const&, double const&, double const&, double const&, double const&);
 
+	// double lengths_low[5] = {0, 0, 0, 0, .7};
+	// double lengths_hi[5] = {490, 3.5, pi/2, 2*pi, 1};
+	// int nbins[5] = {20, 5, 10, 10, 5};
+	// string lookupfile = "LookUpTable";
+
+
+
+
+
+
+	// Function Pointer(s)
+	std::pair<double, double> (*ExpectedNumberofPhotons)(double const&, double const&, double const&, double const&, double const&);
+
+  // boost::function<*double(double const&, double const&, double const&, double const&, double const&)> ExpectedNumberofPhotons;
 
 	// determine which function will be used to determine the expected number of photons
 	if (print) cout << "ExpectedPhotonCase = ";
 	switch(ExpectedPhotonCase) {
 		case 1: // look-up table
 			if (!quiet) cout << "LookUpTable\n";
+
+			// ExpectedNumberofPhotons = boost::bind( &LookUpTableWrapper, _1, _2, _3, _4, _5, lengths_low, lengths_hi, nbins, lookupfile);
 			ExpectedNumberofPhotons = &LookUpTableWrapper;
 		break;
 		case 2: // riemansum
@@ -76,7 +92,7 @@ int main(int argc, char** argv)
 	}
 
 	// Classes used for analysis
-    Reconstruction reconstruction;							// used to reconstruct original photon trajectories
+  Reconstruction reconstruction;							// used to reconstruct original photon trajectories
 	ReconstructionData data;
 	reconstruction.Track.push_back(data);
 	Analysis A;																	// class used to create histograms

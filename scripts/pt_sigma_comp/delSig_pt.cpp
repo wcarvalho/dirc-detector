@@ -27,7 +27,7 @@ int main(int argc, char** argv){
 	bool print;
 
 TCLAP::CmdLine cmd("Command description message", ' ', "0.1");
-try{   
+try{
 
 	TCLAP::ValueArg<std::string> DirectoryArg("D","directory","Directory where graphs will be stored",false,"comparison","string", cmd);
 
@@ -38,10 +38,10 @@ try{
 	TCLAP::ValueArg<std::string> momSliceArg("p","momentum-slices","Text file where momentum slices are stored",false,"momentum-slices.txt","string", cmd);
 
 	TCLAP::MultiArg<int> thetaBinArg("t","theta-bin-edges","The number of x and y bins (in that order) bins for the theta delta sigma graphs",false,"int", cmd);
-	
+
 	TCLAP::MultiArg<int> areaBinArg("a","area-bin-edges","The number of x and y bins (in that order) bins for the area delta sigma graphs",false,"int", cmd);
 	TCLAP::SwitchArg verboseArg("v","verbose","", cmd, false);
-	
+
 	cmd.parse( argc, argv );
 	graphdir = DirectoryArg.getValue();
 	simdata = simdataArg.getValue();
@@ -123,6 +123,6 @@ catch (TCLAP::ArgException& e){
 		make_hist(C, lb, hb, nbins_area.at(0), nbins_area.at(1), momentums, delSigArea, momentums, delSigAreaFile, i, name);
 	}
 
-	return 0;	
+	return 0;
 
 }

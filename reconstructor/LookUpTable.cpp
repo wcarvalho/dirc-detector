@@ -87,10 +87,14 @@ void LookUpTable::tableFromTxt(string file){
 
 
 // gets the bin of each value
-void LookUpTable::getBin(double values[], int bin[]){
+void LookUpTable::getBin(double const values[], int bin[]){
 	for (unsigned int i = 0; i < N; ++i){
 		bin[i] = (int)(( (values[i]-mins[i]))/steps[i]);
 		if (bin[i]==nbins[i]) bin[i] = nbins[i] - 1;
+		if ( (bin[i] < 0) || (bin[i]) > nbins.at(i) ){
+			cout << "bins are out of bounds!!\nEXITING\n";
+			exit(1);
+		}
 	}
 }
 
@@ -236,7 +240,7 @@ std::pair<double, double> LookUpTable::getMeanRmsPair(double values[]){
 	//------------------------
 	// temporary change to correct for domain of phi, bin 3. It counts from 0, instead of -pi (i.e. made lookuptable for 0->2pi, but values are from -pi->pi)
 	double pi = 3.14159265358979312;
-	values[3] = values[3]+2*pi;
+	values[3] += 2*pi;
 	//------------------------
 
 	double mean = 0.;
@@ -244,17 +248,17 @@ std::pair<double, double> LookUpTable::getMeanRmsPair(double values[]){
 	Interpolate(values, mean, rms);
 
 	pair<double, double> MeanRms(mean, rms);
+	values[3] -= 2*pi;
 	return MeanRms;
 }
 
 
-double LookUpTableWrapper(double const& x, double const& y, double const& theta, double const& phi, double const& v){
-
+std::pair<double, double> LookUpTableWrapper(double const& x, double const& y, double const& theta, double const& phi, double const& v){
 	double pi = TMath::Pi();
 	double lengths_low[5] = {0, 0, 0, 0, .7};
 	double lengths_hi[5] = {490, 3.5, pi/2, 2*pi, 1};
 	int nbins[5] = {20, 5, 10, 10, 5};
-	string file = "LookUpTable";
+	string file = "settings/LookUpTable_mod";
 	static LookUpTable L(5, lengths_low, lengths_hi, nbins, file, 1);
 
 	double X[5];
@@ -264,5 +268,5 @@ double LookUpTableWrapper(double const& x, double const& y, double const& theta,
 	X[3] = phi;
 	X[4] = v;
 
-	return L.mean(X);
+	return L.getMeanRmsPair(X);
 }

@@ -5,7 +5,8 @@ include_HEADERS  =  \
 	dirc_objects.h \
 	particle_objects.h \
 	photon_objects.h \
-	analysis_objects.h
+	analysis_objects.h \
+	graphing.h
 
 
 DircObjs_Dict.cpp: \
@@ -19,6 +20,7 @@ libDircObjs_la_SOURCES = \
 	dirc_objects.cpp \
 	particle_objects.cpp \
 	fitgaussianplusconstant.cpp \
+	graphing.cpp \
 	DircObjs_Dict.cpp
 
 libDircObjs_la_LIBADD = \

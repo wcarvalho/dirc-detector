@@ -43,7 +43,7 @@ void CreateHistogram_1D2D(int ev, int par, Analysis &A, std::vector<PhotonOut> &
 }
 
 // for one particle this function will calculate the histogram fit, the area under the fit, the expected number of photons for each mass. the area and expected number of photons are compared and a delta sigma is delta_Sigma is calculated
-void CalculateParticleFits(double (*ExpectedNumberofPhotons)(double const&, double const&, double const&, double const&, double const&), ParticleOut &P, Analysis &A, double range, double smear, bool print){
+void CalculateParticleFits(std::pair<double, double> (*ExpectedNumberofPhotons)(double const&, double const&, double const&, double const&, double const&), ParticleOut &P, Analysis &A, double range, double smear, bool print){
 
 	mass m(P.Eta, P.pt);
 	map<double, double> &atm = m.AngletoMass;
@@ -79,13 +79,18 @@ void CalculateParticleFits(double (*ExpectedNumberofPhotons)(double const&, doub
 		A.FitGaussianPlusConstant(center-range, center+range, center, centerbounds, width, widthbounds, Area);
 		// Area = guesser.FitParticle1D(c1_p, *h, params, angle-range, angle+range, angle, smear, newhname, print);	// area under gaussian (calculated number of photons)
 		double Beta = P.CalculateBeta(mass);
-		double N = ExpectedNumberofPhotons(P.X, P.Y, P.Theta, P.Phi, Beta);
+		static std::pair<double, double> vals;
+		double &N = vals.first;
+		double &Sigma_N = vals.second;
+
+		vals = ExpectedNumberofPhotons(P.X, P.Y, P.Theta, P.Phi, Beta);
+
+
 		if (print) cout << "X, Y, Theta, Phi, Beta = " << P.X << ", " << P.Y << ", " << P.Theta << ", " << P.Phi << ", " << Beta << endl;
 
 		vector< double > &params = A.Recon.back().Params.back();				// vector to store parameters for efficiency analysis
 
 		double pi2 = TMath::Pi()/2;
-		double Sigma_N = sqrt(N);
 		double delSigTheta = (angle - params.at(1))/smear;
 		double delSigA = (N-Area)/Sigma_N;
 		if (print) cout << "delSigA = " << delSigA << ", delSigTheta = " << delSigTheta << endl;

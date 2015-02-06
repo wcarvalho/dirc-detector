@@ -5,7 +5,7 @@
 #include "TObject.h"
 #include "../headers/fitter.h"
 #include "../headers/simulator.h"
- 
+
 using namespace std;
 
 bool Cut(double theta, double phi, double x, double y, double z){
@@ -19,7 +19,7 @@ bool Cut(double theta, double phi, double x, double y, double z){
 	for(unsigned int reflections = 0; reflections< 4; ++reflections){
 		simPho.GotoWall(false);
 		double &x_p = simPho.coord[0];
-		if((x_p == 0 ) || (x_p == d.Length)){ break; } 
+		if((x_p == 0 ) || (x_p == d.Length)){ break; }
 		double th = simPho.Theta;
 		double ph = simPho.Phi;
 		Photon photon(th, ph);
@@ -35,9 +35,8 @@ bool Cut(double theta, double phi, double x, double y, double z){
 	return cut;
 }
 
-double RiemannSum(double const& x, double const& y, double const& theta, double const& phi, double const& v){
+std::pair<double, double> RiemannSum(double const& x, double const& y, double const& theta, double const& phi, double const& v){
 	double pi = TMath::Pi();
-	
 	int total = 0;
 	int passed = 0;
 
@@ -45,11 +44,11 @@ double RiemannSum(double const& x, double const& y, double const& theta, double 
 	double l = d.Length;
 	double w = d.Width;
 	double h = d.Height;
-	
+
 	double emissionAngle = acos(1./(1.474*v));
 	Rotater r;
 	r.Feed_Particle(theta, phi);
-	
+
 	Simulate simPar(theta, phi);
 	simPar.SetDim(l, w, h);
 	simPar.SetStart(x, y, 0.);
@@ -57,10 +56,10 @@ double RiemannSum(double const& x, double const& y, double const& theta, double 
 	simPar.WhichWall( );
 	double Path_length = simPar.WillTravel();
 	simPar.Traveled = 0.;
-	
+
 	int PathSteps = 100;
 	int PhiSteps = 50;
-	
+
 	double phi_measure = 0.;
 	while(simPar.Traveled < Path_length){
 		for(phi_measure = 0;  phi_measure < 2*pi; phi_measure += 2*pi/PhiSteps)
@@ -93,11 +92,13 @@ double RiemannSum(double const& x, double const& y, double const& theta, double 
 	// cout << "\tpercent passed = " << percent_passed << ": " << passed << endl;
 	double dNdx = 1e-2*Constant*f.Integral(xlow, xhigh);
 	double NPhotons = percent_passed*Path_length*dNdx;
-	return NPhotons;
+	double sigma = sqrt(NPhotons);
+	pair<double, double> output(NPhotons, sigma);
+	return output;
 }
 
 void FindLostPhotons(double x, double y, double theta, double phi, double eta, double pt, double l, double w, double h, map<double, double> &madeit, double &traveled, bool print){
-	
+
 	// hard code l, w, h
 	double pi = TMath::Pi();
 	double Path_length = 0.;

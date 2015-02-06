@@ -54,6 +54,8 @@ FindLostPhotons.cpp \
 
 include_HEADERS = ../headers/reconstructor.h \
 ../headers/functions.h \
+../headers/fitter.h \
+../headers/myrandom.h \
 ../headers/Simulate.h \
 ../headers/file-properties.h
 

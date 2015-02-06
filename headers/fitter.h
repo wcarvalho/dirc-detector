@@ -69,7 +69,7 @@ public:
 	double mean(double values[]){ return getMeanRmsPair(values).first; }
 	double rms(double values[]){ return getMeanRmsPair(values).second; }
 
-	void getBin(double values[], int bin[]);
+	void getBin(double const values[], int bin[]);
 	void getBinCenters(int bin[], double centers[]);
 	int getGlobalBin(int bin[]);
 	double getMean(int globalBin);
@@ -98,8 +98,8 @@ public:
 
 };
 
-double LookUpTableWrapper(double const& x, double const& y, double const& theta, double const& phi, double const& v);
+std::pair<double, double> LookUpTableWrapper(double const& x, double const& y, double const& theta, double const& phi, double const& v);
 
-double RiemannSum(double const& x, double const& y, double const& theta, double const& phi, double const& v);
+std::pair<double, double> RiemannSum(double const& x, double const& y, double const& theta, double const& phi, double const& v);
 
 void FindLostPhotons(double x, double y, double theta, double phi, double eta, double pt, double l, double w, double h, map<double, double> &madeit, double &traveled, bool print);

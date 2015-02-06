@@ -40,4 +40,4 @@ std::string histName0(int event, int particle);
 void removeFirstParticles(bool Remove, GeneratorOut*& event_output, int last);
 void CreateHistogram_1D2D(int ev, int par, Analysis &A, std::vector<PhotonOut> &phos, int xbins, int ybins);
 
-void CalculateParticleFits(double (*ExpectedNumberofPhotons)(double const&, double const&, double const&, double const&, double const&), ParticleOut &P, Analysis &A, double range, double smear, bool print);
+void CalculateParticleFits(std::pair<double, double> (*ExpectedNumberofPhotons)(double const&, double const&, double const&, double const&, double const&), ParticleOut &P, Analysis &A, double range, double smear, bool print);
