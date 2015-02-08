@@ -138,7 +138,7 @@ catch( TCLAP::ArgException& e )
 
 	bool calibrated = std::find(graph_choice.begin(), graph_choice.end(), 0)!=graph_choice.end();
 	if (calibrated){
-		calibrateSigmas(*t1, *t2, *originals, *reconstructions, matchsearch, calibrationgraph_filebase, firstevent);
+		calibrateSigmas(*t1, *t2, *originals, *reconstructions, matchsearch, .68, 200, calibrationgraph_filebase, firstevent);
 	}
 
 	int nentries = t1->GetEntries();

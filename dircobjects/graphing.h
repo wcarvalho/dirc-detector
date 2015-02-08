@@ -9,7 +9,7 @@ namespace dirc
 	class dircTH1D : public TH1D
 	{
 	public:
-
+		using TH1D::TH1D;
 		void BinProperties(const double& value, int &value_bin, double &binheight, double &bincenter);
 
 		void FindDistributionCenter(double &center_start, double &sigma_start);

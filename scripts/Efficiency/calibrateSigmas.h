@@ -1,8 +1,14 @@
 #include "FileProperties.h"
 #include "TError.h"
+#include "graphing.h"
 
-template <typename Parser, typename parseConditon>
-void parseEvents(TTree &t1, TTree &t2, ParticleEvent &originals, TrackRecons& reconstructions, int start, int end, parseConditon willparse, EventParser parser){
+template < typename eventParser, typename eventParserCondition,
+					typename trialParser, typename trialParserCondition >
+void parseEvents(TTree &t1, TTree &t2,
+ 								ParticleEvent &originals, TrackRecons& reconstructions,
+ 								int start, int end,
+ 								eventParser P1, eventParserCondition C1,
+ 								trialParser P2, trialParserCondition C2){
 
 	for (unsigned ev = start; ev < end; ++ev){
 		t1.GetEntry(ev); t2.GetEntry(ev);
@@ -12,141 +18,168 @@ void parseEvents(TTree &t1, TTree &t2, ParticleEvent &originals, TrackRecons& re
 
 		if (recons.size() == 0) continue;
 		for (unsigned int p = 0; p < pars.size(); ++p){
-			auto& par   = pars.at(p);
-			auto& recon = recons.at(p);
-			if (!(willparse)) continue;
-			parser(recon, par);
-			}
+			Particle& par   = pars.at(p);
+			TrackRecon& recon = recons.at(p);
+			if (!(C2(recon, par))) continue;
+			P2(recon, par);
 		}
+		if (!(C1(t1, t2, recons, pars))) continue;
+		P1(t1, t2, recons, pars);
 	}
 }
 
-void analyzeDistributions(TTree &t1, TTree &t2, ParticleEvent &originals, TrackRecons& reconstructions, std::map<std::string, std::vector< std::vector<double> > >& datamap, map < string, vector < double > >& sigmamap){
+void calibrateSigmas(TTree &t1, TTree &t2, ParticleEvent &originals, TrackRecons& reconstructions, const std::string& particletype, double percent, int nbins, string const &prefix, int &startevent){
 
 	double pBounds[2];
 	pBounds[0] = 0;
 	pBounds[1] = .5;
 
-	auto parseConditon = [&pBounds](const Particle& par){
-		return !( (par.pt < pBounds[0]) || (par.pt > pBounds[1]) );
+	auto parseConditon = [&pBounds](TrackRecon& r, Particle& p){
+		return !( (p.pt < pBounds[0]) || (p.pt > pBounds[1]) );
 	};
 
-	auto generateDistributions = [&datamap, &pBounds](const TrackRecon& recon, const Particle& par){
+	std::map < std::string, std::vector< std::vector<double> > > datamap;
+	auto generateDistribution = [&datamap, &pBounds](TrackRecon& recon, Particle& par){
 
 		auto expected_theta = par.EmissionAngleMap()[par.name];
 		for (unsigned int i = 0; i < recon.Options.size(); ++i){
-			std::string &name = recon.Options.at(i);
+			std::string name = recon.Options.at(i);
 			if (name == par.name){
-				double& expected_area = recon.ExpectedNumber.at(i);
-				double& actual_area   = recon.Areas.at(i);
-				double& actual_theta  = recon.Params.at(i).at(1);
+				double expected_area = recon.ExpectedNumber.at(i);
+				double actual_area   = recon.Areas.at(i);
+				double actual_theta  = recon.Params.at(i).at(1);
+				datamap["photons"].back().push_back(expected_area);
+				datamap["theta"].back().push_back(expected_theta);
 			}
 		}
-		datamap["photons"]->back().push_back(expected_area - actual_area);
-		datamap["theta"]->back().push_back(expected_theta - actual_theta);
 	};
 
-	auto histname = [&pBounds](const std::string& name){
+	auto histname = [&pBounds](std::string& name){
 		stringstream ss; ss.str("");
 		ss << "_pt_" << pBounds[0] << "_" << pBounds[1];
-		return std::move(appendStrings(name, ss.str()));
-	}
+		return std::move(wul::appendStrings(name, ss.str()));
+	};
 
-	auto calibrate = [&sigma, search](TrackRecon& recon, const Particle& par){
+	auto calibrate = [&sigmas, particletype](TrackRecon& recon, Particle& par){
 
-		auto theta_sigma = sigma["theta"].back();
-		auto photons_sigma = sigma["photons"].back();
-
-		auto expected_theta = par.EmissionAngleMap()[search];
+		auto expected_theta = par.EmissionAngleMap()[particletype];
 		for (unsigned int i = 0; i < recon.Options.size(); ++i){
 			std::string &name = recon.Options.at(i);
-			if (name == search){
-				double& expected_area = recon.ExpectedNumber.at(i);
-				double& actual_area   = recon.Areas.at(i);
-				double& actual_theta  = recon.Params.at(i).at(1);
-				recon.delSigArea = (expected_area - actual_area)/photons_sigma;
-				recons.delSigTheta = (expected_theta - actual_theta)/theta_sigma;
+			if (name == particletype){
+				double& expected_area   = recon.ExpectedNumber.at(i);
+				double& actual_area     = recon.Areas.at(i);
+				double& actual_theta    = recon.Params.at(i).at(1);
+				recon.delSigArea.at(i)  = (expected_area - actual_area)/photons_sigma;
+				recon.delSigTheta.at(i) = (expected_theta - actual_theta)/theta_sigma;
 			}
 		}
 	};
-	int nbins = 200;
+	auto fill = [](TTree &t1, TTree &t2, decltype(reconstructions.Recon)& recons, decltype(originals.Particles)& pars){
+		t1.Fill();
+		t2.Fill();
+	};
 
+	auto doNothing_trial   = [] (TrackRecon& r, Particle& p){ };
+	auto returnfalse_trial = [] (TrackRecon& r, Particle& p) { return false; };
+
+	auto doNothing_event   = [] (TTree &t1, TTree &t2, decltype(reconstructions.Recon)& recons, decltype(originals.Particles)& par){ };
+	auto returnfalse_event = [] (TTree &t1, TTree &t2, decltype(reconstructions.Recon)& recons, decltype(originals.Particles)& pars) { return false; };
+
+
+	////////////////////////////
+	// Analyze && Callibrate //
+	////////////////////////////
+	int nentries = t1.GetEntries();
 	vector< double > new_list;
 	while (pBounds[1] <= 3.){
 
-		static auto& photons_data = datamap["photons"];
-		static auto& theta_data = datamap["theta"];
+		auto& photons_data = datamap["photons"];
+		auto& theta_data = datamap["theta"];
 		photons_data.push_back(new_list);
 		theta_data.push_back(new_list);
 
-		parseEvents(t1, t2, originals, reconstructions, 0, nentries, parseConditon, generateDistributions);
+		// generate distributions
+		parseEvents(t1, t2,
+			originals, reconstructions,
+			0, nentries,
+			doNothing_event, returnfalse_event,
+			generateDistribution, parseConditon);
 
 		for(auto i = datamap.begin(); i != datamap.end(); ++i){
-			std::string &key = i->first;
-			double*& latest_data = i->second.back();
-			str::string name = histname(key);
-			dircTH1D h(name.c_str(), name.c_str(), nbins, latest_data);
-			h.defineSigma(.68);
+			string key = i->first;
+			double* latest_data = &i->second.back()[0];
+			std::string name = histname(key);
+			dirc::dircTH1D h(name.c_str(), name.c_str(), nbins, latest_data);
+			h.defineSigma(percent);
 			sigmas[key].push_back(h.distributionSigma);
 		}
 
-		for (unsigned int i = 0; i < 2; ++i)
 			pBounds[i] += .5;
 	}
+	// FIXME. TTree.GetEntry(i) resets the values so calibration and filling have to be done in one shot. I'll have to adjust the lambda for calibrate to include the sigmas map. That map will have the sigmas for different pt distributions. something like a map from a range to a sigma. plug in the pt, will spit out the sigma. this can probably be done with another lambda. just another condition. that lambda will need to read know the the overall bounds for p i.e. 0,3, and the step sizes of the groups i.e. .5 (those are the values for now)
+	// calibrate events
+	parseEvents(t1, t2, originals, reconstructions, 0, nentries,
+		doNothing_event, returnfalse_event,
+		calibrate, parseConditon);
+	// fill events
+	parseEvents(t1, t2, originals, reconstructions, 0, nentries,
+			fill, [](TTree &t1, TTree &t2, decltype(reconstructions.Recon)& recons, decltype(originals.Particles)&) { return true; },
+		doNothing_trial, returnfalse_trial);
+	for (unsigned int i = 0; i < 2; ++i)
 
 }
 
-void calibrateSigmas(TTree& t1, TTree& t2, ParticleEvent& originals, TrackRecons& reconstructions, string const &particletype, string const &prefix, int &startevent){
+// void calibrateSigmas(TTree& t1, TTree& t2, ParticleEvent& originals, TrackRecons& reconstructions, string const &particletype, string const &prefix, int &startevent){
+// }
+// 	int nentries = t2.GetEntries();
+// 	startevent = nentries;
 
-	int nentries = t2.GetEntries();
-	startevent = nentries;
+// 	// std::map<std::string, std::vector< std::vector<double> > > datamap;
+// 	// map < string, vector < double > >& sigmas;
+// 	// void analyzeDistributions(t1, t2, originals, reconstructions, distributions, 0, nentries, datamap, sigmas);
 
-	std::map<std::string, std::vector< std::vector<double> > > datamap;
-	map < string, vector < double > >& sigmas;
-	void analyzeDistributions(t1, t2, originals, reconstructions, distributions, 0, nentries, datamap, sigmas);
+// 	// for (auto sigmas::iterator i = sigmas.begin(&); i < sigmas.end(); ++i){
 
-	for (auto sigmas::iterator i = sigmas.begin(&); i < sigmas.end(); ++i){
-
-	}
-}
-
-
+// 	// }
+// }
 
 
-void printDistributionFits(TCanvas &C, std::vector<std::vector<double> * > &distributions, vector < std::string > const& filenames, double& theta_fit_difference, double& expected_photon_fit_difference, double& theta_fit_sigma, double& expected_photon_fit_sigma, int nbins, string suffix){
 
-	std::map< int, string > histtype;
-	histtype[0] = "emission_angle";
-	histtype[3] = "expected_photons";
 
-	int nbins0 = nbins;
+// void printDistributionFits(TCanvas &C, std::vector<std::vector<double> * > &distributions, vector < std::string > const& filenames, double& theta_fit_difference, double& expected_photon_fit_difference, double& theta_fit_sigma, double& expected_photon_fit_sigma, int nbins, string suffix){
 
-	for (map<int, string>::iterator i = histtype.begin(); i != histtype.end(); ++i){
-		const int &indx = i->first;
-		const std::string &type = i->second;
-		string fname = filenames.at(indx);
-		fname.append(suffix);
+// 	std::map< int, string > histtype;
+// 	histtype[0] = "emission_angle";
+// 	histtype[3] = "expected_photons";
 
-		std::string option = "";
-		if (type == "emission_angle"){
-			option = "theta";
-		}
-		else option = "";
+// 	int nbins0 = nbins;
 
-		TH1D hist = makehist(*distributions.at(indx), fname, nbins, option);
-		if (type == "emission_angle"){
-			fitGaussian(hist, *distributions.at(indx), theta_fit_difference, theta_fit_sigma);
-		}
-		if (type == "expected_photons"){
-			fitGaussian(hist, *distributions.at(indx), expected_photon_fit_difference, expected_photon_fit_sigma);
-		}
+// 	for (map<int, string>::iterator i = histtype.begin(); i != histtype.end(); ++i){
+// 		const int &indx = i->first;
+// 		const std::string &type = i->second;
+// 		string fname = filenames.at(indx);
+// 		fname.append(suffix);
 
-		hist.Draw();
-		C.Print(fname.append(".pdf").c_str());
-		C.Clear();
-	}
+// 		std::string option = "";
+// 		if (type == "emission_angle"){
+// 			option = "theta";
+// 		}
+// 		else option = "";
 
-}
+// 		TH1D hist = makehist(*distributions.at(indx), fname, nbins, option);
+// 		if (type == "emission_angle"){
+// 			fitGaussian(hist, *distributions.at(indx), theta_fit_difference, theta_fit_sigma);
+// 		}
+// 		if (type == "expected_photons"){
+// 			fitGaussian(hist, *distributions.at(indx), expected_photon_fit_difference, expected_photon_fit_sigma);
+// 		}
+
+// 		hist.Draw();
+// 		C.Print(fname.append(".pdf").c_str());
+// 		C.Clear();
+// 	}
+
+// }
 
 	/**
  * [calibrateSigmas description]
