@@ -109,23 +109,23 @@ void calibrateSigmas(TTree &t1, TTree &t2, ParticleEvent &originals, TrackRecons
 			string key = i->first;
 			double* latest_data = &i->second.back()[0];
 			std::string name = histname(key);
-			dirc::dircTH1D h(name.c_str(), name.c_str(), nbins, latest_data);
+			static double min = 0., max = 0.;
+		  wul::vectorminmax(x, min, max);
+			dirc::dircTH1D h(name.c_str(), name.c_str(), nbins, min, max);
+			h.defineDistributionRange(min, max);
 			h.defineSigma(percent);
 			sigmas[key].push_back(h.distributionSigma);
 		}
 
-			pBounds[i] += .5;
+		pBounds[i] += .5;
 	}
 	// FIXME. TTree.GetEntry(i) resets the values so calibration and filling have to be done in one shot. I'll have to adjust the lambda for calibrate to include the sigmas map. That map will have the sigmas for different pt distributions. something like a map from a range to a sigma. plug in the pt, will spit out the sigma. this can probably be done with another lambda. just another condition. that lambda will need to read know the the overall bounds for p i.e. 0,3, and the step sizes of the groups i.e. .5 (those are the values for now)
-	// calibrate events
+
+	// calibrate && fill events
 	parseEvents(t1, t2, originals, reconstructions, 0, nentries,
-		doNothing_event, returnfalse_event,
+		fill, [](TTree &t1, TTree &t2, decltype(reconstructions.Recon)& recons, decltype(originals.Particles)&) { return true; },
 		calibrate, parseConditon);
-	// fill events
-	parseEvents(t1, t2, originals, reconstructions, 0, nentries,
-			fill, [](TTree &t1, TTree &t2, decltype(reconstructions.Recon)& recons, decltype(originals.Particles)&) { return true; },
-		doNothing_trial, returnfalse_trial);
-	for (unsigned int i = 0; i < 2; ++i)
+	// for (unsigned int i = 0; i < 2; ++i)
 
 }
 

@@ -29,7 +29,7 @@ int matchDataSize(vector<TrackRecon>& a, vector<Particle>& b){
 	//sizes of a and b
 	int sa = a.size();
 	int sb = b.size();
-	int dif = abs(sb-sa);
+	int dif = fabs(sb-sa);
 
 	if (sb>sa){
 		for (unsigned int i = 0; i < dif; ++i)
@@ -62,7 +62,7 @@ void getMatch(Particle* const& P, string search, string tomatch, double threshol
 		if ( sigmas.size() != names.size() ) exit(1);
 		for (unsigned int opt = 0; opt < sigmas.size(); ++opt){
 			// cout << opt << " "<<  names[opt] << " sigma: " << sigmas[opt] << endl;
-			if ( (abs(areasigmas[opt]) < threshold) && (abs(thetasigmas[opt]) < threshold) && (names[opt] == tomatch)){
+			if ( (fabs(areasigmas[opt]) < threshold) && (fabs(thetasigmas[opt]) < threshold) && (names[opt] == tomatch)){
 				// cout << "sigmas[opt] = " << sigmas[opt] << endl;
 				search_num.push_back(den);
 				// if (print) cout << "\tSELECTED\n";

@@ -20,7 +20,9 @@ namespace dirc
 		void defineDistributionRange(const double& xlow, const double& xhi){
 			distributionRange[0] = xlow; distributionRange[1] = xhi;
 		}
-		void defineSigma(const double &percent);
+		double defineSigma(const double &percent);
+		void RemovePastSigma(bool print = false);
+
 
 		double distributionCenter;
 		double distributionSigma;

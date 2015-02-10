@@ -30,16 +30,15 @@ namespace dirc
 		fitfunc.SetParameter(1, center);
 		fitfunc.SetParameter(2, sigma_guess);
 
-		Fit(&fitfunc, "QBIRC");
+		Fit(&fitfunc, "QBIRCN0");
 		center_start = fitfunc.GetParameter(1);
 		sigma_start = fitfunc.GetParameter(2);
 	}
 
-	void dircTH1D::defineSigma(const double &percent){
+	double dircTH1D::defineSigma(const double &percent){
 
 		double center_guess=0., sigma_guess=0.;
 		FindDistributionCenter(center_guess, sigma_guess);
-		defineDistributionRange(5, sigma_guess, center_guess);
 
 		int center_bin = FindBin(center_guess);
 
@@ -49,39 +48,85 @@ namespace dirc
 		double distributionIntegral = Integral(distributionRangeBins[0], distributionRangeBins[1], "width");
 
 		int sigmaBinDistance;
-		sigmaBinDistance = abs(center_bin - FindBin(center_guess-sigma_guess));
+		sigmaBinDistance = fabs(center_bin - FindBin(center_guess-sigma_guess));
 
+
+
+
+		auto notWithinRange = [percent] (const double& percentFound, const double& percentRange){
+			return !((percentFound > percent-percentRange/2.)&&(percentFound < percent+percentRange/2.));
+		};
+		bool switchdirection      = false;
+		enum direction_t {forward = 1, backward = -1};
+		direction_t direction     = forward, currentdirection;
 
 		double foundintegral = 0., percentFound = 0.;
 		int binlow           = 0, binhi = 0;
 		int stepsize         = 1;
+		int counts           = 0;
 
-		bool switchdirection      = false;
-		enum direction_t 					{forward = 1, backward = -1};
-		direction_t direction     = forward, currentdirection;
-
-		auto notWithinRange = [percent] (const double& percentFound){ return !((percentFound > percent-.25)&&(percentFound < percent+.25)); };
-
-		while (notWithinRange(percentFound)){
-			currentdirection = direction;
-
-			binlow = center_guess - sigmaBinDistance;
-			binhi  = center_guess + sigmaBinDistance;
-
-			foundintegral = Integral(binlow, binhi, "width");
+		auto getpercent = [center_bin, &sigmaBinDistance, &binlow, &binhi, &foundintegral, &distributionIntegral, &percentFound, this](){
+			binlow = center_bin - sigmaBinDistance;
+			binhi  = center_bin + sigmaBinDistance;
+			foundintegral = this->Integral(binlow, binhi, "width");
 			percentFound  = foundintegral/distributionIntegral;
+		};
+
+		while(true){
+			currentdirection = direction;
+			getpercent();
+			if (!notWithinRange(percentFound, .15)){
+				break;
+			}
+			if (percentFound < percent) direction = forward;
+			if (percentFound > percent) direction = backward;
+
+			stepsize *= 2;
+			if (direction != currentdirection) switchdirection = true;
+			if (switchdirection) { stepsize = 1; switchdirection = false; }
+			sigmaBinDistance += stepsize*direction;
+			++counts;
+		}
+
+		double percentDifference = 1;
+		double tempdif;
+		stepsize = 1;
+		while(true){
+			getpercent();
+			tempdif = fabs(percentFound - percent);
+			if(tempdif < percentDifference)
+				percentDifference = tempdif;
+			else{
+				sigmaBinDistance -= stepsize*direction;
+				break;
+			}
 
 			if (percentFound < percent) direction = forward;
 			if (percentFound > percent) direction = backward;
-			if (direction != currentdirection) switchdirection = true;
-			if (switchdirection) stepsize = 1;
-
 			sigmaBinDistance += stepsize*direction;
-			stepsize *= 2;
+
 		}
 
+
+
+		double lower_edge = GetBinCenter(center_bin - sigmaBinDistance);
+		double upper_edge = GetBinCenter(center_bin + sigmaBinDistance);
 		distributionCenter = center_guess;
-		distributionSigma  = center_guess - GetBinCenter(center_guess - sigmaBinDistance);
+		distributionSigma  = center_guess - lower_edge;
+		return percentFound;
+	}
+
+	void dircTH1D::RemovePastSigma(bool print){
+		double sigma = 0.;
+		for (unsigned int i = 0; i < fNcells; ++i){
+			sigma = fabs(distributionCenter - GetBinCenter(i));
+			if (sigma > distributionSigma){
+				if(print){
+					std::cout << "Sigma: " << sigma << " vs. distributionSigma: " << distributionSigma << std::endl;
+				}
+				SetBinContent(i, 0);
+			}
+		}
 
 	}
 
