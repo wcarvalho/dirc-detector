@@ -21,7 +21,7 @@ namespace dirc
 		void defineDistributionRange(const double& xlow, const double& xhi){
 			distributionRange[0] = xlow; distributionRange[1] = xhi;
 		}
-		double defineSigma(const double &percent, bool print = false);
+		double defineSigma(const double center_guess, const double &sigma_guess, const double &percent, bool print = false);
 		void RemovePastSigma(bool print = false);
 
 

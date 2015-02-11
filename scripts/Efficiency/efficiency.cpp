@@ -129,6 +129,11 @@ catch( TCLAP::ArgException& e )
 	TTree *t2 = (TTree*)f2.Get("identifications");
 	t2 -> SetBranchAddress("guesses", &reconstructions);
 
+	TFile *f1prime = new TFile("temp1.root","recreate");
+  TTree *t1prime = t1->CloneTree(0);
+  TFile *f2prime = new TFile("temp2.root","recreate");
+  TTree *t2prime = t2->CloneTree(0);
+
 	vector<Particle> *pars = &originals->Particles;
 	vector<TrackRecon> *recons = &reconstructions->Recon;
 
@@ -138,7 +143,9 @@ catch( TCLAP::ArgException& e )
 
 	bool calibrated = std::find(graph_choice.begin(), graph_choice.end(), 0)!=graph_choice.end();
 	if (calibrated){
-		calibrateSigmas(*t1, *t2, *originals, *reconstructions, matchsearch, .68, 200, calibrationgraph_filebase, firstevent);
+		calibrateSigmas(C, *t1, *t2, *t1prime, *t2prime, *originals, *reconstructions, matchsearch, .68, 200, calibrationgraph_filebase, firstevent, print);
+		t1 = t1prime;
+		t2 = t2prime;
 	}
 
 	int nentries = t1->GetEntries();

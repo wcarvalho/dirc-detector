@@ -38,13 +38,9 @@ namespace dirc
 		sigma_start = fitfunc.GetParameter(2);
 	}
 
-	double dircTH1D::defineSigma(const double &percent, bool print){
-
-		double center_guess=0., sigma_guess=0.;
-		FindDistributionCenter(center_guess, sigma_guess);
+	double dircTH1D::defineSigma(const double center_guess, const double &sigma_guess, const double &percent, bool print){
 
 		int center_bin = FindBin(center_guess);
-
 		int distributionRangeBins[2];
 		for (unsigned i = 0; i < 2; ++i)
 			distributionRangeBins[i] = FindBin(distributionRange[i]);
