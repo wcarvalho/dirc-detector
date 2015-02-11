@@ -1,5 +1,4 @@
 #include "graphing.h"
-
 namespace dirc
 {
 
@@ -16,7 +15,10 @@ namespace dirc
 		double centerheight = 0., center = 0.;
 		int centerbin = 0;
 		BinProperties(GetMean(), centerbin, centerheight, center);
-
+		if (centerheight < 0.3*GetBinContent(GetMaximumBin())){
+			center = GetBinCenter(GetMaximumBin());
+			centerheight = GetBinContent(GetMaximumBin());
+		}
 		double sigma_guess = sqrt(centerheight);
 		double &amplitude_guess = centerheight;
 
@@ -28,6 +30,7 @@ namespace dirc
 		fitfunc.SetRange(xlow, xhi);
 		fitfunc.SetParameter(0, amplitude_guess);
 		fitfunc.SetParameter(1, center);
+		fitfunc.SetParLimits(1, xlow, xhi);
 		fitfunc.SetParameter(2, sigma_guess);
 
 		Fit(&fitfunc, "QBIRCN0");
@@ -35,7 +38,7 @@ namespace dirc
 		sigma_start = fitfunc.GetParameter(2);
 	}
 
-	double dircTH1D::defineSigma(const double &percent){
+	double dircTH1D::defineSigma(const double &percent, bool print){
 
 		double center_guess=0., sigma_guess=0.;
 		FindDistributionCenter(center_guess, sigma_guess);
@@ -72,9 +75,17 @@ namespace dirc
 			percentFound  = foundintegral/distributionIntegral;
 		};
 
+		if (print) std::cout << "center_guess = " << center_guess << std::endl;
+		std::unordered_set < double > found_values;
 		while(true){
 			currentdirection = direction;
 			getpercent();
+			if (print) std::cout << "percentFound = " << percentFound << " at bin distance " << sigmaBinDistance << std::endl;
+			found_values.insert(percentFound);
+			if (counts >= 3) {
+				found_values.erase(found_values.begin());
+				if (found_values.find(percentFound) == found_values.end()) break;
+			}
 			if (!notWithinRange(percentFound, .15)){
 				break;
 			}
@@ -88,16 +99,19 @@ namespace dirc
 			++counts;
 		}
 
+		if (print) std::cout << "\n\n";
 		double percentDifference = 1;
 		double tempdif;
 		stepsize = 1;
 		while(true){
 			getpercent();
 			tempdif = fabs(percentFound - percent);
+			if (print) std::cout << "percentFound = " << percentFound << " at bin distance " << sigmaBinDistance << " with different " << tempdif << std::endl;
 			if(tempdif < percentDifference)
 				percentDifference = tempdif;
 			else{
 				sigmaBinDistance -= stepsize*direction;
+				getpercent();
 				break;
 			}
 

@@ -3,6 +3,7 @@
 
 #include "TH1D.h"
 #include "TF1.h"
+#include <unordered_set>
 
 namespace dirc
 {
@@ -20,7 +21,7 @@ namespace dirc
 		void defineDistributionRange(const double& xlow, const double& xhi){
 			distributionRange[0] = xlow; distributionRange[1] = xhi;
 		}
-		double defineSigma(const double &percent);
+		double defineSigma(const double &percent, bool print = false);
 		void RemovePastSigma(bool print = false);
 
 

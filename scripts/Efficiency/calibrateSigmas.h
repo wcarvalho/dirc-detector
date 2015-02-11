@@ -2,151 +2,151 @@
 #include "TError.h"
 #include "graphing.h"
 
-template < typename eventParser, typename eventParserCondition,
-					typename trialParser, typename trialParserCondition >
-void parseEvents(TTree &t1, TTree &t2,
- 								ParticleEvent &originals, TrackRecons& reconstructions,
- 								int start, int end,
- 								eventParser P1, eventParserCondition C1,
- 								trialParser P2, trialParserCondition C2){
+// template < typename eventParser, typename eventParserCondition,
+// 					typename trialParser, typename trialParserCondition >
+// void parseEvents(TTree &t1, TTree &t2,
+//  								ParticleEvent &originals, TrackRecons& reconstructions,
+//  								int start, int end,
+//  								eventParser P1, eventParserCondition C1,
+//  								trialParser P2, trialParserCondition C2){
 
-	for (unsigned ev = start; ev < end; ++ev){
-		t1.GetEntry(ev); t2.GetEntry(ev);
+// 	for (unsigned ev = start; ev < end; ++ev){
+// 		t1.GetEntry(ev); t2.GetEntry(ev);
 
-		auto &pars   = originals.Particles;
-		auto &recons = reconstructions.Recon;
+// 		auto &pars   = originals.Particles;
+// 		auto &recons = reconstructions.Recon;
 
-		if (recons.size() == 0) continue;
-		for (unsigned int p = 0; p < pars.size(); ++p){
-			Particle& par   = pars.at(p);
-			TrackRecon& recon = recons.at(p);
-			if (!(C2(recon, par))) continue;
-			P2(recon, par);
-		}
-		if (!(C1(t1, t2, recons, pars))) continue;
-		P1(t1, t2, recons, pars);
-	}
-}
-
-void calibrateSigmas(TTree &t1, TTree &t2, ParticleEvent &originals, TrackRecons& reconstructions, const std::string& particletype, double percent, int nbins, string const &prefix, int &startevent){
-
-	double pBounds[2];
-	pBounds[0] = 0;
-	pBounds[1] = .5;
-
-	auto parseConditon = [&pBounds](TrackRecon& r, Particle& p){
-		return !( (p.pt < pBounds[0]) || (p.pt > pBounds[1]) );
-	};
-
-	std::map < std::string, std::vector< std::vector<double> > > datamap;
-	auto generateDistribution = [&datamap, &pBounds](TrackRecon& recon, Particle& par){
-
-		auto expected_theta = par.EmissionAngleMap()[par.name];
-		for (unsigned int i = 0; i < recon.Options.size(); ++i){
-			std::string name = recon.Options.at(i);
-			if (name == par.name){
-				double expected_area = recon.ExpectedNumber.at(i);
-				double actual_area   = recon.Areas.at(i);
-				double actual_theta  = recon.Params.at(i).at(1);
-				datamap["photons"].back().push_back(expected_area);
-				datamap["theta"].back().push_back(expected_theta);
-			}
-		}
-	};
-
-	auto histname = [&pBounds](std::string& name){
-		stringstream ss; ss.str("");
-		ss << "_pt_" << pBounds[0] << "_" << pBounds[1];
-		return std::move(wul::appendStrings(name, ss.str()));
-	};
-
-	auto calibrate = [&sigmas, particletype](TrackRecon& recon, Particle& par){
-
-		auto expected_theta = par.EmissionAngleMap()[particletype];
-		for (unsigned int i = 0; i < recon.Options.size(); ++i){
-			std::string &name = recon.Options.at(i);
-			if (name == particletype){
-				double& expected_area   = recon.ExpectedNumber.at(i);
-				double& actual_area     = recon.Areas.at(i);
-				double& actual_theta    = recon.Params.at(i).at(1);
-				recon.delSigArea.at(i)  = (expected_area - actual_area)/photons_sigma;
-				recon.delSigTheta.at(i) = (expected_theta - actual_theta)/theta_sigma;
-			}
-		}
-	};
-	auto fill = [](TTree &t1, TTree &t2, decltype(reconstructions.Recon)& recons, decltype(originals.Particles)& pars){
-		t1.Fill();
-		t2.Fill();
-	};
-
-	auto doNothing_trial   = [] (TrackRecon& r, Particle& p){ };
-	auto returnfalse_trial = [] (TrackRecon& r, Particle& p) { return false; };
-
-	auto doNothing_event   = [] (TTree &t1, TTree &t2, decltype(reconstructions.Recon)& recons, decltype(originals.Particles)& par){ };
-	auto returnfalse_event = [] (TTree &t1, TTree &t2, decltype(reconstructions.Recon)& recons, decltype(originals.Particles)& pars) { return false; };
-
-
-	////////////////////////////
-	// Analyze && Callibrate //
-	////////////////////////////
-	int nentries = t1.GetEntries();
-	vector< double > new_list;
-	while (pBounds[1] <= 3.){
-
-		auto& photons_data = datamap["photons"];
-		auto& theta_data = datamap["theta"];
-		photons_data.push_back(new_list);
-		theta_data.push_back(new_list);
-
-		// generate distributions
-		parseEvents(t1, t2,
-			originals, reconstructions,
-			0, nentries,
-			doNothing_event, returnfalse_event,
-			generateDistribution, parseConditon);
-
-		for(auto i = datamap.begin(); i != datamap.end(); ++i){
-			string key = i->first;
-			double* latest_data = &i->second.back()[0];
-			std::string name = histname(key);
-			static double min = 0., max = 0.;
-		  wul::vectorminmax(x, min, max);
-			dirc::dircTH1D h(name.c_str(), name.c_str(), nbins, min, max);
-			h.defineDistributionRange(min, max);
-			h.defineSigma(percent);
-			sigmas[key].push_back(h.distributionSigma);
-		}
-
-		pBounds[i] += .5;
-	}
-	// FIXME. TTree.GetEntry(i) resets the values so calibration and filling have to be done in one shot. I'll have to adjust the lambda for calibrate to include the sigmas map. That map will have the sigmas for different pt distributions. something like a map from a range to a sigma. plug in the pt, will spit out the sigma. this can probably be done with another lambda. just another condition. that lambda will need to read know the the overall bounds for p i.e. 0,3, and the step sizes of the groups i.e. .5 (those are the values for now)
-
-	// calibrate && fill events
-	parseEvents(t1, t2, originals, reconstructions, 0, nentries,
-		fill, [](TTree &t1, TTree &t2, decltype(reconstructions.Recon)& recons, decltype(originals.Particles)&) { return true; },
-		calibrate, parseConditon);
-	// for (unsigned int i = 0; i < 2; ++i)
-
-}
-
-// void calibrateSigmas(TTree& t1, TTree& t2, ParticleEvent& originals, TrackRecons& reconstructions, string const &particletype, string const &prefix, int &startevent){
-// }
-// 	int nentries = t2.GetEntries();
-// 	startevent = nentries;
-
-// 	// std::map<std::string, std::vector< std::vector<double> > > datamap;
-// 	// map < string, vector < double > >& sigmas;
-// 	// void analyzeDistributions(t1, t2, originals, reconstructions, distributions, 0, nentries, datamap, sigmas);
-
-// 	// for (auto sigmas::iterator i = sigmas.begin(&); i < sigmas.end(); ++i){
-
-// 	// }
+// 		if (recons.size() == 0) continue;
+// 		for (unsigned int p = 0; p < pars.size(); ++p){
+// 			Particle& par   = pars.at(p);
+// 			TrackRecon& recon = recons.at(p);
+// 			if (!(C2(recon, par))) continue;
+// 			P2(recon, par);
+// 		}
+// 		if (!(C1(t1, t2, recons, pars))) continue;
+// 		P1(t1, t2, recons, pars);
+// 	}
 // }
 
+// void calibrateSigmas(TTree &t1, TTree &t2, ParticleEvent &originals, TrackRecons& reconstructions, const std::string& particletype, double percent, int nbins, string const &prefix, int &startevent){
+
+// 	double pBounds[2];
+// 	pBounds[0] = 0;
+// 	pBounds[1] = .5;
+
+// 	auto parseConditon = [&pBounds](TrackRecon& r, Particle& p){
+// 		return !( (p.pt < pBounds[0]) || (p.pt > pBounds[1]) );
+// 	};
+
+// 	std::map < std::string, std::vector< std::vector<double> > > datamap;
+// 	auto generateDistribution = [&datamap, &pBounds](TrackRecon& recon, Particle& par){
+
+// 		auto expected_theta = par.EmissionAngleMap()[par.name];
+// 		for (unsigned int i = 0; i < recon.Options.size(); ++i){
+// 			std::string name = recon.Options.at(i);
+// 			if (name == par.name){
+// 				double expected_area = recon.ExpectedNumber.at(i);
+// 				double actual_area   = recon.Areas.at(i);
+// 				double actual_theta  = recon.Params.at(i).at(1);
+// 				datamap["photons"].back().push_back(expected_area);
+// 				datamap["theta"].back().push_back(expected_theta);
+// 			}
+// 		}
+// 	};
+
+// 	auto histname = [&pBounds](std::string& name){
+// 		stringstream ss; ss.str("");
+// 		ss << "_pt_" << pBounds[0] << "_" << pBounds[1];
+// 		return std::move(wul::appendStrings(name, ss.str()));
+// 	};
+
+// 	auto calibrate = [&sigmas, particletype](TrackRecon& recon, Particle& par){
+
+// 		auto expected_theta = par.EmissionAngleMap()[particletype];
+// 		for (unsigned int i = 0; i < recon.Options.size(); ++i){
+// 			std::string &name = recon.Options.at(i);
+// 			if (name == particletype){
+// 				double& expected_area   = recon.ExpectedNumber.at(i);
+// 				double& actual_area     = recon.Areas.at(i);
+// 				double& actual_theta    = recon.Params.at(i).at(1);
+// 				recon.delSigArea.at(i)  = (expected_area - actual_area)/photons_sigma;
+// 				recon.delSigTheta.at(i) = (expected_theta - actual_theta)/theta_sigma;
+// 			}
+// 		}
+// 	};
+// 	auto fill = [](TTree &t1, TTree &t2, decltype(reconstructions.Recon)& recons, decltype(originals.Particles)& pars){
+// 		t1.Fill();
+// 		t2.Fill();
+// 	};
+
+// 	auto doNothing_trial   = [] (TrackRecon& r, Particle& p){ };
+// 	auto returnfalse_trial = [] (TrackRecon& r, Particle& p) { return false; };
+
+// 	auto doNothing_event   = [] (TTree &t1, TTree &t2, decltype(reconstructions.Recon)& recons, decltype(originals.Particles)& par){ };
+// 	auto returnfalse_event = [] (TTree &t1, TTree &t2, decltype(reconstructions.Recon)& recons, decltype(originals.Particles)& pars) { return false; };
+
+
+// 	////////////////////////////
+// 	// Analyze && Callibrate //
+// 	////////////////////////////
+// 	int nentries = t1.GetEntries();
+// 	vector< double > new_list;
+// 	while (pBounds[1] <= 3.){
+
+// 		auto& photons_data = datamap["photons"];
+// 		auto& theta_data = datamap["theta"];
+// 		photons_data.push_back(new_list);
+// 		theta_data.push_back(new_list);
+
+// 		// generate distributions
+// 		parseEvents(t1, t2,
+// 			originals, reconstructions,
+// 			0, nentries,
+// 			doNothing_event, returnfalse_event,
+// 			generateDistribution, parseConditon);
+
+// 		for(auto i = datamap.begin(); i != datamap.end(); ++i){
+// 			string key = i->first;
+// 			double* latest_data = &i->second.back()[0];
+// 			std::string name = histname(key);
+// 			static double min = 0., max = 0.;
+// 		  wul::vectorminmax(x, min, max);
+// 			dirc::dircTH1D h(name.c_str(), name.c_str(), nbins, min, max);
+// 			h.defineDistributionRange(min, max);
+// 			h.defineSigma(percent);
+// 			sigmas[key].push_back(h.distributionSigma);
+// 		}
+
+// 		pBounds[i] += .5;
+// 	}
+// 	// FIXME. TTree.GetEntry(i) resets the values so calibration and filling have to be done in one shot. I'll have to adjust the lambda for calibrate to include the sigmas map. That map will have the sigmas for different pt distributions. something like a map from a range to a sigma. plug in the pt, will spit out the sigma. this can probably be done with another lambda. just another condition. that lambda will need to read know the the overall bounds for p i.e. 0,3, and the step sizes of the groups i.e. .5 (those are the values for now)
+
+// 	// calibrate && fill events
+// 	parseEvents(t1, t2, originals, reconstructions, 0, nentries,
+// 		fill, [](TTree &t1, TTree &t2, decltype(reconstructions.Recon)& recons, decltype(originals.Particles)&) { return true; },
+// 		calibrate, parseConditon);
+// 	// for (unsigned int i = 0; i < 2; ++i)
+
+// }
+
+// // void calibrateSigmas(TTree& t1, TTree& t2, ParticleEvent& originals, TrackRecons& reconstructions, string const &particletype, string const &prefix, int &startevent){
+// // }
+// // 	int nentries = t2.GetEntries();
+// // 	startevent = nentries;
+
+// // 	// std::map<std::string, std::vector< std::vector<double> > > datamap;
+// // 	// map < string, vector < double > >& sigmas;
+// // 	// void analyzeDistributions(t1, t2, originals, reconstructions, distributions, 0, nentries, datamap, sigmas);
+
+// // 	// for (auto sigmas::iterator i = sigmas.begin(&); i < sigmas.end(); ++i){
+
+// // 	// }
+// // }
 
 
 
-// void printDistributionFits(TCanvas &C, std::vector<std::vector<double> * > &distributions, vector < std::string > const& filenames, double& theta_fit_difference, double& expected_photon_fit_difference, double& theta_fit_sigma, double& expected_photon_fit_sigma, int nbins, string suffix){
+
+void printDistributionFits(TCanvas &C, std::vector<std::vector<double> * > &distributions, vector < std::string > const& filenames, double& theta_fit_difference, double& expected_photon_fit_difference, double& theta_fit_sigma, double& expected_photon_fit_sigma, int nbins, string suffix){
 
 // 	std::map< int, string > histtype;
 // 	histtype[0] = "emission_angle";
