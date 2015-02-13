@@ -29,6 +29,7 @@ int main(int argc, char** argv){
 	event_range.push_back(-1);
 	vector< int > graph_choice;
 	bool calibrateSigma = true;		// add command line option when you make this a library
+	double calibrationPercent = 0.;		// add command line option when you make this a library
 
 TCLAP::CmdLine cmd("Command description message", ' ', "0.1");
 try{
@@ -66,6 +67,8 @@ try{
 
 	TCLAP::MultiArg<int> graphsChoiceArg("c","graphs-choice","determines which graphs are drawn. 1: multiplicity, 2: momentum, 3: theta, 4: phi ", false, "double", cmd);
 
+	TCLAP::ValueArg<double> calibrationPercentArg("","calibration-percent","the desired acceptance for \"1 sigma\" in generating efficiency", false, .68, "double", cmd);
+
 	cmd.parse( argc, argv );
 	fit_dir = fitDirectoryArg.getValue();
 	graph_dir = match_fakeDirectoryArg.getValue();
@@ -82,6 +85,7 @@ try{
 	print = verboseArg.getValue();
 	momentum_slices = momentum_slicesArg.getValue();
 	multiplicity_slices = multiplicity_slicesArg.getValue();
+	calibrationPercent = calibrationPercentArg.getValue();
 	if ( eventRangeArg.isSet() ){
 		event_range = eventRangeArg.getValue();
 		if ( event_range.at(1) < event_range.at(0)){
@@ -143,9 +147,9 @@ catch( TCLAP::ArgException& e )
 
 	bool calibrated = std::find(graph_choice.begin(), graph_choice.end(), 0)!=graph_choice.end();
 	if (calibrated){
-		calibrateSigmas(C, *t1, *t2, *t1prime, *t2prime, *originals, *reconstructions, matchsearch, .68, 200, calibrationgraph_filebase, firstevent, print);
-		t1 = t1prime;
-		t2 = t2prime;
+		calibrateSigmas(C, *t1, *t2, *t1prime, *t2prime, *originals, *reconstructions, matchsearch, calibrationPercent, 200, calibrationgraph_filebase, firstevent, print);
+		// t1 = t1prime;
+		// t2 = t2prime;
 	}
 
 	int nentries = t1->GetEntries();
@@ -154,7 +158,7 @@ catch( TCLAP::ArgException& e )
 	int multiplicity_low = 100;
 	for (unsigned int ev = firstevent; ev < nentries; ++ev){
 		if(print) cout << "Event " << ev << endl;
-		t1->GetEntry(ev); t2->GetEntry(ev);
+		t1prime->GetEntry(ev); t2prime->GetEntry(ev);
 		int event_multiplicity = pars->size();
 		if (multiplicity_high < event_multiplicity)
 			multiplicity_high = event_multiplicity;
@@ -212,6 +216,14 @@ catch( TCLAP::ArgException& e )
 /* ------------------------------------------------------
 										 With Cuts
 ------------------------------------------------------ */
+  f1.cd();
+  f2.Close();
+  f2.cd();
+  f2.Close();
+  f1prime->cd();
+  f1prime->Close();
+  f2prime->cd();
+  f2prime->Close();
 	return 0;
 
 	vector< pair<int, pair <Particle, TrackRecon> > > numMatch_cut; numMatch_cut.clear();
@@ -236,5 +248,6 @@ catch( TCLAP::ArgException& e )
 	makePlots(C, momentum, "Incident Theta (with Edge Cutters Removed)", "pt", "", graph_dir, matchgraph_filebase, falsegraph_filebase, 0, pi/2, 100, numMatch_cut, denMatch_cut, numFalse_cut, denFalse_cut, 3, filenumber, print);
 	makePlots(C, momentum, "Incident Phi (with Edge Cutters Removed)", "pt", "", graph_dir, matchgraph_filebase, falsegraph_filebase, -pi, pi, 100, numMatch_cut, denMatch_cut, numFalse_cut, denFalse_cut, 4, filenumber, print);
 	cout << "\n--------Finished vs. Incident Angle Plots (with Edge Cutters Removed)\n\n";
+
 
 }

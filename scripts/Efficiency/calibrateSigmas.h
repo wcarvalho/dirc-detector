@@ -126,10 +126,10 @@ void calibrateSigmas(TCanvas &C, TTree &t1, TTree &t2, TTree &t1prime, TTree &t2
       h.RemovePastSigma(false);
       h.SetFillColor(kRed);
       h.Draw("same");
-      TFile f(name.append(".root").c_str(), "recreate");
-      h_copy.Write();
-      h.Write();
-      f.Close();
+      // TFile f(name.append(".root").c_str(), "recreate");
+      // h_copy.Write();
+      // h.Write();
+      // f.Close();
       // C.Print(name.append(".pdf").c_str());
       C.Clear();
       pair < double, double > center_sigma(h.distributionCenter, h.distributionSigma);
@@ -165,9 +165,9 @@ void calibrateSigmas(TCanvas &C, TTree &t1, TTree &t2, TTree &t1prime, TTree &t2
       std::string &name = recon.Options.at(i);
       if (name == particletype){
         // recon.delSigTheta.at(i) = (theta_center - recon.delSigTheta.at(i))/theta_sigma;
-        // std::cout << "recon.delSigArea.at(i) = ";
 
-        // cout << "("<< photons_center << " - " << recon.delSigArea.at(i) << ")/" << photons_sigma << " =\n\t";
+        // std::cout << "recon.delSigArea.at(i) = ";
+        // cout << "("<< recon.delSigArea.at(i) << " - " << photons_center << ")/" << photons_sigma << " =\n\t";
         recon.delSigArea.at(i)  = (recon.delSigArea.at(i) - photons_center)/photons_sigma;
         // cout << recon.delSigArea.at(i) << std::endl;
         // std::cout << "recon.delSigTheta.at(i) = " << recon.delSigTheta.at(i) << std::endl;
