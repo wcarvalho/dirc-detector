@@ -137,7 +137,7 @@ void makePlots(TCanvas &C, vector< vector <double> > &bounds, string xtitle, str
 		string xaxis = ss.str();
 
 		string filename = GraphFileName(data_dir, graph_dir, matchgraph_filebase, xtitle, filenumber, ".pdf");
-		string rootfilename = GraphFileName(data_dir, graph_dir, matchgraph_filebase, xtitle,filenumber, ".pdf");
+		string rootfilename = GraphFileName(data_dir, graph_dir, matchgraph_filebase, xtitle,filenumber, ".root");
 		string graph_name = GraphFileName(data_dir, graph_dir, matchgraph_filebase, xtitle,filenumber, "");
 		TGraphAsymmErrors match_graph = graphASymm(C, histlow, histhi, nbins, numMatch, denMatch, Case, bounds[i], makegraph, print, graph_name);
 		match_graph.SetName(GraphFileName("", "", matchgraph_filebase, xtitle,filenumber, "").c_str());
@@ -145,17 +145,15 @@ void makePlots(TCanvas &C, vector< vector <double> > &bounds, string xtitle, str
 
 		if (makegraph){
 			C.Print(filename.c_str());
-		// cout << "filename = " << filename << endl;
-			// TFile f(rootfilename.c_str(), "recreate");
-			// TFile f("test", "recreate");
-			// match_graph.Write();
-			// f.Close();
+			TFile f(rootfilename.c_str(), "recreate");
+			match_graph.Write();
+			f.Close();
 		}
 		C.Clear();
 		makegraph = true;
 		if (print) cout << "-----False----\n";
 		filename = GraphFileName(data_dir, graph_dir, falsegraph_filebase, xtitle,filenumber, ".pdf");
-		rootfilename = GraphFileName(data_dir, graph_dir, falsegraph_filebase, xtitle,filenumber, ".pdf");
+		rootfilename = GraphFileName(data_dir, graph_dir, falsegraph_filebase, xtitle,filenumber, ".root");
 		graph_name = GraphFileName(data_dir, graph_dir, falsegraph_filebase, xtitle,filenumber, "");
 		TGraphAsymmErrors false_graph = graphASymm(C, histlow, histhi, nbins, numFalse, denFalse, Case, bounds[i], makegraph, print, graph_name);
 		false_graph.SetName(GraphFileName(data_dir, graph_dir, falsegraph_filebase, xtitle,filenumber, "").c_str());
@@ -164,9 +162,9 @@ void makePlots(TCanvas &C, vector< vector <double> > &bounds, string xtitle, str
 
 		if (makegraph){
 			C.Print(filename.c_str());
-			// TFile f(rootfilename.c_str(), "recreate");
-			// match_graph.Write();
-			// f.Close();
+			TFile f(rootfilename.c_str(), "recreate");
+			match_graph.Write();
+			f.Close();
 		}
 		C.Clear();
 				// exit(1);

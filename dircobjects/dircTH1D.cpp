@@ -71,16 +71,17 @@ namespace dirc
 			percentFound  = foundintegral/distributionIntegral;
 		};
 
-		if (print) std::cout << "center_guess = " << center_guess << std::endl;
+		if (print) std::cout << "center_guess = " << center_guess << " at bin " << center_bin << std::endl;
 		std::unordered_set < double > found_values;
 		while(true){
 			currentdirection = direction;
 			getpercent();
 			if (print) std::cout << "percentFound = " << percentFound << " at bin distance " << sigmaBinDistance << std::endl;
 			found_values.insert(percentFound);
-			if (counts >= 3) {
-				found_values.erase(found_values.begin());
-				if (found_values.find(percentFound) == found_values.end()) break;
+			if (counts >= 20) {
+				break;
+				// found_values.erase(found_values.begin());
+				// if (found_values.find(percentFound) == found_values.end()) break;
 			}
 			if (!notWithinRange(percentFound, .15)){
 				break;

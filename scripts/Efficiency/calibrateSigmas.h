@@ -6,7 +6,7 @@
 
 #include "TFile.h"
 #include "TTree.h"
-#include "graphing.h"
+#include "dircTH1D.h"
 
 #include "dirc_objects.h"
 #include "utility_library.h"
@@ -43,7 +43,7 @@ void calibrateSigmas(TCanvas &C, TTree &t1, TTree &t2, TTree &t1prime, TTree &t2
 
   double pBounds[2];
   pBounds[0] = 0;
-  double pStepSize = .5;
+  double pStepSize = .25;
   pBounds[1] = pBounds[0] + pStepSize;
 
   auto parseConditon = [&pBounds](TrackRecon& r, Particle& p){
@@ -107,9 +107,7 @@ void calibrateSigmas(TCanvas &C, TTree &t1, TTree &t2, TTree &t1prime, TTree &t2
       static double min = 0., max = 0.;
       if (i->second.back().size() == 0) continue;
       wul::vectorminmax(i->second.back(), min, max);
-      if (key == "theta") {
-        min = -.15; max = .15;
-      }
+      // if (key == "theta") { min = -.15; max = .15; }
       dirc::dircTH1D h(name.c_str(), name.c_str(), nbins, min, max);
       for (unsigned j = 0; j < latest_data.size(); ++j){
         h.Fill(latest_data.at(j));
@@ -119,17 +117,20 @@ void calibrateSigmas(TCanvas &C, TTree &t1, TTree &t2, TTree &t1prime, TTree &t2
       h.defineDistributionRange(min, max);
 
       static double center_guess = 0., sigma_guess = 0.;
-      h.FindDistributionCenter(center_guess, sigma_guess);
+      // h.FindDistributionCenter(center_guess, sigma_guess);
+      center_guess = h.GetMean();
+      sigma_guess = sqrt( h.GetBinContent(h.GetMaximumBin()) );
       if (key == "theta") { center_guess = 0.; sigma_guess = .01; }
-      double percent_achieved = h.defineSigma(center_guess, sigma_guess, percent, false);
+      double percent_achieved = h.defineSigma(center_guess, sigma_guess, percent);
       if (print) cout << key << ": percent_achieved = " << percent_achieved << " vs. " << percent << endl;
       h.RemovePastSigma(false);
       h.SetFillColor(kRed);
       h.Draw("same");
-      // TFile f(name.append(".root").c_str(), "recreate");
-      // h_copy.Write();
-      // h.Write();
-      // f.Close();
+      static string fname = wul::appendStrings(prefix, "calibration.root");
+      TFile f(fname.c_str(), "update");
+      h_copy.Write();
+      h.Write();
+      f.Close();
       // C.Print(name.append(".pdf").c_str());
       C.Clear();
       pair < double, double > center_sigma(h.distributionCenter, h.distributionSigma);
@@ -144,7 +145,7 @@ void calibrateSigmas(TCanvas &C, TTree &t1, TTree &t2, TTree &t1prime, TTree &t2
     t1prime.Fill();
     t2prime.Fill();
   };
-  auto calibrate = [&sigmas, particletype, &pStepSize](TrackRecon& recon, Particle& par){
+  auto calibrate = [&sigmas, particletype, &pStepSize, &print](TrackRecon& recon, Particle& par){
     auto Round = [](const double &num, int by){ return (float)((int)(num*by))/by; };
 
     double pt = par.pt;
@@ -165,11 +166,12 @@ void calibrateSigmas(TCanvas &C, TTree &t1, TTree &t2, TTree &t1prime, TTree &t2
       std::string &name = recon.Options.at(i);
       if (name == particletype){
         // recon.delSigTheta.at(i) = (theta_center - recon.delSigTheta.at(i))/theta_sigma;
-
-        // std::cout << "recon.delSigArea.at(i) = ";
-        // cout << "("<< recon.delSigArea.at(i) << " - " << photons_center << ")/" << photons_sigma << " =\n\t";
+        if (print) std::cout << par.name << " as " << particletype << endl;
+        if (print) std::cout << "\trecon.delSigArea.at(i) = ";
+        if (print) cout << "("<< recon.delSigArea.at(i) << " - " << photons_center << ")/" << photons_sigma << " =\n\t";
         recon.delSigArea.at(i)  = (recon.delSigArea.at(i) - photons_center)/photons_sigma;
-        // cout << recon.delSigArea.at(i) << std::endl;
+        recon.delSigTheta.at(i)  = (recon.delSigTheta.at(i) - theta_center)/theta_sigma;
+        if (print) cout << recon.delSigArea.at(i) << std::endl;
         // std::cout << "recon.delSigTheta.at(i) = " << recon.delSigTheta.at(i) << std::endl;
       }
     }

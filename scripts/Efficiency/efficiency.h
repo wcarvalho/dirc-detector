@@ -61,12 +61,10 @@ void getMatch(Particle* const& P, string search, string tomatch, double threshol
 
 		if ( sigmas.size() != names.size() ) exit(1);
 		for (unsigned int opt = 0; opt < sigmas.size(); ++opt){
-			// cout << opt << " "<<  names[opt] << " sigma: " << sigmas[opt] << endl;
-			if ( (fabs(areasigmas[opt]) < threshold) && (names[opt] == tomatch)){
-				//&& (fabs(thetasigmas[opt]) < threshold
-				///// cout << "sigmas[opt] = " << sigmas[opt] << endl;
+			if ( (fabs(areasigmas[opt]) < threshold) && (names[opt] == tomatch)  ){
+			// if ( (fabs(areasigmas[opt]) < threshold) && (fabs(thetasigmas[opt]) < threshold) && (names[opt] == tomatch)){
+			// if ( sqrt( areasigmas[opt]*areasigmas[opt] + thetasigmas[opt]*(thetasigmas[opt] ) < 2*sqrt(threshold)) && (names[opt] == tomatch) ){
 				search_num.push_back(den);
-				// if (print) cout << "\tSELECTED\n";
 			}
 		}
 	}

@@ -147,7 +147,9 @@ catch( TCLAP::ArgException& e )
 
 	bool calibrated = std::find(graph_choice.begin(), graph_choice.end(), 0)!=graph_choice.end();
 	if (calibrated){
-		calibrateSigmas(C, *t1, *t2, *t1prime, *t2prime, *originals, *reconstructions, matchsearch, calibrationPercent, 200, calibrationgraph_filebase, firstevent, print);
+		calibrateSigmas(C, *t1, *t2, *t1prime, *t2prime, *originals, *reconstructions, matchsearch, calibrationPercent, 100, calibrationgraph_filebase, firstevent, print);
+		matchgraph_filebase.append("_calibrated");
+		falsegraph_filebase.append("_calibrated");
 		// t1 = t1prime;
 		// t2 = t2prime;
 	}
@@ -157,8 +159,16 @@ catch( TCLAP::ArgException& e )
 	int multiplicity_high = 0;
 	int multiplicity_low = 100;
 	for (unsigned int ev = firstevent; ev < nentries; ++ev){
-		if(print) cout << "Event " << ev << endl;
-		t1prime->GetEntry(ev); t2prime->GetEntry(ev);
+		if(print) cout << "Event " << ev;
+		if (calibrated){
+			if (print) cout << " - calibrated";
+			t1prime->GetEntry(ev); t2prime->GetEntry(ev);
+		}
+		else {
+			t1->GetEntry(ev); t2->GetEntry(ev);
+		}
+		if(print) cout << endl;
+
 		int event_multiplicity = pars->size();
 		if (multiplicity_high < event_multiplicity)
 			multiplicity_high = event_multiplicity;

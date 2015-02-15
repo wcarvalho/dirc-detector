@@ -151,10 +151,9 @@ void TrackRecons::FitGaussianPlusConstant(TH1D &h, double xlow, double xhi, doub
     Eigen::MatrixXd hessian = MatrixXd::Zero(4,4);
     chi2.calcValGradHessian(min_point, val, grad, hessian);
     val /= (data.size());
-//     cout<<"chi^2/ndf = "<<val<<endl;
+    // cout<<"chi^2/ndf = "<<val<<endl;
     if(val > 1.4){min_point = VectorXd::Zero(4);}
   }
-  // double val /= chi2
   string name = h.GetName();
 
   static TF1 f2(name.c_str(), "[0]*exp( -(x-[1])*(x-[1])/(2.*[2]*[2]) ) + [3]", xlow, xhi);
