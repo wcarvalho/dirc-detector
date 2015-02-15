@@ -155,9 +155,10 @@ int main(int argc, char** argv)
 		if (print) cout << "TrackRecons has " << Tracks.Recon.size() << " Tracks\n";
 	  }
 
-	  Tracks = A;
+	  Tracks.Recon.push_back(A.Recon.back());
 	  tree->Fill();
 		A.Recon.clear();
+		Tracks.Recon.clear();
   }
 
   file2.cd();
