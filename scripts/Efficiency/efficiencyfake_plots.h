@@ -136,14 +136,14 @@ void makePlots(TCanvas &C, vector< vector <double> > &bounds, string xtitle, str
 		ss << xtitle << "( " << parameter << " = [" << bounds[i][0] << " : " << bounds[i][1] << "] )";
 		string xaxis = ss.str();
 
+		string graph_name = GraphFileName("", "", matchgraph_filebase, xtitle,filenumber, "");
 		string filename = GraphFileName(data_dir, graph_dir, matchgraph_filebase, xtitle, filenumber, ".pdf");
 		string rootfilename = GraphFileName(data_dir, graph_dir, matchgraph_filebase, xtitle,filenumber, ".root");
-		string graph_name = GraphFileName(data_dir, graph_dir, matchgraph_filebase, xtitle,filenumber, "");
 		TGraphAsymmErrors match_graph = graphASymm(C, histlow, histhi, nbins, numMatch, denMatch, Case, bounds[i], makegraph, print, graph_name);
-		match_graph.SetName(GraphFileName("", "", matchgraph_filebase, xtitle,filenumber, "").c_str());
+		match_graph.SetName(graph_name.c_str());
 		GraphXYTitle(match_graph, "Efficiency for Identifying Electrons", xaxis.c_str(), "Efficiency");
-
 		if (makegraph){
+			cout << "filename: " << filename << endl;
 			C.Print(filename.c_str());
 			TFile f(rootfilename.c_str(), "recreate");
 			match_graph.Write();
@@ -152,18 +152,19 @@ void makePlots(TCanvas &C, vector< vector <double> > &bounds, string xtitle, str
 		C.Clear();
 		makegraph = true;
 		if (print) cout << "-----False----\n";
+		graph_name = GraphFileName("", "", falsegraph_filebase, xtitle,filenumber, "");
 		filename = GraphFileName(data_dir, graph_dir, falsegraph_filebase, xtitle,filenumber, ".pdf");
 		rootfilename = GraphFileName(data_dir, graph_dir, falsegraph_filebase, xtitle,filenumber, ".root");
-		graph_name = GraphFileName(data_dir, graph_dir, falsegraph_filebase, xtitle,filenumber, "");
 		TGraphAsymmErrors false_graph = graphASymm(C, histlow, histhi, nbins, numFalse, denFalse, Case, bounds[i], makegraph, print, graph_name);
-		false_graph.SetName(GraphFileName(data_dir, graph_dir, falsegraph_filebase, xtitle,filenumber, "").c_str());
+		false_graph.SetName(graph_name.c_str());
 
 		GraphXYTitle(false_graph, "False Positive for Identifying Electrons", xaxis.c_str(), "False Positive");
 
 		if (makegraph){
+			cout << "filename: " << filename << endl;
 			C.Print(filename.c_str());
 			TFile f(rootfilename.c_str(), "recreate");
-			match_graph.Write();
+			false_graph.Write();
 			f.Close();
 		}
 		C.Clear();

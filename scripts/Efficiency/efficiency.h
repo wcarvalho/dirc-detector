@@ -20,7 +20,6 @@
 #include "TCanvas.h"
 #include "TGraphAsymmErrors.h"
 
-
 using namespace std;
 
 // shrinks the original Particle data so it only has the data corresponding to the Reconstructed Data (assuming that info comes from the end of the particle data array)
@@ -47,7 +46,8 @@ int matchDataSize(vector<TrackRecon>& a, vector<Particle>& b){
 
 
 // finds every case that the name of the particle matches search and the name of the reconstruction matches tomatch. The former fills search_den, and the latter search_num. The multiplicity of the event is recorded for every pair added to either vector.
-void getMatch(Particle* const& P, string search, string tomatch, double threshold, TrackRecon* const& R, int multiplicity, vector< pair<int, pair <Particle, TrackRecon> > > &search_num, vector< pair<int, pair <Particle, TrackRecon> > > &search_den, bool print){
+template <typename matchCondition>
+void getMatch(Particle* const& P, string search, string tomatch, double threshold, TrackRecon* const& R, int multiplicity, vector< pair<int, pair <Particle, TrackRecon> > > &search_num, vector< pair<int, pair <Particle, TrackRecon> > > &search_den, matchCondition passCondition, bool print){
 
 	vector<double> &sigmas = R->Sigmas;
 	vector<double> &thetasigmas = R->delSigTheta;
@@ -61,11 +61,9 @@ void getMatch(Particle* const& P, string search, string tomatch, double threshol
 
 		if ( sigmas.size() != names.size() ) exit(1);
 		for (unsigned int opt = 0; opt < sigmas.size(); ++opt){
-			if ( (fabs(areasigmas[opt]) < threshold) && (names[opt] == tomatch)  ){
-			// if ( (fabs(areasigmas[opt]) < threshold) && (fabs(thetasigmas[opt]) < threshold) && (names[opt] == tomatch)){
-			// if ( sqrt( areasigmas[opt]*areasigmas[opt] + thetasigmas[opt]*(thetasigmas[opt] ) < 2*sqrt(threshold)) && (names[opt] == tomatch) ){
+			if (names[opt] != tomatch) continue;
+			if (passCondition(*P, *R, opt, threshold))
 				search_num.push_back(den);
-			}
 		}
 	}
 

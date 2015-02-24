@@ -133,6 +133,7 @@ void TrackRecons::FitGaussianPlusConstant(TH1D &h, double xlow, double xhi, doub
 
   unsigned int count = 0;
   bool converged = false;
+  // minimizer.fixParameter(1);
   while( converged == false )
   {
     converged = minimizer.minimize( start, min_point, 1.0e-5 );
@@ -142,7 +143,7 @@ void TrackRecons::FitGaussianPlusConstant(TH1D &h, double xlow, double xhi, doub
   }
   if(converged == false)
   {
-    min_point = VectorXd::Zero(4);
+    // min_point = VectorXd::Zero(4);
   }
   else
   {
@@ -152,7 +153,7 @@ void TrackRecons::FitGaussianPlusConstant(TH1D &h, double xlow, double xhi, doub
     chi2.calcValGradHessian(min_point, val, grad, hessian);
     val /= (data.size());
     // cout<<"chi^2/ndf = "<<val<<endl;
-    if(val > 1.4){min_point = VectorXd::Zero(4);}
+    // if(val > 1.4){min_point = VectorXd::Zero(4);}
   }
   string name = h.GetName();
 
