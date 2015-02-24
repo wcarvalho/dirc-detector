@@ -9,26 +9,6 @@
 
 using namespace std;
 
-// void sEvent::NewParticle()
-// {
-// 	Particle_new p;
-// 	sParticle sp;
-
-// 	Par.push_back(p);
-// 	sPar.push_back(sp);
-
-// }
-
-// void sEvent::NewPhoton()
-// {
-// 	Photon_new p;
-// 	sPhoton sp;
-
-// 	Pho.push_back(p);
-// 	sPho.push_back(sp);
-
-// }
-
 //======================================================================
 //____________Check if Angle passes critical angle test_________________
 void Detector::CheckAngle(double theta, double phi, int Wall, int &Flag)
@@ -38,7 +18,7 @@ void Detector::CheckAngle(double theta, double phi, int Wall, int &Flag)
 	double dotproduct, magnitudeproduct;
   TVector3 normal_vector;
   TVector3 UnitVector(sin(theta)*cos(phi), sin(theta)*sin(phi), cos(theta));
-  
+
   vector<TVector3> normal;
   normal.clear(); normal.push_back(x_normal); normal.push_back(y_normal); normal.push_back(z_normal);
 

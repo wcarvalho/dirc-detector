@@ -155,9 +155,19 @@ int main(int argc, char** argv)
 		if (print) cout << "TrackRecons has " << Tracks.Recon.size() << " Tracks\n";
 	  }
 
+<<<<<<< HEAD
 	  Tracks.Recon.push_back(A.Recon.back());
 	  tree->Fill();
 		A.Recon.clear();
+=======
+	  Tracks.Recon = A.Recon;
+	  tree->Fill();
+		A.Recon.clear();
+		A.Hists1D.clear();
+		A.Hists2D.clear();
+		A.Hists1D.shrink_to_fit(); // freeing (a LOT of) memory
+		A.Hists2D.shrink_to_fit(); // freeing (a LOT of) memory
+>>>>>>> working
 		Tracks.Recon.clear();
   }
 

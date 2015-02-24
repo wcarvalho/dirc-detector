@@ -373,6 +373,7 @@ include_HEADERS = \
 	particle_objects.h \
 	photon_objects.h \
 	analysis_objects.h \
+	event_parsers.h \
 	dircTH1D.h
 
 libDircObjs_la_SOURCES = \

@@ -1,4 +1,7 @@
+#include "event_parsers.h"
+#include "fitElliptical.h"
 #include "efficiency.h"
+#include "match_conditions.h"
 #include "printFits.h"
 #include "removeEdgeCutters.h"
 #include "efficiencyfake_plots.h"
@@ -30,6 +33,7 @@ int main(int argc, char** argv){
 	vector< int > graph_choice;
 	bool calibrateSigma = true;		// add command line option when you make this a library
 	double calibrationPercent = 0.;		// add command line option when you make this a library
+	int matchcondition_case = 0;
 
 TCLAP::CmdLine cmd("Command description message", ' ', "0.1");
 try{
@@ -56,6 +60,12 @@ try{
 	TCLAP::ValueArg<double> thresholdArg("t","threshold","value at which delta sigma values are cut",false, 1.5,"double", cmd);
 
 	TCLAP::ValueArg<double> ptbinsArg("","ptbins","number of pt bins",false, 100,"double", cmd);
+
+	TCLAP::ValueArg<int> matchconditionArg("","match-condition","sets the method by which matches will be determined."
+		"\n\t\tcase 1: within_expectedphoton_threshold"
+		"\n\t\tcase 2: inside_box"
+		"\n\t\tcase 3: inside_box_xyplane"
+		"\n\t\tcase 4: inside_circle",false, 2,"double", cmd);
 
 	TCLAP::ValueArg<std::string> momentum_slicesArg("","momentum-slices","file with momentum slices",false, "momentum","string", cmd);
 
@@ -86,6 +96,7 @@ try{
 	momentum_slices = momentum_slicesArg.getValue();
 	multiplicity_slices = multiplicity_slicesArg.getValue();
 	calibrationPercent = calibrationPercentArg.getValue();
+	matchcondition_case = matchconditionArg.getValue();
 	if ( eventRangeArg.isSet() ){
 		event_range = eventRangeArg.getValue();
 		if ( event_range.at(1) < event_range.at(0)){
@@ -143,6 +154,7 @@ catch( TCLAP::ArgException& e )
 
 	calibrationgraph_filebase = wul::appendStrings(calibration_dir, "/", calibrationgraph_filebase);
 
+	int nentries = t1->GetEntries();
 	int firstevent = 0;
 
 	bool calibrated = std::find(graph_choice.begin(), graph_choice.end(), 0)!=graph_choice.end();
@@ -150,14 +162,40 @@ catch( TCLAP::ArgException& e )
 		calibrateSigmas(C, *t1, *t2, *t1prime, *t2prime, *originals, *reconstructions, matchsearch, calibrationPercent, 100, calibrationgraph_filebase, firstevent, print);
 		matchgraph_filebase.append("_calibrated");
 		falsegraph_filebase.append("_calibrated");
-		// t1 = t1prime;
-		// t2 = t2prime;
 	}
 
-	int nentries = t1->GetEntries();
+	std::vector <double> sigthetas;
+	std::vector <double> sigNPhotons;
+	auto pullsigs = [&sigthetas, &sigNPhotons, &matchsearch](TrackRecon& recon, Particle& par){
+		double sigtheta = 0.;
+		double sigNPhoton = 0.;
+		for (unsigned int j = 0; j < recon.Options.size(); ++j){
+			if (recon.Options.at(j) != par.name) continue;
+			sigtheta = recon.delSigTheta.at(j);
+			sigNPhoton = recon.delSigArea.at(j);
+			sigthetas.push_back(recon.delSigTheta.at(j));
+			sigNPhotons.push_back(recon.delSigArea.at(j));
+		}
+	};
+	if (matchcondition_case == 5){
+		TrackRecon r; Particle p;
+		dirc::parseEvents(*t1prime, *t2prime, *originals, *reconstructions, 0, nentries, dirc::empty_eventparser, dirc::false_eventcondition, pullsigs, dirc::true_trialcondition, true);
+		double x_0 = 0., y_0 = 0., a = 0., b = 0.;
+		fitElliptical(sigthetas, sigNPhotons, x_0, y_0, a, b);
+	}
+
 	int i = 0;
 	int multiplicity_high = 0;
 	int multiplicity_low = 100;
+
+	bool (*matchcondition)(const Particle&, const TrackRecon&, const int&, const double&);
+	switch(matchcondition_case){
+		case 1: matchcondition = &within_expectedphoton_threshold; break;
+		case 2: matchcondition = &inside_box; break;
+		case 3: matchcondition = &inside_box_xyplane; break;
+		case 4: matchcondition = &inside_circle; break;
+	}
+
 	for (unsigned int ev = firstevent; ev < nentries; ++ev){
 		if(print) cout << "Event " << ev;
 		if (calibrated){
@@ -187,9 +225,9 @@ catch( TCLAP::ArgException& e )
 				// print = false;
 
 			++i;
-			getMatch(P, matchsearch, matchsearch, threshold, R, event_multiplicity, numMatch, denMatch, print);				// fills the denominator with all of the electrons and the numerator with all the correct electron identifications
+			getMatch(P, matchsearch, matchsearch, threshold, R, event_multiplicity, numMatch, denMatch, matchcondition, print);				// fills the denominator with all of the electrons and the numerator with all the correct electron identifications
 
-			getMatch(P, falsesearch, matchsearch, threshold, R, event_multiplicity, numFalse, denFalse, print);				// fills the denominator with all of the pions and the numerator with all the false electron identifications
+			getMatch(P, falsesearch, matchsearch, threshold, R, event_multiplicity, numFalse, denFalse, matchcondition, print);				// fills the denominator with all of the pions and the numerator with all the false electron identifications
 		}
 	}
 
