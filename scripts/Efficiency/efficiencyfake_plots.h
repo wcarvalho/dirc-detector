@@ -4,25 +4,30 @@ void FillHist(TH1D &H, vector< pair<int, pair <Particle, TrackRecon> > > const &
 	if (print) cout << "range = " << range[0] << ", " << range[1] << endl;
 	for(unsigned int i = 0; i < vec.size(); ++i){
 
-		const int &multiplicity = vec.at(i).first;
-		const double &pt = vec.at(i).second.first.pt;
-		const double &IncidentTheta = vec.at(i).second.first.Theta;
-		const double &IncidentPhi = vec.at(i).second.first.Phi;
-		const double &EmissionAngle = vec.at(i).second.first.ConeAngle;
+		const auto& P = vec.at(i).second.first;
+		const int& multiplicity = vec.at(i).first;
+		const double& m = P.m;
+		const double& beta = P.Beta;
+		double momentum = sqrt((m*beta)*(m*beta)/(1-beta*beta));
+		const double& pt = P.pt;
+		const double& IncidentTheta = P.Theta;
+		const double& IncidentPhi = P.Phi;
+		const double& EmissionAngle = P.ConeAngle;
 		bool NotInPtRange = ((pt < range[0])||(pt > range[1]));
+		bool NotInMomentumRange = ((momentum < range[0])||(momentum > range[1]));
 		bool NotInMultiRange = ((multiplicity < range[0])||(multiplicity > range[1]));
 		// cout << "NotInPtRange = " << NotInPtRange << endl;
 		// cout << "NotInMultiRange = " << NotInMultiRange << endl;
 		switch (Case) {
 			case 1:	// vs. Multiplicity
-				if (NotInPtRange)
+				if (NotInMomentumRange)
 					continue;
 				H.Fill(multiplicity);
 				break;
-			case 2: // vs. PT
+			case 2: // vs. Momentum
 				if (NotInMultiRange)
 					continue;
-				H.Fill(pt);
+				H.Fill(momentum);
 				break;
 			case 3: // vs. Incident Angle (Theta) against pt
 				if (NotInPtRange)
@@ -74,7 +79,6 @@ TGraphAsymmErrors graphASymm(TCanvas &c, double low, double hi, double nbins, ve
 
 	int numcounter = NumHist.GetEntries();
 	int dencounter = DenHist.GetEntries();
-
 
 	makegraph = dencounter;
 	if (!dencounter){

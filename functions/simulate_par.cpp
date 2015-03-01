@@ -32,9 +32,9 @@ void Simulate::WhichWall(bool print)
 
   for (unsigned int comp = 0; comp < 3; comp++)
   {
-  	TimesToWall[comp] = Distance[comp]/Vec(comp);
-		time_map_unordered.insert(std::make_pair(TimesToWall[comp], comp+1));
 	  velocity_map_unordered[comp] = Vec(comp);
+  	TimesToWall[comp] = Distance[comp]/(Vec(comp));
+		time_map_unordered.insert(std::make_pair(TimesToWall[comp], comp+1));
   }
 
   std::multimap<double, int> time_map(time_map_unordered.begin(), time_map_unordered.end());
@@ -75,7 +75,12 @@ void Simulate::WhichWall(bool print)
 
 double Simulate::TimeForDistance(double D, bool print){
 
-	double t = D; // normally divided by v but v is always one because its a unit vector
+	if (velocity_magnitude)
+		double t = D/velocity_magnitude; // normally divided by v but v is always one because its a unit vector
+	else{
+		cout << "please define the velocity via Simulate::SetVelocity(double velocity)\n";
+		exit(1);
+	}
 	// if (print) cout << "\t\tTime = " << t << endl;
 	return t;
 
@@ -84,6 +89,7 @@ double Simulate::TimeForDistance(double D, bool print){
 void Simulate::TravelDistance(double D, bool print)
 {
 	double t = TimeForDistance(D, print);
+	time_traveled += t;
 	double dist[3];
 	dist[0] = t*Vec(0);
 	dist[1] = t*Vec(1);
@@ -92,7 +98,7 @@ void Simulate::TravelDistance(double D, bool print)
 	if (print) { TabToLevel(3); cout << "WillTravel = " << D << endl; }
 	if (print) PrintVec();
 	if (print) { TabToLevel(3); cout << "Init = "; }
-	for (unsigned int comp = 0; comp < 3; comp++){
+	for (unsigned comp = 0; comp < 3; comp++){
 		if (print) cout <<setw(10)<< coord[comp];
 	}
 	if (print) cout << endl;

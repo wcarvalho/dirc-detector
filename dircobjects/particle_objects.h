@@ -47,7 +47,7 @@ public:
   ~Particle(){}
 
   double CalculatePhotonsPercm(double xlow, double xhi, double n, double z = 1., double alpha = 1./137);
-
+	double CalculateMomentum() const;
 
 	Particle To_Particle(ParticleOut p1){ return Particle(p1.Theta, p1.Phi); }
 	ParticleOut To_ParticleOut(Particle p1){ return ParticleOut(p1.Theta, p1.Phi); }

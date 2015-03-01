@@ -68,3 +68,7 @@ double Particle::CalculatePhotonsPercm(double xlow, double xhigh, double n, doub
 	PhotonsPercm = 1e-2*Constant*f.Integral(xlow, xhigh);
 	return PhotonsPercm;
 }
+double Particle::CalculateMomentum() const{
+		return sqrt((m*Beta)*(m*Beta)/(1-Beta*Beta));
+}
+

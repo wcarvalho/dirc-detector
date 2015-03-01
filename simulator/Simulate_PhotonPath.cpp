@@ -35,6 +35,7 @@ void Simulate_PhotonPath(Detector d, Photon &photon, double smear, bool print)
 			double ph = simPho.Phi;
 			Photon pho_temp(th, ph);
 			photon = pho_temp;
+			photon.Time_Traveled = simPho.time_traveled;
 			return;
 		}
 

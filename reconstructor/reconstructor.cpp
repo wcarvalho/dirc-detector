@@ -85,6 +85,9 @@ void CalculateParticleFits(std::pair<double, double> (*ExpectedNumberofPhotons)(
 
 		vals = ExpectedNumberofPhotons(P.X, P.Y, P.Theta, P.Phi, Beta);
 
+		// FIXME: hack for time
+		// double d =
+		// double t = d/t
 
 		if (print) cout << "X, Y, Theta, Phi, Beta = " << P.X << ", " << P.Y << ", " << P.Theta << ", " << P.Phi << ", " << Beta << endl;
 
