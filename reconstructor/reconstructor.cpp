@@ -55,8 +55,10 @@ void CalculateParticleFits(std::pair<double, double> (*ExpectedNumberofPhotons)(
 
 	TrackRecon &guess  = A.Recon.back();
 	TH1D& h            = A.Hists1D.back();
+	TH2D& h2            = A.Hists2D.back();
 	string defaultname = h.GetName();
 	guess.Hist         = h;
+	guess.Hist2D       = h2;
 
 	for(map<double, double>::iterator i = atm.begin(); i != atm.end(); ++i){
 		static TCanvas c1("c1","c1",10,10,800,600);
@@ -64,7 +66,7 @@ void CalculateParticleFits(std::pair<double, double> (*ExpectedNumberofPhotons)(
 		const double &angle = i->first;
 		const double &mass = i->second;
 		string name = mtn[mass];
-
+		double pi = TMath::Pi();
 		stringstream currentname;
 		currentname << defaultname << "_" << name;
 		string newhname = currentname.str();
@@ -72,9 +74,9 @@ void CalculateParticleFits(std::pair<double, double> (*ExpectedNumberofPhotons)(
 
 		double weight = .1;
 		double center = angle;
-		double centerbounds[2] = {angle - weight*smear, angle + weight*smear};
+		double centerbounds[2] = {0, pi};
 		double width = smear;
-		double widthbounds[2] = {.8*smear, 1.2*smear};
+		double widthbounds[2] = {0, 10};
 
 		A.FitGaussianPlusConstant(center-range, center+range, center, centerbounds, width, widthbounds, Area);
 		// Area = guesser.FitParticle1D(c1_p, *h, params, angle-range, angle+range, angle, smear, newhname, print);	// area under gaussian (calculated number of photons)
@@ -85,13 +87,12 @@ void CalculateParticleFits(std::pair<double, double> (*ExpectedNumberofPhotons)(
 
 		vals = ExpectedNumberofPhotons(P.X, P.Y, P.Theta, P.Phi, Beta);
 
-
 		if (print) cout << "X, Y, Theta, Phi, Beta = " << P.X << ", " << P.Y << ", " << P.Theta << ", " << P.Phi << ", " << Beta << endl;
 
 		vector< double > &params = A.Recon.back().Params.back();				// vector to store parameters for efficiency analysis
 
 		double pi2 = TMath::Pi()/2;
-		double delSigTheta = (angle - params.at(1))/smear;
+		double delSigTheta = (angle - params.at(1))/(smear);
 		double delSigA = (N-Area)/Sigma_N;
 		if (print) cout << "delSigA = " << delSigA << ", delSigTheta = " << delSigTheta << endl;
 		double delSigma = sqrt(delSigTheta*delSigTheta + delSigA*delSigA);

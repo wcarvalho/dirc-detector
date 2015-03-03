@@ -23,33 +23,33 @@
 //------------------------------------------
 #include "dirc_objects.h"
 
-using namespace std;		
+using namespace std;
 
 // This class can simulate the trajectory of a particle through a rectangular prism
 //_____________________________________________________________________________________________
 class Simulate: public sPhoton
 {
 public:
-	Simulate(double theta, double phi) : Vec(0.,0.,0.) { Theta=theta; Phi=phi; SetVec(Theta, Phi); }
+	Simulate(double theta, double phi) : Vec(0.,0.,0.), time_traveled(0.) { SetAngle(theta, phi); }
 	~Simulate(){}
 
+	void SetAngle(double t = 0., double p = 0.){
+		Theta=t; Phi=p; SetVec(Theta, Phi);
+	}
 	void SetDim(double l, double w, double h){ Dim[0] = l; Dim[1] = w; Dim[2] = h; }
 	void SetStart(double x, double y, double z){ coord[0] = x; coord[1]=y; coord[2]=z; }
 	void SetVec(double theta, double phi)
 		{ TVector3 v(sin(theta)*cos(phi), sin(theta)*sin(phi), cos(theta)); Vec = v; GetTheta(); GetPhi(); }
+	void SetVelocity(double v){ Vec.SetMag(v); }
 	void GetTheta(){Theta = Vec.Theta(); }
 	void GetPhi(){Phi = Vec.Phi(); }
-	void FlipX(){ Vec.SetX(-Vec.X()); GetTheta(); GetPhi(); } 	
+	void FlipX(){ Vec.SetX(-Vec.X()); GetTheta(); GetPhi(); }
 	void FlipY(){ Vec.SetY(-Vec.Y()); GetTheta(); GetPhi(); }
 	void FlipZ(){ Vec.SetZ(-Vec.Z()); GetTheta(); GetPhi(); }
 	void DistancetoWalls(bool print = false);
+	void OldWhichWall(bool print = false);
 	void WhichWall(bool print = false);
-	double WillTravel(){ 
-		return sqrt(
-	    Vec(0)*TimeToWall*Vec(0)*TimeToWall+
-	    Vec(1)*TimeToWall*Vec(1)*TimeToWall+
-	    Vec(2)*TimeToWall*Vec(2)*TimeToWall);
-	}
+	double WillTravel();
 	double TimeForDistance(double D, bool print = false);
 	void TravelDistance(double d, bool print = false);
 	void GotoWall(bool print = false);
@@ -63,6 +63,7 @@ public:
 	int wall;
 	TVector3 Vec;
 	int Flag;
+	double time_traveled;
 
 };
 

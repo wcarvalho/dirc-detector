@@ -62,12 +62,10 @@ int main(int argc, char* argv[]){
 		vector<PhotonOut> &Photons = event_output->Photons;
 		// cout << "\tPhotons " << Photons.size() << endl;
 		for (unsigned int pho = 0; pho < Photons.size(); ++pho){
-			double &theta = Photons.at(pho).Theta;
-			double &phi = Photons.at(pho).Phi;
+			double &Time_Traveled = Photons.at(pho).Time_Traveled;
 
 			// for each photon smear by a value
-			theta += r.Gaus(0, smear);
-			phi += r.Gaus(0, smear);
+			Time_Traveled = r.Gaus(Time_Traveled, smear);
 		}
 		t2->Fill();
 	}

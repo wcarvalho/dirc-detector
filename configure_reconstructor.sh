@@ -1,5 +1,5 @@
 directory=reconstructor
 source commands.sh
-cmd="$configure=$MYAPPS --libdir=$MYLIBS"
+cmd="$configure=$MYLIBS --bindir=$MYAPPS/bin"
 # echo $cmd
 source execution.sh

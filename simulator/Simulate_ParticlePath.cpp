@@ -22,23 +22,24 @@ void Simulate_ParticlePath(Detector d, Particle &particle, int parnum, PhotonEve
 
 	simPar.SetDim(d.Length, d.Width, d.Height);
 	simPar.SetStart(particle.X, particle.Y, 0);
+	simPar.SetVelocity(particle.Beta);
 	simPar.DistancetoWalls(print);
 	simPar.WhichWall(print);
 	Path_length = simPar.WillTravel();
-	
+
 	if (print) cout << "\tTravling distance: " << Path_length << endl;
 	if (print) cout << "\tPhotonsPercm: " << particle.PhotonsPercm << endl;
 
 	avg_photons_released = Path_length*particle.PhotonsPercm;
 	photons_released = r.Poisson(avg_photons_released);
-	
+
 	if (print) cout << "\tReleasing " << photons_released << " photons\n";
-	print = false; //TEMPORARY 
+	print = false; //TEMPORARY
 	particle.nPhotonsPassed = photons_released;
 
 	vector<Photon> &numpho = photon_event.Photons;
 	int numPho0 = numpho.size();
-	
+
 	for (unsigned int i = 0; i < photons_released; ++i)
 	{
 		simPar.SetStart(particle.X, particle.Y, 0);
@@ -53,6 +54,6 @@ void Simulate_ParticlePath(Detector d, Particle &particle, int parnum, PhotonEve
 		P.WhichParticle = parnum;
 		photon_event.Photons.push_back(P);
 
-		
+
 	}
 }

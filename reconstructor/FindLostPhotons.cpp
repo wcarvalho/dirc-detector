@@ -52,6 +52,7 @@ std::pair<double, double> RiemannSum(double const& x, double const& y, double co
 	Simulate simPar(theta, phi);
 	simPar.SetDim(l, w, h);
 	simPar.SetStart(x, y, 0.);
+	simPar.SetVelocity(v);
 	simPar.DistancetoWalls( );
 	simPar.WhichWall( );
 	double Path_length = simPar.WillTravel();

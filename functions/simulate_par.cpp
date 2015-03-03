@@ -22,7 +22,7 @@ void Simulate::DistancetoWalls(bool print)
 
 //======================================================================
 //_____________check which wall will be hit__________________
-void Simulate::WhichWall(bool print)
+void Simulate::OldWhichWall(bool print)
 {
 	double key1, key2;
   double velocity_map_first = 0, velocity_map_second = 0;
@@ -32,9 +32,9 @@ void Simulate::WhichWall(bool print)
 
   for (unsigned int comp = 0; comp < 3; comp++)
   {
-  	TimesToWall[comp] = Distance[comp]/Vec(comp);
-		time_map_unordered.insert(std::make_pair(TimesToWall[comp], comp+1));
 	  velocity_map_unordered[comp] = Vec(comp);
+  	TimesToWall[comp] = Distance[comp]/(Vec(comp));
+		time_map_unordered.insert(std::make_pair(TimesToWall[comp], comp+1));
   }
 
   std::multimap<double, int> time_map(time_map_unordered.begin(), time_map_unordered.end());
@@ -49,6 +49,7 @@ void Simulate::WhichWall(bool print)
 		if (print) cout <<setw(10)<< TimesToWall[comp];
 	}
 	if (print) cout << endl;
+
   // check if the first two wall times are equal, if so find wall based on velocity
 	key1 = it->first;
   ++it;
@@ -75,15 +76,14 @@ void Simulate::WhichWall(bool print)
 
 double Simulate::TimeForDistance(double D, bool print){
 
-	double t = D; // normally divided by v but v is always one because its a unit vector
-	// if (print) cout << "\t\tTime = " << t << endl;
+	double t = D/Vec.Mag(); // normally divided by v but v is always one because its a unit vector
 	return t;
-
 }
 
 void Simulate::TravelDistance(double D, bool print)
 {
 	double t = TimeForDistance(D, print);
+	time_traveled += t;
 	double dist[3];
 	dist[0] = t*Vec(0);
 	dist[1] = t*Vec(1);
@@ -92,7 +92,7 @@ void Simulate::TravelDistance(double D, bool print)
 	if (print) { TabToLevel(3); cout << "WillTravel = " << D << endl; }
 	if (print) PrintVec();
 	if (print) { TabToLevel(3); cout << "Init = "; }
-	for (unsigned int comp = 0; comp < 3; comp++){
+	for (unsigned comp = 0; comp < 3; comp++){
 		if (print) cout <<setw(10)<< coord[comp];
 	}
 	if (print) cout << endl;
@@ -113,7 +113,9 @@ void Simulate::TravelDistance(double D, bool print)
 	if (print) cout << endl;
 	Traveled = Traveled + D;
 }
-
+double Simulate::WillTravel(){
+  return Vec.Mag()*TimeToWall;
+}
 void Simulate::GotoWall(bool print)
 {
 	DistancetoWalls(print);
@@ -142,4 +144,36 @@ void Simulate::PrintVec(){
 		cout <<setw(10)<< Vec(comp);
 	}
 	cout << endl;
+}
+
+void Simulate::WhichWall(bool print){
+
+  static double v[3];
+  static double t[3];
+
+  int min_time_element = 5;
+  double min_time = 1.e10;
+  int max_v_element = 5;
+  double max_velocity = 0.;
+  for (unsigned i = 0; i < 3; ++i){
+    v[i] = Vec(i);
+    t[i] = Distance[i]/v[i];
+    if (fabs(t[i]) < fabs(min_time)){
+      min_time = t[i];
+      min_time_element = i;
+    }
+    if (fabs(v[i]) > fabs(max_velocity)){
+      max_velocity = v[i];
+      max_v_element = i;
+    }
+  }
+
+  if (print) { cout << "\t\tTime = "; }
+  for (unsigned int comp = 0; comp < 3; comp++){
+    if (print) cout <<setw(10)<< t[comp];
+  }
+  if (print) cout << endl;
+  wall = min_time_element + 1;
+  TimeToWall = min_time;
+  if(print) cout << "\t\tWall = " << wall << "\n\n";
 }

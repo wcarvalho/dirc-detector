@@ -2,7 +2,7 @@
 #include "fitElliptical.h"
 #include "efficiency.h"
 #include "match_conditions.h"
-#include "printFits.h"
+// #include "printFits.h"
 #include "removeEdgeCutters.h"
 #include "efficiencyfake_plots.h"
 #include "calibrateSigmas.h"
@@ -12,7 +12,7 @@
 int main(int argc, char** argv){
 
 	string graph_dir;
-	string fit_dir;
+	// string fit_dir;
 	string calibration_dir;
 	string reconstructiondata;
 	string cheatdata;
@@ -26,7 +26,7 @@ int main(int argc, char** argv){
 	double threshold = 0.;
 	int nptBins = 0;
 	bool print; // row 2, 1st value
-	bool makefits=true;
+	// bool makefits=true;
 	vector< int > event_range;
 	event_range.push_back(-1);
 	event_range.push_back(-1);
@@ -38,7 +38,7 @@ int main(int argc, char** argv){
 TCLAP::CmdLine cmd("Command description message", ' ', "0.1");
 try{
 
-	TCLAP::ValueArg<std::string> fitDirectoryArg("F","fit-directory","Directory where fits will be stored",false,"fits","string", cmd);
+	// TCLAP::ValueArg<std::string> fitDirectoryArg("F","fit-directory","Directory where fits will be stored",false,"fits","string", cmd);
 
 	TCLAP::ValueArg<std::string> match_fakeDirectoryArg("M","match-fake-directory","Directory where graphs for match rates and fake rated will be stored",false,"graphs","string", cmd);
 
@@ -73,14 +73,14 @@ try{
 
 	TCLAP::SwitchArg verboseArg("v","verbose","", cmd, false);
 
-	TCLAP::MultiArg<int> eventRangeArg("e","event-range","events for which you want to print fits", false, "double", cmd);
+	// TCLAP::MultiArg<int> eventRangeArg("e","event-range","events for which you want to print fits", false, "double", cmd);
 
 	TCLAP::MultiArg<int> graphsChoiceArg("c","graphs-choice","determines which graphs are drawn. 1: multiplicity, 2: momentum, 3: theta, 4: phi ", false, "double", cmd);
 
 	TCLAP::ValueArg<double> calibrationPercentArg("","calibration-percent","the desired acceptance for \"1 sigma\" in generating efficiency", false, .68, "double", cmd);
 
 	cmd.parse( argc, argv );
-	fit_dir = fitDirectoryArg.getValue();
+	// fit_dir = fitDirectoryArg.getValue();
 	graph_dir = match_fakeDirectoryArg.getValue();
 	calibration_dir = calibrationDirectoryArg.getValue();
 	reconstructiondata = reconstructileFileArg.getValue();
@@ -97,13 +97,13 @@ try{
 	multiplicity_slices = multiplicity_slicesArg.getValue();
 	calibrationPercent = calibrationPercentArg.getValue();
 	matchcondition_case = matchconditionArg.getValue();
-	if ( eventRangeArg.isSet() ){
-		event_range = eventRangeArg.getValue();
-		if ( event_range.at(1) < event_range.at(0)){
-			cout << "The second value for the range must be higher than the first value.\n\nExiting!\n";
-			return 0;
-		}
-	}
+	// if ( eventRangeArg.isSet() ){
+	// 	event_range = eventRangeArg.getValue();
+	// 	if ( event_range.at(1) < event_range.at(0)){
+	// 		cout << "The second value for the range must be higher than the first value.\n\nExiting!\n";
+	// 		return 0;
+	// 	}
+	// }
 	if ( graphsChoiceArg.isSet() )
 		graph_choice = graphsChoiceArg.getValue();
 
@@ -113,7 +113,7 @@ catch( TCLAP::ArgException& e )
 { cout << "ERROR: " << e.error() << " " << e.argId() << endl; }
 
 
-	fit_dir.append("/");
+	// fit_dir.append("/");
 	graph_dir.append("/");
 
 	double pi = TMath::Pi();
@@ -218,7 +218,7 @@ catch( TCLAP::ArgException& e )
 			Particle* P = &pars->at(p);
 			TrackRecon* R = &recons->at(p);
 			if ((ev >= event_range[0])&&(ev <= event_range[1])){
-				printfits(C, ev, p, *P, *R, fit_dir, makefits);
+				// printfits(C, ev, p, *P, *R, fit_dir, makefits);
 				// print = true;
 			}
 			else
@@ -244,12 +244,12 @@ catch( TCLAP::ArgException& e )
 
 	if (std::find(graph_choice.begin(), graph_choice.end(), 1)!=graph_choice.end()){
 		if (print) cout << "Making vs. Multiplicity Plots\n";
-		makePlots(C, momentum, "multiplicity", "pt", "", graph_dir, matchgraph_filebase, falsegraph_filebase, multiplicity_bin_low, multiplicity_bin_hi, multiplicity_bins, numMatch, denMatch, numFalse, denFalse, 1, filenumber, print);
+		makePlots(C, momentum, "multiplicity", "momentum", "", graph_dir, matchgraph_filebase, falsegraph_filebase, multiplicity_bin_low, multiplicity_bin_hi, multiplicity_bins, numMatch, denMatch, numFalse, denFalse, 1, filenumber, print);
 	}
 
 	if (std::find(graph_choice.begin(), graph_choice.end(), 2)!=graph_choice.end()){
 		if (print) cout << "Making vs. Momentum Plots\n";
-		makePlots(C, multiplicity, "pt", "multiplicity", "", graph_dir, matchgraph_filebase, falsegraph_filebase, momentum[0][0], momentum.back().back(), nptBins, numMatch, denMatch, numFalse, denFalse, 2, filenumber, print);
+		makePlots(C, multiplicity, "momentum", "multiplicity", "", graph_dir, matchgraph_filebase, falsegraph_filebase, momentum[0][0], momentum.back().back(), nptBins, numMatch, denMatch, numFalse, denFalse, 2, filenumber, print);
 	}
 
 	if (std::find(graph_choice.begin(), graph_choice.end(), 3)!=graph_choice.end()){
