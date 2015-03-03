@@ -12,12 +12,13 @@
 class PhotonOut : public TObject
 {
 public:
-	PhotonOut(double theta=0., double phi=0.) : Theta(theta), Phi(phi) {}
+	PhotonOut(double theta=0., double phi=0.) : Theta(theta), Phi(phi), Time_Traveled(0.) {}
 	~PhotonOut(){}
 
 
 	double Theta;
-	double Phi;
+  double Phi;
+  double Time_Traveled;
 
   ClassDef(PhotonOut, 1);
 
@@ -28,17 +29,16 @@ public:
 class Photon : public PhotonOut
 {
 public:
-  Photon(double theta=0., double phi=0.) : WhichParticle(0), Time_Traveled(0.), Distance_Traveled(0.), X(0.), Y(0.), Z(0.), Flag(0), Reflections(0),
+  Photon(double theta=0., double phi=0.) : WhichParticle(0), Distance_Traveled(0.), X(0.), Y(0.), Z(0.), Flag(0), Reflections(0),
   X_Distance(0.), Y_Distance(0.), Z_Distance(0.), Distance(0.), X_Time(0.), Y_Time(0.), Z_Time(0.), Time(0.),
   UnitVector( sin(theta)*cos(phi), sin(theta)*sin(phi), cos(theta)) { Theta = theta; Phi=phi; }
   ~Photon(){}
 
-	Photon To_Photon(PhotonOut p){ return Photon(p.Theta, p.Phi); }
-	PhotonOut To_PhotonOut(Photon p){ return PhotonOut(p.Theta, p.Phi); }
-  
+  Photon To_Photon(PhotonOut p){ return Photon(p.Theta, p.Phi); }
+  PhotonOut To_PhotonOut(Photon p){ return PhotonOut(p.Theta, p.Phi); }
+
   int WhichParticle;
   int Which;
-  double Time_Traveled;
   double Distance_Traveled;
   double X;
   double Y;
@@ -60,7 +60,7 @@ public:
 
 
   TVector3 UnitVector;
-  
+
   ClassDef(Photon, 1);
 };
 

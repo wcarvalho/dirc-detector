@@ -23,6 +23,7 @@ public:
 	void printLatest();
 
 	TH1D Hist;
+	TH2D Hist2D;
 	std::vector < std::string > Options; 			// every particle type
 	std::vector < double > delSigTheta;				// delta sigma theta for every particle
 	std::vector < double > delSigArea;				// delta sigma area for every particle

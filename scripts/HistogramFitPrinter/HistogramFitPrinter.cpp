@@ -8,13 +8,12 @@
 
 #include "dirc_objects.h"
 #include "event_parsers.h"
-#include "printFits.h"
 #include "flagConditions.h"
+#include "printFits.h"
+#include "printHists.h"
 
 #include <tclap/CmdLine.h>
 using namespace std;
-
-typedef std::unordered_map<int, bool(*)(const Particle&, const TrackRecon&, const int&)> flag_fun_map;
 
 int main(int argc, char const *argv[])
 {
@@ -24,6 +23,7 @@ string reconstructiondata;
 string cheatdata;
 vector< int > event_range;
 bool event_range_set = false;
+bool print2d;
 string matchsearch;
 string falsesearch;
 vector< int> flags;
@@ -37,6 +37,8 @@ try{
 	TCLAP::ValueArg<std::string> falsesearchArg("","false-search","particle which is being used for the fake rate",false,"pion","string", cmd);
 
 	TCLAP::ValueArg<std::string> fitDirectoryArg("f","fit-directory","Directory where fits will be stored",false,"fits","string", cmd);
+
+
 	TCLAP::MultiArg<int> eventRangeArg("e","event-range","events for which you want to print fits", false, "int", cmd);
 
 	TCLAP::MultiArg<int> flagsArg("c","flag-condition","sets the method by which matches will be determined."
@@ -45,6 +47,7 @@ try{
 		"\n\t\tcase 2: sigma is less than 1.5",false,"int", cmd);
 
 	TCLAP::SwitchArg verboseArg("v","verbose","", cmd, false);
+	TCLAP::SwitchArg print2dArg("","print-2d","", cmd, false);
 
 	cmd.parse( argc, argv);
 	fit_dir = fitDirectoryArg.getValue();
@@ -54,6 +57,7 @@ try{
 	falsesearch = falsesearchArg.getValue();
 	flags = flagsArg.getValue();
 	print = verboseArg.getValue();
+	print2d = print2dArg.getValue();
 	event_range_set = eventRangeArg.isSet();
 	if ( event_range_set ){
 		event_range = eventRangeArg.getValue();
@@ -98,15 +102,16 @@ catch( TCLAP::ArgException& e )
 	vector<Particle> *pars = &originals->Particles;
 	vector<TrackRecon> *recons = &reconstructions->Recon;
 	for (unsigned ev = 0; ev < nentries; ++ev){
+		if (ev > event_range[1]) break;
+		if (ev < event_range[0]) continue;
 		if (print) cout << "Event = " << ev << endl;
 		t1->GetEntry(ev);
 		t2->GetEntry(ev);
-		if (ev > event_range[1]) break;
-		if (ev < event_range[0]) continue;
 		for (unsigned int p = 0; p < recons->size(); ++p){
 			Particle* P = &pars->at(p);
 			TrackRecon* R = &recons->at(p);
-			printfits(C, ev, p, *P, *R, fit_dir, flag_funcs, flags);
+			print1Dfits(C, ev, p, *P, *R, fit_dir, flag_funcs, flags);
+			if (print2d) print2DHists(C, ev, p, *P, *R, fit_dir, flag_funcs, flags);
 		}
 	}
 return 0;

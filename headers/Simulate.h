@@ -40,24 +40,20 @@ public:
 	void SetStart(double x, double y, double z){ coord[0] = x; coord[1]=y; coord[2]=z; }
 	void SetVec(double theta, double phi)
 		{ TVector3 v(sin(theta)*cos(phi), sin(theta)*sin(phi), cos(theta)); Vec = v; GetTheta(); GetPhi(); }
+	void SetVelocity(double v){ Vec.SetMag(v); }
 	void GetTheta(){Theta = Vec.Theta(); }
 	void GetPhi(){Phi = Vec.Phi(); }
 	void FlipX(){ Vec.SetX(-Vec.X()); GetTheta(); GetPhi(); }
 	void FlipY(){ Vec.SetY(-Vec.Y()); GetTheta(); GetPhi(); }
 	void FlipZ(){ Vec.SetZ(-Vec.Z()); GetTheta(); GetPhi(); }
 	void DistancetoWalls(bool print = false);
+	void OldWhichWall(bool print = false);
 	void WhichWall(bool print = false);
-	double WillTravel(){
-		return sqrt(
-	    Vec(0)*TimeToWall*Vec(0)*TimeToWall+
-	    Vec(1)*TimeToWall*Vec(1)*TimeToWall+
-	    Vec(2)*TimeToWall*Vec(2)*TimeToWall);
-	}
+	double WillTravel();
 	double TimeForDistance(double D, bool print = false);
 	void TravelDistance(double d, bool print = false);
 	void GotoWall(bool print = false);
 	void Reflect(bool print = false);
-	void SetVelocity(double v){ velocity_magnitude = v; }
 	void PrintVec();
 
 	double Distance[3];
@@ -68,7 +64,6 @@ public:
 	TVector3 Vec;
 	int Flag;
 	double time_traveled;
-	double velocity_magnitude;
 
 };
 

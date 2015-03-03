@@ -89,7 +89,8 @@ TGraphAsymmErrors graphASymm(TCanvas &c, double low, double hi, double nbins, ve
 	graph.BayesDivide(&NumHist, &DenHist);
 	graph.SetMarkerStyle(20);
 	graph.Draw("AP");
-	graph.GetYaxis()->SetRangeUser(0.,1.);
+	double max = graph.GetMaximum();
+	graph.GetYaxis()->SetRangeUser(0.,max);
 
 	return graph;
 }
