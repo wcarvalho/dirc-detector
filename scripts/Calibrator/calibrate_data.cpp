@@ -11,7 +11,7 @@ int main(int argc, char const *argv[])
   string graphFile;
   string outputDirectory;
 
-  int nbins;
+  int nbins = 200;
   double pStep;
 	double calibrationPercent = 0.;
 
