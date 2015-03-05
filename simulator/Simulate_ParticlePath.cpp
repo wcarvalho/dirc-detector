@@ -37,9 +37,6 @@ void Simulate_ParticlePath(Detector d, Particle &particle, int parnum, PhotonEve
 	print = false; //TEMPORARY
 	particle.nPhotonsPassed = photons_released;
 
-	vector<Photon> &numpho = photon_event.Photons;
-	int numPho0 = numpho.size();
-
 	for (unsigned int i = 0; i < photons_released; ++i)
 	{
 		simPar.SetStart(particle.X, particle.Y, 0);
@@ -53,7 +50,6 @@ void Simulate_ParticlePath(Detector d, Particle &particle, int parnum, PhotonEve
 		P.Z = simPar.coord[2];
 		P.WhichParticle = parnum;
 		photon_event.Photons.push_back(P);
-
 
 	}
 }

@@ -31,8 +31,10 @@ int main(int argc, char** argv){
 	event_range.push_back(-1);
 	event_range.push_back(-1);
 	vector< int > graph_choice;
-	bool calibrateSigma = true;		// add command line option when you make this a library
-	double calibrationPercent = 0.;		// add command line option when you make this a library
+	// vector < int > ptBounds {0, 3};
+	// double ptStep;
+	// bool calibrateSigma = true;		// add command line option when you make this a library
+	// double calibrationPercent = 0.;		// add command line option when you make this a library
 	int matchcondition_case = 0;
 
 TCLAP::CmdLine cmd("Command description message", ' ', "0.1");
@@ -42,7 +44,7 @@ try{
 
 	TCLAP::ValueArg<std::string> match_fakeDirectoryArg("M","match-fake-directory","Directory where graphs for match rates and fake rated will be stored",false,"graphs","string", cmd);
 
-	TCLAP::ValueArg<std::string> calibrationDirectoryArg("S","sigma-calibration-directory","Directory where graphs for sigma calibration will be stored",false,"calibration","string", cmd);
+	// TCLAP::ValueArg<std::string> calibrationDirectoryArg("S","sigma-calibration-directory","Directory where graphs for sigma calibration will be stored",false,"calibration","string", cmd);
 
 	TCLAP::ValueArg<std::string> reconstructileFileArg("r","reconstruction","file with reconstruction data",false,"reconstruction.root","string", cmd);
 
@@ -52,14 +54,18 @@ try{
 
 	TCLAP::ValueArg<std::string> falsePrefixArg("","false-prefix","prefix used for the fake-rate graph file names",false,"false","string", cmd);
 
-	TCLAP::ValueArg<std::string> calibrationPrefixArg("","calibration-prefix","prefix used for the calibratino graph file names",false,"","string", cmd);
+	// TCLAP::ValueArg<std::string> calibrationPrefixArg("","calibration-prefix","prefix used for the calibratino graph file names",false,"","string", cmd);
 	TCLAP::ValueArg<std::string> matchsearchArg("","match-search","particle which is being matched for",false,"electron","string", cmd);
 
 	TCLAP::ValueArg<std::string> falsesearchArg("","false-search","particle which is being used for the fake rate",false,"pion","string", cmd);
 
-	TCLAP::ValueArg<double> thresholdArg("t","threshold","value at which delta sigma values are cut",false, 1.5,"double", cmd);
+	TCLAP::ValueArg<double> thresholdArg("t","threshold","value at which delta sigma values are cut",false, 1,"double", cmd);
 
 	TCLAP::ValueArg<double> ptbinsArg("","ptbins","number of pt bins",false, 100,"double", cmd);
+
+	// TCLAP::MultiArg<int> ptBoundsArg("","pt-bounds","lower and upper bounds for pt",false,"int", cmd);
+
+	// TCLAP::ValueArg<double> ptBinArg("","pt-bin","pt bin size for calibration",false, .25, "int", cmd);
 
 	TCLAP::ValueArg<int> matchconditionArg("","match-condition","sets the method by which matches will be determined."
 		"\n\t\tcase 1: within_expectedphoton_threshold"
@@ -77,17 +83,17 @@ try{
 
 	TCLAP::MultiArg<int> graphsChoiceArg("c","graphs-choice","determines which graphs are drawn. 1: multiplicity, 2: momentum, 3: theta, 4: phi ", false, "double", cmd);
 
-	TCLAP::ValueArg<double> calibrationPercentArg("","calibration-percent","the desired acceptance for \"1 sigma\" in generating efficiency", false, .68, "double", cmd);
+	// TCLAP::ValueArg<double> calibrationPercentArg("","calibration-percent","the desired acceptance for \"1 sigma\" in generating efficiency", false, .68, "double", cmd);
 
 	cmd.parse( argc, argv );
 	// fit_dir = fitDirectoryArg.getValue();
 	graph_dir = match_fakeDirectoryArg.getValue();
-	calibration_dir = calibrationDirectoryArg.getValue();
+	// calibration_dir = calibrationDirectoryArg.getValue();
 	reconstructiondata = reconstructileFileArg.getValue();
 	cheatdata = particleFileArg.getValue();
 	matchgraph_filebase = matchPrefixArg.getValue();
 	falsegraph_filebase = falsePrefixArg.getValue();
-	calibrationgraph_filebase = calibrationPrefixArg.getValue();
+	// calibrationgraph_filebase = calibrationPrefixArg.getValue();
 	matchsearch = matchsearchArg.getValue();
 	falsesearch = falsesearchArg.getValue();
 	threshold = thresholdArg.getValue();
@@ -95,8 +101,10 @@ try{
 	print = verboseArg.getValue();
 	momentum_slices = momentum_slicesArg.getValue();
 	multiplicity_slices = multiplicity_slicesArg.getValue();
-	calibrationPercent = calibrationPercentArg.getValue();
+	// calibrationPercent = calibrationPercentArg.getValue();
 	matchcondition_case = matchconditionArg.getValue();
+	// ptBounds = ptBoundsArg.getValue();
+	// ptStep = ptBinArg.getValue();
 	// if ( eventRangeArg.isSet() ){
 	// 	event_range = eventRangeArg.getValue();
 	// 	if ( event_range.at(1) < event_range.at(0)){
@@ -144,25 +152,25 @@ catch( TCLAP::ArgException& e )
 	TTree *t2 = (TTree*)f2.Get("identifications");
 	t2 -> SetBranchAddress("guesses", &reconstructions);
 
-	TFile *f1prime = new TFile("temp1.root","recreate");
-  TTree *t1prime = t1->CloneTree(0);
-  TFile *f2prime = new TFile("temp2.root","recreate");
-  TTree *t2prime = t2->CloneTree(0);
+	// TFile *f1prime = new TFile("temp1.root","recreate");
+ //  TTree *t1prime = t1->CloneTree(0);
+ //  TFile *f2prime = new TFile("temp2.root","recreate");
+ //  TTree *t2prime = t2->CloneTree(0);
 
 	vector<Particle> *pars = &originals->Particles;
 	vector<TrackRecon> *recons = &reconstructions->Recon;
 
-	calibrationgraph_filebase = wul::appendStrings(calibration_dir, "/", calibrationgraph_filebase);
+	// calibrationgraph_filebase = wul::appendStrings(calibration_dir, "/", calibrationgraph_filebase);
 
 	int nentries = t1->GetEntries();
 	int firstevent = 0;
 
-	bool calibrated = std::find(graph_choice.begin(), graph_choice.end(), 0)!=graph_choice.end();
-	if (calibrated){
-		calibrateSigmas(C, *t1, *t2, *t1prime, *t2prime, *originals, *reconstructions, matchsearch, calibrationPercent, 100, calibrationgraph_filebase, firstevent, print);
-		matchgraph_filebase.append("_calibrated");
-		falsegraph_filebase.append("_calibrated");
-	}
+	// bool calibrated = std::find(graph_choice.begin(), graph_choice.end(), 0)!=graph_choice.end();
+	// if (calibrated){
+	// 	calibrateSigmas(C, *t1, *t2, *t1prime, *t2prime, *originals, *reconstructions, matchsearch, calibrationPercent, 100, calibrationgraph_filebase, firstevent, ptBounds, ptStep, print);
+	// 	matchgraph_filebase.append("_calibrated");
+	// 	falsegraph_filebase.append("_calibrated");
+	// }
 
 	std::vector <double> sigthetas;
 	std::vector <double> sigNPhotons;
@@ -179,7 +187,7 @@ catch( TCLAP::ArgException& e )
 	};
 	if (matchcondition_case == 5){
 		TrackRecon r; Particle p;
-		dirc::parseEvents(*t1prime, *t2prime, *originals, *reconstructions, 0, nentries, dirc::empty_eventparser, dirc::false_eventcondition, pullsigs, dirc::true_trialcondition, true);
+		dirc::parseEvents(*t1, *t2, *originals, *reconstructions, 0, nentries, dirc::empty_eventparser, dirc::false_eventcondition, pullsigs, dirc::true_trialcondition, true);
 		double x_0 = 0., y_0 = 0., a = 0., b = 0.;
 		fitElliptical(sigthetas, sigNPhotons, x_0, y_0, a, b);
 	}
@@ -197,15 +205,8 @@ catch( TCLAP::ArgException& e )
 	}
 
 	for (unsigned int ev = firstevent; ev < nentries; ++ev){
-		if(print) cout << "Event " << ev;
-		if (calibrated){
-			if (print) cout << " - calibrated";
-			t1prime->GetEntry(ev); t2prime->GetEntry(ev);
-		}
-		else {
-			t1->GetEntry(ev); t2->GetEntry(ev);
-		}
-		if(print) cout << endl;
+		if(print) cout << "Event " << ev << endl;
+		t1->GetEntry(ev); t2->GetEntry(ev);
 
 		int event_multiplicity = pars->size();
 		if (multiplicity_high < event_multiplicity)
@@ -268,10 +269,10 @@ catch( TCLAP::ArgException& e )
   f2.Close();
   f2.cd();
   f2.Close();
-  f1prime->cd();
-  f1prime->Close();
-  f2prime->cd();
-  f2prime->Close();
+  // f1prime->cd();
+  // f1prime->Close();
+  // f2prime->cd();
+  // f2prime->Close();
 	return 0;
 
 	vector< pair<int, pair <Particle, TrackRecon> > > numMatch_cut; numMatch_cut.clear();

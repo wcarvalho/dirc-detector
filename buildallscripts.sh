@@ -9,3 +9,5 @@ source buildplotfakevsefficiency.sh
 source buildprintfits.sh
 source buildprintphotondata.sh
 source buildphotontimesmearer.sh
+source buildlookupinfo.sh
+source buildcalibrator.sh
