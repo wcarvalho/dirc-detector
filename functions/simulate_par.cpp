@@ -175,5 +175,5 @@ void Simulate::WhichWall(bool print){
   if (print) cout << endl;
   wall = min_time_element + 1;
   TimeToWall = min_time;
-  if(print) cout << "\t\tWall = " << wall << "\n\n";
+  if(print) cout << "\t\tWall = " << wall << "\n";
 }

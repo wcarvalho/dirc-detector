@@ -13,13 +13,14 @@
 
 using namespace std;
 
-void calibrateSigmas(TCanvas &C, TTree &t1, TTree &t2, TTree &t1prime, TTree &t2prime, ParticleEvent &originals, TrackRecons& reconstructions, const std::string& particletype, double percent, int nbins, string const &prefix, int &startevent, bool print){
+void calibrateSigmas(TCanvas &C, TTree &t1, TTree &t2, TTree &t1prime, TTree &t2prime, ParticleEvent &originals, TrackRecons& reconstructions, const std::string& particletype, double percent, int nbins, string const &prefix, int &startevent, vector<int> pBounds_setting, double ptStep_setting, bool print){
 
+  double pStart = pBounds_setting.at(0);
+  double pEnd = pBounds_setting.at(1);
   double pBounds[2];
-  pBounds[0] = 0;
-  double pStepSize = .25;
+  pBounds[0] = pStart;
+  double pStepSize = ptStep_setting;
   pBounds[1] = pBounds[0] + pStepSize;
-  double pEnd = 3;
 
   auto parseConditon = [&pBounds](TrackRecon& r, Particle& p){
     return !( (p.pt < pBounds[0]) || (p.pt > pBounds[1]) );
@@ -120,15 +121,22 @@ void calibrateSigmas(TCanvas &C, TTree &t1, TTree &t2, TTree &t1prime, TTree &t2
     t1prime.Fill();
     t2prime.Fill();
   };
-  auto calibrate = [&sigmas, particletype, &pStepSize, &print](TrackRecon& recon, Particle& par){
+  auto calibrate = [&sigmas, particletype, &pStepSize, &pStart, &print](TrackRecon& recon, Particle& par){
     auto Round = [](const double &num, int by){ return (double)( (int)(num*by) )/by;};
 
     double pt = par.pt;
-    int index = Round(pt/pStepSize, 1);
+    int index = Round((pt-pStart)/pStepSize, 1);
     static double photons_center;
     static double theta_center;
-    photons_center = sigmas["photons"].at(index).first;
-    theta_center = sigmas["theta"].at(index).first;
+    try {
+      photons_center = sigmas["photons"].at(index).first;
+      theta_center = sigmas["theta"].at(index).first;
+    }
+    catch (const std::out_of_range& oor) {
+      cout << "pt = " << pt << endl;
+      cout << "index = " << index << "but size = " << sigmas["photons"].size() << endl;
+      std::cerr << "Out of Range error: " << oor.what() << '\n';
+    }
 
     static double photons_sigma;
     static double theta_sigma;

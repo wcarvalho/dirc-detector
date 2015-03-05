@@ -92,7 +92,8 @@ void CalculateParticleFits(std::pair<double, double> (*ExpectedNumberofPhotons)(
 		vector< double > &params = A.Recon.back().Params.back();				// vector to store parameters for efficiency analysis
 
 		double pi2 = TMath::Pi()/2;
-		double delSigTheta = (angle - params.at(1))/(smear);
+		double sigma_Theta = smear/(Sigma_N);
+		double delSigTheta = (angle - params.at(1))/(sigma_Theta);
 		double delSigA = (N-Area)/Sigma_N;
 		if (print) cout << "delSigA = " << delSigA << ", delSigTheta = " << delSigTheta << endl;
 		double delSigma = sqrt(delSigTheta*delSigTheta + delSigA*delSigA);

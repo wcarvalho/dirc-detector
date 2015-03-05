@@ -5,7 +5,7 @@
 
 void print2DHists(TCanvas &C, int Event, int par, Particle &P, TrackRecon &R, std::string const dir, flag_fun_map& fmap, const std::vector< int >& flags){
 
-	if (!passConditions(flags, fmap, P, R, 0)) return;
+	if (!passConditions(flags, fmap, P, R, 0, 1)) return;
 	std::stringstream ss; ss.str("");
 	ss << dir << "Event_" << std::setfill('0') <<std::setw(3) << Event << "_";
 	ss << "Particle_" << std::setfill('0') <<std::setw(3) << par << "_";

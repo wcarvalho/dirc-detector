@@ -3,11 +3,11 @@
 #include "utility_library.h"
 #include "TLatex.h"
 
-typedef std::unordered_map<int, bool(*)(const Particle&, const TrackRecon&, const int&)> flag_fun_map;
+typedef std::unordered_map<int, bool(*)(const Particle&, const TrackRecon&, const int&, const double&)> flag_fun_map;
 
 double pi = 3.14159265358979312;
 // prints histograms of fits
-void print1Dfits(TCanvas &C, int Event, int par, Particle &P, TrackRecon &R, std::string const dir, flag_fun_map& fmap, const std::vector< int >& flags, double threshold){
+void print1Dfits(TCanvas &C, int Event, int par, Particle &P, TrackRecon &R, std::string const dir, flag_fun_map& fmap, const std::vector< int >& flags, const double& threshold){
 	TH1D &h = R.Hist;
 
 	std::stringstream ss; ss.str("");
@@ -50,7 +50,7 @@ void print1Dfits(TCanvas &C, int Event, int par, Particle &P, TrackRecon &R, std
 		// 	printfit *= fmap[condition](P, R, i);
 		// }
 		// if (!printfit) continue;
-		if (!passConditions(flags, fmap, P, R, i)) continue;
+		if (!passConditions(flags, fmap, P, R, i, threshold)) continue;
 
 		//------------------------------
 		// expectedangle_func.SetParameter(0, expected_angle);
