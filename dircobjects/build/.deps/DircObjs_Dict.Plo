@@ -227,6 +227,7 @@ DircObjs_Dict.lo: DircObjs_Dict.cpp \
   /Users/wilkacarvalho/myapps/include/root/TPoint.h \
   /Users/wilkacarvalho/myapps/include/root/TAttCanvas.h \
   /Users/wilkacarvalho/myapps/include/root/TCanvasImp.h \
+  ../calibration_data.h \
   /Users/wilkacarvalho/myapps/include/root/TCollectionProxyInfo.h \
   /Users/wilkacarvalho/myapps/include/root/TInterpreter.h \
   /Users/wilkacarvalho/myapps/include/root/TVirtualMutex.h \
@@ -828,6 +829,8 @@ DircObjs_Dict.h:
 /Users/wilkacarvalho/myapps/include/root/TAttCanvas.h:
 
 /Users/wilkacarvalho/myapps/include/root/TCanvasImp.h:
+
+../calibration_data.h:
 
 /Users/wilkacarvalho/myapps/include/root/TCollectionProxyInfo.h:
 

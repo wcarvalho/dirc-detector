@@ -88,8 +88,8 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-build_triplet = x86_64-apple-darwin14.0.0
-host_triplet = x86_64-apple-darwin14.0.0
+build_triplet = x86_64-apple-darwin14.1.0
+host_triplet = x86_64-apple-darwin14.1.0
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -236,13 +236,13 @@ distuninstallcheck_listfiles = find . -type f -print
 am__distuninstallcheck_listfiles = $(distuninstallcheck_listfiles) \
   | sed 's|^\./|$(prefix)/|' | grep -v '$(infodir)/dir$$'
 distcleancheck_listfiles = find . -type f -print
-ACLOCAL = ${SHELL} /Users/wilkacarvalho/Google/programming/nuclear/particle-detector/dircobjects/config/missing aclocal-1.15
+ACLOCAL = ${SHELL} /Users/wilkacarvalho/projects/dirc/dircobjects/config/missing aclocal-1.15
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 1
 AR = ar
-AUTOCONF = ${SHELL} /Users/wilkacarvalho/Google/programming/nuclear/particle-detector/dircobjects/config/missing autoconf
-AUTOHEADER = ${SHELL} /Users/wilkacarvalho/Google/programming/nuclear/particle-detector/dircobjects/config/missing autoheader
-AUTOMAKE = ${SHELL} /Users/wilkacarvalho/Google/programming/nuclear/particle-detector/dircobjects/config/missing automake-1.15
+AUTOCONF = ${SHELL} /Users/wilkacarvalho/projects/dirc/dircobjects/config/missing autoconf
+AUTOHEADER = ${SHELL} /Users/wilkacarvalho/projects/dirc/dircobjects/config/missing autoheader
+AUTOMAKE = ${SHELL} /Users/wilkacarvalho/projects/dirc/dircobjects/config/missing automake-1.15
 AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
@@ -281,7 +281,8 @@ LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LIPO = lipo
 LN_S = ln -s
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /Users/wilkacarvalho/Google/programming/nuclear/particle-detector/dircobjects/config/missing makeinfo
+LT_SYS_LIBRARY_PATH = 
+MAKEINFO = ${SHELL} /Users/wilkacarvalho/projects/dirc/dircobjects/config/missing makeinfo
 MANIFEST_TOOL = :
 MKDIR_P = ../config/install-sh -c -d
 NEWTON_LIB = -L/Users/wilkacarvalho/libraries/libseamstress/lib -L/Users/wilkacarvalho/libraries/fitnewton/lib -lFitNewton -lSeamstress 
@@ -312,10 +313,10 @@ UTIL_LIB = -L/Users/wilkacarvalho/libraries/lib -lwilkasUtilityLib
 VERSION = 0.0.1
 WilkasUtilityLib_CFLAGS = -I/Users/wilkacarvalho/libraries/include 
 WilkasUtilityLib_LIBS = -L/Users/wilkacarvalho/libraries/lib -lwilkasUtilityLib 
-abs_builddir = /Users/wilkacarvalho/Google/programming/nuclear/particle-detector/dircobjects/build
-abs_srcdir = /Users/wilkacarvalho/Google/programming/nuclear/particle-detector/dircobjects/build/..
-abs_top_builddir = /Users/wilkacarvalho/Google/programming/nuclear/particle-detector/dircobjects/build
-abs_top_srcdir = /Users/wilkacarvalho/Google/programming/nuclear/particle-detector/dircobjects/build/..
+abs_builddir = /Users/wilkacarvalho/projects/dirc/dircobjects/build
+abs_srcdir = /Users/wilkacarvalho/projects/dirc/dircobjects/build/..
+abs_top_builddir = /Users/wilkacarvalho/projects/dirc/dircobjects/build
+abs_top_srcdir = /Users/wilkacarvalho/projects/dirc/dircobjects/build/..
 ac_ct_AR = ar
 ac_ct_CC = gcc
 ac_ct_CXX = g++
@@ -326,10 +327,10 @@ am__quote =
 am__tar = $${TAR-tar} chof - "$$tardir"
 am__untar = $${TAR-tar} xf -
 bindir = ${exec_prefix}/bin
-build = x86_64-apple-darwin14.0.0
+build = x86_64-apple-darwin14.1.0
 build_alias = 
 build_cpu = x86_64
-build_os = darwin14.0.0
+build_os = darwin14.1.0
 build_vendor = apple
 builddir = .
 datadir = ${datarootdir}
@@ -337,15 +338,15 @@ datarootdir = ${prefix}/share
 docdir = ${datarootdir}/doc/${PACKAGE_TARNAME}
 dvidir = ${docdir}
 exec_prefix = ${prefix}
-host = x86_64-apple-darwin14.0.0
+host = x86_64-apple-darwin14.1.0
 host_alias = 
 host_cpu = x86_64
-host_os = darwin14.0.0
+host_os = darwin14.1.0
 host_vendor = apple
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /Users/wilkacarvalho/Google/programming/nuclear/particle-detector/dircobjects/config/install-sh
+install_sh = ${SHELL} /Users/wilkacarvalho/projects/dirc/dircobjects/config/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -374,7 +375,8 @@ include_HEADERS = \
 	photon_objects.h \
 	analysis_objects.h \
 	event_parsers.h \
-	dircTH1D.h
+	dircTH1D.h \
+	calibration_data.h
 
 libDircObjs_la_SOURCES = \
 	analysis.cpp \
@@ -915,6 +917,7 @@ uninstall-am: uninstall-includeHEADERS uninstall-libLTLIBRARIES \
 
 DircObjs_Dict.cpp: \
 	dirc_objects.h \
+	calibration_data.h \
 	LinkDef.h
 		rootcint -f $@ -c $(DEFAULT_INCLUDES) $(INCLUDES) $^
 

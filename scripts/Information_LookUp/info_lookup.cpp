@@ -14,7 +14,7 @@
 using namespace std;
 
 void parse_answer(const string& answer, int& event, int& particle, string& reconstruction);
-void print_data(TTree& t1, TTree& t2, vector<Particle>& pars, const vector<TrackRecon>& recons, const int& event, const int& particle, const string& reconstruction);
+void print_data(TTree& t1, TTree& t2, vector<Particle>& pars, vector<TrackRecon>& recons, const int& event, const int& particle, const string& reconstruction);
 
 int main(int argc, char const *argv[])
 {
@@ -90,7 +90,7 @@ void parse_answer(const string& answer, int& event, int& particle, string& recon
 	skip(ss, ','); skip(ss, ' ');
 }
 
-void print_data(TTree& t1, TTree& t2, vector<Particle>& pars, const vector<TrackRecon>& recons, const int& event, const int& particle, const string& reconstruction){
+void print_data(TTree& t1, TTree& t2, vector<Particle>& pars, vector<TrackRecon>& recons, const int& event, const int& particle, const string& reconstruction){
 
 	t1.GetEntry(event);
 	t2.GetEntry(event);
@@ -98,6 +98,10 @@ void print_data(TTree& t1, TTree& t2, vector<Particle>& pars, const vector<Track
 	Particle* par = 0;
 	const TrackRecon *recon = 0;
 	try{
+		int nsize = pars.size();
+		dirc::matchDataSize(t1, t2, recons, pars, false);
+		int ndif = nsize - pars.size();
+		if (ndif >0 ) cout << "warning, index shifted by " << ndif << endl;
 		par = &pars.at(particle);
 		recon = &recons.at(particle);
 	}
@@ -111,6 +115,7 @@ void print_data(TTree& t1, TTree& t2, vector<Particle>& pars, const vector<Track
 	cout << "particle = " << particle << "\t";
 	cout << "reconstruction = " << reconstruction << endl;
 
+  cout << "particle type = " << par->name << "\n";
   cout << "Eta = " << par->Eta << "\n";
   cout << "pt = " << par->pt << "\n";
   cout << "Momentum = " << par->CalculateMomentum() << "\n\n";
@@ -136,7 +141,14 @@ void print_data(TTree& t1, TTree& t2, vector<Particle>& pars, const vector<Track
 	  case 3: cout << "Z\n"; break;
   }
   cout << endl;
-	int reconpos = std::find(recon->Options.begin(), recon->Options.end(), reconstruction)!=recon->Options.end();
+  int reconpos;
+  for (unsigned i = 0; i < recon->Options.size(); ++i)
+  	if (recon->Options.at(i) == reconstruction){
+  		reconpos = i;
+  		break;
+  	}
+
+	// int reconpos = std::find(recon->Options.begin(), recon->Options.end(), reconstruction)!=recon->Options.end();
 
   cout << "Expected Number of Photons: ";
   cout << "calculated = " << std::setfill(' ') <<std::setw(10) << recon->ExpectedNumber.at(reconpos) << endl;

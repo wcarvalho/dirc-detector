@@ -22,11 +22,27 @@ bool inside_circle(const Particle& P, const TrackRecon& R, const int& rec_i, con
 	return ( sqrt(square) < 2*sqrt(threshold));
 }
 
+bool xyplane(const Particle& P, const TrackRecon& R, const int& rec_i, const double& threshold){
+	bool in_xyplane = false;
+	// FIXME: hardcoded d. have this as read me. can boost detector in or boost in values
+	static Detector d;
+	static Simulate SimPar(0,0);
+	SimPar.SetAngle(P.Theta, P.Phi);
+	SimPar.SetDim(d.Length, d.Width, d.Height);
+	SimPar.SetStart(P.X, P.Y, 0);
+	SimPar.DistancetoWalls();
+	SimPar.WhichWall();
+	int wall = SimPar.wall;
+	if (wall == 3) return true;
+	else return false;
+}
+
 bool inside_box_xyplane(const Particle& P, const TrackRecon& R, const int& rec_i, const double& threshold){
 	bool in_xyplane = false;
 	// FIXME: hardcoded d. have this as read me. can boost detector in or boost in values
 	static Detector d;
-	Simulate SimPar(P.Theta, P.Phi);
+	static Simulate SimPar(0,0);
+	SimPar.SetAngle(P.Theta, P.Phi);
 	SimPar.SetDim(d.Length, d.Width, d.Height);
 	SimPar.SetStart(P.X, P.Y, 0);
 	SimPar.DistancetoWalls();
@@ -39,7 +55,6 @@ bool inside_box_xyplane(const Particle& P, const TrackRecon& R, const int& rec_i
 	}
 	else return false;
 }
-
 //FIXME: boost inside_ellipse so that it
 // bool inside_ellipse(const Particle& P, const TrackRecon& R, const int& rec_i, const double& threshold, const double& x1, const double& x2, const double& y1, const double& y2, const double& b)
 // {
@@ -48,3 +63,12 @@ bool inside_box_xyplane(const Particle& P, const TrackRecon& R, const int& rec_i
 // 	return inside_ellipse;
 // }
 
+bool passed_conditions(const Particle& P, const TrackRecon& R, const int& rec_i, const double& threshold,
+	std::unordered_map<int, bool(*)(const Particle&, const TrackRecon&, const int&, const double&)>& func_map, vector<int>& conditions){
+	static bool passed;
+	passed = true;
+	for(auto i: conditions){
+		passed *= func_map[i](P, R, rec_i, threshold);
+	}
+	return passed;
+}

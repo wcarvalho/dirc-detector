@@ -1,18 +1,10 @@
 AUTOMAKE_OPTIONS = subdir-objects
 
-bin_PROGRAMS = simulator
-
-include_HEADERS = ../headers/simulator.h \
-../headers/functions.h \
-../headers/Parameters.h \
-../headers/file-properties.h
-
-simulator_LDADD = \
+commonAdds = \
 $(ROOT_LIBS) \
 $(DIRC_LIB)
 
-simulator_SOURCES = \
-	main.cpp \
+commonSources = \
 	cmdline.cpp \
 	find_critical_angle.cpp \
 	PushBack_ParticleEvent.cpp \
@@ -76,6 +68,26 @@ simulator_SOURCES = \
 	../functions/returnEnd.cpp \
 	../functions/addtoFile.cpp \
 	../functions/file-properties.cpp
+
+include_HEADERS = ../headers/simulator.h \
+../headers/functions.h \
+../headers/Parameters.h \
+../headers/Simulate.h \
+../headers/file-properties.h
+
+lib_LTLIBRARIES = libSimObjs.la
+libSimObjs_la_SOURCES = $(commonSources)
+libSimObjs_la_LIBADD = $(commonAdds)
+libSimObjs_la_LDFLAGS = -version-info 1:0:0
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = SimObjs.pc
+
+bin_PROGRAMS = simulator
+simulator_SOURCES = main.cpp
+simulator_LDADD = libSimObjs.la
+simulator_CFLAGS = $(AM_CFLAGS)
+
 
 cmdline.c: sim-cmd.ggo
   gengetopt --input=sim-cmd.ggo --include-getopt

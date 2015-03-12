@@ -11,7 +11,7 @@
 
 int main(int argc, char** argv)
 {
-	gengetopt_args_info ai;  
+	gengetopt_args_info ai;
 	if (cmdline_parser (argc, argv, &ai) != 0){ exit(1); }
 	int input = ai.random_given;
 
@@ -33,15 +33,16 @@ int main(int argc, char** argv)
 	bool write = !ai.file_write_off_given;
 	Detector *d = 0;
 	ParticleEvent *ParEvent = 0;
-	PhotonEvent photon_event; photon_event.Photons.clear();
+	PhotonEvent photon_event;
 	GeneratorOut *event_output = 0;
 	GeneratorOut *event_outputCopy = 0;
-  
+
   Displayer Output;
 	Rotater r;
 	FileProperties &f = readf_prop;
 
 	if(ai.writefile_given) writef = ai.writefile_arg;
+	if(ai.cheatfile_given) writef2 = ai.cheatfile_arg;
 
 	if(ai.Directory_given) {
 		string temp_dir = ai.Directory_arg;
@@ -51,8 +52,9 @@ int main(int argc, char** argv)
 
 	f.appendFileToDirectory(directory, writef);
 	FileProperties writef_prop(writef);
-	f.appendFileToDirectory(writef_prop.directory, writef2);
-	
+	f.appendFileToDirectory(directory, writef2);
+
+
 	if(ai.smear_given) smear = ai.smear_arg;
 
 	if (Append){
@@ -64,10 +66,10 @@ int main(int argc, char** argv)
 
 	TFile* non_cheatCopy = 0;
 	TFile* cheatCopy = 0;
-	
+
 	TTree* non_cheatCopyTree = 0;
 	TTree* cheatCopyTree = 0;
-	
+
 	ParticleEvent* ParEventCopy = 0;
 
 	if (Append){
@@ -96,7 +98,7 @@ int main(int argc, char** argv)
 	TFile wf2(writef2.c_str(), status.c_str());
 	TTree cheat_info("cheat_info", "all information for event");
 	cheat_info.Branch("Particle Event", &ParEvent);
-	cheat_info.Branch("simEvent", &event_output);
+	cheat_info.Branch("Photon Event", &photon_event);
 	cheat_info.Branch("detector", &d);
 
 
@@ -111,7 +113,7 @@ int main(int argc, char** argv)
 	double *par_theta, *par_phi;
 	double *pho_theta, *pho_phi;
 	//____________________________________________
-	
+
 	// merge old and new ParticleEvent
 	if (Append){
 		for (unsigned int i = 0; i < pars->size(); ++i)
@@ -159,7 +161,6 @@ int main(int argc, char** argv)
 
 
 		double totalphotons = photon_event.Photons.size();
-		if (print) cout << "\t\tTotal photons = " << totalphotons << endl;
 		for (int i = 0; i < photon_event.Photons.size(); i++)
 		{
 			Simulate_PhotonPath(*d, photon_event.Photons[i], smear, print);
@@ -194,6 +195,6 @@ int main(int argc, char** argv)
   rf.cd();
   rf.Close();
   if(!quiet) cout << "file: " << writef << endl;
-  
+
   return 0;
 }

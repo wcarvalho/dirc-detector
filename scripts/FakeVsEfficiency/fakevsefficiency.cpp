@@ -1,110 +1,172 @@
-#include <tclap/CmdLine.h>
-#include "TObject.h"
+#include <vector>
+#include <string>
+#include <iostream>
+#include <unordered_map>
+#include <map>
+#include <fstream>
 #include "TFile.h"
-#include "TGraphAsymmErrors.h"
-#include "TAxis.h"
 #include "FileProperties.h"
-#include "utility_library.h"
+#include "TGraphAsymmErrors.h"
 #include "TCanvas.h"
+#include "TLegend.h"
+#include "TAxis.h"
+#include "TKey.h"
+#include <sstream>
+#include <tclap/CmdLine.h>
 
 using namespace std;
+
+typedef vector<pair <double,double> > xy_t;
+typedef unordered_map<double, xy_t > data_t;
+typedef map<double, xy_t > ordered_data_t;
+
+void stringsIntoVector(string file, vector<string> &v);
 void checkValid(const TFile& f);
+string getGraphName(string& file);
+void getGraph(string& file, TGraphAsymmErrors*& Plot);
+void extractGraphData(TGraphAsymmErrors matches, TGraphAsymmErrors fakes,data_t& data);
+void MakeGraph(const double& pt, const xy_t& xy, int graphnumber, TGraph*& g);
 
 int main(int argc, char const *argv[])
 {
 
-string efficiencyFile = "";
-string fakerateFile = "";
-string outputFile = "";
-bool print = false;
-
-
+string matchfile;
+string fakefile;
+string outputfile;
+bool print;
 TCLAP::CmdLine cmd("Command description message", ' ', "0.1");
 try{
-
-	TCLAP::ValueArg<std::string> efficiencyFileArg("e","efficiency-file","File with efficiency plot data",true,"efficiency.root","string", cmd);
-	TCLAP::ValueArg<std::string> fakerateFileArg("f","fakerate-file","File with fakerate plot data",true,"fakerate.root","string", cmd);
-
-	TCLAP::ValueArg<std::string> outputFileArg("o","output-file","File with output plot data",false,"efficiencyfakerate.root","string", cmd);
+	TCLAP::ValueArg<std::string> matchFileArg("m","match-file","text file with list of matches",true,"matches.txt","string", cmd);
+	TCLAP::ValueArg<std::string> fakeFileArg("f","fake","text file with list of fakes",true,"fakes.txt","string", cmd);
+	TCLAP::ValueArg<std::string> outputFileArg("o","output","filename of graph to be printed (will be root file)",true,"fakevseff.root","string", cmd);
 
 	TCLAP::SwitchArg verboseArg("v","verbose","", cmd, false);
 
-	cmd.parse( argc, argv );
-	efficiencyFile = efficiencyFileArg.getValue();
-	fakerateFile = fakerateFileArg.getValue();
-	outputFile = outputFileArg.getValue();
+	cmd.parse( argc, argv);
+	matchfile = matchFileArg.getValue();
+	fakefile = fakeFileArg.getValue();
+	outputfile = outputFileArg.getValue();
 	print = verboseArg.isSet();
-
 }
 catch( TCLAP::ArgException& e )
 { cout << "ERROR: " << e.error() << " " << e.argId() << endl; }
+	vector<string> fakes;
+	stringsIntoVector(fakefile, fakes);
 
-	wul::FileProperties effProp(efficiencyFile);
-	wul::FileProperties fakeProp(fakerateFile);
-	wul::FileProperties outputProp(outputFile);
+	vector<string> matches;
+	stringsIntoVector(matchfile, matches);
 
-	std::string efficiencyPlotName = effProp.get_filename_without_suffix().c_str();
-	std::string fakeratePlotName = fakeProp.get_filename_without_suffix().c_str();
-	std::string outputPlotName = outputProp.get_filename_without_suffix().c_str();
-	std::string outputPlotPath = outputProp.get_path_without_suffix().c_str();
+	data_t data;
 
+	TGraphAsymmErrors* matchPlot;
+	TGraphAsymmErrors* fakePlot;
 
-	TFile efficiencyTFile(efficiencyFile.c_str());
-	checkValid(efficiencyTFile);
-	TGraphAsymmErrors* efficiencyPlot = (TGraphAsymmErrors*)efficiencyTFile.Get(efficiencyPlotName.c_str());
-
-	TFile fakerateTFile(fakerateFile.c_str());
-	checkValid(fakerateTFile);
-	TGraphAsymmErrors* fakeratePlot = (TGraphAsymmErrors*)fakerateTFile.Get(fakeratePlotName.c_str());
-
-	int npoints = efficiencyPlot->GetN();
-
-	TGraphAsymmErrors g(npoints);
-	g.SetName(outputPlotName.c_str());
-
-	for (unsigned int i = 0; i < npoints; ++i){
-		static double effx = 0., effy = 0.;
-		static double fakex = 0., fakey = 0.;
-		static double exl = 0., exh = 0., eyl = 0., eyh = 0.;
-
-		efficiencyPlot->GetPoint(i, effx, effy);
-		fakeratePlot->GetPoint(i, fakex, fakey);
-
-		exl = efficiencyPlot->GetErrorYlow(i);
-		exh = efficiencyPlot->GetErrorYhigh(i);
-		eyl = fakeratePlot->GetErrorYlow(i);
-		eyh = fakeratePlot->GetErrorYhigh(i);
-
-		g.SetPoint(i, effy, fakey);
-		g.SetPointError(i, exl, exh, eyl, eyh);
+	for (unsigned i = 0; i < matches.size(); ++i){
+		getGraph(matches.at(i), matchPlot);
+		getGraph(fakes.at(i), fakePlot);
+		extractGraphData(*matchPlot, *fakePlot, data);
 	}
 
-	// TFile outputTFile(outputFile.c_str(), "recreate");
+	ordered_data_t ordered_data(data.begin(), data.end());
 	TCanvas C("C", "C", 1000, 600);
 	C.SetGrid();
-	g.SetMarkerStyle(20);
-	g.SetMarkerSize(2);
+	TLegend L(0.1,0.5,0.2,0.9, "pt");
+	L.SetTextSize(.025);
+	vector < TGraph* > graphs;
+	int count = 0;
+	TGraph g;
+	g.SetPoint(0, 0, 0);
+	g.SetPoint(1, 1, .8);
+	g.SetTitle("Fake Rate vs. Efficiency");
+	g.GetXaxis()->SetTitle("Efficiency (electrons identified as electrons)");
+	g.GetYaxis()->SetTitle("Fake Rate (pions identified as electrons)");
 	g.Draw("AP");
-	g.SetTitle("FakeRate vs. Efficiency");
-	g.GetXaxis()->SetTitle("Efficiency (number of electrons identified as electrons)");
-	g.GetYaxis()->SetTitle("FakeRate (number of pions identified as electrons)");
-	// g.SetDrawOption("AP");
-	// g.Paint("AP");
-	g.SaveAs(outputFile.c_str(), "AP");
-	C.Print(outputPlotPath.append(".pdf").c_str());
-	// outputTFile.cd();
-	// outputTFile.Close();
+	TGraph *G = 0;
+	for (auto i = ordered_data.begin(); i != ordered_data.end(); ++i){
+		const double& pt = i->first;
+		xy_t& xy = i->second;
 
-	efficiencyTFile.cd();
-	efficiencyTFile.Close();
+		G = new TGraph();
+		MakeGraph(pt, xy, count, G);
+		graphs.push_back(std::move(G));
+		graphs.back()->Draw("LP");
+		stringstream ss; ss.str("");
+		ss << pt;
+	 	L.AddEntry(graphs.back(),ss.str().c_str(),"lp");
+		++count;
+	}
 
-	fakerateTFile.cd();
-	fakerateTFile.Close();
+	L.Draw();
+	C.Print(outputfile.c_str());
+
+	delete G;
+
 }
 
+void stringsIntoVector(string file, vector<string> &v){
+	ifstream f(file.c_str());
+	if (!(f.good())){	cout << "bad file!\n"; exit(1); }
+	static string s;
+	while (f.good()){
+		f >> s;
+		if (!(f.good())) break;
+		v.push_back(s);
+		s.clear();
+	}
+}
 void checkValid(const TFile& f){
 	if (!(f.IsOpen())) {
 		cout << f.GetName() << " invalid!\n";
 		exit(1);
 	}
+}
+string getGraphName(string& file){
+	wul::FileProperties fp(file);
+	return std::move(fp.get_filename_without_suffix());
+}
+void getGraph(string& file, TGraphAsymmErrors*& Plot){
+	TFile f(file.c_str()); checkValid(f);
+	TIter nextkey(f.GetListOfKeys());
+	TKey *key = (TKey*)nextkey();
+	Plot = (TGraphAsymmErrors*)key->ReadObj();
+}
+void extractGraphData(TGraphAsymmErrors matches, TGraphAsymmErrors fakes,data_t& data){
+
+	int npoints = matches.GetN();
+	if (matches.GetN() != fakes.GetN()){ cout << "incompatible\n"; exit(1); }
+
+	for (unsigned i = 0; i < npoints; ++i){
+		static double effx = 0., effy = 0.;
+		static double fakex = 0., fakey = 0.;
+
+		matches.GetPoint(i, effx, effy);
+		fakes.GetPoint(i, fakex, fakey);
+		double &pt = effx;
+
+		pair<double,double> FE(effy,fakey);
+		data[pt].push_back(FE);
+		// cout << pt << ": x = " << effy << ", y = " << fakey << endl;
+	}
+}
+
+void MakeGraph(const double& pt, const xy_t& xy, int graphnumber, TGraph*& g){
+
+	stringstream ss; ss.str("");
+	ss << "pt=" << pt;
+	g->SetName(ss.str().c_str());
+
+	for (unsigned i = 0; i < xy.size(); ++i){
+		const double&x = xy.at(i).first;
+		const double&y = xy.at(i).second;
+		g->SetPoint(i, x, y);
+	}
+	g->SetMarkerStyle(22);
+	// g->SetMarkerSize(1);
+	int markercolor = 30+2*(graphnumber)+1;
+	g->SetMarkerColor(markercolor);
+	g->SetLineColor(markercolor);
+
+	TFile f("graphs.root", "update");
+	g->Write();
+	f.Close();
 }

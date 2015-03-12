@@ -1,3 +1,6 @@
+#include <set>
+#include <unordered_map>
+
 #include "event_parsers.h"
 #include "fitElliptical.h"
 #include "efficiency.h"
@@ -5,7 +8,7 @@
 // #include "printFits.h"
 #include "removeEdgeCutters.h"
 #include "efficiencyfake_plots.h"
-#include "calibrateSigmas.h"
+// #include "calibrateSigmas.h"
 #include "../scripts.h"
 #include <tclap/CmdLine.h>
 
@@ -31,6 +34,7 @@ int main(int argc, char** argv){
 	event_range.push_back(-1);
 	event_range.push_back(-1);
 	vector< int > graph_choice;
+	vector<int> graph_types;
 	// vector < int > ptBounds {0, 3};
 	// double ptStep;
 	// bool calibrateSigma = true;		// add command line option when you make this a library
@@ -63,6 +67,7 @@ try{
 
 	TCLAP::ValueArg<double> ptbinsArg("","ptbins","number of pt bins",false, 100,"double", cmd);
 
+
 	// TCLAP::MultiArg<int> ptBoundsArg("","pt-bounds","lower and upper bounds for pt",false,"int", cmd);
 
 	// TCLAP::ValueArg<double> ptBinArg("","pt-bin","pt bin size for calibration",false, .25, "int", cmd);
@@ -81,7 +86,9 @@ try{
 
 	// TCLAP::MultiArg<int> eventRangeArg("e","event-range","events for which you want to print fits", false, "double", cmd);
 
-	TCLAP::MultiArg<int> graphsChoiceArg("c","graphs-choice","determines which graphs are drawn. 1: multiplicity, 2: momentum, 3: theta, 4: phi ", false, "double", cmd);
+	TCLAP::MultiArg<int> graphsChoiceArg("c","graphs-choice","determines which graphs are drawn. 1: multiplicity, 2: momentum, 3: theta, 4: phi ", false, "int", cmd);
+
+	TCLAP::MultiArg<int> graphTypeArg("g","graph-type","determines what graph files are written. 1: root, 2: pdf", true, "int", cmd);
 
 	// TCLAP::ValueArg<double> calibrationPercentArg("","calibration-percent","the desired acceptance for \"1 sigma\" in generating efficiency", false, .68, "double", cmd);
 
@@ -115,6 +122,8 @@ try{
 	if ( graphsChoiceArg.isSet() )
 		graph_choice = graphsChoiceArg.getValue();
 
+	graph_types = graphTypeArg.getValue();
+
 
 }
 catch( TCLAP::ArgException& e )
@@ -130,10 +139,6 @@ catch( TCLAP::ArgException& e )
 	vector< vector< double > > momentum = filearray(momentum_slices);
 	vector< vector< double > > multiplicity = filearray(multiplicity_slices);
 
-	vector< pair<int, pair <Particle, TrackRecon> > > numMatch; numMatch.clear();
-	vector< pair<int, pair <Particle, TrackRecon> > > denMatch; denMatch.clear();
-	vector< pair<int, pair <Particle, TrackRecon> > > numFalse; numFalse.clear();
-	vector< pair<int, pair <Particle, TrackRecon> > > denFalse; denFalse.clear();
 
 
 	ParticleEvent *originals = 0;
@@ -174,7 +179,7 @@ catch( TCLAP::ArgException& e )
 
 	std::vector <double> sigthetas;
 	std::vector <double> sigNPhotons;
-	auto pullsigs = [&sigthetas, &sigNPhotons, &matchsearch](TrackRecon& recon, Particle& par){
+	auto pullsigs = [&sigthetas, &sigNPhotons, &matchsearch](TrackRecon& recon, Particle& par, bool print){
 		double sigtheta = 0.;
 		double sigNPhoton = 0.;
 		for (unsigned int j = 0; j < recon.Options.size(); ++j){
@@ -187,7 +192,8 @@ catch( TCLAP::ArgException& e )
 	};
 	if (matchcondition_case == 5){
 		TrackRecon r; Particle p;
-		dirc::parseEvents(*t1, *t2, *originals, *reconstructions, 0, nentries, dirc::empty_eventparser, dirc::false_eventcondition, pullsigs, dirc::true_trialcondition, true);
+		dirc::parseTrials(*t1, *t2, *originals, *reconstructions, 0, nentries,
+			pullsigs, dirc::true_trialcondition, false);
 		double x_0 = 0., y_0 = 0., a = 0., b = 0.;
 		fitElliptical(sigthetas, sigNPhotons, x_0, y_0, a, b);
 	}
@@ -204,6 +210,10 @@ catch( TCLAP::ArgException& e )
 		case 4: matchcondition = &inside_circle; break;
 	}
 
+	vector< pair<int, pair <Particle, TrackRecon> > > numMatch; numMatch.reserve(nentries);
+	vector< pair<int, pair <Particle, TrackRecon> > > denMatch; denMatch.reserve(nentries);
+	vector< pair<int, pair <Particle, TrackRecon> > > numFalse; numFalse.reserve(nentries);
+	vector< pair<int, pair <Particle, TrackRecon> > > denFalse; denFalse.reserve(nentries);
 	for (unsigned int ev = firstevent; ev < nentries; ++ev){
 		if(print) cout << "Event " << ev << endl;
 		t1->GetEntry(ev); t2->GetEntry(ev);
@@ -245,22 +255,22 @@ catch( TCLAP::ArgException& e )
 
 	if (std::find(graph_choice.begin(), graph_choice.end(), 1)!=graph_choice.end()){
 		if (print) cout << "Making vs. Multiplicity Plots\n";
-		makePlots(C, momentum, "multiplicity", "momentum", "", graph_dir, matchgraph_filebase, falsegraph_filebase, multiplicity_bin_low, multiplicity_bin_hi, multiplicity_bins, numMatch, denMatch, numFalse, denFalse, 1, filenumber, print);
+		makePlots(C, momentum, "multiplicity", "momentum", "", graph_dir, matchgraph_filebase, falsegraph_filebase, multiplicity_bin_low, multiplicity_bin_hi, multiplicity_bins, numMatch, denMatch, numFalse, denFalse, 1, filenumber, graph_types, print);
 	}
 
 	if (std::find(graph_choice.begin(), graph_choice.end(), 2)!=graph_choice.end()){
 		if (print) cout << "Making vs. Momentum Plots\n";
-		makePlots(C, multiplicity, "momentum", "multiplicity", "", graph_dir, matchgraph_filebase, falsegraph_filebase, momentum[0][0], momentum.back().back(), nptBins, numMatch, denMatch, numFalse, denFalse, 2, filenumber, print);
+		makePlots(C, multiplicity, "momentum", "multiplicity", "", graph_dir, matchgraph_filebase, falsegraph_filebase, momentum[0][0], momentum.back().back(), nptBins, numMatch, denMatch, numFalse, denFalse, 2, filenumber, graph_types, print);
 	}
 
 	if (std::find(graph_choice.begin(), graph_choice.end(), 3)!=graph_choice.end()){
 		if (print) cout << "Making vs. Incident Angle Plots\n";
-		makePlots(C, momentum, "incident_theta", "pt", "", graph_dir, matchgraph_filebase, falsegraph_filebase, 0, pi/2, 100, numMatch, denMatch, numFalse, denFalse, 3, filenumber, print);
+		makePlots(C, momentum, "incident_theta", "pt", "", graph_dir, matchgraph_filebase, falsegraph_filebase, 0, pi/2, 100, numMatch, denMatch, numFalse, denFalse, 3, filenumber, graph_types, print);
 	}
 
 	if (std::find(graph_choice.begin(), graph_choice.end(), 4)!=graph_choice.end()){
 		if (print) cout << "Making vs. Incident Angle Plots\n";
-		makePlots(C, momentum, "incident_phi", "pt", "", graph_dir, matchgraph_filebase, falsegraph_filebase, -pi, pi, 100, numMatch, denMatch, numFalse, denFalse, 4, filenumber, print);
+		makePlots(C, momentum, "incident_phi", "pt", "", graph_dir, matchgraph_filebase, falsegraph_filebase, -pi, pi, 100, numMatch, denMatch, numFalse, denFalse, 4, filenumber, graph_types, print);
 	}
 /* ------------------------------------------------------
 										 With Cuts
@@ -287,15 +297,15 @@ catch( TCLAP::ArgException& e )
 	vector< pair<int, pair <Particle, TrackRecon> > > denFalse_cut; denFalse_cut.clear();
 	clearOuterParticles(denFalse, denFalse_cut, 490, 3.5, .2);
 
-	makePlots(C, momentum, "Multiplicity (with Edge Cutters Removed)", "pt", "", graph_dir, matchgraph_filebase, falsegraph_filebase, multiplicity_bin_low, multiplicity_bin_hi, multiplicity_bins, numMatch_cut, denMatch_cut, numFalse_cut, denFalse_cut, 1, filenumber, print);
+	makePlots(C, momentum, "Multiplicity (with Edge Cutters Removed)", "pt", "", graph_dir, matchgraph_filebase, falsegraph_filebase, multiplicity_bin_low, multiplicity_bin_hi, multiplicity_bins, numMatch_cut, denMatch_cut, numFalse_cut, denFalse_cut, 1, filenumber, graph_types, print);
 	cout << "\n--------Finished vs. Multiplicity Plots (with Edge Cutters Removed)\n\n";
 
-	makePlots(C, multiplicity, "pt (with Edge Cutters Removed)", "multiplicity", "", graph_dir, matchgraph_filebase, falsegraph_filebase, momentum[0][0], momentum.back().back(), nptBins, numMatch_cut, denMatch_cut, numFalse_cut, denFalse_cut, 2, filenumber, print);
+	makePlots(C, multiplicity, "pt (with Edge Cutters Removed)", "multiplicity", "", graph_dir, matchgraph_filebase, falsegraph_filebase, momentum[0][0], momentum.back().back(), nptBins, numMatch_cut, denMatch_cut, numFalse_cut, denFalse_cut, 2, filenumber, graph_types, print);
 	cout << "\n--------Finished vs. Momentum Plots (with Edge Cutters Removed)\n\n";
 
 	if (print) cout << "Making vs. Incident Angle Plots\n";
-	makePlots(C, momentum, "Incident Theta (with Edge Cutters Removed)", "pt", "", graph_dir, matchgraph_filebase, falsegraph_filebase, 0, pi/2, 100, numMatch_cut, denMatch_cut, numFalse_cut, denFalse_cut, 3, filenumber, print);
-	makePlots(C, momentum, "Incident Phi (with Edge Cutters Removed)", "pt", "", graph_dir, matchgraph_filebase, falsegraph_filebase, -pi, pi, 100, numMatch_cut, denMatch_cut, numFalse_cut, denFalse_cut, 4, filenumber, print);
+	makePlots(C, momentum, "Incident Theta (with Edge Cutters Removed)", "pt", "", graph_dir, matchgraph_filebase, falsegraph_filebase, 0, pi/2, 100, numMatch_cut, denMatch_cut, numFalse_cut, denFalse_cut, 3, filenumber, graph_types, print);
+	makePlots(C, momentum, "Incident Phi (with Edge Cutters Removed)", "pt", "", graph_dir, matchgraph_filebase, falsegraph_filebase, -pi, pi, 100, numMatch_cut, denMatch_cut, numFalse_cut, denFalse_cut, 4, filenumber, graph_types, print);
 	cout << "\n--------Finished vs. Incident Angle Plots (with Edge Cutters Removed)\n\n";
 
 

@@ -32,6 +32,10 @@ try{
 	TCLAP::ValueArg<std::string> particleFileArg("p","particle-file","file with particle data (cheat data)",false,"cheat.root","string", cmd);
 	TCLAP::ValueArg<std::string> reconstructileFileArg("r","reconstruction","file with reconstruction data",false,"reconstruction.root","string", cmd);
 
+// TCLAP::ValueArg<std::string> reconstructileFileArg("o","output","file with 1D fits",false,"reconstruction.root","string", cmd);
+
+// TCLAP::ValueArg<std::string> reconstructileFileArg("o","output","file with 1D fits",false,"reconstruction.root","string", cmd);
+
 	TCLAP::ValueArg<std::string> matchsearchArg("","match-search","particle which is being matched for",false,"electron","string", cmd);
 	TCLAP::ValueArg<std::string> falsesearchArg("","false-search","particle which is being used for the fake rate",false,"pion","string", cmd);
 
@@ -105,12 +109,13 @@ catch( TCLAP::ArgException& e )
 		if (print) cout << "Event = " << ev << endl;
 		t1->GetEntry(ev);
 		t2->GetEntry(ev);
+		dirc::matchDataSize(*t1, *t2, *recons, *pars, false);
 		if ((pars->size() == 0 ) || (recons->size() == 0)) continue;
 		for (unsigned int p = 0; p < pars->size(); ++p){
 			Particle* P = &pars->at(p);
 			TrackRecon* R = &recons->at(p);
 			print1Dfits(C, ev, p, *P, *R, fit_dir, flag_funcs, flags, 1.);
-			if (print2d) print2DHists(C, ev, p, *P, *R, fit_dir, flag_funcs, flags);
+			print2DHists(C, ev, p, *P, *R, fit_dir, flag_funcs, flags);
 		}
 	}
 return 0;

@@ -7,11 +7,13 @@ include_HEADERS  =  \
 	photon_objects.h \
 	analysis_objects.h \
 	event_parsers.h \
-	dircTH1D.h
+	dircTH1D.h \
+	calibration_data.h
 
 
 DircObjs_Dict.cpp: \
 	dirc_objects.h \
+	calibration_data.h \
 	LinkDef.h
 		rootcint -f $@ -c $(DEFAULT_INCLUDES) $(INCLUDES) $^
 
