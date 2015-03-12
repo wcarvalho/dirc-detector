@@ -109,7 +109,7 @@ int main(int argc, char** argv)
 
 
 	TFile file2(wf.c_str(), "recreate");
-          TTree tree_np("identifications", "information on what particles tracks were reconstructed into, and with what probability");
+          TTree tree_np("identifications", "information on what particles tracks were reconstructed into and with what probability");
 	TTree* tree = &tree_np;
 	tree->Branch("guesses", &Tracks);
 	tree->Branch("detector", &d);
@@ -126,7 +126,7 @@ int main(int argc, char** argv)
 		// Declarations
 		vector<ParticleOut> &pars = event_output->Particles;
 		// ---------------
-
+		int npar = pars.size();
     removeFirstParticles(ai.last_given, event_output, last); 	// remove all particles except for last particles determined by option 'l'
 	  ReconstructEvent(reconstruction, event_output, print);
 
@@ -152,10 +152,10 @@ int main(int argc, char** argv)
 		time2 = (double)(t2.tv_sec) + (double)(t2.tv_usec)/1.0e6;
 		calculateFits_time += (time2-time1);
 
-		if (print) cout << "TrackRecons has " << Tracks.Recon.size() << " Tracks\n";
 	  }
 
 	  Tracks.Recon = A.Recon;
+		if (print) cout << "TrackRecons has " << Tracks.Recon.size() << " Tracks\n";
 	  tree->Fill();
 		A.Recon.clear();
 		A.Hists1D.clear();

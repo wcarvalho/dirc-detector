@@ -9,13 +9,12 @@ vector<Particle> generate(int nparticles, gParticle& gPar, Detector d, int maxPa
 	Particle *Par = gPar_p;
 	int passes = 0;
 	double pi = TMath::Pi();
-
 	for (unsigned int par = 0; par < nparticles; par++)
   	{
   		if (maxPars == 0) break;
 			gPar.gen();
 
-  		passed = intersect_with_dirc(d.Width, gPar.Eta, gPar.pt, 
+  		passed = intersect_with_dirc(d.Width, gPar.Eta, gPar.pt,
 	  				gPar.Phi_i, gPar.m , gPar.Charge, d.Radial_D,
 	  				d.Mag_field, gPar.X, gPar.Y, gPar.Phi, gPar.Theta, gPar.Beta);
   		gPar.X = gPar.X + d.Length/2;

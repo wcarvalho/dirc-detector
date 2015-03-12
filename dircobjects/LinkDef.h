@@ -29,4 +29,6 @@
 #pragma link C++ class vector<TrackRecon>+;
 #pragma link C++ class TrackRecons+;
 
+#pragma link C++ class calibration_data+;
+
 #endif

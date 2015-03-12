@@ -16,5 +16,5 @@ DIRC_LIB=`pkg-config --libs DircObjs`
 AC_SUBST(ROOT_LIBS)
 AC_SUBST(DIRC_LIB)
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile SimObjs.pc])
 AC_OUTPUT

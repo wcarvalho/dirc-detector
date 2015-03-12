@@ -72,6 +72,5 @@ reconstructor_SOURCES = main.cpp
 reconstructor_LDADD = libReconstructionObjs.la
 reconstructor_CFLAGS = $(AM_CFLAGS)
 
-
 clear-local:
 	rm -f $(BUILT_SOURCES) *Dict*

@@ -8,6 +8,7 @@ option "Directory" D "Sets the directory in which files will be saved. With this
 option "random" r "value for seed of random numbers" int optional
 option "verbose" v "print data" optional
 option "writefile" W "file to be written to" string optional
+option "cheatfile" c "filename for cheat data" string optional
 option "Append" A "append particle and photon generation to current file" optional
 option "smear" S "change the smearing value" double optional
 option "quiet" q "turn off all printing" optional

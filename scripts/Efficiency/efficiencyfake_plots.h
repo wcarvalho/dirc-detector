@@ -1,3 +1,5 @@
+#include <set>
+
 // fill a histogram with reconstructed data
 void FillHist(TH1D &H, vector< pair<int, pair <Particle, TrackRecon> > > const & vec, int Case, vector< double > range, bool print){
 
@@ -130,7 +132,7 @@ string GraphFileName(string data_dir, string graph_dir, string filename_base, st
 void makePlots(TCanvas &C, vector< vector <double> > &bounds, string xtitle, string parameter, string data_dir, string graph_dir,
                string matchgraph_filebase, string falsegraph_filebase, double histlow, double histhi, int nbins,
                vector< pair<int, pair <Particle, TrackRecon> > > const & numMatch, vector< pair<int, pair <Particle, TrackRecon> > > const & denMatch,
-               vector< pair<int, pair <Particle, TrackRecon> > > const & numFalse, vector< pair<int, pair <Particle, TrackRecon> > > const & denFalse, int Case, int &filenumber, bool print){
+               vector< pair<int, pair <Particle, TrackRecon> > > const & numFalse, vector< pair<int, pair <Particle, TrackRecon> > > const & denFalse, int Case, int &filenumber, const vector<int>& graph_types, bool print){
 	bool makegraph = true;
 	for (unsigned int i = 0; i < bounds.size(); ++i){
 		if (print){
@@ -148,11 +150,14 @@ void makePlots(TCanvas &C, vector< vector <double> > &bounds, string xtitle, str
 		match_graph.SetName(graph_name.c_str());
 		GraphXYTitle(match_graph, "Efficiency for Identifying Electrons", xaxis.c_str(), "Efficiency");
 		if (makegraph){
-			cout << "filename: " << filename << endl;
-			C.Print(filename.c_str());
-			TFile f(rootfilename.c_str(), "recreate");
-			match_graph.Write();
-			f.Close();
+			if (std::find(graph_types.begin(), graph_types.end(), 2)!=graph_types.end())
+				C.Print(filename.c_str());
+			if (std::find(graph_types.begin(), graph_types.end(), 1)!=graph_types.end())
+			{
+				TFile f(rootfilename.c_str(), "recreate");
+				match_graph.Write();
+				f.Close();
+			}
 		}
 		C.Clear();
 		makegraph = true;
@@ -166,11 +171,14 @@ void makePlots(TCanvas &C, vector< vector <double> > &bounds, string xtitle, str
 		GraphXYTitle(false_graph, "False Positive for Identifying Electrons", xaxis.c_str(), "False Positive");
 
 		if (makegraph){
-			cout << "filename: " << filename << endl;
-			C.Print(filename.c_str());
-			TFile f(rootfilename.c_str(), "recreate");
-			false_graph.Write();
-			f.Close();
+			if (std::find(graph_types.begin(), graph_types.end(), 2)!=graph_types.end())
+				C.Print(filename.c_str());
+			if (std::find(graph_types.begin(), graph_types.end(), 1)!=graph_types.end())
+			{
+				TFile f(rootfilename.c_str(), "recreate");
+				false_graph.Write();
+				f.Close();
+			}
 		}
 		C.Clear();
 				// exit(1);

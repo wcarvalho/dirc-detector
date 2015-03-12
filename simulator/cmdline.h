@@ -46,9 +46,9 @@ struct gengetopt_args_info
   char * input_arg;	/**< @brief path of particle-generated data.  */
   char * input_orig;	/**< @brief path of particle-generated data original value given at command line.  */
   const char *input_help; /**< @brief path of particle-generated data help description.  */
-  char * Directory_arg;	/**< @brief Sets the directory in which files will be saved. With with this option, with no argument the file is saved in directory of input file. Without this option, it is saved in the current directory (default='').  */
-  char * Directory_orig;	/**< @brief Sets the directory in which files will be saved. With with this option, with no argument the file is saved in directory of input file. Without this option, it is saved in the current directory original value given at command line.  */
-  const char *Directory_help; /**< @brief Sets the directory in which files will be saved. With with this option, with no argument the file is saved in directory of input file. Without this option, it is saved in the current directory help description.  */
+  char * Directory_arg;	/**< @brief Sets the directory in which files will be saved. With this option, with no argument the file is saved in directory of input file. Without this option, it is saved in the current directory (default='').  */
+  char * Directory_orig;	/**< @brief Sets the directory in which files will be saved. With this option, with no argument the file is saved in directory of input file. Without this option, it is saved in the current directory original value given at command line.  */
+  const char *Directory_help; /**< @brief Sets the directory in which files will be saved. With this option, with no argument the file is saved in directory of input file. Without this option, it is saved in the current directory help description.  */
   int random_arg;	/**< @brief value for seed of random numbers.  */
   char * random_orig;	/**< @brief value for seed of random numbers original value given at command line.  */
   const char *random_help; /**< @brief value for seed of random numbers help description.  */
@@ -56,6 +56,9 @@ struct gengetopt_args_info
   char * writefile_arg;	/**< @brief file to be written to.  */
   char * writefile_orig;	/**< @brief file to be written to original value given at command line.  */
   const char *writefile_help; /**< @brief file to be written to help description.  */
+  char * cheatfile_arg;	/**< @brief filename for cheat data.  */
+  char * cheatfile_orig;	/**< @brief filename for cheat data original value given at command line.  */
+  const char *cheatfile_help; /**< @brief filename for cheat data help description.  */
   const char *Append_help; /**< @brief append particle and photon generation to current file help description.  */
   double smear_arg;	/**< @brief change the smearing value.  */
   char * smear_orig;	/**< @brief change the smearing value original value given at command line.  */
@@ -71,6 +74,7 @@ struct gengetopt_args_info
   unsigned int random_given ;	/**< @brief Whether random was given.  */
   unsigned int verbose_given ;	/**< @brief Whether verbose was given.  */
   unsigned int writefile_given ;	/**< @brief Whether writefile was given.  */
+  unsigned int cheatfile_given ;	/**< @brief Whether cheatfile was given.  */
   unsigned int Append_given ;	/**< @brief Whether Append was given.  */
   unsigned int smear_given ;	/**< @brief Whether smear was given.  */
   unsigned int quiet_given ;	/**< @brief Whether quiet was given.  */
