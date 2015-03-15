@@ -66,23 +66,12 @@ int main(int argc, char** argv)
 	// int nbins[5] = {20, 5, 10, 10, 5};
 	// string lookupfile = "LookUpTable";
 
-
-
-
-
-
-	// Function Pointer(s)
 	std::pair<double, double> (*ExpectedNumberofPhotons)(double const&, double const&, double const&, double const&, double const&);
-
-  // boost::function<*double(double const&, double const&, double const&, double const&, double const&)> ExpectedNumberofPhotons;
-
 	// determine which function will be used to determine the expected number of photons
 	if (print) cout << "ExpectedPhotonCase = ";
 	switch(ExpectedPhotonCase) {
 		case 1: // look-up table
 			if (!quiet) cout << "LookUpTable\n";
-
-			// ExpectedNumberofPhotons = boost::bind( &LookUpTableWrapper, _1, _2, _3, _4, _5, lengths_low, lengths_hi, nbins, lookupfile);
 			ExpectedNumberofPhotons = &LookUpTableWrapper;
 		break;
 		case 2: // riemansum
@@ -123,9 +112,7 @@ int main(int argc, char** argv)
 		if (!quiet) cout << "Event " << ev << "\n";
 		events->GetEntry(ev);
 
-		// Declarations
 		vector<ParticleOut> &pars = event_output->Particles;
-		// ---------------
 		int npar = pars.size();
     if (ai.last_given) removeFirstParticles(event_output, last, print); 	// remove all particles except for last particles determined by option 'l'
 	  ReconstructEvent(reconstruction, event_output, print);
@@ -136,29 +123,28 @@ int main(int argc, char** argv)
 	  }
 
 	  for (unsigned int par = 0; par < pars.size(); par++){
+
 	  	if (!quiet) cout << "\tParticle " << par << endl;
 
-		vector<PhotonOut> &phos = reconstruction.Photons.at(par);
-		if ( !(phos.size()) ) continue;
-		CreateHistogram_1D2D(ev, par, A, phos, xbins, ybins);
+			vector<PhotonOut> &phos = reconstruction.Photons.at(par);
+			if ( !(phos.size()) ) continue;
+			CreateHistogram_1D2D(ev, par, A, phos, xbins, ybins);
 
-		ParticleOut &P = pars.at(par);
-		if (print) printf("\tpar = %i: eta = %f, pt = %f\n", par+1, P.Eta, P.pt);
+			ParticleOut &P = pars.at(par);
+			if (print) printf("\tpar = %i: eta = %f, pt = %f\n", par+1, P.Eta, P.pt);
 
-		gettimeofday(&t1, NULL);
-		CalculateParticleFits(ExpectedNumberofPhotons, P, A, .1, smear, print);				// for one particle, 1 fit is calculated for every possible mass (5 masses means 5 fits for 1 particle)
-		gettimeofday(&t2, NULL);
-		time1 = (double)(t1.tv_sec) + (double)(t1.tv_usec)/1.0e6;
-		time2 = (double)(t2.tv_sec) + (double)(t2.tv_usec)/1.0e6;
-		calculateFits_time += (time2-time1);
+			gettimeofday(&t1, NULL);
+			CalculateParticleFits(ExpectedNumberofPhotons, P, A, .1, smear, print);				// for one particle, 1 fit is calculated for every possible mass (5 masses means 5 fits for 1 particle)
+			gettimeofday(&t2, NULL);
+			time1 = (double)(t1.tv_sec) + (double)(t1.tv_usec)/1.0e6;
+			time2 = (double)(t2.tv_sec) + (double)(t2.tv_usec)/1.0e6;
+			calculateFits_time += (time2-time1);
 
 	  }
 
-<<<<<<< HEAD
 	  Tracks.Recon.push_back(A.Recon.back());
 	  tree->Fill();
 		A.Recon.clear();
-=======
 	  Tracks.Recon = A.Recon;
 		if (print) cout << "TrackRecons has " << Tracks.Recon.size() << " Tracks\n";
 	  tree->Fill();
@@ -167,7 +153,6 @@ int main(int argc, char** argv)
 		A.Hists2D.clear();
 		A.Hists1D.shrink_to_fit(); // freeing (a LOT of) memory
 		A.Hists2D.shrink_to_fit(); // freeing (a LOT of) memory
->>>>>>> working
 		Tracks.Recon.clear();
   }
 
