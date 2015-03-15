@@ -127,7 +127,7 @@ int main(int argc, char** argv)
 		vector<ParticleOut> &pars = event_output->Particles;
 		// ---------------
 		int npar = pars.size();
-    removeFirstParticles(ai.last_given, event_output, last); 	// remove all particles except for last particles determined by option 'l'
+    if (ai.last_given) removeFirstParticles(event_output, last, print); 	// remove all particles except for last particles determined by option 'l'
 	  ReconstructEvent(reconstruction, event_output, print);
 
 	  if (print && !(reconstruction.Photons.size())){

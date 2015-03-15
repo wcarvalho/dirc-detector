@@ -37,7 +37,7 @@ void Reconstructed_Reflections(std::vector<PhotonOut> &pho, double theta, double
 // void XY_Reflections(std::vector<PhotonOut> &pho, Simulate sim, bool print = false);
 
 std::string histName0(int event, int particle);
-void removeFirstParticles(bool Remove, GeneratorOut*& event_output, int last);
+void removeFirstParticles(GeneratorOut*& event_output, int last, bool print);
 void CreateHistogram_1D2D(int ev, int par, Analysis &A, std::vector<PhotonOut> &phos, int xbins, int ybins);
 
 void CalculateParticleFits(std::pair<double, double> (*ExpectedNumberofPhotons)(double const&, double const&, double const&, double const&, double const&), ParticleOut &P, Analysis &A, double range, double smear, bool print);
