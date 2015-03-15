@@ -3,7 +3,12 @@
 #include <boost/lexical_cast.hpp>
 #include "calibration_data.h"
 #include "calibrate_data.h"
-
+void checkValid(const TFile& f){
+  if (!(f.IsOpen())) {
+    cout << f.GetName() << " invalid!\n";
+    exit(1);
+  }
+}
 int main(int argc, char const *argv[])
 {
 
@@ -59,11 +64,11 @@ catch( TCLAP::ArgException& e )
   TrackRecons *reconstructions = 0;
   Detector *d = 0;
 
-  TFile f1(particleFile.c_str(), "read");
+  TFile f1(particleFile.c_str(), "read"); checkValid(f1);
   TTree* t1 = (TTree*)f1.Get("cheat_info");
   t1 -> SetBranchAddress("Particle Event", &originals);
 
-  TFile f2(reconstructionFile.c_str(), "read");
+  TFile f2(reconstructionFile.c_str(), "read"); checkValid(f2);
   TTree* t2 = (TTree*)f2.Get("identifications");
   t2 -> SetBranchAddress("guesses", &reconstructions);
   t2 -> SetBranchAddress("detector", &d);
@@ -71,7 +76,7 @@ catch( TCLAP::ArgException& e )
   stringstream ss; ss << calibrationPercent;
   std::string calibrationKey = ss.str();
 
-  TFile calibrationTFile(calibrationFile.c_str());
+  TFile calibrationTFile(calibrationFile.c_str()); checkValid(calibrationFile);
   calibration_data* cal_data = (calibration_data*)calibrationTFile.Get(calibrationKey.c_str());
 
 

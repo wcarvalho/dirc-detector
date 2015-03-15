@@ -19,7 +19,7 @@ class graphlabels
 {
 public:
 	graphlabels(int i) : graphtype(i) {
-		switch (choice){
+		switch (graphtype){
 			case 1: // multiplicity
 				xtitle = "multiplicity";
 			case 2: // momentum
@@ -35,7 +35,7 @@ public:
 	}
 
 	void setTitle(string match, string against){
-		title = appendStrings("success rate for identifying ", match, " as ", against);
+		title = wul::appendStrings("success rate for identifying ", match, " as ", against);
 	}
 	void setYtitle(string yt){
 		ytitle = yt;
@@ -49,16 +49,16 @@ public:
 };
 
 
-void printTGraphASymError(TH1D& NumHist, TH1D& DenHist, const string& search, const string& dir, const string& basename){
+void printTGraphASymError(TH1D& NumHist, TH1D& DenHist, const string& search, const string& dir, const string& basename, bool printhists){
 
 	int numcounter = NumHist.GetEntries();
 	int dencounter = DenHist.GetEntries();
 
 	string numfilename = wul::appendStrings(dir, search, "_num_", basename);
-	NumHist.SaveAs(numfilename.c_str(), "update");
+	if (printhists) NumHist.SaveAs(numfilename.c_str(), "update");
 
 	string denfilename = wul::appendStrings(dir, search, "_den_", basename);
-	DenHist.SaveAs(denfilename.c_str(), "update");
+	if (printhists) DenHist.SaveAs(denfilename.c_str(), "update");
 	TGraphAsymmErrors graph;
 
 	if (!(dencounter)){
@@ -70,6 +70,7 @@ void printTGraphASymError(TH1D& NumHist, TH1D& DenHist, const string& search, co
 	string graphname = wul::appendStrings(dir, search,basename);
 
 	graph.BayesDivide(&NumHist, &DenHist);
+	cout << "npoints = " << graph.GetN() << endl;
 	graph.SetMarkerStyle(20);
 	graph.Draw("AP");
 	double max = graph.GetMaximum();
@@ -80,6 +81,7 @@ void printTGraphASymError(TH1D& NumHist, TH1D& DenHist, const string& search, co
 
 void fillTH1Dmaps(TH1D_map& num, TH1D_map& den, const vector<int>& graph_choices, vector_map& bounds_map, const int& nbins){
 
+	cout << "nbins = " << nbins << endl;
 	TH1D* H = 0;
 	for (auto graph: graph_choices){
 		auto& bounds = bounds_map[graph];

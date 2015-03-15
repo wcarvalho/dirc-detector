@@ -6,14 +6,18 @@
  * @param event_output [description]
  * @param last         [description]
  */
-void removeFirstParticles(bool Remove, GeneratorOut*& event_output, int last){
-	if (Remove){
-      int beginning = event_output->Particles.size() - last;
-      if (beginning>0){
-	      for (unsigned int j = 0; j < beginning; ++j)
-	      	event_output->Particles.erase(event_output->Particles.begin());
-      }
-    }
+void removeFirstParticles(GeneratorOut*& event_output, int last, bool print){
+	int sizebefore = event_output->Particles.size();
+  int beginning = event_output->Particles.size() - last;
+  if (beginning>0){
+    for (unsigned int j = 0; j < beginning; ++j)
+    	event_output->Particles.erase(event_output->Particles.begin());
+  }
+  if (print){
+  	int sizeafter = event_output->Particles.size();
+	  int sizedifference = sizebefore - sizeafter;
+	  cout << sizedifference << " Particles Removed\n";
+	}
 }
 
 // Create 1D and 2D histograms for one particle in the event. Histogram is added to the analysis class

@@ -32,6 +32,7 @@ int main(int argc, char** argv){
 	vector<string> graph_names {"momentum.root", "multiplicity.root"};
 	bool plotefficiency;
 	bool plotfalsepositive;
+	bool printHists;
 
 TCLAP::CmdLine cmd("Command description message", ' ', "0.1");
 try{
@@ -72,11 +73,14 @@ try{
 
 	TCLAP::MultiArg<int> graphsChoiceArg("c","graphs-choice","determines which graphs are drawn. 1: multiplicity, 2: momentum, 3: theta, 4: phi ", false, "int", cmd);
 
-	TCLAP::MultiArg<std::string> graphsNameArg("","graph-names","sets the name of the graphs to be printed. The match and false type will be prepended to each filename", false, "string", cmd);
+	TCLAP::MultiArg<std::string> graphsNameArg("o","output-graphs","sets the filenames for the graphs to be printed. The match and false type will be prepended to each filename", false, "string", cmd);
 
 	TCLAP::SwitchArg verboseArg("v","verbose","", cmd, false);
 	TCLAP::SwitchArg plotefficiencyArg("e","efficiency","print efficiency plot", cmd, false);
 	TCLAP::SwitchArg plotfalsepositiveArg("f","false-positive","print false-positive plot", cmd, false);
+	TCLAP::SwitchArg printHistsArg("H","Histograms","Print Histograms used to make graphs", cmd, false);
+
+
 	cmd.parse( argc, argv );
 	graph_dir = match_fakeDirectoryArg.getValue();
 	reconstructiondata = reconstructileFileArg.getValue();
@@ -92,6 +96,7 @@ try{
 	print = verboseArg.getValue();
 	plotefficiency = plotefficiencyArg.getValue();
 	plotfalsepositive = plotfalsepositiveArg.getValue();
+	printHists = printHistsArg.getValue();
 
 	if (momentum_slicesArg.isSet())
 		momentum_slices = momentum_slicesArg.getValue();
@@ -217,10 +222,12 @@ catch( TCLAP::ArgException& e )
 
 	// graphlabels matchlabels("efficiency", "momentum", wul::appendString("identifying ", matchsearch, " as ", matchsearch);
 
+	// want the filename to be: efficiency_$appendage
+
 	for (unsigned i = 0; i < graph_choice.size(); ++i){
 		int index = graph_choice.at(i);
-		if (plotefficiency) printTGraphASymError(*matchnumerators[index], *matchdenominators[index], matchsearch, graph_dir, graph_names.at(i));
-		if (plotfalsepositive) printTGraphASymError(*falsenumerators[index], *falsedenominators[index],falsesearch, graph_dir, graph_names.at(i));
+		if (plotefficiency) printTGraphASymError(*matchnumerators[index], *matchdenominators[index], "efficiency", graph_dir, graph_names.at(i), printHists);
+		if (plotfalsepositive) printTGraphASymError(*falsenumerators[index], *falsedenominators[index],"false_positive", graph_dir, graph_names.at(i), printHists);
 	}
 
 	for (auto i: graph_choice){

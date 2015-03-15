@@ -69,6 +69,10 @@ double Particle::CalculatePhotonsPercm(double xlow, double xhigh, double n, doub
 	return PhotonsPercm;
 }
 double Particle::CalculateMomentum() const{
-		return sqrt((m*Beta)*(m*Beta)/(1-Beta*Beta));
+	return sqrt((m*Beta)*(m*Beta)/(1-Beta*Beta));
 }
 
+double Particle::CalculateMomentum(){
+	momentum = sqrt((m*Beta)*(m*Beta)/(1-Beta*Beta));
+	return momentum;
+}

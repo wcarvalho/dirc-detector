@@ -133,7 +133,11 @@ void getGraph(string& file, TGraphAsymmErrors*& Plot){
 void extractGraphData(TGraphAsymmErrors matches, TGraphAsymmErrors fakes,data_t& data){
 
 	int npoints = matches.GetN();
-	if (matches.GetN() != fakes.GetN()){ cout << "incompatible\n"; exit(1); }
+	if (matches.GetN() != fakes.GetN()){
+		cout << "Matches: " << matches.GetN() << endl;
+		cout << "Fkaes: " << fakes.GetN() << endl;
+		cout << "incompatible\n"; exit(1);
+	}
 
 	for (unsigned i = 0; i < npoints; ++i){
 		static double effx = 0., effy = 0.;
@@ -162,7 +166,7 @@ void MakeGraph(const double& pt, const xy_t& xy, int graphnumber, TGraph*& g){
 	}
 	g->SetMarkerStyle(22);
 	// g->SetMarkerSize(1);
-	int markercolor = 30+2*(graphnumber)+1;
+	int markercolor = 2*(graphnumber)+1;
 	g->SetMarkerColor(markercolor);
 	g->SetLineColor(markercolor);
 
