@@ -76,7 +76,7 @@ catch( TCLAP::ArgException& e )
   stringstream ss; ss << calibrationPercent;
   std::string calibrationKey = ss.str();
 
-  TFile calibrationTFile(calibrationFile.c_str()); checkValid(calibrationFile);
+  TFile calibrationTFile(calibrationFile.c_str()); checkValid(calibrationTFile);
   calibration_data* cal_data = (calibration_data*)calibrationTFile.Get(calibrationKey.c_str());
 
 
