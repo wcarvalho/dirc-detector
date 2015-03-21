@@ -136,8 +136,7 @@ am__DEPENDENCIES_1 =
 libDircObjs_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_libDircObjs_la_OBJECTS = analysis.lo dirc_objects.lo \
-	particle_objects.lo fitgaussianplusconstant.lo dircTH1D.lo \
-	DircObjs_Dict.lo
+	particle_objects.lo dircTH1D.lo DircObjs_Dict.lo
 libDircObjs_la_OBJECTS = $(am_libDircObjs_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -382,7 +381,6 @@ libDircObjs_la_SOURCES = \
 	analysis.cpp \
 	dirc_objects.cpp \
 	particle_objects.cpp \
-	fitgaussianplusconstant.cpp \
 	dircTH1D.cpp \
 	DircObjs_Dict.cpp
 
@@ -482,7 +480,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/analysis.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dircTH1D.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dirc_objects.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fitgaussianplusconstant.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/particle_objects.Plo@am__quote@
 
 .cpp.o:
@@ -917,6 +914,10 @@ uninstall-am: uninstall-includeHEADERS uninstall-libLTLIBRARIES \
 
 DircObjs_Dict.cpp: \
 	dirc_objects.h \
+	particle_objects.h \
+	photon_objects.h \
+	analysis_objects.h \
+	event_parsers.h \
 	calibration_data.h \
 	LinkDef.h
 		rootcint -f $@ -c $(DEFAULT_INCLUDES) $(INCLUDES) $^

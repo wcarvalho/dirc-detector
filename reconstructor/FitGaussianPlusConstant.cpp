@@ -1,13 +1,14 @@
-//fitgaussianplusconstant.cpp
-
 #include <map>
-#include "../headers/functions.h"
-#include "../headers/fitter.h"
+#include <vector>
+
+#include "TH1D.h"
+#include "TMath.h"
 
 #include "GaussianIntegralGradHessian.h"
 #include "ChiSquareGradHessian.h"
 #include "NewtonMinimizerGradHessian.h"
 
+using namespace std;
 using namespace Eigen;
 using namespace FitNewton;
 
@@ -52,9 +53,6 @@ public:
     return clone;
   }
 
-
-
-
   private:
     GaussianIntegralGradHessian gaus;
     double width_lo;
@@ -64,7 +62,7 @@ public:
 };
 
 
-void TrackRecons::FitGaussianPlusConstant(TH1D &h, double xlow, double xhi, double& center, double centerbounds[2], double& width, double widthbounds[2], double &Area){
+void FitGaussianPlusConstant(TH1D &h, double xlow, double xhi, double centerbounds_low, double centerbounds_hi, double widthbounds_low, double widthbounds_hi, double& center, double& width, double& constant, double& height, unsigned converge_at){
 
   static NewtonMinimizerGradHessian minimizer;
   static GaussianPlusConstant gpc;
@@ -119,8 +117,8 @@ void TrackRecons::FitGaussianPlusConstant(TH1D &h, double xlow, double xhi, doub
   chi2.setData(data);
   chi2.setErrors(errors);
 
-  gpc.setCenterBounds(centerbounds[0], centerbounds[1]);
-  gpc.setWidthBounds(widthbounds[0], widthbounds[1]);
+  gpc.setCenterBounds(centerbounds_low, centerbounds_hi);
+  gpc.setWidthBounds(widthbounds_low, widthbounds_hi);
 
 
   VectorXd start = VectorXd::Zero(4);
@@ -139,47 +137,45 @@ void TrackRecons::FitGaussianPlusConstant(TH1D &h, double xlow, double xhi, doub
     converged = minimizer.minimize( start, min_point, 1.0e-5 );
     count += 1;
     start = min_point;
-    if(count == 4){break;}
+    if(count == converge_at){break;}
   }
   if(converged == false)
   {
     // min_point = VectorXd::Zero(4);
   }
-  else
-  {
-    double val;
-    Eigen::VectorXd grad = VectorXd::Zero(4);
-    Eigen::MatrixXd hessian = MatrixXd::Zero(4,4);
-    chi2.calcValGradHessian(min_point, val, grad, hessian);
-    val /= (data.size());
-    // cout<<"chi^2/ndf = "<<val<<endl;
-    // if(val > 1.4){min_point = VectorXd::Zero(4);}
-  }
-  string name = h.GetName();
+  // else
+  // {
+  //   double val;
+  //   Eigen::VectorXd grad = VectorXd::Zero(4);
+  //   Eigen::MatrixXd hessian = MatrixXd::Zero(4,4);
+  //   chi2.calcValGradHessian(min_point, val, grad, hessian);
+  //   val /= (data.size());
+  //   // cout<<"chi^2/ndf = "<<val<<endl;
+  //   // if(val > 1.4){min_point = VectorXd::Zero(4);}
+  // }
+  // string name = h.GetName();
 
-  static TF1 f2(name.c_str(), "[0]*exp( -(x-[1])*(x-[1])/(2.*[2]*[2]) ) + [3]", xlow, xhi);
-  f2.SetRange(xlow, xhi);
+  // static TF1 f2(name.c_str(), "[0]*exp( -(x-[1])*(x-[1])/(2.*[2]*[2]) ) + [3]", xlow, xhi);
+  // f2.SetRange(xlow, xhi);
 
-  f2.FixParameter(0, min_point(0));
-  f2.FixParameter(1, min_point(1));
-  f2.FixParameter(2, min_point(2));
-  f2.FixParameter(3, min_point(3));
+  // f2.FixParameter(0, min_point(0));
+  // f2.FixParameter(1, min_point(1));
+  // f2.FixParameter(2, min_point(2));
+  // f2.FixParameter(3, min_point(3));
 
-  PushBackParams();
-  auto &params = Recon.back().Params.back();
-  for(int i=0;i<4;++i){
-      params.push_back(f2.GetParameter(i));
-  }
+  height = min_point(0);
+  center = min_point(1);
+  width = min_point(2);
+  constant = min_point(3);
+  // PushBackParams();
+  // auto &params = Recon.back().Params.back();
+  // for(int i=0;i<4;++i){
+  //     params.push_back(f2.GetParameter(i));
+  // }
 
-  params.push_back(xlow);
-  params.push_back(xhi);
+  // params.push_back(xlow);
+  // params.push_back(xhi);
 
-  // height * width * sqrt(2pi) (divided by bin width to go from counts to amount)
-  Area = min_point(0) * min_point(2) * sqrt(2*pi) / h.GetBinWidth(1);
-}
-
-void Analysis::FitGaussianPlusConstant(double xlow, double xhi, double& center, double centerbounds[2], double& width, double widthbounds[2], double &Area){
-
-    TH1D &h = Hists1D.back();
-    TrackRecons::FitGaussianPlusConstant(h, xlow, xhi, center, centerbounds, width, widthbounds, Area);
+  // // height * width * sqrt(2pi) (divided by bin width to go from counts to amount)
+  // Area = min_point(0) * min_point(2) * sqrt(2*pi) / h.GetBinWidth(1);
 }

@@ -21,6 +21,15 @@ public:
 
 	void clear();
 	void printLatest();
+	double getLatestIntegralCenter(){ return Params.back().at(1); }
+	double getLatestIntegralCenter() const { return Params.back().at(1); }
+	double getIntegralCenterAt(const int& i){ return Params.at(i).at(1); }
+	double getIntegralCenterAt(const int& i) const { return Params.at(i).at(1); }
+	std::string getNameAt(const int& i) const { return Options.at(i); }
+	double getnSigmaAreaAt(const int& i) const { return delSigArea.at(i); }
+	double getnSigmaThetaAt(const int& i) const { return delSigTheta.at(i); }
+	double getIntegralAt(const int& i) const { return Areas.at(i); }
+	double getIntegralHeightAt(const int& i) const { return Params.at(i).at(0); }
 
 	TH1D Hist;
 	TH2D Hist2D;
@@ -44,9 +53,9 @@ public:
 
 	void AddTrackRecon();
 	void PushBackParams();
-	void FitGaussianPlusConstant(TH1D &h, double xlow, double xhi, double &center, double centerbounds[2], double &width, double widthbounds[2], double &Area);
 
 	std::vector<TrackRecon> Recon;
+	std::vector< int > index;
 
 	ClassDef(TrackRecons, 1);
 };
@@ -64,7 +73,6 @@ public:
 	void AddTH2D(const char* name, const char* title, int nbinsx, double xlow, double xup, int nbinsy, double ylow, double yup);
 
 	void SetPrint(bool p = true) {print = p;}
-	void FitGaussianPlusConstant(double xlow, double xhi, double& center, double centerbounds[2], double& width, double widthbounds[2], double &Area);
 
 	std::vector<TH1D> Hists1D;
 	std::vector<TH2D> Hists2D;

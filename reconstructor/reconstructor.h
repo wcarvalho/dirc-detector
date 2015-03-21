@@ -6,7 +6,7 @@
 #include <vector>
 #include <iomanip>
 #include <sstream>      // std::stringstream
-
+#include <unordered_map>
 //------------------------------------------
 //		ROOT
 //------------------------------------------
@@ -39,5 +39,7 @@ void Reconstructed_Reflections(std::vector<PhotonOut> &pho, double theta, double
 std::string histName0(int event, int particle);
 void removeFirstParticles(GeneratorOut*& event_output, int last, bool print);
 void CreateHistogram_1D2D(int ev, int par, Analysis &A, std::vector<PhotonOut> &phos, int xbins, int ybins);
-
-void CalculateParticleFits(std::pair<double, double> (*ExpectedNumberofPhotons)(double const&, double const&, double const&, double const&, double const&), ParticleOut &P, Analysis &A, double range, double smear, bool print);
+void CalculateParticleFits(std::pair<double, double> (*ExpectedNumberofPhotons)(double const&, double const&, double const&, double const&, double const&), TH1D &histogram, ParticleOut &P, const vector<PhotonOut>& phos, Analysis &A, const int particle_index, double smear, int const& loss, bool print);
+void FitGaussianPlusConstant(TH1D &h, double xlow, double xhi, double centerbounds_low, double centerbounds_hi, double widthbounds_low, double widthbounds_hi, double& center, double& width, double& constant, double& height, unsigned converge_at = 4);
+void IndexPhotons(ParticleOut & particle, int const& particle_index, vector<PhotonOut> const& photons, Analysis & A, double const& smear, unsigned const& band_search_case, unordered_map <int, int> photon_overlap, bool const& print);
+TH2D CreateReducedHistogram(vector<PhotonOut> const& photons, Analysis const& A, int const& particle_index, int& loss);

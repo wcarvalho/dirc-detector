@@ -20,6 +20,9 @@ public:
 	double CalculateBeta(double mass);
 	std::map <std::string, double > MassMap();
 	std::map <std::string, double > EmissionAngleMap();
+	std::map <std::string, double > EmissionAngleMap() const{
+		return EmissionAngleMap();
+	};
 
 	double Theta;
 	double Phi;

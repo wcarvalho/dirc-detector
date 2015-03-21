@@ -4,7 +4,15 @@ commonAdds = \
 $(ROOT_LIBS) \
 $(DIRC_LIB) \
 $(UTIL_LIB) \
-$(NEWTON_LIB)
+$(NEWTON_LIB) \
+$(OPENCV_LIB)
+
+include_HEADERS = reconstructor.h \
+../headers/functions.h \
+../headers/fitter.h \
+../headers/myrandom.h \
+../headers/Simulate.h \
+../headers/file-properties.h
 
 commonSources = LookUpTable.cpp \
 cmdline.cpp \
@@ -15,6 +23,9 @@ CreateHistogram.cpp \
 Reconstructed_Reflections.cpp \
 histograms.cpp \
 FindLostPhotons.cpp \
+FitGaussianPlusConstant.cpp \
+IndexPhotons.cpp \
+CreateReducedHistogram.cpp \
 ##=====================================
 ##
 ##					Mutual functions
@@ -51,13 +62,6 @@ FindLostPhotons.cpp \
 ../functions/addtoFile.cpp \
 ../functions/returnEnd.cpp \
 ../functions/file-properties.cpp
-
-include_HEADERS = ../headers/reconstructor.h \
-../headers/functions.h \
-../headers/fitter.h \
-../headers/myrandom.h \
-../headers/Simulate.h \
-../headers/file-properties.h
 
 lib_LTLIBRARIES = libReconstructionObjs.la
 libReconstructionObjs_la_SOURCES = $(commonSources)

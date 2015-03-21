@@ -64,12 +64,27 @@ struct gengetopt_args_info
   double Smear_arg;	/**< @brief the smearing applied to the fitting (used for width of gaussian).  */
   char * Smear_orig;	/**< @brief the smearing applied to the fitting (used for width of gaussian) original value given at command line.  */
   const char *Smear_help; /**< @brief the smearing applied to the fitting (used for width of gaussian) help description.  */
-  int expected_photons_case_arg;	/**< @brief case 1: look-up table. case 2: riemann sum calculation. (default='1').  */
-  char * expected_photons_case_orig;	/**< @brief case 1: look-up table. case 2: riemann sum calculation. original value given at command line.  */
-  const char *expected_photons_case_help; /**< @brief case 1: look-up table. case 2: riemann sum calculation. help description.  */
+  int expected_photons_case_arg;	/**< @brief 
+  \tcase 1: look-up table. 
+  \tcase 2: riemann sum calculation. (default='1').  */
+  char * expected_photons_case_orig;	/**< @brief 
+  \tcase 1: look-up table. 
+  \tcase 2: riemann sum calculation. original value given at command line.  */
+  const char *expected_photons_case_help; /**< @brief 
+  \tcase 1: look-up table. 
+  \tcase 2: riemann sum calculation. help description.  */
   char * LookUpTable_arg;	/**< @brief file for look-up table (default='LookUpTable').  */
   char * LookUpTable_orig;	/**< @brief file for look-up table original value given at command line.  */
   const char *LookUpTable_help; /**< @brief file for look-up table help description.  */
+  int band_search_case_arg;	/**< @brief 
+  \tcase 1: Search 1D theta projection for gaussian peak. 
+  \tcase 2: apply hough transform to 2D theta vs. phi histogram (default='1').  */
+  char * band_search_case_orig;	/**< @brief 
+  \tcase 1: Search 1D theta projection for gaussian peak. 
+  \tcase 2: apply hough transform to 2D theta vs. phi histogram original value given at command line.  */
+  const char *band_search_case_help; /**< @brief 
+  \tcase 1: Search 1D theta projection for gaussian peak. 
+  \tcase 2: apply hough transform to 2D theta vs. phi histogram help description.  */
   
   unsigned int help_given ;	/**< @brief Whether help was given.  */
   unsigned int version_given ;	/**< @brief Whether version was given.  */
@@ -84,6 +99,7 @@ struct gengetopt_args_info
   unsigned int Smear_given ;	/**< @brief Whether Smear was given.  */
   unsigned int expected_photons_case_given ;	/**< @brief Whether expected-photons-case was given.  */
   unsigned int LookUpTable_given ;	/**< @brief Whether LookUpTable was given.  */
+  unsigned int band_search_case_given ;	/**< @brief Whether band-search-case was given.  */
 
 } ;
 

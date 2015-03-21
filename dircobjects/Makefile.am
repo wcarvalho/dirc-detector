@@ -13,6 +13,10 @@ include_HEADERS  =  \
 
 DircObjs_Dict.cpp: \
 	dirc_objects.h \
+	particle_objects.h \
+	photon_objects.h \
+	analysis_objects.h \
+	event_parsers.h \
 	calibration_data.h \
 	LinkDef.h
 		rootcint -f $@ -c $(DEFAULT_INCLUDES) $(INCLUDES) $^
@@ -22,7 +26,6 @@ libDircObjs_la_SOURCES = \
 	analysis.cpp \
 	dirc_objects.cpp \
 	particle_objects.cpp \
-	fitgaussianplusconstant.cpp \
 	dircTH1D.cpp \
 	DircObjs_Dict.cpp
 

@@ -227,6 +227,10 @@ DircObjs_Dict.lo: DircObjs_Dict.cpp \
   /Users/wilkacarvalho/myapps/include/root/TPoint.h \
   /Users/wilkacarvalho/myapps/include/root/TAttCanvas.h \
   /Users/wilkacarvalho/myapps/include/root/TCanvasImp.h \
+  ../event_parsers.h /Users/wilkacarvalho/myapps/include/root/TTree.h \
+  /Users/wilkacarvalho/myapps/include/root/TBranch.h \
+  /Users/wilkacarvalho/myapps/include/root/TDataType.h \
+  /Users/wilkacarvalho/myapps/include/root/TVirtualTreePlayer.h \
   ../calibration_data.h \
   /Users/wilkacarvalho/myapps/include/root/TCollectionProxyInfo.h \
   /Users/wilkacarvalho/myapps/include/root/TInterpreter.h \
@@ -829,6 +833,16 @@ DircObjs_Dict.h:
 /Users/wilkacarvalho/myapps/include/root/TAttCanvas.h:
 
 /Users/wilkacarvalho/myapps/include/root/TCanvasImp.h:
+
+../event_parsers.h:
+
+/Users/wilkacarvalho/myapps/include/root/TTree.h:
+
+/Users/wilkacarvalho/myapps/include/root/TBranch.h:
+
+/Users/wilkacarvalho/myapps/include/root/TDataType.h:
+
+/Users/wilkacarvalho/myapps/include/root/TVirtualTreePlayer.h:
 
 ../calibration_data.h:
 

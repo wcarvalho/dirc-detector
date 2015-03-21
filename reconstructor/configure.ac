@@ -8,18 +8,22 @@ AC_PROG_CXX
 AC_PROG_LIBTOOL
 
 ##CXXFLAGS="-Wall -Werror -O2 ${CXXFLAGS}"
-CPPFLAGS="${CPPFLAGS} -std=c++11 -pipe -Wno-deprecated-register -O3 -march=native -I`root-config --incdir` `pkg-config --cflags DircObjs` `pkg-config --cflags wilkasUtilityLib` `pkg-config --cflags fitnewton`"
+CPPFLAGS="${CPPFLAGS} -std=c++11 -pipe -Wno-deprecated-register -O3 -march=native -I`root-config --incdir` `pkg-config --cflags DircObjs` `pkg-config --cflags wilkasUtilityLib` `pkg-config --cflags fitnewton` `pkg-config --cflags opencv`"
 
-ROOT_LIBS=`root-config --libs`
+ROOT_LIBS=`root-config --libs -lTSpectrum`
 DIRC_LIB=`pkg-config --libs DircObjs`
 UTIL_LIB=`pkg-config --libs wilkasUtilityLib`
 NEWTON_LIB=`pkg-config --libs fitnewton`
+OPENCV_LIB=`pkg-config --libs opencv`
 
 AC_SUBST(ROOT_LIBS)
 AC_SUBST(DIRC_LIB)
 AC_SUBST(UTIL_LIB)
 AC_SUBST(NEWTON_LIB)
+AC_SUBST(OPENCV_LIB)
 
+
+PKG_CHECK_MODULES([Opencv], [opencv])
 PKG_CHECK_MODULES([Fitnewton], [fitnewton])
 PKG_CHECK_MODULES([WilkasUtilityLib], [wilkasUtilityLib])
 

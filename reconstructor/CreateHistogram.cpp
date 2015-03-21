@@ -4,7 +4,7 @@
 #include "dirc_objects.h"
 #include "TCanvas.h"
 #include "TH2D.h"
-#include "../headers/reconstructor.h"
+#include "reconstructor.h"
 #include "../headers/functions.h"
 
 
@@ -21,14 +21,14 @@ void CreateHistogram(TH2D& h1, vector<PhotonOut> photons, string Output)
 	{
 		TabToLevel(2); cout << "CreateHistogram\n";
 	}
-	
+
 	double x;
 	int i;
   TCanvas c1_base("c1", "c1",1,1,2000,600);
   TCanvas* c1 = &c1_base;
-  
+
   h1.Reset();
-  
+
   for (i = 0; i<photons.size(); i++)
 	{
 	  h1.Fill(photons.at(i).Phi, photons.at(i).Theta);

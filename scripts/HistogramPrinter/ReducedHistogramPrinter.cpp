@@ -124,9 +124,17 @@ catch( TCLAP::ArgException& e )
 	TH1D* h1 = 0;
 	TH2D* h2 = 0;
 
+	vector<int> index;
+	auto getIndex = [&reconstructions, &index](TTree &t1, TTree &t2, std::vector<TrackRecon>& recons,std::vector<Particle>& pars, bool print){
+		dirc::matchDataSize(t1, t2, recons, pars, print);
+		cout << "finished matching?\n";
+		index = reconstructions->index;
+		cout << "index.at(10) = " << index.at(10) << endl;
+	};
 
 	auto printHistogram = [&C, &fit_conditions, &flags, &flag_funcs, &threshold, &TH1Dfilename, &TH2Dfilename, &colored, &h1, &h2, &print1D, &print1Dfit, &print2Dfit](TrackRecon& R, Particle& P, bool print){
 
+		return;
 		if (find(flags.begin(), flags.end(), 1) != flags.end())
 			if (!momentum_exceeds_threshold(P, R, 1, false)) return;
 
@@ -151,7 +159,7 @@ catch( TCLAP::ArgException& e )
 
 	dirc::parseEvents(*t1, *t2, *originals, *reconstructions,
 		event_range[0], event_range[1],
-    dirc::matchDataSize, dirc::true_eventcondition,
+    getIndex, dirc::true_eventcondition,
     printHistogram, dirc::true_trialcondition,
     dirc::empty_eventparser, dirc::true_eventcondition,
     print);

@@ -4,7 +4,7 @@
 #include "dirc_objects.h"
 #include "TCanvas.h"
 #include "TH2D.h"
-#include "../headers/reconstructor.h"
+#include "reconstructor.h"
 #include "../headers/functions.h"
 
 

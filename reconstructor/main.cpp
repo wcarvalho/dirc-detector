@@ -2,7 +2,7 @@
  * 					Reconstructor
  */
 
-#include "../headers/reconstructor.h"
+#include "reconstructor.h"
 #include <cstdlib>
 #include "cmdline.h"
 #include "boost/bind.hpp"
@@ -56,28 +56,26 @@ int main(int argc, char** argv)
 	}
 	readf_prop.appendFileToDirectory(directory, wf);
 
-
 	if (ai.Smear_given) smear = ai.Smear_arg;
 	if (ai.graph_prefix_given) graphprefix = ai.graph_prefix_arg;
 
+	unsigned band_search_case = ai.band_search_case_arg;
 
 	// double lengths_low[5] = {0, 0, 0, 0, .7};
 	// double lengths_hi[5] = {490, 3.5, pi/2, 2*pi, 1};
 	// int nbins[5] = {20, 5, 10, 10, 5};
 	// string lookupfile = "LookUpTable";
 
-	std::pair<double, double> (*ExpectedNumberofPhotons)(double const&, double const&, double const&, double const&, double const&);
 	// determine which function will be used to determine the expected number of photons
 	if (print) cout << "ExpectedPhotonCase = ";
+	std::pair<double, double> (*ExpectedNumberofPhotons)(double const&, double const&, double const&, double const&, double const&);
 	switch(ExpectedPhotonCase) {
 		case 1: // look-up table
 			if (!quiet) cout << "LookUpTable\n";
-			ExpectedNumberofPhotons = &LookUpTableWrapper;
-		break;
+			ExpectedNumberofPhotons = &LookUpTableWrapper; break;
 		case 2: // riemansum
 			if (!quiet) cout << "RiemannSum\n";
-			ExpectedNumberofPhotons = &RiemannSum;
-		break;
+			ExpectedNumberofPhotons = &RiemannSum; break;
 	}
 
 	// Classes used for analysis
@@ -121,20 +119,35 @@ int main(int argc, char** argv)
 	  	printf("\tEvent %i had no reconstructions\n", ev);
 	  	continue;
 	  }
-
+		for (unsigned i = 0; i < reconstruction.Photons.at(0).size(); ++i)
+			A.index.push_back(-10);				// for each photon set photon to a value that won't be used (e.g. -10)
+	  static unordered_map <int, int> photon_overlap;
+	  photon_overlap.clear();
 	  for (unsigned int par = 0; par < pars.size(); par++){
-
-	  	if (!quiet) cout << "\tParticle " << par << endl;
-
 			vector<PhotonOut> &phos = reconstruction.Photons.at(par);
+
 			if ( !(phos.size()) ) continue;
 			CreateHistogram_1D2D(ev, par, A, phos, xbins, ybins);
+			A.AddTrackRecon();
+			TrackRecon &guess  = A.Recon.back();
+			guess.Hist2D       = A.Hists2D.back();
 
 			ParticleOut &P = pars.at(par);
-			if (print) printf("\tpar = %i: eta = %f, pt = %f\n", par+1, P.Eta, P.pt);
+			if (print) printf("\tpar = %i: eta = %f, pt = %f\n", par, P.Eta, P.pt);
+
+			IndexPhotons(pars.at(par), par, phos, A, smear, band_search_case, photon_overlap, print);
+	  }
+
+	  for (unsigned int par = 0; par < pars.size(); par++){
+			auto& phos = reconstruction.Photons.at(par);
+			auto& P = pars.at(par);
+
+			int loss = 0;
+			TH2D reducted_histogram = CreateReducedHistogram(phos, A, par, loss);
+			TH1D* reducted_histogram_theta_projection = reducted_histogram.ProjectionY();
 
 			gettimeofday(&t1, NULL);
-			CalculateParticleFits(ExpectedNumberofPhotons, P, A, .1, smear, print);				// for one particle, 1 fit is calculated for every possible mass (5 masses means 5 fits for 1 particle)
+			CalculateParticleFits(ExpectedNumberofPhotons, *reducted_histogram_theta_projection, P, phos, A, par, smear, loss, print);				// for one particle, 1 fit is calculated for every possible mass (5 masses means 5 fits for 1 particle)
 			gettimeofday(&t2, NULL);
 			time1 = (double)(t1.tv_sec) + (double)(t1.tv_usec)/1.0e6;
 			time2 = (double)(t2.tv_sec) + (double)(t2.tv_usec)/1.0e6;
@@ -142,10 +155,11 @@ int main(int argc, char** argv)
 
 	  }
 
-	  Tracks.Recon.push_back(A.Recon.back());
+
+	  Tracks.Recon = A.Recon;
+	  Tracks.index = A.index;
 	  tree->Fill();
 		A.Recon.clear();
-	  Tracks.Recon = A.Recon;
 		if (print) cout << "TrackRecons has " << Tracks.Recon.size() << " Tracks\n";
 	  tree->Fill();
 		A.Recon.clear();

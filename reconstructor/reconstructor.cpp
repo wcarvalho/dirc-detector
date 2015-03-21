@@ -1,5 +1,6 @@
-#include "../headers/reconstructor.h"
+#include "reconstructor.h"
 #include "analysis_objects.h"
+
 /**
  * [removeFirstParticles removes the beginning particles of a particle set. used to analyze only the particles after a certain point]
  * @param Remove       [description]
@@ -41,28 +42,19 @@ void CreateHistogram_1D2D(int ev, int par, Analysis &A, std::vector<PhotonOut> &
   std::string TH2Name = histname; TH2Name.append("_2D");
 
   if (phos.size()){
-	  A.AddTH1D(TH1Name.c_str(), histTitle.c_str(), xbins, 0, pi, 1);
+	  // A.AddTH1D(TH1Name.c_str(), histTitle.c_str(), xbins, 0, pi, 1);
 	  A.AddTH2D(TH2Name.c_str(), histTitle.c_str(), xbins, -pi, pi, ybins, 0, pi);
 	}
 }
 
 // for one particle this function will calculate the histogram fit, the area under the fit, the expected number of photons for each mass. the area and expected number of photons are compared and a delta sigma is delta_Sigma is calculated
-void CalculateParticleFits(std::pair<double, double> (*ExpectedNumberofPhotons)(double const&, double const&, double const&, double const&, double const&), ParticleOut &P, Analysis &A, double range, double smear, bool print){
+void CalculateParticleFits(std::pair<double, double> (*ExpectedNumberofPhotons)(double const&, double const&, double const&, double const&, double const&), TH1D &histogram, ParticleOut &P, const vector<PhotonOut>& phos, Analysis &A, const int particle_index, double smear, int const&  loss, bool print){
 
 	mass m(P.Eta, P.pt);
 	map<double, double> &atm = m.AngletoMass;
 	map<double, string> &mtn = m.MasstoName;
 
 	double travels = 0.;
-
-	A.AddTrackRecon();
-
-	TrackRecon &guess  = A.Recon.back();
-	TH1D& h            = A.Hists1D.back();
-	TH2D& h2            = A.Hists2D.back();
-	string defaultname = h.GetName();
-	guess.Hist         = h;
-	guess.Hist2D       = h2;
 
 	for(map<double, double>::iterator i = atm.begin(); i != atm.end(); ++i){
 		static TCanvas c1("c1","c1",10,10,800,600);
@@ -71,33 +63,33 @@ void CalculateParticleFits(std::pair<double, double> (*ExpectedNumberofPhotons)(
 		const double &mass = i->second;
 		string name = mtn[mass];
 		double pi = TMath::Pi();
-		stringstream currentname;
-		currentname << defaultname << "_" << name;
-		string newhname = currentname.str();
+
 		double Area = 0.;
-
-		double weight = .1;
 		double center = angle;
-		double centerbounds[2] = {0, pi};
 		double width = smear;
-		double widthbounds[2] = {0, 10};
+		double constant = 0.;
+		double height = 0.;
+		double xlow = 0;
+		double xhi = pi;
+		// cout << "center = " << center << " -> ";
+		FitGaussianPlusConstant(histogram, xlow, xhi, 0, pi, 0, 10, center, width, constant, height);
+		// cout << center << endl;
+		height += loss;
+		Area = sqrt(2*pi)/histogram.GetBinWidth(1)*height*width;
+		TrackRecon &guess  = A.Recon.at(particle_index);
 
-		A.FitGaussianPlusConstant(center-range, center+range, center, centerbounds, width, widthbounds, Area);
-		// Area = guesser.FitParticle1D(c1_p, *h, params, angle-range, angle+range, angle, smear, newhname, print);	// area under gaussian (calculated number of photons)
-		double Beta = P.CalculateBeta(mass);
+		vector<double> params = {height, center, width, constant, xlow, xhi};
+		A.Recon.at(particle_index).Params.push_back(std::move(params));
 		static std::pair<double, double> vals;
+		double Beta = P.CalculateBeta(mass);
+		vals = ExpectedNumberofPhotons(P.X, P.Y, P.Theta, P.Phi, Beta);
 		double &N = vals.first;
 		double &Sigma_N = vals.second;
-
-		vals = ExpectedNumberofPhotons(P.X, P.Y, P.Theta, P.Phi, Beta);
-
 		if (print) cout << "X, Y, Theta, Phi, Beta = " << P.X << ", " << P.Y << ", " << P.Theta << ", " << P.Phi << ", " << Beta << endl;
-
-		vector< double > &params = A.Recon.back().Params.back();				// vector to store parameters for efficiency analysis
 
 		double pi2 = TMath::Pi()/2;
 		double sigma_Theta = smear/(Sigma_N);
-		double delSigTheta = (angle - params.at(1))/(sigma_Theta);
+		double delSigTheta = (angle - center)/(sigma_Theta);
 		double delSigA = (N-Area)/Sigma_N;
 		if (print) cout << "delSigA = " << delSigA << ", delSigTheta = " << delSigTheta << endl;
 		double delSigma = sqrt(delSigTheta*delSigTheta + delSigA*delSigA);
@@ -110,5 +102,5 @@ void CalculateParticleFits(std::pair<double, double> (*ExpectedNumberofPhotons)(
 		guess.ExpectedNumber.push_back(N);
 		if (print) guess.printLatest();
 	}
-
+	cout << endl;
 	}
