@@ -1,5 +1,5 @@
 #include "TH2D.h"
-
+#include "TFile.h"
 #include "dirc_objects.h"
 
 #include <vector>
@@ -7,26 +7,32 @@
 
 using namespace std;
 
+TH1D* CreateReducedHistogram(vector<PhotonOut> const& photons, vector<int> const& index, int const particle_index, string histname, int nbins, double xlow, double xhi){
 
-TH2D CreateReducedHistogram(vector<PhotonOut> const& photons, Analysis const& A, int const& particle_index, int &loss){
-
-	TH2D reduced_histogram = A.Hists2D.at(particle_index);
-	// reduced_histogram.SaveAs("original_histogram.root");
-	string histogram_name = reduced_histogram.GetName();
-	histogram_name.append("_reduced");
-
-	reduced_histogram.Reset();
-	reduced_histogram.SetName(histogram_name.c_str());
+	TH1D* h1 = new TH1D(histname.c_str(), histname.c_str(), nbins, xlow, xhi);
 
 	for (unsigned i = 0; i < photons.size(); ++i){
-		if (A.index.at(i) == -1) ++loss;
-		if (A.index.at(i) != particle_index) continue;
+		if (index.at(i) != particle_index) continue;
 		auto const& photon = photons.at(i);
-		auto const& x = photon.Phi;
-		auto const& y = photon.Theta;
-		reduced_histogram.Fill(x, y);
+		auto const& x = photon.Theta;
+		h1->Fill(x);
 	}
-	cout << "loss = " << endl;
-	// reduced_histogram.SaveAs("reduced_histogram.root");
-	return std::move(reduced_histogram);
+	
+	return std::move(h1);
+}
+
+TH1D* ReducedHistogram(vector<PhotonOut> const& photons, Analysis const& A, int const& particle_index){
+
+	TH2D const& h2 = A.Hists2D.at(particle_index);
+	// TFile f("reductions.root", "update");
+	// h2.Write("original");
+	string histogram_name = h2.GetName();
+	histogram_name.append("_reduced1D");
+
+	double xlow = h2.GetXaxis()->GetXmin();
+	double xhi = h2.GetXaxis()->GetXmax();
+	int nbins = h2.GetNbinsX();
+	TH1D* h1 = CreateReducedHistogram(photons, A.index, particle_index, histogram_name, nbins, xlow, xhi);
+
+	return std::move(h1);
 }

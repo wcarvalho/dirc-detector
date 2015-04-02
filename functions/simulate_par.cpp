@@ -100,7 +100,7 @@ void Simulate::TravelDistance(double D, bool print)
 
 
 	// non-printing-----
-	for (unsigned int i = 0; i<3;i++)
+	for (unsigned int i = 0; i<3; ++i)
 		coord[i] = coord[i] + dist[i];
 	// ---------------
 
@@ -112,6 +112,14 @@ void Simulate::TravelDistance(double D, bool print)
 	}
 	if (print) cout << endl;
 	Traveled = Traveled + D;
+
+	for (unsigned int i = 0; i<3; ++i){
+		if ((Dim[i] - coord[i] > Dim[i] + 1e-10) || ( Dim[i] - coord[i] < -1e-10)){
+			// cout << "\tOUT OF BOUNDS: coord " << i << " = " << coord[i] << "\tbounds: 0, " << Dim[i] << endl;
+			// cout << Dim[i] - coord[i] << endl;
+			// exit(1);
+		}
+	}
 }
 double Simulate::WillTravel(){
   return Vec.Mag()*TimeToWall;

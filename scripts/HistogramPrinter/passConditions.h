@@ -5,7 +5,7 @@ typedef std::unordered_map<int, bool(*)(const Particle&, const TrackRecon&, cons
 bool momentum_exceeds_threshold(const Particle& P, const TrackRecon& R, const int& rec_i, const double& threshold)
 {
 	double momentum = P.CalculateMomentum();
-	return (momentum > 1.5);
+	return exceedsThreshold(momentum, threshold);
 }
 
 bool correct_searchtype(const Particle& P, const TrackRecon& R, const int& rec_i, const double& threshold)
@@ -23,10 +23,5 @@ bool within_sigma_threshold(const Particle& P, const TrackRecon& R, const int& r
 }
 
 bool passConditions(const vector<int>& flags, flag_fun_map& fmap, const Particle& P, const TrackRecon& R, const int& rec_i, const double& threshold){
-	static bool passed;
-	passed = true;
-	for (auto condition: flags){
-		passed *= fmap[condition](P, R, rec_i, threshold);
-	}
-	return passed;
+	return passed_conditions(P, R, rec_i, threshold, fmap, flags);
 }

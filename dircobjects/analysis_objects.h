@@ -31,6 +31,9 @@ public:
 	double getIntegralAt(const int& i) const { return Areas.at(i); }
 	double getIntegralHeightAt(const int& i) const { return Params.at(i).at(0); }
 
+	// TMultiGraph* getIndexedPhotonScatterPlot(){ return &mg; }
+	// void setIndexedPhotonScatterPlot(TMultiGraph graph){ graph.Copy(mg); }
+
 	TH1D Hist;
 	TH2D Hist2D;
 	std::vector < std::string > Options; 			// every particle type
@@ -56,6 +59,7 @@ public:
 
 	std::vector<TrackRecon> Recon;
 	std::vector< int > index;
+	// std::vector<TGraph> indexedPhotonScatterPlot;
 
 	ClassDef(TrackRecons, 1);
 };
@@ -84,3 +88,6 @@ public:
 };
 
 #endif
+
+
+int getReconIndex(TrackRecon &T, std::string desired_type);

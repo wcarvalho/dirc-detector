@@ -17,7 +17,7 @@ double FindPeakInRegion(TH1D *histogram, double const& center, double const rang
 			histogram->SetBinContent(i, 0);
 	}
 
-	TSpectrum *s = new TSpectrum(20);
+	// TSpectrum *s = new TSpectrum(20);
 	// Int_t nfound = s->Search(histogram,1,"new");
 	// Float_t *xpeaks = s->GetPositionX();
 	// cout << "xpeaks =" << xpeaks[0] << endl;
@@ -57,8 +57,8 @@ void FindGaussianPeak(ParticleOut & particle, const TH2D& h, double const& smear
 
 	double center = peaks.at(maxheightindex);
 	cout << "max_peak = " << center << endl;
-	center_min = center - 0.025;
-	center_max = center + 0.025;
+	center_min = center - 0.05;
+	center_max = center + 0.05;
 
 	// static vector<double> centers;
 	// centers.clear();
@@ -131,10 +131,10 @@ void RecursiveCounting(ParticleOut & particle, const TH2D& h, double const& smea
 	}
 }
 
-void TallestBinContent(ParticleOut & particle, const TH2D& h, double const& smear, double& center_min, double &center_max, bool const& print){
+void TallestBinContent(ParticleOut & particle, TH2D const& h, double const& smear, double& center_min, double &center_max, bool const& print){
 	TH1D* h1 = h.ProjectionY();
 
-	double pi2 = pi/2;
+	static double pi2 = pi/2;
 	for (unsigned i = 0; i < h1->GetNbinsX(); ++i){
 		double bin_center = h1->GetBinCenter(i);
 		if (bin_center > pi2)

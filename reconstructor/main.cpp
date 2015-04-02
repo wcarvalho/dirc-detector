@@ -80,8 +80,8 @@ int main(int argc, char** argv)
 
 	// Classes used for analysis
   Reconstruction reconstruction;							// used to reconstruct original photon trajectories
-	ReconstructionData data;
-	reconstruction.Track.push_back(data);
+	// ReconstructionData data;
+	// reconstruction.Track.push_back(data);
 	Analysis A;																	// class used to create histograms
 	TrackRecons Tracks;		// stores information on particle identity guesses
 
@@ -111,18 +111,25 @@ int main(int argc, char** argv)
 		events->GetEntry(ev);
 
 		vector<ParticleOut> &pars = event_output->Particles;
-		int npar = pars.size();
     if (ai.last_given) removeFirstParticles(event_output, last, print); 	// remove all particles except for last particles determined by option 'l'
+		int npar = pars.size();
+		if (npar == 0) continue;
 	  ReconstructEvent(reconstruction, event_output, print);
+	  if (reconstruction.Photons.size() == 0)	continue;
 
-	  if (print && !(reconstruction.Photons.size())){
-	  	printf("\tEvent %i had no reconstructions\n", ev);
-	  	continue;
-	  }
 		for (unsigned i = 0; i < reconstruction.Photons.at(0).size(); ++i)
 			A.index.push_back(-10);				// for each photon set photon to a value that won't be used (e.g. -10)
+
+		auto index_copy = A.index;
+
 	  static unordered_map <int, int> photon_overlap;
 	  photon_overlap.clear();
+	  for (unsigned i = 0; i < pars.size(); ++i)
+	  	photon_overlap[i] = 0;
+
+
+
+		static double momentum_indexing_threshold = ai.momentum_indexing_threshold_arg;
 	  for (unsigned int par = 0; par < pars.size(); par++){
 			vector<PhotonOut> &phos = reconstruction.Photons.at(par);
 
@@ -132,42 +139,47 @@ int main(int argc, char** argv)
 			TrackRecon &guess  = A.Recon.back();
 			guess.Hist2D       = A.Hists2D.back();
 
-			ParticleOut &P = pars.at(par);
-			if (print) printf("\tpar = %i: eta = %f, pt = %f\n", par, P.Eta, P.pt);
 
-			IndexPhotons(pars.at(par), par, phos, A, smear, band_search_case, photon_overlap, print);
+			ParticleOut &P = pars.at(par);
+
+			if (passed_index_photons_condition(P, momentum_indexing_threshold)){
+				if (print) cout << "Indexing particle " << par << endl;
+				IndexPhotons(P, par, phos, A, smear, band_search_case, photon_overlap, print);
+			}
+			else
+				if (print) cout << "\tNot indexing particle " << par << endl;
+
 	  }
+
 
 	  for (unsigned int par = 0; par < pars.size(); par++){
 			auto& phos = reconstruction.Photons.at(par);
 			auto& P = pars.at(par);
 
-			int loss = 0;
-			TH2D reducted_histogram = CreateReducedHistogram(phos, A, par, loss);
-			TH1D* reducted_histogram_theta_projection = reducted_histogram.ProjectionY();
+			TH1D* reduced_histogram_theta_projection = ReducedHistogram(phos, A, par);
+			
+
+			if (print) cout << "Fitting particle " << par << endl;
+			
 
 			gettimeofday(&t1, NULL);
-			CalculateParticleFits(ExpectedNumberofPhotons, *reducted_histogram_theta_projection, P, phos, A, par, smear, loss, print);				// for one particle, 1 fit is calculated for every possible mass (5 masses means 5 fits for 1 particle)
+			CalculateParticleFits(ExpectedNumberofPhotons, *reduced_histogram_theta_projection, P, phos, A, par, smear, photon_overlap[par], print);				// for one particle, 1 fit is calculated for every possible mass (5 masses means 5 fits for 1 particle)
 			gettimeofday(&t2, NULL);
+
+
 			time1 = (double)(t1.tv_sec) + (double)(t1.tv_usec)/1.0e6;
 			time2 = (double)(t2.tv_sec) + (double)(t2.tv_usec)/1.0e6;
 			calculateFits_time += (time2-time1);
-
+			delete reduced_histogram_theta_projection;
 	  }
 
-
-	  Tracks.Recon = A.Recon;
-	  Tracks.index = A.index;
+	  Tracks.Recon = std::move(A.Recon);
+	  Tracks.index = std::move(A.index);
 	  tree->Fill();
+		A.Hists1D.clear(); A.Hists1D.shrink_to_fit(); // freeing (a LOT of) memory
+		A.Hists2D.clear(); A.Hists2D.shrink_to_fit(); // freeing (a LOT of) memory
 		A.Recon.clear();
-		if (print) cout << "TrackRecons has " << Tracks.Recon.size() << " Tracks\n";
-	  tree->Fill();
-		A.Recon.clear();
-		A.Hists1D.clear();
-		A.Hists2D.clear();
-		A.Hists1D.shrink_to_fit(); // freeing (a LOT of) memory
-		A.Hists2D.shrink_to_fit(); // freeing (a LOT of) memory
-		Tracks.Recon.clear();
+	  A.index.clear();
   }
 
   file2.cd();

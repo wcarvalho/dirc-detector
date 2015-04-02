@@ -59,6 +59,7 @@ void printTGraphASymError(TH1D& NumHist, TH1D& DenHist, const string& search, co
 
 	string denfilename = wul::appendStrings(dir, search, "_den_", basename);
 	if (printhists) DenHist.SaveAs(denfilename.c_str(), "update");
+
 	TGraphAsymmErrors graph;
 
 	if (!(dencounter)){
@@ -70,7 +71,6 @@ void printTGraphASymError(TH1D& NumHist, TH1D& DenHist, const string& search, co
 	string graphname = wul::appendStrings(dir, search,basename);
 
 	graph.BayesDivide(&NumHist, &DenHist);
-	cout << "npoints = " << graph.GetN() << endl;
 	graph.SetMarkerStyle(20);
 	graph.Draw("AP");
 	double max = graph.GetMaximum();
@@ -81,7 +81,6 @@ void printTGraphASymError(TH1D& NumHist, TH1D& DenHist, const string& search, co
 
 void fillTH1Dmaps(TH1D_map& num, TH1D_map& den, const vector<int>& graph_choices, vector_map& bounds_map, const int& nbins){
 
-	cout << "nbins = " << nbins << endl;
 	TH1D* H = 0;
 	for (auto graph: graph_choices){
 		auto& bounds = bounds_map[graph];

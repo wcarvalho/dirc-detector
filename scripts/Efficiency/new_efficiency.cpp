@@ -58,7 +58,7 @@ try{
 	TCLAP::ValueArg<double> ptbinsArg("","ptbins","number of pt bins",false, 100,"double", cmd);
 
 	TCLAP::MultiArg<int> matchconditionArg("m","match-condition","sets the method by which matches will be determined."
-		"\n\t\tcase 1: within_expectedphoton_threshold"
+		"\n\t\tcase 1: within_angle_resolution"
 		"\n\t\tcase 2: inside_box"
 		"\n\t\tcase 3: inside_circle"
 		"\n\t\tcase 4: xyplane",false, "double", cmd);
@@ -142,7 +142,7 @@ catch( TCLAP::ArgException& e )
 	vector<TrackRecon> *recons = &reconstructions->Recon;
 
 	func_map functions;
-	functions[1] = &within_expectedphoton_threshold;
+	functions[1] = &within_angle_resolution;
 	functions[2] = &inside_box;
 	functions[3] = &inside_circle;
 	functions[4] = &xyplane;
@@ -195,7 +195,6 @@ catch( TCLAP::ArgException& e )
 
 		if (!(plotefficiency || plotfalsepositive)) return;
 		double momentum = p.CalculateMomentum();
-
 		if (plotefficiency){
 			if (p.name != matchsearch) return;
 			++nmatch;

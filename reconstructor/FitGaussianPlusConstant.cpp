@@ -1,3 +1,4 @@
+#include <iostream>
 #include <map>
 #include <vector>
 
@@ -137,12 +138,13 @@ void FitGaussianPlusConstant(TH1D &h, double xlow, double xhi, double centerboun
     converged = minimizer.minimize( start, min_point, 1.0e-5 );
     count += 1;
     start = min_point;
+    // cout << "\tcount " << count << " with start " << start <<endl;
     if(count == converge_at){break;}
   }
-  if(converged == false)
-  {
+  // if(converged == false)
+  // {
     // min_point = VectorXd::Zero(4);
-  }
+  // }
   // else
   // {
   //   double val;

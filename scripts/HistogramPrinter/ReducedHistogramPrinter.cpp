@@ -10,6 +10,8 @@
 #include "event_parsers.h"
 #include "passConditions.h"
 #include "HistogramPrinter.h"
+#include "reconstructor.h"
+#include "createScatterPlot.h"
 
 #include <tclap/CmdLine.h>
 using namespace std;
@@ -17,6 +19,7 @@ using namespace std;
 int main(int argc, char const *argv[])
 {
 string directory;
+string photondata;
 string cheatdata;
 string reconstructiondata;
 string matchsearch;
@@ -37,6 +40,7 @@ double threshold;
 
 TCLAP::CmdLine cmd("Command description message", ' ', "0.1");
 try{
+	TCLAP::ValueArg<std::string> photonFileArg("P","photon-file","file with photon data",false,"photons.root","string", cmd);
 	TCLAP::ValueArg<std::string> particleFileArg("p","particle-file","file with particle data (cheat data)",false,"cheat.root","string", cmd);
 	TCLAP::ValueArg<std::string> reconstructionFileArg("r","reconstruction","file with reconstruction data",false,"reconstruction.root","string", cmd);
 
@@ -65,6 +69,7 @@ try{
 	directory = fitDirectoryArg.getValue();
 	reconstructiondata = reconstructionFileArg.getValue();
 	cheatdata = particleFileArg.getValue();
+	photondata = photonFileArg.getValue();
 	matchsearch = matchsearchArg.getValue();
 	falsesearch = falsesearchArg.getValue();
 	output_base = outputFileArg.getValue();
@@ -111,58 +116,64 @@ catch( TCLAP::ArgException& e )
 	TTree *t2 = (TTree*)f2.Get("identifications");
 	t2 -> SetBranchAddress("guesses", &reconstructions);
 
+  Reconstruction photon_reconstruction;
+  GeneratorOut* photon_event = 0;
+  TFile file(photondata.c_str(), "read");
+	TTree *photon_ttree = (TTree*)file.Get("sim_out");
+	photon_ttree->SetBranchAddress("simEvent", &photon_event);
+
 	int nentries = t1->GetEntries();
 	if ( !event_range_set )
 		event_range = {0, nentries};
 
-	string TH1Dfilename = wul::appendStrings(directory, output_base, "TH1D.root");
-	string TH2Dfilename = wul::appendStrings(directory, output_base, "TH2D.root");
-
 	gErrorIgnoreLevel = 5000;
   if (print) gErrorIgnoreLevel = 0;         // turn off all root printing
+
+	string filename2D = wul::appendStrings(directory, output_base, "_TH2Dreduced_plot.root");
+	string filename1D = wul::appendStrings(directory, output_base, "_TH1Dreduced_plot.root");
+  auto &pars   = originals->Particles;
+  auto &recons = reconstructions->Recon;
+	vector<int>& index = reconstructions->index;
 	TCanvas C("C", "C", 1000, 600);
-	TH1D* h1 = 0;
-	TH2D* h2 = 0;
+	for (unsigned ev = 0; ev < nentries; ++ev){
+		t1->GetEntry(ev);
+		t2->GetEntry(ev);
+		photon_ttree->GetEntry(ev);
 
-	vector<int> index;
-	auto getIndex = [&reconstructions, &index](TTree &t1, TTree &t2, std::vector<TrackRecon>& recons,std::vector<Particle>& pars, bool print){
-		dirc::matchDataSize(t1, t2, recons, pars, print);
-		cout << "finished matching?\n";
-		index = reconstructions->index;
-		cout << "index.at(10) = " << index.at(10) << endl;
-	};
 
-	auto printHistogram = [&C, &fit_conditions, &flags, &flag_funcs, &threshold, &TH1Dfilename, &TH2Dfilename, &colored, &h1, &h2, &print1D, &print1Dfit, &print2Dfit](TrackRecon& R, Particle& P, bool print){
+		dirc::matchDataSize(*t1, *t2, recons, pars, print);
+		ReconstructEvent(photon_reconstruction, photon_event, print);
 
-		return;
-		if (find(flags.begin(), flags.end(), 1) != flags.end())
-			if (!momentum_exceeds_threshold(P, R, 1, false)) return;
+		vector<ParticleOut> par_outs(pars.begin(), pars.end());
+		for(unsigned i = 0; i < pars.size(); ++i){
+			auto& phos = photon_reconstruction.Photons.at(i);
+			auto& recon = recons.at(i);
+			auto& par = pars.at(i);
+			if (find(flags.begin(), flags.end(), 1) != flags.end())
+				if (!momentum_exceeds_threshold(par, recon, 1, false)) continue;
+			auto& h2 = recon.Hist2D;
+			string histname = h2.GetName();
+			createIndexedPhotonScatterPlot(par_outs, phos, index, i, histname, filename2D.c_str() , "update");
 
-		TFile TH2Df(TH2Dfilename.c_str(), "update");
-		h2 = &R.Hist2D;
-		h2->SetStats(0);
-		if (colored){
-			h2->Draw("colz");
-			C.Write(h2->GetName());
-			C.Clear();
+			
+			if (!print1D) continue;
+			string h1histname;
+			double xlow;
+			double xhi;
+			int nbins;
+			h1histname = wul::appendStrings(histname, "1D");
+			xlow = h2.GetXaxis()->GetXmin();
+			xhi = h2.GetXaxis()->GetXmax();
+			nbins = h2.GetNbinsX();
+			TH1D* h1 = CreateReducedHistogram(phos, index, i, h1histname, nbins, xlow, xhi);
+			h1->SetDefaultSumw2();
+			print1DHistogram(C, *h1, par, recon, flag_funcs, flags, threshold, filename1D, print1Dfit);
+			delete h1;
 		}
-		else h2->Write();
-		TH2Df.Close();
+	}
 
-		h1 = h2->ProjectionY();
-
-		if (print1D)
-			print1DHistogram(C, *h1, P, R, flag_funcs, flags, threshold, TH1Dfilename, print1Dfit);
-
-	};
-
-
-	dirc::parseEvents(*t1, *t2, *originals, *reconstructions,
-		event_range[0], event_range[1],
-    getIndex, dirc::true_eventcondition,
-    printHistogram, dirc::true_trialcondition,
-    dirc::empty_eventparser, dirc::true_eventcondition,
-    print);
+	cout << "file 1D: " << filename1D << endl;
+	cout << "file 2D: " << filename2D << endl;
 
 return 0;
 }

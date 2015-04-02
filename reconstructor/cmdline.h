@@ -85,6 +85,9 @@ struct gengetopt_args_info
   const char *band_search_case_help; /**< @brief 
   \tcase 1: Search 1D theta projection for gaussian peak. 
   \tcase 2: apply hough transform to 2D theta vs. phi histogram help description.  */
+  double momentum_indexing_threshold_arg;	/**< @brief momentum threshold to determine whether an attemp will be made to index photons to a particular particle (default='.5').  */
+  char * momentum_indexing_threshold_orig;	/**< @brief momentum threshold to determine whether an attemp will be made to index photons to a particular particle original value given at command line.  */
+  const char *momentum_indexing_threshold_help; /**< @brief momentum threshold to determine whether an attemp will be made to index photons to a particular particle help description.  */
   
   unsigned int help_given ;	/**< @brief Whether help was given.  */
   unsigned int version_given ;	/**< @brief Whether version was given.  */
@@ -100,6 +103,7 @@ struct gengetopt_args_info
   unsigned int expected_photons_case_given ;	/**< @brief Whether expected-photons-case was given.  */
   unsigned int LookUpTable_given ;	/**< @brief Whether LookUpTable was given.  */
   unsigned int band_search_case_given ;	/**< @brief Whether band-search-case was given.  */
+  unsigned int momentum_indexing_threshold_given ;	/**< @brief Whether momentum-indexing-threshold was given.  */
 
 } ;
 

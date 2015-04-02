@@ -1,0 +1,3 @@
+source clean_dircobjects.sh
+source configure_dircobjects.sh
+source install_dircobjects.sh

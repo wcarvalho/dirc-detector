@@ -136,7 +136,8 @@ am__DEPENDENCIES_1 =
 libDircObjs_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_libDircObjs_la_OBJECTS = analysis.lo dirc_objects.lo \
-	particle_objects.lo dircTH1D.lo DircObjs_Dict.lo
+	particle_objects.lo dircTH1D.lo TrackRecons.lo dircTFile.lo \
+	DircObjs_Dict.lo
 libDircObjs_la_OBJECTS = $(am_libDircObjs_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -375,6 +376,8 @@ include_HEADERS = \
 	analysis_objects.h \
 	event_parsers.h \
 	dircTH1D.h \
+	dircTFile.h \
+	dircComparisons.h \
 	calibration_data.h
 
 libDircObjs_la_SOURCES = \
@@ -382,6 +385,8 @@ libDircObjs_la_SOURCES = \
 	dirc_objects.cpp \
 	particle_objects.cpp \
 	dircTH1D.cpp \
+	TrackRecons.cpp \
+	dircTFile.cpp \
 	DircObjs_Dict.cpp
 
 libDircObjs_la_LIBADD = \
@@ -477,7 +482,9 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DircObjs_Dict.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackRecons.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/analysis.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dircTFile.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dircTH1D.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dirc_objects.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/particle_objects.Plo@am__quote@

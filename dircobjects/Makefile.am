@@ -8,6 +8,8 @@ include_HEADERS  =  \
 	analysis_objects.h \
 	event_parsers.h \
 	dircTH1D.h \
+	dircTFile.h \
+	dircComparisons.h \
 	calibration_data.h
 
 
@@ -27,6 +29,8 @@ libDircObjs_la_SOURCES = \
 	dirc_objects.cpp \
 	particle_objects.cpp \
 	dircTH1D.cpp \
+	TrackRecons.cpp \
+	dircTFile.cpp \
 	DircObjs_Dict.cpp
 
 libDircObjs_la_LIBADD = \

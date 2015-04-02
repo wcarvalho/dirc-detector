@@ -1,6 +1,7 @@
 #ifndef __PARTICLE_OBJECTS__
 #define __PARTICLE_OBJECTS__
 
+#include <iostream>
 #include <vector>
 #include <cmath>
 #include <string>
@@ -16,13 +17,24 @@ public:
 	ParticleOut(double theta=1., double phi=0.) : Theta(theta), Phi(phi), Eta(0.), pt(0.), PhotonsPercm(1000), NumberofPhotons(0) { PossibleMasses(); }
 	~ParticleOut(){}
 
+
 	void PossibleMasses();
 	double CalculateBeta(double mass);
+	double CalculateBeta(double mass) const{
+		return CalculateBeta(mass);
+	};
 	std::map <std::string, double > MassMap();
 	std::map <std::string, double > EmissionAngleMap();
 	std::map <std::string, double > EmissionAngleMap() const{
 		return EmissionAngleMap();
 	};
+	virtual double CalculateMomentum(double m){
+		double Beta = CalculateBeta(m);
+		return sqrt((m*Beta)*(m*Beta)/(1-Beta*Beta));
+	}
+	virtual double CalculateMomentum(double m) const {
+		return CalculateMomentum(m);
+	}
 
 	double Theta;
 	double Phi;
@@ -52,6 +64,8 @@ public:
   double CalculatePhotonsPercm(double xlow, double xhi, double n, double z = 1., double alpha = 1./137);
 	double CalculateMomentum() const;
 	double CalculateMomentum();
+
+	std::string GetName(){ return name; }
 
 	Particle To_Particle(ParticleOut p1){ return Particle(p1.Theta, p1.Phi); }
 	ParticleOut To_ParticleOut(Particle p1){ return ParticleOut(p1.Theta, p1.Phi); }

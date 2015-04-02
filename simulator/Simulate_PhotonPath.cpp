@@ -15,7 +15,8 @@ void Simulate_PhotonPath(Detector d, Photon &photon, double smear, bool print)
 {
 	print = false; // TEMPORARY
 	if (print){ TabToLevel(2); cout << "Simulate_PhotonPath:\n"; }
-	Simulate simPho(photon.Theta, photon.Phi);
+	static Simulate simPho(0, 0);
+	simPho.SetAngle(photon.Theta, photon.Phi);
 	simPho.SetStart(photon.X, photon.Y, photon.Z);
 	simPho.SetDim(d.Length, d.Width, d.Height);
 

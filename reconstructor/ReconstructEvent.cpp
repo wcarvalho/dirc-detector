@@ -28,7 +28,7 @@ void ReconstructEvent(Reconstruction &reconstruction, GeneratorOut*& event_outpu
 		Reconstructed_Reflections(pho, *pho_theta, *pho_phi, print); // add photon with flipped z, y, or both
 		for (j = 0; j < pho.size(); j++)
 		{
-			event_output->Photons.push_back(pho[j]); // append to end of list of photons
+			event_output->Photons.push_back(std::move(pho[j])); // append to end of list of photons
 		}
 	}
 
@@ -37,7 +37,7 @@ void ReconstructEvent(Reconstruction &reconstruction, GeneratorOut*& event_outpu
 	{
 		ReconstructTrack(reconstruction, event_output->Particles.at(i), event_output->Photons, print);
 	}
-	if (!(reconstruction.Photons.size()) && print){
+	if (!(reconstruction.Photons.size() == 0) && print){
 		cout << "\t" << reconstruction.Photons.size() << " reconstructions, each with ";
 		cout << reconstruction.Photons.back().size() << " photons\n";
 	}

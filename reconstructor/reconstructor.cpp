@@ -36,7 +36,7 @@ void CreateHistogram_1D2D(int ev, int par, Analysis &A, std::vector<PhotonOut> &
 	}
 	A.SetData(data);
 
-	std::string histTitle = wul::appendStrings(wul::stringDouble("Event ", ev), wul::stringDouble(", Particle ", par+1));
+	std::string histTitle = wul::appendStrings(wul::stringDouble("Event ", ev), wul::stringDouble(", Particle ", par));
 	std::string histname = histName0(ev, par);
   std::string TH1Name = histname; TH1Name.append("_1D");
   std::string TH2Name = histname; TH2Name.append("_2D");
@@ -56,6 +56,7 @@ void CalculateParticleFits(std::pair<double, double> (*ExpectedNumberofPhotons)(
 
 	double travels = 0.;
 
+	// cout << "particle: " << particle_index << " has added loss: " << loss << endl;
 	for(map<double, double>::iterator i = atm.begin(); i != atm.end(); ++i){
 		static TCanvas c1("c1","c1",10,10,800,600);
 		static TCanvas *c1_p = &c1;
@@ -69,12 +70,15 @@ void CalculateParticleFits(std::pair<double, double> (*ExpectedNumberofPhotons)(
 		double width = smear;
 		double constant = 0.;
 		double height = 0.;
-		double xlow = 0;
-		double xhi = pi;
-		// cout << "center = " << center << " -> ";
-		FitGaussianPlusConstant(histogram, xlow, xhi, 0, pi, 0, 10, center, width, constant, height);
-		// cout << center << endl;
-		height += loss;
+		double xlow = angle - .05;
+		double xhi = angle + .05;
+		// TFile f("histfits.root", "update");
+		// histogram.Write();
+		// cout << "center = " << center << endl;
+		// cout << "width = " << width << endl;
+		FitGaussianPlusConstant(histogram, xlow, xhi, 0, pi, -1.10, 1.e10, center, width, constant, height, 8);
+		// f.Close();
+		// height += loss;
 		Area = sqrt(2*pi)/histogram.GetBinWidth(1)*height*width;
 		TrackRecon &guess  = A.Recon.at(particle_index);
 
@@ -85,13 +89,13 @@ void CalculateParticleFits(std::pair<double, double> (*ExpectedNumberofPhotons)(
 		vals = ExpectedNumberofPhotons(P.X, P.Y, P.Theta, P.Phi, Beta);
 		double &N = vals.first;
 		double &Sigma_N = vals.second;
-		if (print) cout << "X, Y, Theta, Phi, Beta = " << P.X << ", " << P.Y << ", " << P.Theta << ", " << P.Phi << ", " << Beta << endl;
+		// if (print) cout << "X, Y, Theta, Phi, Beta = " << P.X << ", " << P.Y << ", " << P.Theta << ", " << P.Phi << ", " << Beta << endl;
 
 		double pi2 = TMath::Pi()/2;
 		double sigma_Theta = smear/(Sigma_N);
 		double delSigTheta = (angle - center)/(sigma_Theta);
 		double delSigA = (N-Area)/Sigma_N;
-		if (print) cout << "delSigA = " << delSigA << ", delSigTheta = " << delSigTheta << endl;
+		// if (print) cout << "delSigA = " << delSigA << ", delSigTheta = " << delSigTheta << endl;
 		double delSigma = sqrt(delSigTheta*delSigTheta + delSigA*delSigA);
 
 		guess.Options.push_back(name);
@@ -100,7 +104,30 @@ void CalculateParticleFits(std::pair<double, double> (*ExpectedNumberofPhotons)(
 		guess.Sigmas.push_back(delSigma);
 		guess.Areas.push_back(Area);
 		guess.ExpectedNumber.push_back(N);
-		if (print) guess.printLatest();
+		// if (print) guess.printLatest();
 	}
-	cout << endl;
+}
+
+bool passed_index_photons_condition(ParticleOut & P, double momentum_indexing_threshold){
+	static std::map<std::string,double> masses;
+	masses = P.MassMap();
+
+	static double momentum {0.};
+	momentum = P.CalculateMomentum(masses["electron"]);
+	
+
+	Simulate simPar(P.Theta, P.Phi);
+	Detector d;
+	simPar.SetStart(P.X, P.Y, 0);
+	simPar.SetDim(d.Length, d.Width, d.Height);
+	simPar.DistancetoWalls();
+	simPar.WhichWall();
+	int wall = simPar.wall;
+	if (wall == 2){
+		return false;
+	} 
+	else{
+		return true;
 	}
+	
+}

@@ -50,6 +50,5 @@ void Simulate_ParticlePath(Detector d, Particle &particle, int parnum, PhotonEve
 		P.Z = simPar.coord[2];
 		P.WhichParticle = parnum;
 		photon_event.Photons.push_back(P);
-
 	}
 }

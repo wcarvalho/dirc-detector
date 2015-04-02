@@ -52,9 +52,9 @@ try{
 	TCLAP::MultiArg<int> eventRangeArg("e","event-range","events for which you want to print fits", false, "int", cmd);
 
 	TCLAP::MultiArg<int> flagsArg("c","flag-condition","sets the method by which matches will be determined."
-		"\n\t\tcase 1: momentum is greater than 1.5"
+		"\n\t\tcase 1: momentum is greater than momentum-threshold"
 		"\n\t\tcase 2: fit as search item (default electron)"
-		"\n\t\tcase 3: sigma is less than threshold",false,"int", cmd);
+		"\n\t\tcase 3: sigma is less than sigma-threshold",false,"int", cmd);
 
 	TCLAP::SwitchArg verboseArg("v","verbose","", cmd, false);
 	TCLAP::SwitchArg print2DfitArg("","f2D","print 2D histograms with fits", cmd, false);
@@ -156,6 +156,8 @@ catch( TCLAP::ArgException& e )
     dirc::empty_eventparser, dirc::true_eventcondition,
     print);
 
+	cout << "1D file: " << TH1Dfilename << endl;
+	cout << "2D file: " << TH2Dfilename << endl;
 return 0;
 }
 
