@@ -19,12 +19,14 @@ vector<Particle> generate(int nparticles, gParticle& gPar, Detector d, int maxPa
 	  				d.Mag_field, gPar.X, gPar.Y, gPar.Phi, gPar.Theta, gPar.Beta);
   		gPar.X = gPar.X + d.Length/2;
   		gPar.Y = gPar.Y + d.Width/2;
+  		if ( (gPar.Theta > pi/2) && (gPar.Theta < 3*pi/2)) gPar.Z = d.Height;
+  		else gPar.Z = 0.;
 
   		gPar.getEangle();
   		gPar.CalculateMomentum();
   		// determines the number of photons per cm here
 			gPar.CalculatePhotonsPercm(200e-9, 1000e-9, d.n);
-  		if (passed && (gPar.Theta < pi/2))
+  		if (passed)
 			{
 				if( gPar.ConeAngle == gPar.ConeAngle )
 				{
@@ -33,10 +35,11 @@ vector<Particle> generate(int nparticles, gParticle& gPar, Detector d, int maxPa
 						printf("\n\tParticle: %s, Eta = %f, pt = %f, Phi_i = %f\n", gPar.name.c_str(), gPar.Eta, gPar.pt, gPar.Phi_i);
 		  			printf("\t\tmass = %f, charge = %i\n", gPar.m, gPar.Charge);
 		  			printf("\tCollided with detector with:\n"
-		  				  		"\t\tX = %f, Y = %f, Phi = %f, Theta = %f\n"
+		  				  		"\t\tX = %f, Y = %f, Z = %f"
+		  				  		"\n\t\tPhi = %f, Theta = %f\n"
 		  				  		"\t\tBeta = %f, Emission Angle = %f\n"
 		  				  		"\t\twith %f PhotonsPercm\n",
-		  				  		gPar.X, gPar.Y, gPar.Phi, gPar.Theta, gPar.Beta, gPar.ConeAngle, gPar.PhotonsPercm);
+		  				  		gPar.X, gPar.Y, gPar.Z, gPar.Phi, gPar.Theta, gPar.Beta, gPar.ConeAngle, gPar.PhotonsPercm);
 		  		}
 				pars.push_back(*Par);
 				passes++;

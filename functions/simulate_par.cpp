@@ -134,6 +134,9 @@ void Simulate::GotoWall(bool print)
 void Simulate::Reflect(bool print)
 {
 	if (print) PrintVec();
+	// cout << "\t\tTheta = " << Theta << endl;
+	// cout << "\t\tPhi = " << Theta << endl;
+
 	if (wall == 1)
 		FlipX();
 
@@ -144,6 +147,9 @@ void Simulate::Reflect(bool print)
 		FlipZ();
 
 	if (print) PrintVec();
+
+	// cout << "\t\tTheta = " << Theta << endl;
+	// cout << "\t\tPhi = " << Theta << endl;
 }
 
 void Simulate::PrintVec(){

@@ -89,7 +89,7 @@ catch( TCLAP::ArgException& e )
 		G = new TGraph();
 		MakeGraph(pt, xy, count, G);
 		graphs.push_back(std::move(G));
-		graphs.back()->Draw("LP");
+		graphs.back()->Draw("P");
 		stringstream ss; ss.str("");
 		ss << pt;
 	 	L.AddEntry(graphs.back(),ss.str().c_str(),"lp");

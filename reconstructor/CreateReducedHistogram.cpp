@@ -17,7 +17,7 @@ TH1D* CreateReducedHistogram(vector<PhotonOut> const& photons, vector<int> const
 		auto const& x = photon.Theta;
 		h1->Fill(x);
 	}
-	
+
 	return std::move(h1);
 }
 
@@ -31,7 +31,7 @@ TH1D* ReducedHistogram(vector<PhotonOut> const& photons, Analysis const& A, int 
 
 	double xlow = h2.GetXaxis()->GetXmin();
 	double xhi = h2.GetXaxis()->GetXmax();
-	int nbins = h2.GetNbinsX();
+	int nbins = h2.GetNbinsY();
 	TH1D* h1 = CreateReducedHistogram(photons, A.index, particle_index, histogram_name, nbins, xlow, xhi);
 
 	return std::move(h1);

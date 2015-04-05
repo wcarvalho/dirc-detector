@@ -16,7 +16,13 @@ option "graph-prefix" g "directory where graphs will be stored" string optional
 option "last" l "only reconstructs the last l particles" int optional
 
 option "Smear" S "the smearing applied to the fitting (used for width of gaussian)" double optional
+
 option "expected-photons-case" e "\n\tcase 1: look-up table. \n\tcase 2: riemann sum calculation." argoptional int optional default="1"
+
 option "LookUpTable" L "file for look-up table" string default="LookUpTable" argoptional optional dependon="expected-photons-case"
+
 option "band-search-case" b "\n\tcase 1: Search 1D theta projection for gaussian peak. \n\tcase 2: apply hough transform to 2D theta vs. phi histogram" argoptional int optional default="1"
+
 option "momentum-indexing-threshold" - "momentum threshold to determine whether an attemp will be made to index photons to a particular particle" double optional default=".5"
+
+option "event-range" e "Event Range" double optional

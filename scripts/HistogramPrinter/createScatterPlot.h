@@ -53,8 +53,8 @@ void DrawScatterPlot(TMultiGraph*& mg, TLegend& L, vector<ParticleOut> const& pa
 
 	createGraph(graphs, L, "shared index", photons, index, -1, markerstyle, 1, markersize);
 
-	// createGraph(graphs, L, "not indexed", photons, index, -10, markerstyle, nparticles+2, markersize);
-	
+	createGraph(graphs, L, "not indexed", photons, index, -10, markerstyle, nparticles+2, markersize);
+
 	for (auto& graph: graphs){
 		mg->Add(graph);
 	}

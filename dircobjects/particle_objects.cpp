@@ -38,7 +38,7 @@ std::map<std::string, double> ParticleOut::MassMap(){
 	for(unsigned int i = 0; i < deftypes.size(); ++i){
 		massmap[deftypes.at(i)] = masses[i];
 	}
-	return massmap;
+	return std::move(massmap);
 }
 
 map<string, double> ParticleOut::EmissionAngleMap(){
@@ -57,7 +57,7 @@ map<string, double> ParticleOut::EmissionAngleMap(){
 		if (thetaC_temp == thetaC_temp)
 			emissionanglemap[name] = thetaC_temp;
 	}
-	return emissionanglemap;
+	return std::move(emissionanglemap);
 }
 
 double Particle::CalculatePhotonsPercm(double xlow, double xhigh, double n, double z, double alpha){

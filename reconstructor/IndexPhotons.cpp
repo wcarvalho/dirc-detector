@@ -23,11 +23,11 @@ bool setInsideBand(vector<PhotonOut> const& photons, vector<int> const& photonse
 		if ((theta<center_max)&&(theta>center_min)){
 			inside_band = true; break;
 		}
-	}		
+	}
 	return inside_band;
 }
 
-void indexSet(vector<int>& index, vector<int> const& photonset, unordered_map <int, int>& photon_overlap, int const& particle_index, bool print){
+void indexSet(vector<int>& index, vector<int> const& photonset, unordered_map <int, int>& photon_overlap, unordered_map <int, int>& photons_per_particle, int const& particle_index, bool print){
 
 	for (auto& i: photonset){
 		auto& current_index = index.at(i);
@@ -38,7 +38,10 @@ void indexSet(vector<int>& index, vector<int> const& photonset, unordered_map <i
 			current_index = -1;
 		}
 		else if (current_index == -1) ++photon_overlap[particle_index];
-		else current_index = particle_index;
+		else {
+			current_index = particle_index;
+			++photons_per_particle[particle_index];
+		}
 		// cout << current_index << endl;
 	}
 }
@@ -56,17 +59,20 @@ void diagnostic_print(vector<int> const& index, int const& particle_index, vecto
 	}
 }
 
-void IndexPhotons(ParticleOut & particle, int const& particle_index, vector<PhotonOut> const& photons, Analysis & A, double const& smear, unsigned const& band_search_case, unordered_map <int, int>& photon_overlap, bool const& print){
+void IndexPhotons(ParticleOut & particle, int const& particle_index, vector<PhotonOut> const& photons, Analysis & A, double const& smear, unsigned const& band_search_case, unordered_map <int, int>& photon_overlap, unordered_map <int, int>& photons_per_particle, vec_pair const&expected_photons, map<string,double> const& anglemap, bool const& print){
 
-	void (*GetPhotonBand)(ParticleOut &, TH2D const&, double const&, double&, double&, bool const&);
+	bool (*GetPhotonBand)(ParticleOut &, TH2D const&, double const&, double&, double&, vec_pair const&, map<string,double> const&, bool const&);
 	switch(band_search_case){
 		case 1: GetPhotonBand=&TallestBinContent; break;
-		// case 2: GetPhotonBand=&HoughTransform; // FIXME::error linking libraries
+		// case 2: GetPhotonBand=&PeakNearExpectedThetas; break;
 	}
 	const TH2D& h = A.Hists2D.back();
 	static double center_min = 0.;
 	static double center_max = 0.;
-	GetPhotonBand(particle, h, smear, center_min, center_max, print);
+	if (!GetPhotonBand(particle, h, smear, center_min, center_max, expected_photons, anglemap, print)) {
+		if (print) cout << "Didn't Index\n";
+		return;
+	}
 
 	int nphotons = photons.size()/4;
 	vector<int> photonset{0, 0, 0, 0};
@@ -76,13 +82,9 @@ void IndexPhotons(ParticleOut & particle, int const& particle_index, vector<Phot
 		getCurrentPhotonSet(i, nphotons, photonset);
 
 		if ( setInsideBand(photons, photonset, center_min, center_max, print) ){
-			indexSet(A.index, photonset, photon_overlap, particle_index, print);
+			indexSet(A.index, photonset, photon_overlap, photons_per_particle, particle_index, print);
 		}
-		// cout << "center_min = " << center_min << endl;
-		// cout << "center_max = " << center_max << endl;
 		// diagnostic_print(A.index, particle_index, photons, photonset, center_min, center_max);
-
-		// i=set_end;
 	}
 
 	return;

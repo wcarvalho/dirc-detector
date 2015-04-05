@@ -15,6 +15,7 @@ include_HEADERS = reconstructor.h \
 ../headers/file-properties.h
 
 commonSources = LookUpTable.cpp \
+CalculateParticleFits.cpp \
 cmdline.cpp \
 reconstructor.cpp \
 ReconstructEvent.cpp \

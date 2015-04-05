@@ -6,7 +6,66 @@
 #include <unordered_map>
 #include <TSpectrum.h>
 double pi=3.14159265358979312;
+/**
+ * WORKING
+ */
 
+bool TallestBinContent(ParticleOut & particle, TH2D const& h, double const& smear, double& center_min, double &center_max, vec_pair const&expected_photons, map<string,double> const& anglemap, bool const& print){
+	TH1D* h1 = h.ProjectionY();
+
+	static double pi2 = pi/2;
+	for (unsigned i = 0; i < h1->GetNbinsX(); ++i){
+		double bin_center = h1->GetBinCenter(i);
+		if ((bin_center > 1.) && (bin_center < .3)){
+			h1->SetBinContent(i, 0);
+		}
+	}
+	int max_bin = h1->GetMaximumBin();
+	double height = h1->GetBinContent(max_bin);
+	double bin_width = h1->GetXaxis()->GetBinWidth(1);
+	double Area = sqrt(2*pi)*smear*height/(bin_width) - (2*smear*height/5)/bin_width;
+	unsigned i = 0;
+	double minNSigma = 1.e10;
+	for (auto& vals: expected_photons){
+		double N = vals.first;
+		// cout << "N = " << N << endl;
+		// cout << "\tArea = " << Area << endl;
+		// cout << "\theight = " << height << endl;
+		double sigma = sqrt(Area);
+		// cout << "\tsigma = " << sigma << endl;
+		double nsigma = fabs(N-Area)/sigma;
+		// cout << "\tnsigma = " << nsigma << endl;
+
+		if (nsigma < minNSigma){
+			minNSigma = nsigma;
+		}
+		++i;
+	}
+		// cout << "minNSigma = " << minNSigma << "\n\n";
+	// if (minNSigma > 5) return false;
+	if (height < 20) return false;
+	double center = h1->GetBinCenter(max_bin);
+	center_min = center -.03;
+	center_max = center +.03;
+	return true;
+}
+
+bool PeakNearExpectedThetas(ParticleOut & particle, TH2D const& h, double const& smear, double& center_min, double &center_max, vec_pair const&expected_photons, map<string,double> const& anglemap, bool const& print){
+	TH1D* h1 = h.ProjectionY();
+
+
+	return true;
+}
+
+
+
+
+
+
+
+/**
+ * NOT WORKING
+ */
 double FindPeakInRegion(TH1D *histogram, double const& center, double const range){
 
 	double xlow = center - range/2;
@@ -27,7 +86,7 @@ double FindPeakInRegion(TH1D *histogram, double const& center, double const rang
 	// return xpeaks[0];
 }
 
-void FindGaussianPeak(ParticleOut & particle, const TH2D& h, double const& smear, double& center_min, double &center_max, bool const& print){
+bool FindGaussianPeak(ParticleOut & particle, const TH2D& h, double const& smear, double& center_min, double &center_max, vec_pair const&expected_photons, map<string,double> const& anglemap, bool const& print){
 	TH1D* h1 = h.ProjectionY();
 	TH1D &hist = *h1;
 
@@ -59,7 +118,7 @@ void FindGaussianPeak(ParticleOut & particle, const TH2D& h, double const& smear
 	cout << "max_peak = " << center << endl;
 	center_min = center - 0.05;
 	center_max = center + 0.05;
-
+	return true;
 	// static vector<double> centers;
 	// centers.clear();
 	// static double final_round = .05;
@@ -120,32 +179,10 @@ void FindGaussianPeak(ParticleOut & particle, const TH2D& h, double const& smear
 	// center_max = largestbin_center + 0.025;
 }
 
-void RecursiveCounting(ParticleOut & particle, const TH2D& h, double const& smear, double& center_min, double &center_max, bool const& print){
-	TH1D* h1 = h.ProjectionY();
-	TH1D &hist = *h1;
 
-	auto emission_angle_map = particle.EmissionAngleMap();
-	// hist.rebin()
-	for (auto i = emission_angle_map.begin(); i != emission_angle_map.end(); ++i){
 
-	}
-}
-
-void TallestBinContent(ParticleOut & particle, TH2D const& h, double const& smear, double& center_min, double &center_max, bool const& print){
-	TH1D* h1 = h.ProjectionY();
-
-	static double pi2 = pi/2;
-	for (unsigned i = 0; i < h1->GetNbinsX(); ++i){
-		double bin_center = h1->GetBinCenter(i);
-		if (bin_center > pi2)
-			h1->SetBinContent(i, 0);
-	}
-	int max_bin = h1->GetMaximumBin();
-	double center = h1->GetBinCenter(max_bin);
-	center_min = center -.025;
-	center_max = center +.025;
-}
-// void HoughTransform(ParticleOut & particle, const TH2D& h, double const& smear, double& center_min, double &center_max, bool const& print){
+// FIXME::error linking libraries
+// bool HoughTransform(ParticleOut & particle, const TH2D& h, double const& smear, double& center_min, double &center_max, vec_pair const&expected_photons, map<string,double> const& anglemap, bool const& print){
 
 //   int nbinsx = h.GetNbinsX();
 //   int nbinsy = h.GetNbinsY();

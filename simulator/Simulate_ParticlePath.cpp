@@ -21,7 +21,7 @@ void Simulate_ParticlePath(Detector d, Particle &particle, int parnum, PhotonEve
 	Simulate simPar(particle.Theta, particle.Phi);
 
 	simPar.SetDim(d.Length, d.Width, d.Height);
-	simPar.SetStart(particle.X, particle.Y, 0);
+	simPar.SetStart(particle.X, particle.Y, particle.Z);
 	simPar.SetVelocity(particle.Beta);
 	simPar.DistancetoWalls(print);
 	simPar.WhichWall(print);

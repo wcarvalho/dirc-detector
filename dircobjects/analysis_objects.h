@@ -34,7 +34,6 @@ public:
 	// TMultiGraph* getIndexedPhotonScatterPlot(){ return &mg; }
 	// void setIndexedPhotonScatterPlot(TMultiGraph graph){ graph.Copy(mg); }
 
-	TH1D Hist;
 	TH2D Hist2D;
 	std::vector < std::string > Options; 			// every particle type
 	std::vector < double > delSigTheta;				// delta sigma theta for every particle

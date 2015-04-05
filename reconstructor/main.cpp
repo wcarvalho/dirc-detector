@@ -113,9 +113,10 @@ int main(int argc, char** argv)
 		vector<ParticleOut> &pars = event_output->Particles;
     if (ai.last_given) removeFirstParticles(event_output, last, print); 	// remove all particles except for last particles determined by option 'l'
 		int npar = pars.size();
+		if (print) cout << "\t" << npar << "particles\n";
 		if (npar == 0) continue;
 	  ReconstructEvent(reconstruction, event_output, print);
-	  if (reconstruction.Photons.size() == 0)	continue;
+	  if (reconstruction.Photons.back().size() == 0)	continue;
 
 		for (unsigned i = 0; i < reconstruction.Photons.at(0).size(); ++i)
 			A.index.push_back(-10);				// for each photon set photon to a value that won't be used (e.g. -10)
@@ -123,11 +124,18 @@ int main(int argc, char** argv)
 		auto index_copy = A.index;
 
 	  static unordered_map <int, int> photon_overlap;
+	  static unordered_map <int, int> photons_per_particle;
 	  photon_overlap.clear();
-	  for (unsigned i = 0; i < pars.size(); ++i)
+	  photons_per_particle.clear();
+	  for (unsigned i = 0; i < pars.size(); ++i){
 	  	photon_overlap[i] = 0;
+	  	photons_per_particle[i] = 0;
+	  }
 
 
+		static unordered_map <int, vec_pair> expectedPhotonMap;
+		static std::map<std::string, double> massmap; massmap.clear();
+		static std::map<std::string, double> anglemap; anglemap.clear();
 
 		static double momentum_indexing_threshold = ai.momentum_indexing_threshold_arg;
 	  for (unsigned int par = 0; par < pars.size(); par++){
@@ -139,15 +147,23 @@ int main(int argc, char** argv)
 			TrackRecon &guess  = A.Recon.back();
 			guess.Hist2D       = A.Hists2D.back();
 
-
 			ParticleOut &P = pars.at(par);
 
-			if (passed_index_photons_condition(P, momentum_indexing_threshold)){
-				if (print) cout << "Indexing particle " << par << endl;
-				IndexPhotons(P, par, phos, A, smear, band_search_case, photon_overlap, print);
+			massmap = P.MassMap();
+			anglemap = P.EmissionAngleMap();
+		  static vec_pair expectedNPhotons; expectedNPhotons.clear();
+			for (auto i = anglemap.begin(); i != anglemap.end(); ++i){
+				double Beta = P.CalculateBeta(massmap[i->first]);
+				expectedNPhotons.push_back(ExpectedNumberofPhotons(P.X, P.Y, P.Theta, P.Phi, Beta));
 			}
-			else
-				if (print) cout << "\tNot indexing particle " << par << endl;
+			expectedPhotonMap[par] = expectedNPhotons;
+
+			// if (passed_index_photons_condition(P, momentum_indexing_threshold)){
+			if (print) cout << "Indexing particle " << par << endl;
+			IndexPhotons(P, par, phos, A, smear, band_search_case, photon_overlap, photons_per_particle, expectedNPhotons, anglemap, print);
+			// }
+			// else
+			// 	if (print) cout << "\tNot indexing particle " << par << endl;
 
 	  }
 
@@ -157,14 +173,20 @@ int main(int argc, char** argv)
 			auto& P = pars.at(par);
 
 			TH1D* reduced_histogram_theta_projection = ReducedHistogram(phos, A, par);
-			
 
-			if (print) cout << "Fitting particle " << par << endl;
-			
+			if (print) cout << "Fitting particle " << par << " with " << photons_per_particle[par] << "expected photons\n";
+			if (photons_per_particle[par] == 0){
+				TFile f("reduced_hists.root", "update");
+				reduced_histogram_theta_projection->Write();
+				f.Close();
+			}
+			if (photons_per_particle[par] == 0) continue;
 
-			gettimeofday(&t1, NULL);
-			CalculateParticleFits(ExpectedNumberofPhotons, *reduced_histogram_theta_projection, P, phos, A, par, smear, photon_overlap[par], print);				// for one particle, 1 fit is calculated for every possible mass (5 masses means 5 fits for 1 particle)
-			gettimeofday(&t2, NULL);
+			if (photons_per_particle[par] != 0 ){
+				gettimeofday(&t1, NULL);
+				CalculateParticleFits(*reduced_histogram_theta_projection, P, phos, A, par, smear, photon_overlap[par], expectedPhotonMap[par], print);				// for one particle, 1 fit is calculated for every possible mass (5 masses means 5 fits for 1 particle)
+				gettimeofday(&t2, NULL);
+			}
 
 
 			time1 = (double)(t1.tv_sec) + (double)(t1.tv_usec)/1.0e6;
@@ -176,8 +198,8 @@ int main(int argc, char** argv)
 	  Tracks.Recon = std::move(A.Recon);
 	  Tracks.index = std::move(A.index);
 	  tree->Fill();
-		A.Hists1D.clear(); A.Hists1D.shrink_to_fit(); // freeing (a LOT of) memory
-		A.Hists2D.clear(); A.Hists2D.shrink_to_fit(); // freeing (a LOT of) memory
+		A.Hists1D.clear(); A.Hists1D.shrink_to_fit(); // freeing memory
+		A.Hists2D.clear(); A.Hists2D.shrink_to_fit(); // freeing memory
 		A.Recon.clear();
 	  A.index.clear();
   }

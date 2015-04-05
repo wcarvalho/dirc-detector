@@ -140,11 +140,12 @@ int main(int argc, char** argv)
 		if (print) cout << "Number of Particles: " << ParEvent->Particles.size() << endl;
 		for (unsigned int par = 0; par < ParEvent->Particles.size(); par++)
 		{
- 			par_theta = &ParEvent->Particles[par].Theta;
-			par_phi = &ParEvent->Particles[par].Phi;
+			auto& particle = ParEvent->Particles.at(par);
+ 			par_theta = &particle.Theta;
+			par_phi = &particle.Phi;
 
-			if (print) cout << "\tParticle = " << par << " with X, Y, Theta, Phi, Beta =\n\t\t" << ParEvent->Particles[par].X << ", " << ParEvent->Particles[par].Y << ", " << ParEvent->Particles[par].Theta << ", " << ParEvent->Particles[par].Phi << ", " << ParEvent->Particles[par].Beta << endl;
-			if (print) cout << "\t\tPhotonsPerCm = " << ParEvent->Particles.back().PhotonsPercm << endl;
+			if (print) cout << "\tParticle = " << par << " with X, Y, Z, Theta, Phi, Beta =\n\t\t" << particle.X << ", " << particle.Y << ", " << particle.Z << ", " << particle.Theta << ", " << particle.Phi << ", " << particle.Beta << endl;
+			if (print) cout << "\t\tPhotonsPerCm = " << particle.PhotonsPercm << endl;
 			// if (print){
 				// printf("\t\tparticle theta = %f, phi = %f\n", *par_theta, *par_phi);
 			// }
