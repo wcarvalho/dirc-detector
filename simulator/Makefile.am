@@ -40,12 +40,12 @@ commonSources = \
 	ScanPhi.cpp \
 	Pull_Data.cpp \
 	Release_Photons.cpp \
+	Simulate.cpp \
 ##=====================================
 ##
 ##					Mutual functions
 ##
 ##=====================================
-	../functions/simulate_par.cpp \
 	../functions/TabToLevel.cpp \
 	../functions/Get_Photon_UnitVector.cpp \
 	../functions/Get_Particle_UnitVector.cpp \

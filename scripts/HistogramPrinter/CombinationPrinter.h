@@ -20,9 +20,6 @@ void checkValid(const TFile& f){
 }
 
 
-
-
-
 void addScatterPlot(TPad& pad, TMultiGraph *mg, TLegend& L, vector<ParticleOut> const& particles, vector<PhotonOut> const& photons, vector<int> const& index, int particle_index){
 
 	DrawScatterPlot(mg, L, particles, photons, index, particle_index);
@@ -44,6 +41,8 @@ void addFit(TH1D &h, TrackRecon const& R, int search_index){
 
 	if (R.Params.empty()) return;
 	static TF1 f2("F", "[0]*exp( -(x-[1])*(x-[1])/(2.*[2]*[2]) ) + [3]");
+
+
 	for (unsigned int j = 0; j < 4; j++)
 			f2.SetParameter(j, R.Params.at(search_index).at(j));
 

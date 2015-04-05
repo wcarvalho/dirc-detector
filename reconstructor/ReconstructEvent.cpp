@@ -16,9 +16,9 @@ Reconstruct one "Event"
 void ReconstructEvent(Reconstruction &reconstruction, GeneratorOut*& event_output, bool print)
 {
 
-	int i=0, j=0;
-	vector<PhotonOut> pho;
-	double *pho_theta, *pho_phi;
+	static int i=0, j=0;
+	static vector<PhotonOut> pho;
+	static double *pho_theta, *pho_phi;
 	int num_photons = event_output->Photons.size();
 	for (i = 0; i < num_photons; i++)
 	{

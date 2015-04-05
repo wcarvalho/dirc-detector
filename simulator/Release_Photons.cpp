@@ -2,7 +2,7 @@
 #include "TMath.h"
 #include "../headers/functions.h"
 #include "../headers/simulator.h"
-#include "../headers/Simulate.h"
+#include "Simulate.h"
 
 using namespace std;
 void Release_Photons(Simulate simPar, PhotonEvent &event, int released, double EmissionAngle)
@@ -19,5 +19,5 @@ void Release_Photons(Simulate simPar, PhotonEvent &event, int released, double E
 		P.Z = simPar.coord[2];
 		Phos.push_back(P);
 	}
-	
+
 }

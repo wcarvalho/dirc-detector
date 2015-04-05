@@ -13,13 +13,12 @@ bool exceedsThreshold(double const value, double const threshold){
 
 bool within_expectedphoton_threshold(const Particle& P, const TrackRecon& R, const int& rec_i, const double& threshold)
 {
-	const vector<double> &areasigmas = R.delSigArea;
-	return exceedsThreshold(fabs(areasigmas[rec_i]), -threshold);
+	return exceedsThreshold(fabs(R.getnSigmaAreaAt(rec_i)), -threshold);
 }
 bool within_angle_resolution(const Particle& P, const TrackRecon& R, const int& rec_i, const double& threshold)
 {
 	const vector<double> &thetasigmas = R.delSigTheta;
-	return exceedsThreshold(fabs(thetasigmas[rec_i]), -threshold);
+	return exceedsThreshold(fabs(R.getnSigmaThetaAt(rec_i)), -threshold);
 }
 bool inside_box(const Particle& P, const TrackRecon& R, const int& rec_i, const double& threshold)
 {
@@ -29,10 +28,8 @@ bool inside_box(const Particle& P, const TrackRecon& R, const int& rec_i, const 
 bool inside_circle(const Particle& P, const TrackRecon& R, const int& rec_i, const double& threshold)
 {
 
-	const vector<double> &areasigmas = R.delSigArea;
-	const vector<double> &thetasigmas = R.delSigTheta;
 	static double square = 0.;
-	square = areasigmas[rec_i]*areasigmas[rec_i] + thetasigmas[rec_i]*thetasigmas[rec_i];
+	square = R.getnSigmaAreaAt(rec_i)*R.getnSigmaAreaAt(rec_i) + R.getnSigmaThetaAt(rec_i)*R.getnSigmaThetaAt(rec_i);
 	return ( sqrt(square) < 2*sqrt(threshold));
 }
 
@@ -43,7 +40,7 @@ bool xyplane(const Particle& P, const TrackRecon& R, const int& rec_i, const dou
 	static Simulate SimPar(0,0);
 	SimPar.SetAngle(P.Theta, P.Phi);
 	SimPar.SetDim(d.Length, d.Width, d.Height);
-	SimPar.SetStart(P.X, P.Y, 0);
+	SimPar.SetStart(P.X, P.Y, P.Z);
 	SimPar.DistancetoWalls();
 	SimPar.WhichWall();
 	int wall = SimPar.wall;
@@ -59,7 +56,7 @@ bool inside_box_xyplane(const Particle& P, const TrackRecon& R, const int& rec_i
 	static Simulate SimPar(0,0);
 	SimPar.SetAngle(P.Theta, P.Phi);
 	SimPar.SetDim(d.Length, d.Width, d.Height);
-	SimPar.SetStart(P.X, P.Y, 0);
+	SimPar.SetStart(P.X, P.Y, P.Z);
 	SimPar.DistancetoWalls();
 	SimPar.WhichWall();
 	int wall = SimPar.wall;
@@ -74,7 +71,7 @@ bool inside_box_xyplane(const Particle& P, const TrackRecon& R, const int& rec_i
 // bool inside_ellipse(const Particle& P, const TrackRecon& R, const int& rec_i, const double& threshold, const double& x1, const double& x2, const double& y1, const double& y2, const double& b)
 // {
 // 	static bool inside_ellipse;
-// 	InsideEllipse(x1, y1, x2, y2, b, thetasigmas[rec_i], areasigmas[rec_i], inside_ellipse);
+// 	InsideEllipse(x1, y1, x2, y2, b, R.getnSigmaThetaAt(rec_i), R.getnSigmaAreaAt(rec_i), inside_ellipse);
 // 	return inside_ellipse;
 // }
 typedef std::unordered_map<int, bool(*)(const Particle&, const TrackRecon&, const int&, const double&)> flag_fun_map;

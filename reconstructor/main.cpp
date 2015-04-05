@@ -113,7 +113,7 @@ int main(int argc, char** argv)
 		vector<ParticleOut> &pars = event_output->Particles;
     if (ai.last_given) removeFirstParticles(event_output, last, print); 	// remove all particles except for last particles determined by option 'l'
 		int npar = pars.size();
-		if (print) cout << "\t" << npar << "particles\n";
+		if (print) cout << "\t" << npar << " particles\n";
 		if (npar == 0) continue;
 	  ReconstructEvent(reconstruction, event_output, print);
 	  if (reconstruction.Photons.back().size() == 0)	continue;
@@ -132,7 +132,6 @@ int main(int argc, char** argv)
 	  	photons_per_particle[i] = 0;
 	  }
 
-
 		static unordered_map <int, vec_pair> expectedPhotonMap;
 		static std::map<std::string, double> massmap; massmap.clear();
 		static std::map<std::string, double> anglemap; anglemap.clear();
@@ -147,13 +146,15 @@ int main(int argc, char** argv)
 			TrackRecon &guess  = A.Recon.back();
 			guess.Hist2D       = A.Hists2D.back();
 
+
 			ParticleOut &P = pars.at(par);
 
 			massmap = P.MassMap();
 			anglemap = P.EmissionAngleMap();
 		  static vec_pair expectedNPhotons; expectedNPhotons.clear();
 			for (auto i = anglemap.begin(); i != anglemap.end(); ++i){
-				double Beta = P.CalculateBeta(massmap[i->first]);
+				const string &temp_name = i->first;
+				double Beta = P.CalculateBeta(massmap[temp_name]);
 				expectedNPhotons.push_back(ExpectedNumberofPhotons(P.X, P.Y, P.Theta, P.Phi, Beta));
 			}
 			expectedPhotonMap[par] = expectedNPhotons;
@@ -161,12 +162,12 @@ int main(int argc, char** argv)
 			// if (passed_index_photons_condition(P, momentum_indexing_threshold)){
 			if (print) cout << "Indexing particle " << par << endl;
 			IndexPhotons(P, par, phos, A, smear, band_search_case, photon_overlap, photons_per_particle, expectedNPhotons, anglemap, print);
+
 			// }
 			// else
 			// 	if (print) cout << "\tNot indexing particle " << par << endl;
 
 	  }
-
 
 	  for (unsigned int par = 0; par < pars.size(); par++){
 			auto& phos = reconstruction.Photons.at(par);
@@ -174,20 +175,20 @@ int main(int argc, char** argv)
 
 			TH1D* reduced_histogram_theta_projection = ReducedHistogram(phos, A, par);
 
-			if (print) cout << "Fitting particle " << par << " with " << photons_per_particle[par] << "expected photons\n";
-			if (photons_per_particle[par] == 0){
-				TFile f("reduced_hists.root", "update");
-				reduced_histogram_theta_projection->Write();
-				f.Close();
-			}
-			if (photons_per_particle[par] == 0) continue;
-
+			if (print) cout << "Fitting particle " << par << " with " << photons_per_particle[par] << " expected photons\n";
 			if (photons_per_particle[par] != 0 ){
 				gettimeofday(&t1, NULL);
 				CalculateParticleFits(*reduced_histogram_theta_projection, P, phos, A, par, smear, photon_overlap[par], expectedPhotonMap[par], print);				// for one particle, 1 fit is calculated for every possible mass (5 masses means 5 fits for 1 particle)
 				gettimeofday(&t2, NULL);
 			}
-
+			if (print){
+				auto& current_reconstruction = A.Recon.at(par);
+				for (unsigned k = 0; k < current_reconstruction.NReconstructions(); ++k){
+					cout << "\t" << current_reconstruction.getNameAt(k) << endl;
+					cout << "\t\tdelSigA = " << current_reconstruction.getnSigmaAreaAt(k) << endl;
+					cout << "\t\tdelSigTheta = " << current_reconstruction.getnSigmaThetaAt(k) << endl;
+				}
+			}
 
 			time1 = (double)(t1.tv_sec) + (double)(t1.tv_usec)/1.0e6;
 			time2 = (double)(t2.tv_sec) + (double)(t2.tv_usec)/1.0e6;

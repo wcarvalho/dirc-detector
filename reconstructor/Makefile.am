@@ -3,6 +3,7 @@ AUTOMAKE_OPTIONS = subdir-objects
 commonAdds = \
 $(ROOT_LIBS) \
 $(DIRC_LIB) \
+$(SIM_LIB) \
 $(UTIL_LIB) \
 $(NEWTON_LIB) \
 $(OPENCV_LIB)
@@ -11,7 +12,6 @@ include_HEADERS = reconstructor.h \
 ../headers/functions.h \
 ../headers/fitter.h \
 ../headers/myrandom.h \
-../headers/Simulate.h \
 ../headers/file-properties.h
 
 commonSources = LookUpTable.cpp \
@@ -23,7 +23,7 @@ ReconstructTrack.cpp \
 CreateHistogram.cpp \
 Reconstructed_Reflections.cpp \
 histograms.cpp \
-FindLostPhotons.cpp \
+RiemannSum.cpp \
 FitGaussianPlusConstant.cpp \
 IndexPhotons.cpp \
 CreateReducedHistogram.cpp \
@@ -57,7 +57,6 @@ CreateReducedHistogram.cpp \
 ../functions/Displayer.cpp \
 ../simulator/CheckAngel.cpp \
 ../simulator/Check_PhotonDirection.cpp \
-../functions/simulate_par.cpp \
 ../functions/masses.cpp \
 ../functions/min_map.cpp \
 ../functions/addtoFile.cpp \

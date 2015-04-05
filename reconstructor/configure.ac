@@ -8,16 +8,18 @@ AC_PROG_CXX
 AC_PROG_LIBTOOL
 
 ##CXXFLAGS="-Wall -Werror -O2 ${CXXFLAGS}"
-CPPFLAGS="${CPPFLAGS} -std=c++11 -pipe -Wno-deprecated-register -O3 -march=native -I`root-config --incdir` `pkg-config --cflags DircObjs` `pkg-config --cflags wilkasUtilityLib` `pkg-config --cflags fitnewton` `pkg-config --cflags opencv`"
+CPPFLAGS="${CPPFLAGS} -std=c++11 -pipe -Wno-deprecated-register -O3 -march=native -I`root-config --incdir` `pkg-config --cflags DircObjs` `pkg-config --cflags SimObjs` `pkg-config --cflags wilkasUtilityLib` `pkg-config --cflags fitnewton` `pkg-config --cflags opencv`"
 
 ROOT_LIBS=`root-config --libs -lTSpectrum`
 DIRC_LIB=`pkg-config --libs DircObjs`
+SIM_LIB=`pkg-config --libs SimObjs`
 UTIL_LIB=`pkg-config --libs wilkasUtilityLib`
 NEWTON_LIB=`pkg-config --libs fitnewton`
 OPENCV_LIB=`pkg-config --libs opencv`
 
 AC_SUBST(ROOT_LIBS)
 AC_SUBST(DIRC_LIB)
+AC_SUBST(SIM_LIB)
 AC_SUBST(UTIL_LIB)
 AC_SUBST(NEWTON_LIB)
 AC_SUBST(OPENCV_LIB)

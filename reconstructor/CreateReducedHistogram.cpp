@@ -29,8 +29,8 @@ TH1D* ReducedHistogram(vector<PhotonOut> const& photons, Analysis const& A, int 
 	string histogram_name = h2.GetName();
 	histogram_name.append("_reduced1D");
 
-	double xlow = h2.GetXaxis()->GetXmin();
-	double xhi = h2.GetXaxis()->GetXmax();
+	double xlow = h2.GetYaxis()->GetXmin();
+	double xhi = h2.GetYaxis()->GetXmax();
 	int nbins = h2.GetNbinsY();
 	TH1D* h1 = CreateReducedHistogram(photons, A.index, particle_index, histogram_name, nbins, xlow, xhi);
 

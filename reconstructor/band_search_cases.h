@@ -16,10 +16,11 @@ bool TallestBinContent(ParticleOut & particle, TH2D const& h, double const& smea
 	static double pi2 = pi/2;
 	for (unsigned i = 0; i < h1->GetNbinsX(); ++i){
 		double bin_center = h1->GetBinCenter(i);
-		if ((bin_center > 1.) && (bin_center < .3)){
+		if ((bin_center > 1.) || (bin_center < .3)){
 			h1->SetBinContent(i, 0);
 		}
 	}
+
 	int max_bin = h1->GetMaximumBin();
 	double height = h1->GetBinContent(max_bin);
 	double bin_width = h1->GetXaxis()->GetBinWidth(1);

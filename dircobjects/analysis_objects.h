@@ -21,13 +21,20 @@ public:
 
 	void clear();
 	void printLatest();
+	int NReconstructions(){ return Options.size(); }
 	double getLatestIntegralCenter(){ return Params.back().at(1); }
 	double getLatestIntegralCenter() const { return Params.back().at(1); }
 	double getIntegralCenterAt(const int& i){ return Params.at(i).at(1); }
 	double getIntegralCenterAt(const int& i) const { return Params.at(i).at(1); }
 	std::string getNameAt(const int& i) const { return Options.at(i); }
-	double getnSigmaAreaAt(const int& i) const { return delSigArea.at(i); }
-	double getnSigmaThetaAt(const int& i) const { return delSigTheta.at(i); }
+	double getnSigmaAreaAt(const int& i) const {
+		if (getIntegralAt(i) < 5) return 1.e100;
+		else return delSigArea.at(i);
+	}
+	double getnSigmaThetaAt(const int& i) const {
+		if (getIntegralAt(i) < 5) return 1.e100;
+		else return delSigTheta.at(i);
+	}
 	double getIntegralAt(const int& i) const { return Areas.at(i); }
 	double getIntegralHeightAt(const int& i) const { return Params.at(i).at(0); }
 

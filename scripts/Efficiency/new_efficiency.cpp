@@ -236,4 +236,8 @@ catch( TCLAP::ArgException& e )
 		delete falsedenominators[i];
 	}
 
+f1.cd();
+f1.Close();
+f2.cd();
+f2.Close();
 }

@@ -33,6 +33,7 @@ void indexSet(vector<int>& index, vector<int> const& photonset, unordered_map <i
 		auto& current_index = index.at(i);
 		// cout << i << "\tcurrent_index: " << current_index << " -> ";
 		if (current_index > -1	) {
+			--photons_per_particle[current_index];
 			++photon_overlap[current_index];
 			++photon_overlap[particle_index];
 			current_index = -1;
@@ -41,8 +42,9 @@ void indexSet(vector<int>& index, vector<int> const& photonset, unordered_map <i
 		else {
 			current_index = particle_index;
 			++photons_per_particle[particle_index];
+			// cout << "frame: " << particle_index << "\t"<< i << "\tindex = " << current_index << "\tphotons_per_particle " << photons_per_particle[particle_index] << endl;
 		}
-		// cout << current_index << endl;
+
 	}
 }
 

@@ -132,6 +132,7 @@ int main(int argc, char const *argv[])
 	unsigned misIdentificationEvents_count = 0;
 
 	int nentries = reconstruction_tree->GetEntries();
+	if (event_range.at(1) > nentries) event_range.at(1) = nentries;
 	if ( !event_range_set )
 		event_range = {0, nentries};
 
@@ -175,23 +176,34 @@ int main(int argc, char const *argv[])
 				AddBatch(entry, i, particleEvents, par_outs, pars, photon_reconstruction.Photons, index, recons, particle_compare, particleEvents_count);
 				added_Identification_Batch = true;
 			}
-			// cout << "\tidentification\n";
+
 			bool passed_misIdentification = passConditions(matchcondition_cases, functions, par, recon, particle_search_index, threshold);
 			if (!added_misIdentification_Batch && passed_misIdentification && (par.name == particle_search) && (misIdentificationEvents_count < max_count)){
 				AddBatch(entry, i, misIdentificationEvents, par_outs, pars, photon_reconstruction.Photons, index, recons, particle_compare, misIdentificationEvents_count);
 				added_misIdentification_Batch = true;
 			}
-			// cout << "\tmisidentification\n";
 
 			if ((misIdentificationEvents_count == max_count) && (particleEvents_count == max_count))
 				return 0;
-			cout << "mis_count = " << misIdentificationEvents_count << endl;
-			cout << "yes_count = " << particleEvents_count << endl;
+			cout << "incorrect count: = " << misIdentificationEvents_count << endl;
+			cout << "correct count:   = " << particleEvents_count << endl;
 		}
 
 
 	}
 
+photon_Tfile.cd();
+photon_Tfile.Close();
+particle_Tfile.cd();
+particle_Tfile.Close();
+reconstruction_Tfile.cd();
+reconstruction_Tfile.Close();
+particleEvents.cd();
+particleEvents.Write();
+particleEvents.Close();
+misIdentificationEvents.cd();
+misIdentificationEvents.Write();
+misIdentificationEvents.Close();
 
 
 

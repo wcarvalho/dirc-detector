@@ -36,22 +36,27 @@ bool Cut(double theta, double phi, double x, double y, double z){
 }
 
 std::pair<double, double> RiemannSum(double const& x, double const& y, double const& theta, double const& phi, double const& v){
-	double pi = TMath::Pi();
+	static double pi = TMath::Pi();
 	int total = 0;
 	int passed = 0;
 
-	Detector d;
-	double l = d.Length;
-	double w = d.Width;
-	double h = d.Height;
+	static Detector d;
+	static double l = d.Length;
+	static double w = d.Width;
+	static double h = d.Height;
 
-	double emissionAngle = acos(1./(1.474*v));
-	Rotater r;
+	static double emissionAngle = acos(1./(1.474*v));
+	static Rotater r;
 	r.Feed_Particle(theta, phi);
 
-	Simulate simPar(theta, phi);
+	static double z = 0.;
+	if ( (theta > pi/2) && (theta < 3*pi/2) ) z = h;
+	else z = 0.;
+
+	static Simulate simPar(0., 0.);
+	simPar.SetAngle(theta, phi);
 	simPar.SetDim(l, w, h);
-	simPar.SetStart(x, y, 0.);
+	simPar.SetStart(x, y, z);
 	simPar.SetVelocity(v);
 	simPar.DistancetoWalls( );
 	simPar.WhichWall( );
@@ -79,7 +84,7 @@ std::pair<double, double> RiemannSum(double const& x, double const& y, double co
 
 	double xlow = 200e-9;
 	double xhigh = 1000e-9;
-	double z = 1.;
+
 	double alpha = 1./137;
 	double n = d.n;
 	// cout << "d.n = " << d.n << endl;
