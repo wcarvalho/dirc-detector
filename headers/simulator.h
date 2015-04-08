@@ -40,7 +40,7 @@ void Fill_ParticleEvent(Detector d, ParticleEvent &event, ParticleParameters par
 void PushBack_PhotonEvent(ParticleEvent &particle_event, vector<PhotonEvent> &photon_events, int input, string Output);
 void SimulateEvent(Detector d, ParticleEvent &particle_event, PhotonEvent &photon_event, Displayer Output);
 void Simulate_PhotonPath(Detector d, Photon &photon, double smear = .01, bool print = false);
-void Simulate_ParticlePath(Detector d, Particle &particle, int parnum, PhotonEvent &photon_event, double avg_d, bool print);
+void Simulate_ParticlePath(Detector const& d, Particle &particle, int parnum, PhotonEvent &photon_event, int& seed, bool print);
 void CheckForFlag(PhotonEvent &photon_event, int &iterator, string Output);
 void Get_ParticleDistance(Detector d, Particle &particle, string Output);
 void Find_Particle_X_Distance(Detector d, Particle &particle, string Output);

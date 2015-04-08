@@ -24,7 +24,7 @@ int main(int argc, char** argv)
 	string status = "recreate";
 	string non_cheatCopyFile = "";
 	string cheatCopyFile = "";
-	double smear = .00;
+	int seed = 0;
 
 	//_______Declarations__________
 	bool print = ai.verbose_given;
@@ -55,7 +55,7 @@ int main(int argc, char** argv)
 	f.appendFileToDirectory(directory, writef2);
 
 
-	if(ai.smear_given) smear = ai.smear_arg;
+	if(ai.seed_given) seed = ai.seed_arg;
 
 	if (Append){
 		non_cheatCopyFile = copyFile(writef, ".root");
@@ -149,14 +149,19 @@ int main(int argc, char** argv)
 			// if (print){
 				// printf("\t\tparticle theta = %f, phi = %f\n", *par_theta, *par_phi);
 			// }
-			Simulate_ParticlePath(*d, ParEvent->Particles[par], par, photon_event, 1, print);
+			Simulate_ParticlePath(*d, ParEvent->Particles[par], par, photon_event, seed, print);
 			r.Feed_Particle(*par_theta, *par_phi);
+			// cout << "par_theta = " << *par_theta << endl;
+			// cout << "par_phi = " << *par_phi << endl;
 			for(int &pho = photon_event.iterator; pho < photon_event.Photons.size(); pho++)
 			{
 				pho_theta = &photon_event.Photons[pho].Theta;
 				pho_phi = &photon_event.Photons[pho].Phi;
+				// if (pho == 0) cout << "\ttheta, phi = " << *pho_theta << ", " << *pho_phi <<" -> ";
+				pho_phi = &photon_event.Photons[pho].Phi;
 				r.Rotate_Photon(*pho_theta, *pho_phi);
 				photon_event.Photons[pho].UnitVector = Get_UnitVector(*pho_theta, *pho_phi);
+				// if (pho == 0) cout << "theta, phi = " << *pho_theta << ", " << *pho_phi <<endl;
 			}
 		}
 
@@ -164,7 +169,7 @@ int main(int argc, char** argv)
 		double totalphotons = photon_event.Photons.size();
 		for (int i = 0; i < photon_event.Photons.size(); i++)
 		{
-			Simulate_PhotonPath(*d, photon_event.Photons[i], smear, print);
+			Simulate_PhotonPath(*d, photon_event.Photons[i], seed, print);
 			if (photon_event.Photons[i].Flag == 1){
 				ParEvent->Particles.at(photon_event.Photons[i].WhichParticle).nPhotonsPassed -= 1;
 			}

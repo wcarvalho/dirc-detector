@@ -170,8 +170,11 @@ catch( TCLAP::ArgException& e )
 
 	int nmatch = 0;
 	int nfalse = 0;
+
 	auto fillHistogram = [&threshold, &functions, &graph_choice, &multiplicity, &matchcondition_cases](TrackRecon& r, Particle& p, string& search, TH1D_map& numerator, TH1D_map& denominator, const double& momentum, bool print){
 
+		string bestfit = findBestFit(r, threshold);
+		if (bestfit == "") return;
 		for (unsigned i = 0; i < r.Options.size(); ++i){
 			string name = r.Options.at(i);
 			if (!(name == search)) continue;
@@ -180,18 +183,18 @@ catch( TCLAP::ArgException& e )
 				switch (choice){
 					case 1:
 						denominator[choice]->Fill(multiplicity);
-						if (passed) numerator[choice]->Fill(multiplicity);
+						if (passed && (bestfit == search)) numerator[choice]->Fill(multiplicity);
 						break;
 					case 2:
 						denominator[choice]->Fill(momentum);
-						if (passed) numerator[choice]->Fill(momentum);
+						if (passed && (bestfit == search)) numerator[choice]->Fill(momentum);
 						break;
 				}
 			}
 		}
 	};
 
-	auto fillHistograms = [&nfalse, &nmatch, &plotefficiency, &plotfalsepositive, &fillHistogram, &matchnumerators, &matchdenominators, &falsenumerators, &falsedenominators, &matchsearch, &falsesearch](TrackRecon& r, Particle& p, bool print){
+	auto fillHistograms = [&nfalse, &nmatch, &plotefficiency, &plotfalsepositive, &fillHistogram, &matchnumerators, &matchdenominators, &falsenumerators, &falsedenominators, &matchsearch, &falsesearch, &threshold](TrackRecon& r, Particle& p, bool print){
 
 		if (!(plotefficiency || plotfalsepositive)) return;
 		double momentum = p.CalculateMomentum();

@@ -10,7 +10,7 @@ option "verbose" v "print data" optional
 option "writefile" W "file to be written to" string optional
 option "cheatfile" c "filename for cheat data" string optional
 option "Append" A "append particle and photon generation to current file" optional
-option "smear" S "change the smearing value" double optional
+option "seed" s "seed used in random number generator" double optional
 option "quiet" q "turn off all printing" optional
 option "print-photons" p "only print photon information per event" optional
 option "file-write-off" - "Turn off file writing" optional

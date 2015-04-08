@@ -35,7 +35,6 @@ namespace dirc{
         preE(t1, t2, recons, pars, print);
       }
 
-      if ((recons.size() == 0) || (pars.size() == 0)) continue;
       for (unsigned p = 0; p < pars.size(); ++p){
         if (print) std::cout << "\tParticle " << p << std::endl;
         Particle& par     = pars.at(p);

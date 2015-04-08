@@ -17,21 +17,22 @@ Takes in some vector of photons (that may be empty) and puts reconstructions of 
 
 void Reconstructed_Reflections(vector<PhotonOut> &pho, double theta, double phi, bool print)
 {
-	Simulate sim(theta, phi);
+	static Simulate sim(0., 0.);
+	sim.SetAngle(theta, phi);
 
 		sim.FlipY();
 		PhotonOut y(sim.Theta, sim.Phi);
 		pho.push_back(y);
-		// printf("\t\ttheta = %f, phi = %f\n", sim.Theta, sim.Phi);
+		if (print) printf("\t\ttheta = %f, phi = %f\n", sim.Theta, sim.Phi);
 		sim.FlipZ();
 		PhotonOut yz(sim.Theta, sim.Phi);
 		pho.push_back(yz);
-		// printf("\t\ttheta = %f, phi = %f\n", sim.Theta, sim.Phi);
+		if (print) printf("\t\ttheta = %f, phi = %f\n", sim.Theta, sim.Phi);
 		sim.FlipY();
 		PhotonOut z(sim.Theta, sim.Phi);
 		pho.push_back(z);
-		// printf("\t\ttheta = %f, phi = %f\n", sim.Theta, sim.Phi);
-		// cout << "\n";
+		if (print) printf("\t\ttheta = %f, phi = %f\n", sim.Theta, sim.Phi);
+		if (print) cout << "\n";
 }
 
 // void XY_Reflections(vector<PhotonOut> &pho, Simulate sim, Displayer disp)

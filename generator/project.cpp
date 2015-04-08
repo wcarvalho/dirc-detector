@@ -196,8 +196,8 @@ bool intersect_with_dirc(double dirc_height, double eta, double pt, double phi_i
 
 
   double phi_out = atan2((1. + k*d)*sin(phi) - k*y, (1. + k*d)*cos(phi) - k*x);
-  double px_new = pt*cos(phi_out + M_PI/2.);
-  double py_new = pt*sin(phi_out + M_PI/2.);
+  double px_new = pt*cos(phi_out -dphi );
+  double py_new = pt*sin(phi_out -dphi );
   double pz_new = dzdl*sqrt(px_new*px_new + py_new*py_new)/sqrt(1. - dzdl*dzdl);
 
   double p_new = sqrt(px_new*px_new + py_new*py_new + pz_new*pz_new);

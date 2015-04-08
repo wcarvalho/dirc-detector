@@ -24,6 +24,7 @@ void print1DHistogram(TCanvas &C,TH1D& h, Particle &P, TrackRecon &R, flag_fun_m
 		for (unsigned int i = 0; i < R.Params.size(); ++i){
 			double xlow = R.Params.at(i).at(4);
 			double xhi = R.Params.at(i).at(5);
+			cout << "xlow - xhi = " << xhi - xlow << endl;
 			static double center = 0;
 			static double width = 0;
 			double &N = R.ExpectedNumber.at(i);

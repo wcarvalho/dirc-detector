@@ -24,12 +24,17 @@ void CalculateParticleFits(TH1D &histogram, ParticleOut &P, const vector<PhotonO
 		static double height;
 		height = 0.;
 		static double xlow = 0.;
-		xlow = angle - .05;
 		static double xhi = 0.;
+		xlow = angle - .05;
 		xhi = angle + .05;
 
 		FitGaussianPlusConstant(histogram, xlow, xhi, 0, pi, -1.10, 1.e10, center, width, constant, height, 8);
 
+		xlow = center - .03;
+		xhi = center + .03;
+		FitGaussianPlusConstant(histogram, xlow, xhi, 0, pi, -1.10, 1.e10, center, width, constant, height, 8);
+		xlow = center - .03;
+		xhi = center + .03;
 		Area = sqrt(2*pi)/histogram.GetBinWidth(1)*height*width;
 		TrackRecon &guess  = A.Recon.at(particle_index);
 

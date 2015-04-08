@@ -20,7 +20,6 @@ void Simulate_PhotonPath(Detector d, Photon &photon, double smear, bool print)
 	simPho.SetStart(photon.X, photon.Y, photon.Z);
 	simPho.SetDim(d.Length, d.Width, d.Height);
 
-	Random r;
 	while ((photon.X != d.Length) && (photon.X != 0))
 	{
 		simPho.GotoWall(print);
@@ -30,8 +29,6 @@ void Simulate_PhotonPath(Detector d, Photon &photon, double smear, bool print)
 		// Move_Photon(photon, Output.Trivial);
 		if((x_p == 0 ) || (x_p == d.Length))
 		{
-			// photon.Theta += r.Gaus(0., smear);
-			// photon.Phi += r.Gaus(0., smear);
 			double th = simPho.Theta;
 			double ph = simPho.Phi;
 			Photon pho_temp(th, ph);

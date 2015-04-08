@@ -10,7 +10,6 @@ commonSources = \
 	PushBack_ParticleEvent.cpp \
 	Fill_ParticleEvent.cpp \
 	PushBack_PhotonEvent.cpp \
-	SimulateEvent.cpp \
 	Simulate_PhotonPath.cpp \
 	Simulate_ParticlePath.cpp \
 	CheckForFlag.cpp \
@@ -72,7 +71,6 @@ commonSources = \
 include_HEADERS = ../headers/simulator.h \
 ../headers/functions.h \
 ../headers/Parameters.h \
-../headers/Simulate.h \
 ../headers/file-properties.h
 
 lib_LTLIBRARIES = libSimObjs.la

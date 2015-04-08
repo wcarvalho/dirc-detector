@@ -18,20 +18,22 @@ void ReconstructTrack(Reconstruction &reconstruction, ParticleOut particle, vect
 {
 
 	int i;
-	Rotater r;
 
 	double *pho_theta, *pho_phi;
-
 	reconstruction.Photons.push_back(photons);														// store photons so original photons aren't manipulated, basically resets the photons every time this function is called
 	// cout << "# of reconstructed photons = " << reconstruction.Photons.back().size() << endl;
 
+	static Rotater r;
 	r.Direction = "Into";
 	r.Feed_Particle(particle.Theta, particle.Phi);
+	// cout << "particle.Theta, particle.Phi = " << particle.Theta << ", " << particle.Phi << endl;
 	for(i = 0; i < reconstruction.Photons.back().size(); i++)
 	{
 		pho_theta = &reconstruction.Photons.back()[i].Theta;
+		if (print) cout << i << "\ttheta = " << *pho_theta << " -> ";
 		pho_phi = &reconstruction.Photons.back()[i].Phi;
 		r.Rotate_Photon(*pho_theta, *pho_phi);
+		if (print) cout << "\ttheta = " << *pho_theta << endl;
 	}
 
 }

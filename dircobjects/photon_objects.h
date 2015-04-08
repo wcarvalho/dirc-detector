@@ -34,6 +34,8 @@ public:
   UnitVector( sin(theta)*cos(phi), sin(theta)*sin(phi), cos(theta)) { Theta = theta; Phi=phi; }
   ~Photon(){}
 
+  void SetAngle(double t, double p){ Theta = t; Phi = p; }
+
   Photon To_Photon(PhotonOut p){ return Photon(p.Theta, p.Phi); }
   PhotonOut To_PhotonOut(Photon p){ return PhotonOut(p.Theta, p.Phi); }
 

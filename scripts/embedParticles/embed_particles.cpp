@@ -22,7 +22,7 @@ string cheatin;
 string photonsout;
 string cheatout;
 
-double smear;
+int seed;
 
 bool print;
 
@@ -37,7 +37,8 @@ try{
 	TCLAP::ValueArg<std::string> cheatinFileArg("c","cheat-in-file","file with cheat data from simulation",false,"cheat.root","string", cmd);
 	TCLAP::ValueArg<std::string> cheatoutFileArg("C","cheat-out-file","file with cheat data from simulation",false,"cheat.root","string", cmd);
 
-	TCLAP::ValueArg<double> smearArg("s","smear","the value with each the angle will be smeared",false,0.01,"string", cmd);
+	TCLAP::ValueArg<int> seedArg("s","seed","the value with each the angle will be seeded",false,0.01,"string", cmd);
+
 
 	TCLAP::SwitchArg verboseArg("v","verbose","", cmd, false);
 
@@ -48,7 +49,7 @@ try{
 
 	cheatin = cheatinFileArg.getValue();
 	cheatout = cheatoutFileArg.getValue();
-	smear = smearArg.getValue();
+	seed = seedArg.getValue();
 	print = verboseArg.getValue();
 }
 catch( TCLAP::ArgException& e )
@@ -156,28 +157,36 @@ catch( TCLAP::ArgException& e )
 			// if (print){
 				// printf("\t\tparticle theta = %f, phi = %f\n", *par_theta, *par_phi);
 			// }
-			Simulate_ParticlePath(*d, ParEvent->Particles[par], par, photon_event, 1, print);
+			Simulate_ParticlePath(*d, ParEvent->Particles[par], par, photon_event, seed, print);
 			static Rotater r;
 			r.Feed_Particle(*par_theta, *par_phi);
 			for(int &pho = photon_event.iterator; pho < photon_event.Photons.size(); pho++)
 			{
 				pho_theta = &photon_event.Photons[pho].Theta;
 				pho_phi = &photon_event.Photons[pho].Phi;
+				// if (pho == 149) cout << pho << "\ttheta, phi = " << *pho_theta << ", " << *pho_phi <<" -> ";
 				r.Rotate_Photon(*pho_theta, *pho_phi);
 				photon_event.Photons[pho].UnitVector = Get_UnitVector(*pho_theta, *pho_phi);
+				// if (pho == 149) cout << *pho_theta << ", " << *pho_phi <<endl;
 			}
 		}
 
 
+
 		double totalphotons = photon_event.Photons.size();
 		if (print) cout << "\t\tTotal photons = " << totalphotons << endl;
+		int counter = 0;
 		for (int i = 0; i < photon_event.Photons.size(); i++)
 		{
-			Simulate_PhotonPath(*d, photon_event.Photons[i], smear, print);
-			if (photon_event.Photons[i].Flag == 1){
-				ParEvent->Particles.at(photon_event.Photons[i].WhichParticle).nPhotonsPassed -= 1;
+			auto& photon_i = photon_event.Photons[i];
+			// if (counter == 149) cout << i << " theta, phi: " << photon_i.Theta << ", " << photon_i.Phi << " -> ";
+			Simulate_PhotonPath(*d, photon_i, seed, print);
+			if (photon_i.Flag == 1){
+				ParEvent->Particles.at(photon_i.WhichParticle).nPhotonsPassed -= 1;
 			}
+			// if (counter == 149) cout << photon_i.Theta << ", " << photon_i.Phi << endl;
 			CheckForFlag(photon_event, i, "false");
+			++counter;
 		}
 		embed_data(photon_event, *old_photon_event, *old_event_output, *ParEvent, *old_ParEvent, print);
 		if (print){

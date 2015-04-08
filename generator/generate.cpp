@@ -19,8 +19,6 @@ vector<Particle> generate(int nparticles, gParticle& gPar, Detector d, int maxPa
 	  				d.Mag_field, gPar.X, gPar.Y, gPar.Phi, gPar.Theta, gPar.Beta);
   		gPar.X = gPar.X + d.Length/2;
   		gPar.Y = gPar.Y + d.Width/2;
-  		if ( (gPar.Theta > pi/2) && (gPar.Theta < 3*pi/2)) gPar.Z = d.Height;
-  		else gPar.Z = 0.;
 
   		gPar.getEangle();
   		gPar.CalculateMomentum();

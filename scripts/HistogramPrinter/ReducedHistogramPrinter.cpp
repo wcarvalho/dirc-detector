@@ -140,13 +140,21 @@ catch( TCLAP::ArgException& e )
 		t2->GetEntry(ev);
 		photon_ttree->GetEntry(ev);
 
-
+		cout << ev << endl;
 		dirc::matchDataSize(*t1, *t2, recons, pars, print);
 		ReconstructEvent(photon_reconstruction, photon_event, print);
 
 		vector<ParticleOut> par_outs(pars.begin(), pars.end());
+		if (pars.empty() || recons.empty()) continue;
+		int j = 0;
 		for(unsigned i = 0; i < pars.size(); ++i){
 			auto& phos = photon_reconstruction.Photons.at(i);
+			if ( phos.empty() ) continue;
+			if (phos.size() != index.size() ) {
+				cout << "phos.size() = " << phos.size() << endl;
+				cout << "index.size() = " << index.size() << endl;
+				cout << "ERROR with index or reconstruction!\n"; return 0;
+			}
 			auto& recon = recons.at(i);
 			auto& par = pars.at(i);
 			if (find(flags.begin(), flags.end(), 1) != flags.end())
@@ -155,7 +163,6 @@ catch( TCLAP::ArgException& e )
 			string histname = h2.GetName();
 			createIndexedPhotonScatterPlot(par_outs, phos, index, i, histname, filename2D.c_str() , "update");
 
-			
 			if (!print1D) continue;
 			string h1histname;
 			double xlow;

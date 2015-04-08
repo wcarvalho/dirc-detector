@@ -11,9 +11,11 @@ using namespace std;
 Simulate the trajectory for a single Particle of a single "Event"
 ================================================================================================*/
 
-void Simulate_ParticlePath(Detector d, Particle &particle, int parnum, PhotonEvent &photon_event, double avg_d, bool print)
+void Simulate_ParticlePath(Detector const& d, Particle &particle, int parnum, PhotonEvent &photon_event, int& seed, bool print)
 {
-	Random r;
+	static Random r;
+	// cout << "Seed = " << seed << endl;
+	r.SetSeed(seed); if (seed > 0) ++seed;
 	double Path_length = 0.;
 	double avg_photons_released = 0.;
 	double photons_released = 0.;
@@ -39,12 +41,17 @@ void Simulate_ParticlePath(Detector d, Particle &particle, int parnum, PhotonEve
 
 	for (unsigned int i = 0; i < photons_released; ++i)
 	{
-		simPar.SetStart(particle.X, particle.Y, 0);
+		simPar.SetStart(particle.X, particle.Y, particle.Z);
 		double distance = r.Uniform(Path_length);
 
 		simPar.TravelDistance(distance, print);
 
-		Photon P(particle.ConeAngle, r.Uniform(2*TMath::Pi()));
+		static Photon P(0,0);
+		static double theta;
+		static double phi;
+		theta = particle.ConeAngle;
+		phi = r.Uniform(2*TMath::Pi());
+		P.SetAngle(theta, phi);
 		P.X = simPar.coord[0];
 		P.Y = simPar.coord[1];
 		P.Z = simPar.coord[2];

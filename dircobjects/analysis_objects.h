@@ -21,22 +21,26 @@ public:
 
 	void clear();
 	void printLatest();
-	int NReconstructions(){ return Options.size(); }
+	int size() const { return Options.size(); }
+	int size(){ return Options.size(); }
+	int NReconstructions(){ return Options.size(); } // deprecated
 	double getLatestIntegralCenter(){ return Params.back().at(1); }
 	double getLatestIntegralCenter() const { return Params.back().at(1); }
-	double getIntegralCenterAt(const int& i){ return Params.at(i).at(1); }
-	double getIntegralCenterAt(const int& i) const { return Params.at(i).at(1); }
-	std::string getNameAt(const int& i) const { return Options.at(i); }
-	double getnSigmaAreaAt(const int& i) const {
+	double getIntegralCenterAt(int const i){ return Params.at(i).at(1); }
+	double getIntegralCenterAt(int const i) const { return Params.at(i).at(1); }
+	std::string getNameAt(int const i) const { return Options.at(i); }
+	double getnSigmaAreaAt(int const i) const {
 		if (getIntegralAt(i) < 5) return 1.e100;
 		else return delSigArea.at(i);
 	}
-	double getnSigmaThetaAt(const int& i) const {
+	double getnSigmaThetaAt(int const i) const {
 		if (getIntegralAt(i) < 5) return 1.e100;
 		else return delSigTheta.at(i);
 	}
-	double getIntegralAt(const int& i) const { return Areas.at(i); }
-	double getIntegralHeightAt(const int& i) const { return Params.at(i).at(0); }
+	double getIntegralAt(int const i) const { return Areas.at(i); }
+	double getIntegralHeightAt(int const i) const { return Params.at(i).at(0); }
+	int getIndexOf(std::string type);
+	std::string getBestFit(double const threshold);
 
 	// TMultiGraph* getIndexedPhotonScatterPlot(){ return &mg; }
 	// void setIndexedPhotonScatterPlot(TMultiGraph graph){ graph.Copy(mg); }

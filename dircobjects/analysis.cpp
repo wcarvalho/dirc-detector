@@ -36,6 +36,14 @@ void TrackRecon::printLatest(){
 	// cout << "Funs = " << Funs.back() << endl;
 }
 
+int TrackRecon::getIndexOf(std::string type){
+	for (int i = 0; i < size(); ++i){
+		if (getNameAt(i) == type) return i;
+	}
+	return -1;
+}
+
+
 void TrackRecons::AddTrackRecon(){
 	TrackRecon tr;
 	Recon.push_back(tr);
@@ -44,6 +52,7 @@ void TrackRecons::PushBackParams(){
 	vector<double> temp;
 	Recon.back().Params.push_back(temp);
 }
+
 
 void Analysis::AddTH1D(const char* name, const char* title, int nbinsx, double xlow, double xup, int which)
 {
@@ -57,8 +66,8 @@ void Analysis::AddTH1D(const char* name, const char* title, int nbinsx, double x
 void Analysis::AddTH2D(const char* name, const char* title, int nbinsx, double xlow, double xup, int nbinsy, double ylow, double yup)
 {
 	TH2D h2(name, title, nbinsx, xlow, xup, nbinsy, ylow, yup);
+	h2.SetDefaultSumw2();
 	for (unsigned int i = 0; i < data.size(); i++)
 		h2.Fill(data.at(i).at(0), data.at(i).at(1));
-	h2.SetDefaultSumw2();
 	Hists2D.push_back(h2);
 }

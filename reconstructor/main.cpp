@@ -114,9 +114,15 @@ int main(int argc, char** argv)
     if (ai.last_given) removeFirstParticles(event_output, last, print); 	// remove all particles except for last particles determined by option 'l'
 		int npar = pars.size();
 		if (print) cout << "\t" << npar << " particles\n";
-		if (npar == 0) continue;
+		if (npar == 0) {
+			tree->Fill();
+			continue;
+		}
 	  ReconstructEvent(reconstruction, event_output, print);
-	  if (reconstruction.Photons.back().size() == 0)	continue;
+	  if (reconstruction.Photons.back().empty())	{
+	  	tree->Fill();
+	  	continue;
+	  }
 
 		for (unsigned i = 0; i < reconstruction.Photons.at(0).size(); ++i)
 			A.index.push_back(-10);				// for each photon set photon to a value that won't be used (e.g. -10)
@@ -140,7 +146,7 @@ int main(int argc, char** argv)
 	  for (unsigned int par = 0; par < pars.size(); par++){
 			vector<PhotonOut> &phos = reconstruction.Photons.at(par);
 
-			if ( !(phos.size()) ) continue;
+			if ( phos.empty() ) continue;
 			CreateHistogram_1D2D(ev, par, A, phos, xbins, ybins);
 			A.AddTrackRecon();
 			TrackRecon &guess  = A.Recon.back();
@@ -195,7 +201,12 @@ int main(int argc, char** argv)
 			calculateFits_time += (time2-time1);
 			delete reduced_histogram_theta_projection;
 	  }
-
+	  if ( reconstruction.Photons.back().size() != A.index.size()){
+		  cout << "photons size: " << reconstruction.Photons.back().size() << endl;
+		  cout << "index size: " << A.index.size() << endl;
+		  cout << "Error!\n";
+		  break;
+	  }
 	  Tracks.Recon = std::move(A.Recon);
 	  Tracks.index = std::move(A.index);
 	  tree->Fill();

@@ -14,9 +14,9 @@ All functions pertinent to Rotater class
 
 void Rotater::Rotate_Photon(double &pho_theta, double &pho_phi)
 {
-	int m, n, p;
-	double pho_x, pho_y, pho_z;
-	
+	static int m, n, p;
+	static double pho_x, pho_y, pho_z;
+
 	pho_x = sin(pho_theta)*cos(pho_phi);
 	pho_y = sin(pho_theta)*sin(pho_phi);
 	pho_z = cos(pho_theta);
@@ -118,7 +118,7 @@ TVector3 Rotater::Rotation_Vector(Particle particle, string Output)
 		Rotation_Vector = Z.Cross(particle.UnitVector);
 		if (Output == "yes") { TabToLevel(3); cout << "Rotation_Vector = "; Print_TVector(Rotation_Vector); }
 	}
-	else 
+	else
 		{
 			if (Output == "yes"){ TabToLevel(3); cout << "Already in correct frame\n"; }
 		}
@@ -182,7 +182,7 @@ void Rotater::Rotate_Photons(Rotater r, vector<Photon> &photons, string Output)
 
 void Rotater::Rotate_Photon(Rotater r, Photon &photon, string Output)
 {
-	
+
 	photon.UnitVector = Rotated_Vector(r.Matrix, photon.UnitVector, Output);
 	Update_Photon_ThetaPhi(photon, Output);
 }
@@ -192,7 +192,7 @@ TVector3 Rotater::Rotated_Vector(double R[3][3], TVector3 vector, string Output)
 	Output = "";
   int m, n, p;
 	TVector3 vector_prime;
-  
+
   for (m = 0; m < 3; m++)
   {
     vector_prime[m] = 0;

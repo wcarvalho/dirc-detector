@@ -15,6 +15,8 @@ void createGraph(vector<TGraph*>& graphs, TLegend& L, string legend_entry, vecto
 	g->SetMarkerColor(markercolor);
 	int point = 0;
 	int nphotons = photons.size();
+	// cout << "nphotons = " << nphotons << endl;
+	// cout << "index size = " << index.size() << endl;
 	for (unsigned j = 0; j < nphotons; ++j){
 		// cout << "index at " << j << " = " << index.at(j) << endl;
 		if (index.at(j) != particle_index ) continue;

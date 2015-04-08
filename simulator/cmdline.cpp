@@ -43,7 +43,7 @@ const char *gengetopt_args_info_help[] = {
   "  -W, --writefile=STRING    file to be written to",
   "  -c, --cheatfile=STRING    filename for cheat data",
   "  -A, --Append              append particle and photon generation to current\n                              file",
-  "  -S, --smear=DOUBLE        change the smearing value",
+  "  -s, --seed=DOUBLE         seed used in random number generator",
   "  -q, --quiet               turn off all printing",
   "  -p, --print-photons       only print photon information per event",
   "      --file-write-off      Turn off file writing",
@@ -83,7 +83,7 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->writefile_given = 0 ;
   args_info->cheatfile_given = 0 ;
   args_info->Append_given = 0 ;
-  args_info->smear_given = 0 ;
+  args_info->seed_given = 0 ;
   args_info->quiet_given = 0 ;
   args_info->print_photons_given = 0 ;
   args_info->file_write_off_given = 0 ;
@@ -102,7 +102,7 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->writefile_orig = NULL;
   args_info->cheatfile_arg = NULL;
   args_info->cheatfile_orig = NULL;
-  args_info->smear_orig = NULL;
+  args_info->seed_orig = NULL;
   
 }
 
@@ -120,7 +120,7 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->writefile_help = gengetopt_args_info_help[6] ;
   args_info->cheatfile_help = gengetopt_args_info_help[7] ;
   args_info->Append_help = gengetopt_args_info_help[8] ;
-  args_info->smear_help = gengetopt_args_info_help[9] ;
+  args_info->seed_help = gengetopt_args_info_help[9] ;
   args_info->quiet_help = gengetopt_args_info_help[10] ;
   args_info->print_photons_help = gengetopt_args_info_help[11] ;
   args_info->file_write_off_help = gengetopt_args_info_help[12] ;
@@ -216,7 +216,7 @@ cmdline_parser_release (struct gengetopt_args_info *args_info)
   free_string_field (&(args_info->writefile_orig));
   free_string_field (&(args_info->cheatfile_arg));
   free_string_field (&(args_info->cheatfile_orig));
-  free_string_field (&(args_info->smear_orig));
+  free_string_field (&(args_info->seed_orig));
   
   
 
@@ -265,8 +265,8 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "cheatfile", args_info->cheatfile_orig, 0);
   if (args_info->Append_given)
     write_into_file(outfile, "Append", 0, 0 );
-  if (args_info->smear_given)
-    write_into_file(outfile, "smear", args_info->smear_orig, 0);
+  if (args_info->seed_given)
+    write_into_file(outfile, "seed", args_info->seed_orig, 0);
   if (args_info->quiet_given)
     write_into_file(outfile, "quiet", 0, 0 );
   if (args_info->print_photons_given)
@@ -564,14 +564,14 @@ cmdline_parser_internal (
         { "writefile",	1, NULL, 'W' },
         { "cheatfile",	1, NULL, 'c' },
         { "Append",	0, NULL, 'A' },
-        { "smear",	1, NULL, 'S' },
+        { "seed",	1, NULL, 's' },
         { "quiet",	0, NULL, 'q' },
         { "print-photons",	0, NULL, 'p' },
         { "file-write-off",	0, NULL, 0 },
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVi:D::r:vW:c:AS:qp", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVi:D::r:vW:c:As:qp", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -671,14 +671,14 @@ cmdline_parser_internal (
             goto failure;
         
           break;
-        case 'S':	/* change the smearing value.  */
+        case 's':	/* seed used in random number generator.  */
         
         
-          if (update_arg( (void *)&(args_info->smear_arg), 
-               &(args_info->smear_orig), &(args_info->smear_given),
-              &(local_args_info.smear_given), optarg, 0, 0, ARG_DOUBLE,
+          if (update_arg( (void *)&(args_info->seed_arg), 
+               &(args_info->seed_orig), &(args_info->seed_given),
+              &(local_args_info.seed_given), optarg, 0, 0, ARG_DOUBLE,
               check_ambiguity, override, 0, 0,
-              "smear", 'S',
+              "seed", 's',
               additional_error))
             goto failure;
         

@@ -125,43 +125,55 @@ int main(int argc, char const *argv[])
 		return ss.str();
 	};
 
-	TFile particleEvents(filename("identification").c_str(), "recreate");
+	TFile particleEvents(filename("correct_identification").c_str(), "recreate");
 	unsigned particleEvents_count = 0;
 
-	TFile misIdentificationEvents(filename("misIdentification").c_str(), "recreate");
+	TFile misIdentificationEvents(filename("incorrect_identification").c_str(), "recreate");
 	unsigned misIdentificationEvents_count = 0;
 
 	int nentries = reconstruction_tree->GetEntries();
-	if (event_range.at(1) > nentries) event_range.at(1) = nentries;
+	if (event_range_set){
+		if (event_range.at(1) > nentries)
+			event_range.at(1) = nentries;
+	}
+
 	if ( !event_range_set )
 		event_range = {0, nentries};
 
 	cout << "particle_search = " << particle_search << endl;
 	cout << "particle_compare = " << particle_compare << endl;
 	for (unsigned entry = event_range.at(0); entry < event_range.at(1); ++entry){
-		// cout << "event = " << entry << endl;
 		photon_tree->GetEntry(entry);
 		particle_tree->GetEntry(entry);
 		reconstruction_tree->GetEntry(entry);
 
-		static Reconstruction photon_reconstruction;
+    if (pars.empty()) continue;
+		Reconstruction photon_reconstruction;
 		ReconstructEvent(photon_reconstruction, photon_event, print);
 
 		vector<ParticleOut> par_outs(pars.begin(), pars.end());
 
 		bool added_Identification_Batch = false;
 		bool added_misIdentification_Batch = false;
-    if ((recons.size() == 0) || (pars.size() == 0)) continue;
 		for (unsigned i = 0; i < pars.size(); ++i){
 			// cout << "\tparticle " << i << endl;
 
-			if (added_Identification_Batch && added_misIdentification_Batch) continue;
-
+			if (added_Identification_Batch && added_misIdentification_Batch){
+			 continue;
+			}
 
 			auto& par = pars.at(i);
 			auto& phos = photon_reconstruction.Photons.at(i);
+
+			if (phos.size() != index.size()){
+				cout << "index and photons of different size!\n";
+				cout << " photons size " << phos.size() << endl;
+				cout << " index size " << index.size() << endl;
+				return 0;
+			}
 			auto& recon = recons.at(i);
 			double momentum = par.CalculateMomentum();
+			// cout << par.name << ": momentum = " << momentum << endl;
 			if (phos.empty()) continue;
 
 			if (!withinrange(momentum_range, momentum)) continue;
@@ -173,13 +185,13 @@ int main(int argc, char const *argv[])
 
 			bool passed_Identification = passConditions(matchcondition_cases, functions, par, recon, particle_search_index, -threshold);
 			if (!added_Identification_Batch && passed_Identification && (par.name == particle_search) && (particleEvents_count < max_count)){
-				AddBatch(entry, i, particleEvents, par_outs, pars, photon_reconstruction.Photons, index, recons, particle_compare, particleEvents_count);
+				AddBatch(entry, i, particleEvents, par_outs, pars, photon_reconstruction.Photons, index, recons, particle_compare, particleEvents_count, threshold);
 				added_Identification_Batch = true;
 			}
 
 			bool passed_misIdentification = passConditions(matchcondition_cases, functions, par, recon, particle_search_index, threshold);
 			if (!added_misIdentification_Batch && passed_misIdentification && (par.name == particle_search) && (misIdentificationEvents_count < max_count)){
-				AddBatch(entry, i, misIdentificationEvents, par_outs, pars, photon_reconstruction.Photons, index, recons, particle_compare, misIdentificationEvents_count);
+				AddBatch(entry, i, misIdentificationEvents, par_outs, pars, photon_reconstruction.Photons, index, recons, particle_compare, misIdentificationEvents_count, threshold);
 				added_misIdentification_Batch = true;
 			}
 
@@ -191,6 +203,10 @@ int main(int argc, char const *argv[])
 
 
 	}
+
+cout << particleEvents.GetName() << endl;
+
+cout << misIdentificationEvents.GetName() << endl;
 
 photon_Tfile.cd();
 photon_Tfile.Close();
@@ -204,7 +220,6 @@ particleEvents.Close();
 misIdentificationEvents.cd();
 misIdentificationEvents.Write();
 misIdentificationEvents.Close();
-
 
 
 
