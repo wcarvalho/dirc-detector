@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: GenerationObjects
+Description: Objects to generate particles
+Version: @PACKAGE_VERSION@
+Libs: -L${libdir} -lGenObjs
+Cflags: -I${includedir}
