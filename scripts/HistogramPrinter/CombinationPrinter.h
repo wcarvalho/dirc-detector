@@ -66,7 +66,7 @@ void addFits(TH1D &h, TrackRecon const& R, vector<TF1*>& functions){
 		const double& xlow = R.Params.at(i).at(4);
 		const double& xhi = R.Params.at(i).at(5);
 		f2.SetRange(xlow, xhi);
-		f2.SetLineColor(i+2);
+		f2.SetLineColor(i+4);
 		double const& center = R.getIntegralCenterAt(i);
 		if (center < center_min) center_min = center;
 		if (center > center_max) center_max = center;
@@ -192,17 +192,19 @@ void AddFitDetails(TPad &pad, TLegend& L, ParticleOut & P, TrackRecon const& R, 
 		TF1*& function = functions.at(i);
 		// expected angle
 		double expected_angle = anglemap[name];
-		ss.str(""); ss << "#scale[1.2]{#bf{" << name << "}} exp. emission angle: " << std::setprecision(5) << expected_angle;
+		ss.str(""); ss << "#scale[1.2]{#bf{" << name << "}}";
 		L.AddEntry(function, ss.str().c_str(),"l");
+
 
 		if (R.Params.empty()) continue;
-
 		// found angle
-		ss.str(""); ss << "found emission angle: "<< std::setprecision(5) << R.getIntegralCenterAt(i);
-		L.AddEntry(function, ss.str().c_str(),"l");
+
+		ss.str(""); ss << std::setprecision(5) << expected_angle <<
+		" vs. " << std::setprecision(5) << R.getIntegralCenterAt(i);
+		L.AddEntry(function, ss.str().c_str(),"");
 		// nsigma
 		ss.str(""); ss << "#Delta #sigma = "<< std::setprecision(2) << fabs(R.getnSigmaThetaAt(i));
-		L.AddEntry(function, ss.str().c_str(),"l");
+		L.AddEntry(function, ss.str().c_str(),"");
 		L.Draw();
 	}
 
@@ -268,7 +270,7 @@ void AddCombination(string canvasname, TFile& f, vector<ParticleOut> & particles
 
   AddEventDetails(*lowermiddle, L, particles.at(particle_index), R, search_index, momentum, particle_search, threshold);
 
-	TLegend FitLegend(0., 0., 1., 1., "Fit Details");
+	TLegend FitLegend(0., 0., 1., 1., "Emission Angle: Expected Vs. Found");
 	FitLegend.SetTextSize(.045);
 	AddFitDetails(*lowerright, FitLegend, particles.at(particle_index), R, functions);
 

@@ -135,7 +135,7 @@ void extractGraphData(TGraphAsymmErrors matches, TGraphAsymmErrors fakes,data_t&
 	int npoints = matches.GetN();
 	if (matches.GetN() != fakes.GetN()){
 		cout << "Matches: " << matches.GetN() << endl;
-		cout << "Fkaes: " << fakes.GetN() << endl;
+		cout << "Fakes: " << fakes.GetN() << endl;
 		cout << "incompatible\n"; exit(1);
 	}
 

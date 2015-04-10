@@ -1,19 +1,10 @@
 AUTOMAKE_OPTIONS = subdir-objects
 
-H=../headers
-bin_PROGRAMS = generator
-
-include_HEADERS = \
-	$(H)/generator.h \
-	$(H)/functions.h \
-	$(H)/myrandom.h
-
-generator_LDADD = \
+commonAdds = \
 	$(ROOT_LIBS) \
 	$(DIRC_LIB)
 
-generator_SOURCES = \
-	main.cpp \
+commonSources = \
 	cmdline.cpp \
 	generate_particle_data.cpp \
 	project.cpp \
@@ -26,6 +17,25 @@ generator_SOURCES = \
 ##=====================================
 	../functions/random_numbers.cpp \
 	../functions/TabToLevel.cpp
+
+H=../headers
+include_HEADERS = \
+	$(H)/generator.h \
+	$(H)/functions.h \
+	$(H)/myrandom.h
+
+lib_LTLIBRARIES = libGenObjs.la
+libGenObjs_la_SOURCES = $(commonSources)
+libGenObjs_la_LIBADD = $(commonAdds)
+libGenObjs_la_LDFLAGS = -version-info 1:0:0
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = GenObjs.pc
+
+bin_PROGRAMS = generator
+generator_SOURCES = main.cpp
+generator_LDADD = libGenObjs.la
+generator_CFLAGS = $(AM_CFLAGS)
 
 cmdline.c: cmdline.ggo
   gengetopt --input=cmdline.ggo --include-getopt

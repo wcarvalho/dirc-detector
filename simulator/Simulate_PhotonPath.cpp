@@ -13,7 +13,6 @@ Simulate the trajectories for a single Photon of a single Event
 
 void Simulate_PhotonPath(Detector d, Photon &photon, double smear, bool print)
 {
-	print = false; // TEMPORARY
 	if (print){ TabToLevel(2); cout << "Simulate_PhotonPath:\n"; }
 	static Simulate simPho(0, 0);
 	simPho.SetAngle(photon.Theta, photon.Phi);
@@ -24,35 +23,24 @@ void Simulate_PhotonPath(Detector d, Photon &photon, double smear, bool print)
 	{
 		simPho.GotoWall(print);
 		double &x_p = simPho.coord[0];
-		// Get_PhotonDistance(d, photon, Output.Trivial);
-		// Get_PhotonWall(photon, Output.Trivial);
-		// Move_Photon(photon, Output.Trivial);
 		if((x_p == 0 ) || (x_p == d.Length))
 		{
-			double th = simPho.Theta;
-			double ph = simPho.Phi;
-			Photon pho_temp(th, ph);
-			photon = pho_temp;
+			photon.SetAngle(simPho.Theta, simPho.Phi);
 			photon.Time_Traveled = simPho.time_traveled;
 			return;
 		}
-
-		double th = simPho.Theta;
-		double ph = simPho.Phi;
-		Photon pho_temp(th, ph);
+		static Photon pho_temp(0,0);
+		pho_temp.SetAngle(simPho.Theta, simPho.Phi);
 		pho_temp.Wall = simPho.wall;
-		CheckAngel(d, pho_temp, "no");
+		static string input;
+		if (print) input = "yes"; else input = "no";
+		CheckAngel(d, pho_temp, input);
 		photon.Flag = pho_temp.Flag;
 		if (photon.Flag == 1){
 			return;
 		}
-		// Change_Angle(photon, Output.Trivial);
+
 		simPho.Reflect(print);
 		photon.Reflections++;
-		// if (photon.Reflections > 800)
-		// {
-		// 	photon.Flag = 1;
-		// 	return;
-		// }
 	}
 }

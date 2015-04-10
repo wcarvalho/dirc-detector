@@ -169,7 +169,7 @@ int main(int argc, char** argv)
 		double totalphotons = photon_event.Photons.size();
 		for (int i = 0; i < photon_event.Photons.size(); i++)
 		{
-			Simulate_PhotonPath(*d, photon_event.Photons[i], seed, print);
+			Simulate_PhotonPath(*d, photon_event.Photons[i], seed, false);
 			if (photon_event.Photons[i].Flag == 1){
 				ParEvent->Particles.at(photon_event.Photons[i].WhichParticle).nPhotonsPassed -= 1;
 			}

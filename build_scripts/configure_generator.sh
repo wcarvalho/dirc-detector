@@ -1,4 +1,4 @@
 directory=generator
 source commands.sh
-cmd="$configure=$MYAPPS"
+cmd="$configure=$MYLIBS --bindir=$MYAPPS/bin"
 source execution.sh
