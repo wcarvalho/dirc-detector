@@ -180,7 +180,7 @@ catch( TCLAP::ArgException& e )
 		{
 			auto& photon_i = photon_event.Photons[i];
 			// if (counter == 149) cout << i << " theta, phi: " << photon_i.Theta << ", " << photon_i.Phi << " -> ";
-			Simulate_PhotonPath(*d, photon_i, seed, print);
+			Simulate_PhotonPath(*d, photon_i, seed, false);
 			if (photon_i.Flag == 1){
 				ParEvent->Particles.at(photon_i.WhichParticle).nPhotonsPassed -= 1;
 			}

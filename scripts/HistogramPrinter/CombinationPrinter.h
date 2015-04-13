@@ -100,27 +100,28 @@ void addFit(TH1D &h, TrackRecon const& R, int search_index){
 
 TH1D* addReducedHistogram(TPad& pad, TrackRecon const& R, vector<PhotonOut> const& photons, vector<int> const& index, int particle_index, int search_index, vector<TF1*> const& functions){
 
-	auto& h2 = R.Hist2D;
-	double xlow = .4;
-	double xhi = 1.;
-	double binwidth = h2.GetYaxis()->GetBinWidth(1);
-	int nbins = (xhi-xlow)/binwidth;
+	// auto& h2 = R.Hist2D;
+	// double xlow = .4;
+	// double xhi = 1.;
+	// double binwidth = h2.GetYaxis()->GetBinWidth(1);
+	// int nbins = (xhi-xlow)/binwidth;
 
-	string histname = wul::appendStrings(h2.GetName(), "1D");
+	// string histname = wul::appendStrings(h2.GetName(), "1D");
 
-	TH1D* h1 = CreateReducedHistogram(photons, index, particle_index, histname, nbins, xlow, xhi);
+	// TH1D* h1 = CreateReducedHistogram(photons, index, particle_index, histname, nbins, xlow, xhi);
+
+
+	TH1D* h1 = new TH1D();
+	R.Final1D.Copy(*h1);
 
 	h1->SetTitle("Reduced #theta Projection");
 	h1->GetXaxis()->SetTitle("#theta (radians)");
 	h1->SetDefaultSumw2();
 	h1->SetStats(0);
 
-	// cout << "\t\tprefit\n";
-	// addFit(*h1, R, search_index);
 	for (unsigned i = 0; i < functions.size(); ++i){
 		h1->GetListOfFunctions()->Add(functions.at(i));
 	}
-	// cout << "\t\tpostfit\n";
 
 	pad.cd();
 	h1->Draw();
@@ -209,14 +210,15 @@ void AddFitDetails(TPad &pad, TLegend& L, ParticleOut & P, TrackRecon const& R, 
 	}
 
 
-
+	cout << "\t\tupdating\n";
 	pad.Update();
+	cout << "\t\tmodifying\n";
 	pad.Modified();
 
 
 
 }
-void AddCombination(string canvasname, TFile& f, vector<ParticleOut> & particles, vector<PhotonOut> const& photons, vector<int> const& index, int particle_index, TrackRecon const& R, int search_index, double const& momentum, string particle_type, string particle_search, double threshold){
+void AddCombination(string canvasname, TFile& f, vector<ParticleOut> & particles, vector<PhotonOut> const& photons, vector<int> const& index, int particle_index, TrackRecon const& R, int search_index, double const& momentum, string particle_type, string particle_search, double threshold, bool print = true){
 
 
 	int length = 1920;
@@ -244,6 +246,8 @@ void AddCombination(string canvasname, TFile& f, vector<ParticleOut> & particles
 	lowermiddle->SetPad(.41, 0., .85, 1.);
 	lowerright->SetPad(.81, 0., 1. , 1.);
 
+	if (print) cout << "\tmakepads\n";
+
   TMultiGraph *mg = new TMultiGraph();
 	TLegend LScatter(0.15, 0.1, 1., 1., "Particles Incidence Angle (#theta, #phi)");
 	addScatterPlot(*upperright, mg, LScatter, particles, photons, index, particle_index);
@@ -252,27 +256,30 @@ void AddCombination(string canvasname, TFile& f, vector<ParticleOut> & particles
 	LScatter.Draw();
 	upperleft->Update();
 	upperleft->Modified();
-	// cout << "\t\taddScatterPlot\n";
 
 	vector< TF1* > functions;
 
 	TH1D* hf = addFullHistogram(*lowerleft, R, photons, index, particle_index, search_index, functions);
 	hf->GetXaxis()->SetRangeUser(.7, .85);
+	if (print) cout << "\tfull histogram\n";
+
+
 	TH1D* hr = addReducedHistogram(*lowermiddle, R, photons, index, particle_index, search_index, functions);
 	hr->GetXaxis()->SetRangeUser(.7, .85);
-	// cout << "\t\taddReduced\n";
-
-	// cout << "\t\taddFull\n";
+	if (print) cout << "\treduced histogram\n";
 
 	stringstream ss; ss << "Particle "<< particle_index << ": " << particle_type << " with p = "<< setprecision(2) << momentum << "GeV";
 	TLegend L(0., 0.9, 0.35, 1.0, ss.str().c_str());
 	L.SetTextSize(.035);
 
   AddEventDetails(*lowermiddle, L, particles.at(particle_index), R, search_index, momentum, particle_search, threshold);
+	if (print) cout << "\tevent details\n";
+
 
 	TLegend FitLegend(0., 0., 1., 1., "Emission Angle: Expected Vs. Found");
 	FitLegend.SetTextSize(.045);
 	AddFitDetails(*lowerright, FitLegend, particles.at(particle_index), R, functions);
+	if (print) cout << "\tfit details\n";
 
 	f.cd();
 	C.Write();

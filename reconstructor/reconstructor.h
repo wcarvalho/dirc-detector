@@ -47,7 +47,11 @@ void IndexPhotons(ParticleOut & particle, int const& particle_index, vector<Phot
 
 TH1D* ReducedHistogram(vector<PhotonOut> const& photons, Analysis const& A, int const& particle_index);
 TH1D* CreateReducedHistogram(vector<PhotonOut> const& photons, vector<int> const& index, int const particle_index, string histname, int nbins, double xlow, double xhi);
+
+
 void CalculateParticleFits(TH1D &histogram, ParticleOut &P, const vector<PhotonOut>& phos, Analysis &A, const int particle_index, double smear, int const& loss, vec_pair& expected_photons, bool print);
+TH1D rebinHistogram(TH1D& h, double minimum = 10.);
+
 
 bool passed_index_photons_condition(ParticleOut & P, double momentum_indexing_threshold);
 

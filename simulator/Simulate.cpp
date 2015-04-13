@@ -191,3 +191,61 @@ void Simulate::WhichWall(bool print){
   TimeToWall = min_time;
   if(print) cout << "\t\tWall = " << wall << "\n";
 }
+
+
+
+//unfinfished
+// void Simulate::GoTo(int const whichcoordinate, double const value){
+
+// 	double& x = coord[0];
+// 	double& y = coord[1];
+// 	double& z = coord[2];
+
+// 	double& l = Dim[0];
+// 	double& w = Dim[1];
+// 	double& h = Dim[2];
+
+// 	switch(whichcoordinate){
+// 		case 1:
+// 			double delta_x = value - coord[whichcoordinate];
+// 			double delta_y = TMath::Tan(Phi)*delta;
+// 			double delta_z = xy(delta_x, delta_y)/TMath::Tan(Theta)
+// 			int ny = (int)dy/w;
+// 			if (!(even(ny))) FlipY();
+
+// 			break;
+// 		case 2:
+// 			double delta_y = value - coord[whichcoordinate];
+// 			double delta_x = TMath::Tan(phi)/delta;
+// 			double delta_z = xy(delta_x, delta_y)/TMath::Tan(Theta)
+// 			break;
+// 		case 3:
+// 			double delta_z = value - coord[whichcoordinate];
+// 			double xy = delta_z*TMath::Tan(Theta);
+// 			double delta_y = xy*TMath::Sin(Phi);
+// 			double delta_x = xy*TMath::Cos(Phi)
+// 			break;
+// 	}
+
+
+
+// 	DistanceTo();
+// 	// while (coord[whichcoordinate] <= value){
+
+// 	// }
+
+// 	auto xy = [](double const x, double const y){
+// 		return sqrt(x*x+y*y);
+// 	}
+
+
+// 	// coord[0] += delta_x;
+// 	// coord[1] += delta_y;
+// 	// coord[2] += delta_z;
+
+// }
+
+bool even(int const value){
+	if (value % 2 == 0) return true;
+	else return false;
+}

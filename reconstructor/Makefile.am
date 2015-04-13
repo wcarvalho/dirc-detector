@@ -27,6 +27,7 @@ RiemannSum.cpp \
 FitGaussianPlusConstant.cpp \
 IndexPhotons.cpp \
 CreateReducedHistogram.cpp \
+rebinHistogram.cpp \
 ##=====================================
 ##
 ##					Mutual functions
