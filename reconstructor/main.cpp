@@ -182,11 +182,14 @@ int main(int argc, char** argv)
 			TH1D* reduced_histogram_theta_projection = ReducedHistogram(phos, A, par);
 
 			if (print) cout << "Fitting particle " << par << " with " << photons_per_particle[par] << " expected photons\n";
+
 			if (photons_per_particle[par] != 0 ){
 				gettimeofday(&t1, NULL);
 				CalculateParticleFits(*reduced_histogram_theta_projection, P, phos, A, par, smear, photon_overlap[par], expectedPhotonMap[par], print);				// for one particle, 1 fit is calculated for every possible mass (5 masses means 5 fits for 1 particle)
 				gettimeofday(&t2, NULL);
 			}
+
+
 			if (print){
 				auto& current_reconstruction = A.Recon.at(par);
 				for (unsigned k = 0; k < current_reconstruction.NReconstructions(); ++k){
@@ -195,6 +198,8 @@ int main(int argc, char** argv)
 					cout << "\t\tdelSigTheta = " << current_reconstruction.getnSigmaThetaAt(k) << endl;
 				}
 			}
+
+
 
 			time1 = (double)(t1.tv_sec) + (double)(t1.tv_usec)/1.0e6;
 			time2 = (double)(t2.tv_sec) + (double)(t2.tv_usec)/1.0e6;

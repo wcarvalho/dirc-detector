@@ -1,5 +1,29 @@
 #include "reconstructor.h"
 
+double CalculateArea(TH1D & h, double const& xlow, double const& xhi, double const& constant){
+
+	unsigned binlow = h.FindBin(xlow);
+	unsigned binhi = h.FindBin(xhi);
+
+	static double height; height = 0;
+	static double width; width = 0;
+
+	double sum = 0;
+	for (unsigned i = binlow; i < binhi; ++i){
+		height = h.GetBinContent(i);
+		width = h.GetBinWidth(i);
+		sum += height;
+	}
+
+	double area_below_gaussian = constant*(xhi-xlow);
+
+	return sum - area_below_gaussian;
+		// Area = sqrt(2*pi)/histogram.GetBinWidth(1)*height*width;
+		// TrackRecon &guess  = A.Recon.at(particle_index);
+}
+
+
+
 // for one particle this function will calculate the histogram fit, the area under the fit, the expected number of photons for each mass. the area and expected number of photons are compared and a delta sigma is delta_Sigma is calculated
 void CalculateParticleFits(TH1D &histogram, ParticleOut &P, const vector<PhotonOut>& phos, Analysis &A, const int particle_index, double smear, int const& loss, vec_pair& expected_photons, bool print){
 
@@ -28,14 +52,19 @@ void CalculateParticleFits(TH1D &histogram, ParticleOut &P, const vector<PhotonO
 		xlow = angle - .05;
 		xhi = angle + .05;
 
-		FitGaussianPlusConstant(histogram, xlow, xhi, 0, pi, -1.10, 1.e10, center, width, constant, height, 8);
+		// histogram.SaveAs("pre_rebinning.root");
+		static TH1D rebinned_histogram;
+		rebinned_histogram = rebinHistogram(histogram);
+
+		FitGaussianPlusConstant(rebinned_histogram, xlow, xhi, 0, pi, -1.10, 1.e10, center, width, constant, height, 8);
 
 		xlow = center - .03;
 		xhi = center + .03;
-		FitGaussianPlusConstant(histogram, xlow, xhi, 0, pi, -1.10, 1.e10, center, width, constant, height, 8);
+		FitGaussianPlusConstant(rebinned_histogram, xlow, xhi, 0, pi, -1.10, 1.e10, center, width, constant, height, 8);
 		xlow = center - .03;
 		xhi = center + .03;
-		Area = sqrt(2*pi)/histogram.GetBinWidth(1)*height*width;
+		// Area = sqrt(2*pi)/histogram.GetBinWidth(1)*height*width;
+		Area = CalculateArea(histogram, xlow, xhi, constant);
 		TrackRecon &guess  = A.Recon.at(particle_index);
 
 		vector<double> params = {height, center, width, constant, xlow, xhi};
@@ -58,6 +87,7 @@ void CalculateParticleFits(TH1D &histogram, ParticleOut &P, const vector<PhotonO
 		guess.Sigmas.push_back(delSigma);
 		guess.Areas.push_back(Area);
 		guess.ExpectedNumber.push_back(N);
+		guess.Final1D = rebinned_histogram;
 		// if (print) guess.printLatest();
 		++count;
 	}

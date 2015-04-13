@@ -55,6 +55,8 @@ public:
 	void GotoWall(bool print = false);
 	void Reflect(bool print = false);
 	void PrintVec();
+	void ResetTime(){ time_traveled = 0.; }
+	void GoTo(int const whichcoordinate, double const value);
 
 	double Distance[3];
 	double Dim[3];
