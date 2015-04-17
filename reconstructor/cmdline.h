@@ -85,9 +85,15 @@ struct gengetopt_args_info
   const char *band_search_case_help; /**< @brief 
   \tcase 1: Search 1D theta projection for gaussian peak. 
   \tcase 2: apply hough transform to 2D theta vs. phi histogram help description.  */
+  double band_search_width_arg;	/**< @brief width to use in theta band for each particle (default='.03').  */
+  char * band_search_width_orig;	/**< @brief width to use in theta band for each particle original value given at command line.  */
+  const char *band_search_width_help; /**< @brief width to use in theta band for each particle help description.  */
   double momentum_indexing_threshold_arg;	/**< @brief momentum threshold to determine whether an attemp will be made to index photons to a particular particle (default='.5').  */
   char * momentum_indexing_threshold_orig;	/**< @brief momentum threshold to determine whether an attemp will be made to index photons to a particular particle original value given at command line.  */
   const char *momentum_indexing_threshold_help; /**< @brief momentum threshold to determine whether an attemp will be made to index photons to a particular particle help description.  */
+  double event_range_arg;	/**< @brief Event Range.  */
+  char * event_range_orig;	/**< @brief Event Range original value given at command line.  */
+  const char *event_range_help; /**< @brief Event Range help description.  */
   
   unsigned int help_given ;	/**< @brief Whether help was given.  */
   unsigned int version_given ;	/**< @brief Whether version was given.  */
@@ -103,7 +109,9 @@ struct gengetopt_args_info
   unsigned int expected_photons_case_given ;	/**< @brief Whether expected-photons-case was given.  */
   unsigned int LookUpTable_given ;	/**< @brief Whether LookUpTable was given.  */
   unsigned int band_search_case_given ;	/**< @brief Whether band-search-case was given.  */
+  unsigned int band_search_width_given ;	/**< @brief Whether band-search-width was given.  */
   unsigned int momentum_indexing_threshold_given ;	/**< @brief Whether momentum-indexing-threshold was given.  */
+  unsigned int event_range_given ;	/**< @brief Whether event-range was given.  */
 
 } ;
 

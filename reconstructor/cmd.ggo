@@ -23,6 +23,8 @@ option "LookUpTable" L "file for look-up table" string default="LookUpTable" arg
 
 option "band-search-case" b "\n\tcase 1: Search 1D theta projection for gaussian peak. \n\tcase 2: apply hough transform to 2D theta vs. phi histogram" argoptional int optional default="1"
 
+option "band-search-width" w "width to use in theta band for each particle" double optional argoptional default=".03"
+
 option "momentum-indexing-threshold" - "momentum threshold to determine whether an attemp will be made to index photons to a particular particle" double optional default=".5"
 
-option "event-range" e "Event Range" double optional
+option "event-range" r "Event Range" double optional

@@ -33,6 +33,7 @@ void Simulate_PhotonPath(Detector& d, Photon &photon, double smear, bool print)
 		{
 			// photon.Theta += r.Gaus(0., smear);
 			// photon.Phi += r.Gaus(0., smear);
+
 			double th = simPho.Theta;
 			double ph = simPho.Phi;
 			Photon pho_temp(th, ph);

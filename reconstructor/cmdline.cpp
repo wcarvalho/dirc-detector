@@ -48,7 +48,9 @@ const char *gengetopt_args_info_help[] = {
   "  -e, --expected-photons-case[=INT]\n                                \n                                  \tcase 1: look-up table. \n                                  \tcase 2: riemann sum calculation.\n                                  (default=`1')",
   "  -L, --LookUpTable[=STRING]    file for look-up table  (default=`LookUpTable')",
   "  -b, --band-search-case[=INT]  \n                                  \tcase 1: Search 1D theta projection for\n                                  gaussian peak. \n                                  \tcase 2: apply hough transform to 2D theta\n                                  vs. phi histogram  (default=`1')",
+  "  -w, --band-search-width[=DOUBLE]\n                                width to use in theta band for each particle\n                                  (default=`.03')",
   "      --momentum-indexing-threshold=DOUBLE\n                                momentum threshold to determine whether an\n                                  attemp will be made to index photons to a\n                                  particular particle  (default=`.5')",
+  "  -r, --event-range=DOUBLE      Event Range",
     0
 };
 
@@ -90,7 +92,9 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->expected_photons_case_given = 0 ;
   args_info->LookUpTable_given = 0 ;
   args_info->band_search_case_given = 0 ;
+  args_info->band_search_width_given = 0 ;
   args_info->momentum_indexing_threshold_given = 0 ;
+  args_info->event_range_given = 0 ;
 }
 
 static
@@ -113,8 +117,11 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->LookUpTable_orig = NULL;
   args_info->band_search_case_arg = 1;
   args_info->band_search_case_orig = NULL;
+  args_info->band_search_width_arg = .03;
+  args_info->band_search_width_orig = NULL;
   args_info->momentum_indexing_threshold_arg = .5;
   args_info->momentum_indexing_threshold_orig = NULL;
+  args_info->event_range_orig = NULL;
   
 }
 
@@ -137,7 +144,9 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->expected_photons_case_help = gengetopt_args_info_help[11] ;
   args_info->LookUpTable_help = gengetopt_args_info_help[12] ;
   args_info->band_search_case_help = gengetopt_args_info_help[13] ;
-  args_info->momentum_indexing_threshold_help = gengetopt_args_info_help[14] ;
+  args_info->band_search_width_help = gengetopt_args_info_help[14] ;
+  args_info->momentum_indexing_threshold_help = gengetopt_args_info_help[15] ;
+  args_info->event_range_help = gengetopt_args_info_help[16] ;
   
 }
 
@@ -235,7 +244,9 @@ cmdline_parser_release (struct gengetopt_args_info *args_info)
   free_string_field (&(args_info->LookUpTable_arg));
   free_string_field (&(args_info->LookUpTable_orig));
   free_string_field (&(args_info->band_search_case_orig));
+  free_string_field (&(args_info->band_search_width_orig));
   free_string_field (&(args_info->momentum_indexing_threshold_orig));
+  free_string_field (&(args_info->event_range_orig));
   
   
 
@@ -294,8 +305,12 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "LookUpTable", args_info->LookUpTable_orig, 0);
   if (args_info->band_search_case_given)
     write_into_file(outfile, "band-search-case", args_info->band_search_case_orig, 0);
+  if (args_info->band_search_width_given)
+    write_into_file(outfile, "band-search-width", args_info->band_search_width_orig, 0);
   if (args_info->momentum_indexing_threshold_given)
     write_into_file(outfile, "momentum-indexing-threshold", args_info->momentum_indexing_threshold_orig, 0);
+  if (args_info->event_range_given)
+    write_into_file(outfile, "event-range", args_info->event_range_orig, 0);
   
 
   i = EXIT_SUCCESS;
@@ -597,11 +612,13 @@ cmdline_parser_internal (
         { "expected-photons-case",	2, NULL, 'e' },
         { "LookUpTable",	2, NULL, 'L' },
         { "band-search-case",	2, NULL, 'b' },
+        { "band-search-width",	2, NULL, 'w' },
         { "momentum-indexing-threshold",	1, NULL, 0 },
+        { "event-range",	1, NULL, 'r' },
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVi:D::W:vqmg:l:S:e::L::b::", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVi:D::W:vqmg:l:S:e::L::b::w::r:", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -761,6 +778,30 @@ cmdline_parser_internal (
               &(local_args_info.band_search_case_given), optarg, 0, "1", ARG_INT,
               check_ambiguity, override, 0, 0,
               "band-search-case", 'b',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'w':	/* width to use in theta band for each particle.  */
+        
+        
+          if (update_arg( (void *)&(args_info->band_search_width_arg), 
+               &(args_info->band_search_width_orig), &(args_info->band_search_width_given),
+              &(local_args_info.band_search_width_given), optarg, 0, ".03", ARG_DOUBLE,
+              check_ambiguity, override, 0, 0,
+              "band-search-width", 'w',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'r':	/* Event Range.  */
+        
+        
+          if (update_arg( (void *)&(args_info->event_range_arg), 
+               &(args_info->event_range_orig), &(args_info->event_range_given),
+              &(local_args_info.event_range_given), optarg, 0, 0, ARG_DOUBLE,
+              check_ambiguity, override, 0, 0,
+              "event-range", 'r',
               additional_error))
             goto failure;
         

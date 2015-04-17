@@ -10,7 +10,7 @@ double pi=3.14159265358979312;
  * WORKING
  */
 
-bool TallestBinContent(ParticleOut & particle, TH2D const& h, double const& smear, double& center_min, double &center_max, vec_pair const&expected_photons, map<string,double> const& anglemap, bool const& print){
+bool TallestBinContent(ParticleOut & particle, TH2D const& h, double const& smear, double const& width, double& center_min, double &center_max, vec_pair const&expected_photons, map<string,double> const& anglemap, bool const& print){
 	TH1D* h1 = h.ProjectionY();
 
 	static double pi2 = pi/2;
@@ -46,12 +46,12 @@ bool TallestBinContent(ParticleOut & particle, TH2D const& h, double const& smea
 	// if (minNSigma > 5) return false;
 	if (height < 20) return false;
 	double center = h1->GetBinCenter(max_bin);
-	center_min = center -.03;
-	center_max = center +.03;
+	center_min = center - width;
+	center_max = center + width;
 	return true;
 }
 
-bool PeakNearExpectedThetas(ParticleOut & particle, TH2D const& h, double const& smear, double& center_min, double &center_max, vec_pair const&expected_photons, map<string,double> const& anglemap, bool const& print){
+bool PeakNearExpectedThetas(ParticleOut & particle, TH2D const& h, double const& smear, double const& width, double& center_min, double &center_max, vec_pair const&expected_photons, map<string,double> const& anglemap, bool const& print){
 	TH1D* h1 = h.ProjectionY();
 
 

@@ -76,7 +76,7 @@ void Simulate::OldWhichWall(bool print)
 
 double Simulate::TimeForDistance(double D, bool print){
 
-	double t = D/Vec.Mag(); // normally divided by v but v is always one because its a unit vector
+	double t = D/Vec.Mag();
 	return t;
 }
 

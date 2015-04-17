@@ -57,9 +57,9 @@ void TrackRecons::PushBackParams(){
 void Analysis::AddTH1D(const char* name, const char* title, int nbinsx, double xlow, double xup, int which)
 {
 	TH1D h1(name, title, nbinsx, xlow, xup);
+	h1.SetDefaultSumw2();
 	for (unsigned int i = 0; i < data.size(); i++)
 		h1.Fill(data.at(i).at(which));
-	h1.SetDefaultSumw2();
 	Hists1D.push_back(h1);
 }
 
