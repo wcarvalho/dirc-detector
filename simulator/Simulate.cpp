@@ -1,6 +1,6 @@
 #include "dirc_objects.h"
 #include "../headers/functions.h"
-#include "../headers/simulator.h"
+#include "simulator.h"
 #include "Simulate.h"
 #include <iomanip>
 #include <unordered_map>

@@ -2,7 +2,7 @@
 #include <string>
 #include <math.h>
 #include "dirc_objects.h"
-#include "../headers/simulator.h"
+#include "simulator.h"
 #include "../headers/functions.h"
 
 using namespace std;
@@ -26,13 +26,8 @@ void Simulate_PhotonPath(Detector& d, Photon &photon, double smear, bool print)
 	{
 		simPho.GotoWall(print);
 		double &x_p = simPho.coord[0];
-		// Get_PhotonDistance(d, photon, Output.Trivial);
-		// Get_PhotonWall(photon, Output.Trivial);
-		// Move_Photon(photon, Output.Trivial);
 		if((x_p == 0 ) || (x_p == d.Length))
 		{
-			// photon.Theta += r.Gaus(0., smear);
-			// photon.Phi += r.Gaus(0., smear);
 
 			double th = simPho.Theta;
 			double ph = simPho.Phi;
@@ -41,7 +36,7 @@ void Simulate_PhotonPath(Detector& d, Photon &photon, double smear, bool print)
 			photon.X = simPho.coord[0];
 			photon.Y = simPho.coord[1];
 			photon.Z = simPho.coord[2];
-			photon.Time_Traveled = simPho.time_traveled;
+			photon.Time_Traveled = simPho.GetTimeTraveled();
 			return;
 		}
 

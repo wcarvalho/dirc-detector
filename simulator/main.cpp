@@ -4,7 +4,8 @@
 //
 //====================================================
 
-#include "../headers/simulator.h"
+#include "simulator.h"
+#include "Rotater.h"
 #include <sstream>
 #include <cstdlib>
 #include "cmdline.h"
@@ -37,7 +38,6 @@ int main(int argc, char** argv)
 	GeneratorOut *event_output = 0;
 	GeneratorOut *event_outputCopy = 0;
 
-  Displayer Output;
 	Rotater r;
 	FileProperties &f = readf_prop;
 
@@ -173,10 +173,10 @@ int main(int argc, char** argv)
 			if (photon_event.Photons[i].Flag == 1){
 				ParEvent->Particles.at(photon_event.Photons[i].WhichParticle).nPhotonsPassed -= 1;
 			}
-			CheckForFlag(photon_event, i, Output.Trivial);
+			CheckForFlag(photon_event, i, "no");
 		}
 		if (ai.print_photons_given) cout << "total photons: " << photon_event.Photons.size() << endl;
-		FillTree(sim_out, *ParEvent, photon_event, *event_output, Output.Important, event_outputCopy, Append, quiet);
+		FillTree(sim_out, *ParEvent, photon_event, *event_output, "no", event_outputCopy, Append, quiet);
 		if (print){
 			printf("\t\t(%f percent)\n\n", photon_event.Photons.size()/totalphotons*100.);
 		}

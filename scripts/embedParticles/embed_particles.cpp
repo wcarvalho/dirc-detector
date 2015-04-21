@@ -11,6 +11,7 @@
 #include "TRandom3.h"
 #include <tclap/CmdLine.h>
 #include "simulator.h"
+#include "Rotater.h"
 
 using namespace std;
 int main(int argc, char* argv[]){

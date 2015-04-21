@@ -234,10 +234,10 @@ void AddCombination(string canvasname, TFile& f, vector<ParticleOut> & particles
   TMultiGraph *mg = new TMultiGraph();
   TLegend* L_P = 0;
 	switch(plotType){
-		case 1: L_P = new TLegend(0.15, 0.1, 1., 1., "Particle Incident (#theta, #phi) and (x, y)");
+		case 1: L_P = new TLegend(0.15, 0.1, 1., 1., "Particle Incident (#theta, #phi) and z");
 		addScatterPlot(*upperright, mg, *L_P, particles, photons, index, particle_index);
 		break;
-		case 2: L_P = new TLegend(0.15, 0.1, 1., 1., "Photon Time Bands (100 ps)");
+		case 2: L_P = new TLegend(0.15, 0.1, 1., 1., "Photon Time Bands (ns)");
 		create2DTimeProjection(*upperright, mg, *L_P, photons, cheat_photons, particle_index);
 		break;
 	}
@@ -282,9 +282,77 @@ void AddCombination(string canvasname, TFile& f, vector<ParticleOut> & particles
 	for (auto& function: functions)
 		delete function;
 	delete mg;
+	delete L_P;
 }
 
-void AddBatch(int event, int match, TFile& f, vector<ParticleOut> & particle_outs, vector<Particle> & particles, vector< vector<PhotonOut> > const& photon_sets, vector<Photon> cheat_photons, vector<int> const& index, vector< TrackRecon> & reconstructions, string & particle_compare, unsigned& count, double threshold, int plotType){
+void AddTimeScatterCombination(string canvasname, TFile& f, vector<ParticleOut> & particles, vector<PhotonOut> const& photons, vector<Photon> const& cheat_photons, vector<int> const& index, int particle_index, TrackRecon const& R, int search_index, double const& momentum, string particle_type, string particle_search, double threshold, int plotType, double time_min, double time_max, bool print = false){
+
+	int length = 1920;
+	int height = 1080;
+  static TCanvas C("C", "C", length, height);
+  C.SetName(canvasname.c_str());
+  C.Clear();
+
+
+  C.Divide(1,2);
+  TPad* upperpad = (TPad*)C.GetPad(1);
+  TPad* lowerpad = (TPad*)C.GetPad(2);
+
+  upperpad->Divide(2,1);
+  TPad* upperleft = (TPad*)upperpad->GetPad(1);
+  TPad* upperright = (TPad*)upperpad->GetPad(2);
+	upperleft->SetPad( 0, 0, .15, 1. );
+	upperright->SetPad( .15, 0, 1. , 1. );
+
+	lowerpad->Divide(2,1);
+  TPad* lowerleft = (TPad*)lowerpad->GetPad(1);
+  TPad* lowerright = (TPad*)lowerpad->GetPad(2);
+	lowerleft->SetPad( 0, 0, .15, 1. );
+	lowerright->SetPad( .15, 0, 1. , 1. );
+
+	if (print) cout << "\tmakepads\n";
+
+
+
+  TLegend* scatterLegend = 0;
+	scatterLegend = new TLegend(0.15, 0.1, 1., 1., "Particle Incident (#theta, #phi) and z");
+  TMultiGraph *scattermg = new TMultiGraph();
+	addScatterPlot(*upperright, scattermg, *scatterLegend, particles, photons, index, particle_index);
+
+	scatterLegend->SetTextSize(.06);
+	upperleft->cd();
+	scatterLegend->Draw();
+	upperleft->Update();
+	upperleft->Modified();
+
+  TLegend* timeLegend = 0;
+	timeLegend = new TLegend(0.15, 0.1, 1., 1., "Photon Time Bands (ns)");
+
+  TMultiGraph *timemg = new TMultiGraph();
+	create2DTimeProjection(*lowerright, timemg, *timeLegend, photons, cheat_photons, particle_index, time_min, time_max);
+
+	timeLegend->SetTextSize(.06);
+	lowerleft->cd();
+	timeLegend->Draw();
+	upperleft->Update();
+	upperleft->Modified();
+
+	stringstream ss; ss << "Particle "<< particle_index << ": " << particle_type << " with p = "<< setprecision(2) << momentum << "GeV";
+	TLegend L(0., 0.9, 0.15, 1.0, ss.str().c_str());
+	L.SetTextSize(.035);
+
+  AddEventDetails(*upperright, L, particles.at(particle_index), R, search_index, momentum, particle_search, threshold);
+
+	f.cd();
+	C.Write();
+
+	delete scattermg;
+	delete timemg;
+	delete scatterLegend;
+	delete timeLegend;
+}
+
+void AddBatch(int event, int match, TFile& f, vector<ParticleOut> & particle_outs, vector<Particle> & particles, vector< vector<PhotonOut> > const& photon_sets, vector<Photon> cheat_photons, vector<int> const& index, vector< TrackRecon> & reconstructions, string & particle_compare, unsigned& count, double threshold, int plotType, double time_min, double time_max){
 
 	static stringstream ss;
 	static double momentum;
@@ -298,8 +366,12 @@ void AddBatch(int event, int match, TFile& f, vector<ParticleOut> & particle_out
 
 		momentum = par.CalculateMomentum();
 		int search_index = getReconIndex(recon, particle_compare);
-		// cout << "AddBatch " << i << endl;
-		AddCombination(ss.str(), f, particle_outs, photons, cheat_photons,  index, i, recon, search_index, momentum, par.GetName(), particle_compare, threshold, plotType);
+		if ((plotType == 1) || (plotType == 2)){
+			AddCombination(ss.str(), f, particle_outs, photons, cheat_photons,  index, i, recon, search_index, momentum, par.GetName(), particle_compare, threshold, plotType);
+		}
+		else if (plotType == 3){
+			AddTimeScatterCombination(ss.str(), f, particle_outs, photons, cheat_photons,  index, i, recon, search_index, momentum, par.GetName(), particle_compare, threshold, plotType, time_min, time_max);
+		}
 	}
 
 	++count;
