@@ -61,9 +61,9 @@ void diagnostic_print(vector<int> const& index, int const& particle_index, vecto
 	}
 }
 
-void IndexPhotons(ParticleOut & particle, int const& particle_index, vector<PhotonOut> const& photons, Analysis & A, double const& smear, unsigned const& band_search_case, unordered_map <int, int>& photon_overlap, unordered_map <int, int>& photons_per_particle, vec_pair const&expected_photons, map<string,double> const& anglemap, bool const& print){
+void IndexPhotons(ParticleOut & particle, int const& particle_index, vector<PhotonOut> const& photons, Analysis & A, double const& smear, unsigned const& band_search_case, double const& band_search_width, unordered_map <int, int>& photon_overlap, unordered_map <int, int>& photons_per_particle, vec_pair const&expected_photons, map<string,double> const& anglemap, bool const& print){
 
-	bool (*GetPhotonBand)(ParticleOut &, TH2D const&, double const&, double&, double&, vec_pair const&, map<string,double> const&, bool const&);
+	bool (*GetPhotonBand)(ParticleOut &, TH2D const&, double const&, double const&, double&, double&, vec_pair const&, map<string,double> const&, bool const&);
 	switch(band_search_case){
 		case 1: GetPhotonBand=&TallestBinContent; break;
 		// case 2: GetPhotonBand=&PeakNearExpectedThetas; break;
@@ -71,7 +71,7 @@ void IndexPhotons(ParticleOut & particle, int const& particle_index, vector<Phot
 	const TH2D& h = A.Hists2D.back();
 	static double center_min = 0.;
 	static double center_max = 0.;
-	if (!GetPhotonBand(particle, h, smear, center_min, center_max, expected_photons, anglemap, print)) {
+	if (!GetPhotonBand(particle, h, smear, band_search_width, center_min, center_max, expected_photons, anglemap, print)) {
 		if (print) cout << "Didn't Index\n";
 		return;
 	}

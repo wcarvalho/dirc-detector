@@ -33,7 +33,7 @@ TH1D rebinHistogram(TH1D& h, double minimum){
 	string histogram_name = h.GetName(); histogram_name.append("_rebinned");
 	int nbins = lower_edges.size() - 1;
 	double* lower_edges_p = &lower_edges[0]; // pointer for double[], type required by root function
-
+	if (nbins == 0) return h;
 	TH1D* h_rebinned = (TH1D*)h.Rebin(nbins, histogram_name.c_str(), lower_edges_p);
 
 	// h_rebinned->SaveAs("post_rebinning.root");

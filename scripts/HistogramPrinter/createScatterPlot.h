@@ -13,6 +13,7 @@ void createGraph(vector<TGraph*>& graphs, TLegend& L, string legend_entry, vecto
 	g->SetMarkerSize(markersize);
 	if (markercolor == 8) ++ markercolor;
 	g->SetMarkerColor(markercolor);
+	g->SetLineColor(markercolor);
 	int point = 0;
 	int nphotons = photons.size();
 	// cout << "nphotons = " << nphotons << endl;
@@ -49,7 +50,7 @@ void DrawScatterPlot(TMultiGraph*& mg, TLegend& L, vector<ParticleOut> const& pa
 	stringstream ss;
 	for (unsigned i = 0; i < nparticles; ++i){
 		auto const& particle = particles.at(i);
-		 ss.str(""); ss << i << ": " << std::setprecision(2) << particle.Theta << ", " << std::setprecision(2) << particle.Phi;
+		 ss.str(""); ss << i << ": (" << std::setprecision(2) << particle.Theta << ", " << std::setprecision(2) << particle.Phi << "), (" << int(particle.X) << ", " << std::setprecision(2) << particle.Y << ")";
 		createGraph(graphs, L, ss.str(), photons, index, i, markerstyle, i+2, markersize);
 	}
 

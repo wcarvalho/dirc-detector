@@ -1,5 +1,6 @@
 #include "TLatex.h"
 #include "TObject.h"
+#include "create2DTimeProjection.h"
 
 typedef std::unordered_map<int, bool(*)(const Particle&, const TrackRecon&, const int&, const double&)> func_map;
 
@@ -34,7 +35,6 @@ std::string findBestFit(TrackRecon const& R, double const& threshold){
 	}
 	return R.getNameAt(index_of_bestfit);
 }
-
 void addScatterPlot(TPad& pad, TMultiGraph *mg, TLegend& L, vector<ParticleOut> const& particles, vector<PhotonOut> const& photons, vector<int> const& index, int particle_index){
 
 	DrawScatterPlot(mg, L, particles, photons, index, particle_index);
@@ -47,7 +47,6 @@ void addScatterPlot(TPad& pad, TMultiGraph *mg, TLegend& L, vector<ParticleOut> 
 	pad.Update();
 	pad.Modified();
 }
-
 void addFits(TH1D &h, TrackRecon const& R, vector<TF1*>& functions){
 
 	if (R.Params.empty()) return;
@@ -75,8 +74,6 @@ void addFits(TH1D &h, TrackRecon const& R, vector<TF1*>& functions){
 	}
 
 }
-
-
 void addFit(TH1D &h, TrackRecon const& R, int search_index){
 
 	if (R.Params.empty()) return;
@@ -96,8 +93,6 @@ void addFit(TH1D &h, TrackRecon const& R, int search_index){
 	h.GetListOfFunctions()->Add(&f2);
 
 }
-
-
 TH1D* addReducedHistogram(TPad& pad, TrackRecon const& R, vector<PhotonOut> const& photons, vector<int> const& index, int particle_index, int search_index, vector<TF1*> const& functions){
 
 	// auto& h2 = R.Hist2D;
@@ -130,11 +125,6 @@ TH1D* addReducedHistogram(TPad& pad, TrackRecon const& R, vector<PhotonOut> cons
 	pad.Modified();
 	return std::move(h1);
 }
-
-
-
-
-
 TH1D* addFullHistogram(TPad& pad, TrackRecon const& R, vector<PhotonOut> const& photons, vector<int> const& index, int particle_index, int search_index, vector<TF1*>& functions){
 
 	auto& h2 = R.Hist2D;
@@ -158,8 +148,6 @@ TH1D* addFullHistogram(TPad& pad, TrackRecon const& R, vector<PhotonOut> const& 
 
 	return std::move(h1);
 }
-
-
 void AddEventDetails(TPad &pad, TLegend& L, ParticleOut & P, TrackRecon const& R, int const& particle_index, double const& momentum, string particle_search, double threshold){
 
 	pad.cd();
@@ -179,7 +167,6 @@ void AddEventDetails(TPad &pad, TLegend& L, ParticleOut & P, TrackRecon const& R
 	pad.Update();
 	pad.Modified();
 }
-
 void AddFitDetails(TPad &pad, TLegend& L, ParticleOut & P, TrackRecon const& R, vector<TF1*> functions){
 
 	pad.cd();
@@ -210,15 +197,11 @@ void AddFitDetails(TPad &pad, TLegend& L, ParticleOut & P, TrackRecon const& R, 
 	}
 
 
-	cout << "\t\tupdating\n";
 	pad.Update();
-	cout << "\t\tmodifying\n";
 	pad.Modified();
-
-
-
 }
-void AddCombination(string canvasname, TFile& f, vector<ParticleOut> & particles, vector<PhotonOut> const& photons, vector<int> const& index, int particle_index, TrackRecon const& R, int search_index, double const& momentum, string particle_type, string particle_search, double threshold, bool print = true){
+
+void AddCombination(string canvasname, TFile& f, vector<ParticleOut> & particles, vector<PhotonOut> const& photons, vector<Photon> const& cheat_photons, vector<int> const& index, int particle_index, TrackRecon const& R, int search_index, double const& momentum, string particle_type, string particle_search, double threshold, int plotType, bool print = false){
 
 
 	int length = 1920;
@@ -249,8 +232,17 @@ void AddCombination(string canvasname, TFile& f, vector<ParticleOut> & particles
 	if (print) cout << "\tmakepads\n";
 
   TMultiGraph *mg = new TMultiGraph();
-	TLegend LScatter(0.15, 0.1, 1., 1., "Particles Incidence Angle (#theta, #phi)");
-	addScatterPlot(*upperright, mg, LScatter, particles, photons, index, particle_index);
+  TLegend* L_P = 0;
+	switch(plotType){
+		case 1: L_P = new TLegend(0.15, 0.1, 1., 1., "Particle Incident (#theta, #phi) and (x, y)");
+		addScatterPlot(*upperright, mg, *L_P, particles, photons, index, particle_index);
+		break;
+		case 2: L_P = new TLegend(0.15, 0.1, 1., 1., "Photon Time Bands (100 ps)");
+		create2DTimeProjection(*upperright, mg, *L_P, photons, cheat_photons, particle_index);
+		break;
+	}
+
+	TLegend &LScatter = *L_P;
 	LScatter.SetTextSize(.06);
 	upperleft->cd();
 	LScatter.Draw();
@@ -260,12 +252,12 @@ void AddCombination(string canvasname, TFile& f, vector<ParticleOut> & particles
 	vector< TF1* > functions;
 
 	TH1D* hf = addFullHistogram(*lowerleft, R, photons, index, particle_index, search_index, functions);
-	hf->GetXaxis()->SetRangeUser(.7, .85);
+	hf->GetXaxis()->SetRangeUser(.75, .9);
 	if (print) cout << "\tfull histogram\n";
 
 
 	TH1D* hr = addReducedHistogram(*lowermiddle, R, photons, index, particle_index, search_index, functions);
-	hr->GetXaxis()->SetRangeUser(.7, .85);
+	hr->GetXaxis()->SetRangeUser(.75, .9);
 	if (print) cout << "\treduced histogram\n";
 
 	stringstream ss; ss << "Particle "<< particle_index << ": " << particle_type << " with p = "<< setprecision(2) << momentum << "GeV";
@@ -287,12 +279,12 @@ void AddCombination(string canvasname, TFile& f, vector<ParticleOut> & particles
 	hr->GetListOfFunctions()->Clear();
 	hf->GetListOfFunctions()->Clear();
 	delete hr;
-	delete mg;
 	for (auto& function: functions)
 		delete function;
+	delete mg;
 }
 
-void AddBatch(int event, int match, TFile& f, vector<ParticleOut> & particle_outs, vector<Particle> & particles, vector< vector<PhotonOut> > const& photon_sets, vector<int> const& index, vector< TrackRecon> & reconstructions, string & particle_compare, unsigned& count, double threshold){
+void AddBatch(int event, int match, TFile& f, vector<ParticleOut> & particle_outs, vector<Particle> & particles, vector< vector<PhotonOut> > const& photon_sets, vector<Photon> cheat_photons, vector<int> const& index, vector< TrackRecon> & reconstructions, string & particle_compare, unsigned& count, double threshold, int plotType){
 
 	static stringstream ss;
 	static double momentum;
@@ -307,7 +299,7 @@ void AddBatch(int event, int match, TFile& f, vector<ParticleOut> & particle_out
 		momentum = par.CalculateMomentum();
 		int search_index = getReconIndex(recon, particle_compare);
 		// cout << "AddBatch " << i << endl;
-		AddCombination(ss.str(), f, particle_outs, photons, index, i, recon, search_index, momentum, par.GetName(), particle_compare, threshold);
+		AddCombination(ss.str(), f, particle_outs, photons, cheat_photons,  index, i, recon, search_index, momentum, par.GetName(), particle_compare, threshold, plotType);
 	}
 
 	++count;

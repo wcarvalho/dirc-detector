@@ -60,6 +60,7 @@ int main(int argc, char** argv)
 	if (ai.graph_prefix_given) graphprefix = ai.graph_prefix_arg;
 
 	unsigned band_search_case = ai.band_search_case_arg;
+	double band_search_width = ai.band_search_width_arg;
 
 	// double lengths_low[5] = {0, 0, 0, 0, .7};
 	// double lengths_hi[5] = {490, 3.5, pi/2, 2*pi, 1};
@@ -167,7 +168,7 @@ int main(int argc, char** argv)
 
 			// if (passed_index_photons_condition(P, momentum_indexing_threshold)){
 			if (print) cout << "Indexing particle " << par << endl;
-			IndexPhotons(P, par, phos, A, smear, band_search_case, photon_overlap, photons_per_particle, expectedNPhotons, anglemap, print);
+			IndexPhotons(P, par, phos, A, smear, band_search_case, band_search_width, photon_overlap, photons_per_particle, expectedNPhotons, anglemap, print);
 
 			// }
 			// else
