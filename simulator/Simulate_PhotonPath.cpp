@@ -28,11 +28,7 @@ void Simulate_PhotonPath(Detector& d, Photon &photon, double smear, bool print)
 		double &x_p = simPho.coord[0];
 		if((x_p == 0 ) || (x_p == d.Length))
 		{
-
-			double th = simPho.Theta;
-			double ph = simPho.Phi;
-			Photon pho_temp(th, ph);
-			photon = pho_temp;
+			photon.SetAngle(simPho.Theta, simPho.Phi);
 			photon.X = simPho.coord[0];
 			photon.Y = simPho.coord[1];
 			photon.Z = simPho.coord[2];

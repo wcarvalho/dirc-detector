@@ -142,7 +142,6 @@ void create2DTimeProjection(TPad& pad, TMultiGraph*& mg, TLegend& L, vector<Phot
 		mg->Add(graph);
 
 	mg->SetTitle("Photon Time Projection; #phi (radians); #theta (radians)");
-
 	pad.cd();
 	mg->Draw("AP");
 

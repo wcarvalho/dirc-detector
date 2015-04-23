@@ -1,5 +1,6 @@
 #include "TLatex.h"
 #include "TObject.h"
+#include "Rotater.h"
 #include "create2DTimeProjection.h"
 
 typedef std::unordered_map<int, bool(*)(const Particle&, const TrackRecon&, const int&, const double&)> func_map;
@@ -285,6 +286,91 @@ void AddCombination(string canvasname, TFile& f, vector<ParticleOut> & particles
 	delete L_P;
 }
 
+vector<Photon> getPhotonSet(Photon const& original){
+
+	Photon copy1 = original;
+	Photon copy2 = original;
+	Photon copy3 = original;
+
+	Simulate sim(original.Theta, original.Phi);
+	sim.FlipY(); copy1.SetAngle(sim.Theta, sim.Phi);
+	sim.FlipZ(); copy2.SetAngle(sim.Theta, sim.Phi);
+	sim.FlipY(); copy3.SetAngle(sim.Theta, sim.Phi);
+
+	vector <Photon> set {original, copy1, copy2, copy3};
+	return std::move(set);
+}
+void AddPhiTimePlot(TPad& pad, TMultiGraph*& mg, vector<Photon> const& cheat_photons, ParticleOut const& particle, int particle_index){
+
+	TGraph* g1_p = new TGraph();
+	TGraph &g1 = *g1_p;
+
+	TGraph* g2_p = new TGraph();
+	TGraph &g2 = *g2_p;
+
+	g1.SetMarkerStyle(8);
+	g1.SetMarkerColor(2);
+	g1.SetLineColor(2);
+	g1.SetMarkerSize(.75);
+
+	g2.SetMarkerStyle(8);
+	g2.SetMarkerColor(1);
+	g2.SetLineColor(1);
+	g2.SetMarkerSize(.75);
+
+	static double theta_low = .79;
+	static double theta_high = .85;
+
+	static Rotater r;
+	r.Feed_Particle(particle.Theta, particle.Phi);
+	r.ChangeFrame();
+
+	int main = 0;
+	int others = 0;
+	for (auto& cheat_pho : cheat_photons){
+		static vector<Photon> photon_set; photon_set.clear();
+		photon_set = getPhotonSet(cheat_pho);
+
+		for (auto& pho: photon_set){
+			r.Rotate_Photon(pho.Theta, pho.Phi);
+			if ((pho.Theta > theta_high) || (pho.Theta < theta_low)) continue;
+			if (pho.WhichParticle == particle_index){
+				g1.SetPoint(main, pho.Phi, 10.*pho.Time_Traveled);
+				++main;
+			}
+			else{
+				g2.SetPoint(others, pho.Phi, 10.*pho.Time_Traveled);
+				++others;
+			}
+		}
+	}
+
+	static stringstream ss; ss.str("");
+	ss << "#theta: " << theta_low << ", " << theta_high;
+	TLegend L(0., 0.9, 0.35, 1.0, ss.str().c_str());
+
+	if ((main == 0) && (others == 0)) return;
+	if (main != 0) L.AddEntry(g1_p, "current particle", "lp");
+	if (others != 0) L.AddEntry(g2_p, "other particles", "lp");
+
+	if (main != 0) mg->Add(g1_p);
+	if (others != 0) mg->Add(g2_p);
+
+	mg->SetTitle("Particle Band Photon Times; #phi(radians); time(ns)");
+	static double pi = TMath::Pi();
+
+
+
+	pad.cd();
+	mg->Draw("AP");
+	L.Draw();
+	pad.Update();
+	pad.Modified();
+	mg->GetXaxis()->SetRangeUser(-pi, pi);
+
+
+}
+
 void AddTimeScatterCombination(string canvasname, TFile& f, vector<ParticleOut> & particles, vector<PhotonOut> const& photons, vector<Photon> const& cheat_photons, vector<int> const& index, int particle_index, TrackRecon const& R, int search_index, double const& momentum, string particle_type, string particle_search, double threshold, int plotType, double time_min, double time_max, bool print = false){
 
 	int length = 1920;
@@ -304,14 +390,15 @@ void AddTimeScatterCombination(string canvasname, TFile& f, vector<ParticleOut> 
 	upperleft->SetPad( 0, 0, .15, 1. );
 	upperright->SetPad( .15, 0, 1. , 1. );
 
-	lowerpad->Divide(2,1);
+  lowerpad->Divide(3,1);
   TPad* lowerleft = (TPad*)lowerpad->GetPad(1);
-  TPad* lowerright = (TPad*)lowerpad->GetPad(2);
-	lowerleft->SetPad( 0, 0, .15, 1. );
-	lowerright->SetPad( .15, 0, 1. , 1. );
+  TPad* lowermiddle = (TPad*)lowerpad->GetPad(2);
+  TPad* lowerright = (TPad*)lowerpad->GetPad(3);
+	lowerleft->SetPad(0., 0., .15, 1.);
+	lowermiddle->SetPad(.15, 0., .6, 1.);
+	lowerright->SetPad(.6, 0., 1. , 1.);
 
 	if (print) cout << "\tmakepads\n";
-
 
 
   TLegend* scatterLegend = 0;
@@ -329,7 +416,7 @@ void AddTimeScatterCombination(string canvasname, TFile& f, vector<ParticleOut> 
 	timeLegend = new TLegend(0.15, 0.1, 1., 1., "Photon Time Bands (ns)");
 
   TMultiGraph *timemg = new TMultiGraph();
-	create2DTimeProjection(*lowerright, timemg, *timeLegend, photons, cheat_photons, particle_index, time_min, time_max);
+	create2DTimeProjection(*lowermiddle, timemg, *timeLegend, photons, cheat_photons, particle_index, time_min, time_max);
 
 	timeLegend->SetTextSize(.06);
 	lowerleft->cd();
@@ -337,11 +424,15 @@ void AddTimeScatterCombination(string canvasname, TFile& f, vector<ParticleOut> 
 	upperleft->Update();
 	upperleft->Modified();
 
+	TMultiGraph *particlebandmg = new TMultiGraph();
+	AddPhiTimePlot(*lowerright, particlebandmg, cheat_photons, particles.at(particle_index), particle_index);
+
 	stringstream ss; ss << "Particle "<< particle_index << ": " << particle_type << " with p = "<< setprecision(2) << momentum << "GeV";
 	TLegend L(0., 0.9, 0.15, 1.0, ss.str().c_str());
 	L.SetTextSize(.035);
 
   AddEventDetails(*upperright, L, particles.at(particle_index), R, search_index, momentum, particle_search, threshold);
+
 
 	f.cd();
 	C.Write();
@@ -350,6 +441,7 @@ void AddTimeScatterCombination(string canvasname, TFile& f, vector<ParticleOut> 
 	delete timemg;
 	delete scatterLegend;
 	delete timeLegend;
+	delete particlebandmg;
 }
 
 void AddBatch(int event, int match, TFile& f, vector<ParticleOut> & particle_outs, vector<Particle> & particles, vector< vector<PhotonOut> > const& photon_sets, vector<Photon> cheat_photons, vector<int> const& index, vector< TrackRecon> & reconstructions, string & particle_compare, unsigned& count, double threshold, int plotType, double time_min, double time_max){

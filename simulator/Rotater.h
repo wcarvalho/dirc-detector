@@ -20,6 +20,10 @@ public:
 
 	void Rotate_Photon(double &pho_theta, double &pho_phi);
 	void Feed_Particle(double par_theta, double par_phi);
+	void ChangeFrame(){
+		Angle *= -1;
+		Set_Matrix();
+	}
 
 	TVector3 RotationVector;
 	TVector3 Zero;

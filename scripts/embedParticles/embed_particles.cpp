@@ -158,7 +158,7 @@ catch( TCLAP::ArgException& e )
 			// if (print){
 				// printf("\t\tparticle theta = %f, phi = %f\n", *par_theta, *par_phi);
 			// }
-			Simulate_ParticlePath(*d, ParEvent->Particles[par], par, photon_event, seed, print);
+			Simulate_ParticlePath(*d, ParEvent->Particles[par], old_ParEvent->Particles.size()+par, photon_event, seed, print);
 			static Rotater r;
 			r.Feed_Particle(*par_theta, *par_phi);
 			for(int &pho = photon_event.iterator; pho < photon_event.Photons.size(); pho++)
@@ -183,12 +183,13 @@ catch( TCLAP::ArgException& e )
 			// if (counter == 149) cout << i << " theta, phi: " << photon_i.Theta << ", " << photon_i.Phi << " -> ";
 			Simulate_PhotonPath(*d, photon_i, seed, false);
 			if (photon_i.Flag == 1){
-				ParEvent->Particles.at(photon_i.WhichParticle).nPhotonsPassed -= 1;
+				ParEvent->Particles.at(photon_i.WhichParticle - old_ParEvent->Particles.size()).nPhotonsPassed -= 1;
 			}
 			// if (counter == 149) cout << photon_i.Theta << ", " << photon_i.Phi << endl;
 			CheckForFlag(photon_event, i, "false");
 			++counter;
 		}
+
 		embed_data(photon_event, *old_photon_event, *old_event_output, *ParEvent, *old_ParEvent, print);
 		if (print){
 			printf("\t\t(%f percent)\n\n", photon_event.Photons.size()/totalphotons*100.);
