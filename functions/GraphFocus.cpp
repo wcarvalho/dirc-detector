@@ -4,7 +4,7 @@
 #include "dirc_objects.h"
 #include "TCanvas.h"
 #include "TGraph.h"
-#include "../headers/simulator.h"
+#include "simulator.h"
 #include "../headers/functions.h"
 
 
@@ -20,7 +20,7 @@ void GraphFocus(TCanvas *c1, TGraph*& focus, PhotonEvent photon_event, string Ou
 
   if (Output == "yes")
   {
-		TabToLevel(2); cout << "GraphFocus:\n";	
+		TabToLevel(2); cout << "GraphFocus:\n";
   }
 
 	focus_size = Corresponding_Photons(photon_event, photon_event.Focus);

@@ -57,6 +57,9 @@ public:
 	void PrintVec();
 	void ResetTime(){ time_traveled = 0.; }
 	void GoTo(int const whichcoordinate, double const value);
+	double GetTimeTraveled(){
+		return time_traveled*1e-2/3; // returns units in s*e-8
+	}
 
 	double Distance[3];
 	double Dim[3];

@@ -5,7 +5,7 @@
 #include "TCanvas.h"
 #include "TH2D.h"
 #include "reconstructor.h"
-#include "../headers/functions.h"
+#include "Rotater.h"
 
 
 using namespace std;

@@ -55,10 +55,6 @@ rebinHistogram.cpp \
 ../functions/ExtractArray.cpp \
 ../functions/Print_Histogram.cpp \
 ../functions/Rotater.cpp \
-../functions/Displayer.cpp \
-../simulator/CheckAngel.cpp \
-../simulator/Check_PhotonDirection.cpp \
-../functions/masses.cpp \
 ../functions/min_map.cpp \
 ../functions/addtoFile.cpp \
 ../functions/returnEnd.cpp \

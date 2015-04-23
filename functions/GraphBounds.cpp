@@ -5,7 +5,7 @@
 #include "TCanvas.h"
 #include "TMath.h"
 #include "TGraph.h"
-#include "../headers/simulator.h"
+#include "simulator.h"
 #include "../headers/functions.h"
 
 
@@ -21,7 +21,7 @@ void GraphBounds(TCanvas *c1, string Output)
 
   if (Output == "yes")
   {
-		TabToLevel(2); cout << "GraphBounds:\n";	
+		TabToLevel(2); cout << "GraphBounds:\n";
   }
 
 	TGraph *graph1 = new TGraph(3);

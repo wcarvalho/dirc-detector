@@ -1,5 +1,5 @@
 #include "dirc_objects.h"
-#include "../headers/generator.h"
+#include "generator.h"
 
 //						generate_sPar Class
 //=============================================================================================

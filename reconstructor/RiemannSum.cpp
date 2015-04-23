@@ -4,7 +4,8 @@
 #include <string>
 #include "TObject.h"
 #include "../headers/fitter.h"
-#include "../headers/simulator.h"
+#include "simulator.h"
+#include "Rotater.h"
 
 using namespace std;
 
@@ -103,50 +104,50 @@ std::pair<double, double> RiemannSum(double const& x, double const& y, double co
 	return output;
 }
 
-void FindLostPhotons(double x, double y, double theta, double phi, double eta, double pt, double l, double w, double h, map<double, double> &madeit, double &traveled, bool print){
+// void FindLostPhotons(double x, double y, double theta, double phi, double eta, double pt, double l, double w, double h, map<double, double> &madeit, double &traveled, bool print){
 
-	// hard code l, w, h
-	double pi = TMath::Pi();
-	double Path_length = 0.;
-	mass m(eta, pt);
-	std::map<double,double> &atm = m.AngletoMass;
-	Detector d(l,w,h);
-	Rotater r;
-	r.Feed_Particle(theta, phi);
+// 	// hard code l, w, h
+// 	double pi = TMath::Pi();
+// 	double Path_length = 0.;
+// 	mass m(eta, pt);
+// 	std::map<double,double> &atm = m.AngletoMass;
+// 	Detector d(l,w,h);
+// 	Rotater r;
+// 	r.Feed_Particle(theta, phi);
 
-	int total = 0;
-	int passed = 0;
-	int PathSteps = 100;
-	int PhiSteps = 50;
-	double phi_measure = 0.;
+// 	int total = 0;
+// 	int passed = 0;
+// 	int PathSteps = 100;
+// 	int PhiSteps = 50;
+// 	double phi_measure = 0.;
 
-	Simulate simPar(theta, phi);
-	simPar.SetDim(l, w, h);
-	simPar.SetStart(x, y, 0);
-	simPar.DistancetoWalls( );
-	simPar.WhichWall( );
-	Path_length = simPar.WillTravel();
+// 	Simulate simPar(theta, phi);
+// 	simPar.SetDim(l, w, h);
+// 	simPar.SetStart(x, y, 0);
+// 	simPar.DistancetoWalls( );
+// 	simPar.WhichWall( );
+// 	Path_length = simPar.WillTravel();
 
-	traveled = Path_length;
-	for (std::map<double,double>::iterator it=atm.begin(); it!=atm.end(); ++it)
-	{
-		total = 0;
-		passed = 0;
-		simPar.Traveled = 0.;
-		while(simPar.Traveled < Path_length){
-			for(phi_measure = 0;  phi_measure < 2*pi; phi_measure += 2*pi/PhiSteps)
-			{
-				++total;
-				Photon p(it->first, phi_measure);
-				double &th = p.Theta;
-				double &ph = p.Phi;
-				r.Rotate_Photon(th, ph);
-				if (!Cut(th, ph, simPar.coord[0],simPar.coord[1],simPar.coord[2])) ++passed;
-			}
-			simPar.TravelDistance(Path_length/PathSteps);
-		}
-		simPar.SetStart(x, y, 0);
-		madeit[it->first] = double(passed)/total;
-	}
+// 	traveled = Path_length;
+// 	for (std::map<double,double>::iterator it=atm.begin(); it!=atm.end(); ++it)
+// 	{
+// 		total = 0;
+// 		passed = 0;
+// 		simPar.Traveled = 0.;
+// 		while(simPar.Traveled < Path_length){
+// 			for(phi_measure = 0;  phi_measure < 2*pi; phi_measure += 2*pi/PhiSteps)
+// 			{
+// 				++total;
+// 				Photon p(it->first, phi_measure);
+// 				double &th = p.Theta;
+// 				double &ph = p.Phi;
+// 				r.Rotate_Photon(th, ph);
+// 				if (!Cut(th, ph, simPar.coord[0],simPar.coord[1],simPar.coord[2])) ++passed;
+// 			}
+// 			simPar.TravelDistance(Path_length/PathSteps);
+// 		}
+// 		simPar.SetStart(x, y, 0);
+// 		madeit[it->first] = double(passed)/total;
+// 	}
 
-}
+// }

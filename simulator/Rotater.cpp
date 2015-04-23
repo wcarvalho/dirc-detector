@@ -1,4 +1,16 @@
-#include "Rotater.h"
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include "../headers/functions.h"
+#include "TVector3.h"
+#include "iomanip"
+
+
+using namespace std;
+
+/*================================================================================================
+All functions pertinent to Rotater class
+================================================================================================*/
 
 void Rotater::Rotate_Photon(double &pho_theta, double &pho_phi)
 {

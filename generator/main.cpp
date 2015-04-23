@@ -4,7 +4,7 @@
 //
 //====================================================
 
-#include "../headers/generator.h"
+#include "generator.h"
 #include <cstdlib>
 #include "cmdline.h"
 

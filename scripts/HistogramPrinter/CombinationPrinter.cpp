@@ -28,6 +28,8 @@ int main(int argc, char const *argv[])
 	int max_count;
 	int plotType;
 	double threshold;
+	double time_min;
+	double time_max;
 
 	vector< int > event_range;
 	vector<int> matchcondition_cases = {1, 4};
@@ -49,9 +51,13 @@ int main(int argc, char const *argv[])
 		TCLAP::ValueArg<string> particle_compareArg("c", "particle-compare", "particle used for comparison", false, "electron", "string", cmd);
 
 		TCLAP::ValueArg<double> thresholdArg("t","threshold","threshold used for match-condition", false, 1,"double", cmd);
+		TCLAP::ValueArg<double> minArg("","min","minimum value used for time in time projection", false, 0.,"double", cmd);
+		TCLAP::ValueArg<double> maxArg("","max","maximum value used for time in time projection", false, 20.,"double", cmd);
+
 		TCLAP::ValueArg<int> plotTypeArg("","pc","type of plot to be printed"
 			"\n\t\tcase 1: photons colored by particle index"
 			"\n\t\tcase 2: photons colored by time"
+			"\n\t\tcase 3: photons colored by particle index & colored by time. No fitting information"
 			, false, 1,"int", cmd);
 		TCLAP::MultiArg<int> matchconditionArg("M","match-condition","sets the method by which matches will be determined."
 			"\n\t\tcase 1: within_angle_resolution"
@@ -73,6 +79,9 @@ int main(int argc, char const *argv[])
 		reconstruction_file = reconstruction_fileArg.getValue();
 		particle_search = particle_searchArg.getValue();
 		particle_compare = particle_compareArg.getValue();
+
+		time_min = minArg.getValue();
+		time_max = maxArg.getValue();
 
 		print = verboseArg.getValue();
 
@@ -176,6 +185,8 @@ int main(int argc, char const *argv[])
 
 		bool added_Identification_Batch = false;
 		bool added_misIdentification_Batch = false;
+		if ((misIdentificationEvents_count == max_count) && (particleEvents_count == max_count))
+				break;
 		for (unsigned i = 0; i < pars.size(); ++i){
 			if ((misIdentificationEvents_count == max_count) && (particleEvents_count == max_count))
 				break;
@@ -208,13 +219,13 @@ int main(int argc, char const *argv[])
 
 			bool passed_Identification = passConditions(matchcondition_cases, functions, par, recon, particle_search_index, -threshold);
 			if (!added_Identification_Batch && passed_Identification && (par.name == particle_search) && (particleEvents_count < max_count)){
-				AddBatch(entry, i, particleEvents, par_outs, pars, photon_reconstruction.Photons, cheat_phos, index, recons, particle_compare, particleEvents_count, threshold, plotType);
+				AddBatch(entry, i, particleEvents, par_outs, pars, photon_reconstruction.Photons, cheat_phos, index, recons, particle_compare, particleEvents_count, threshold, plotType, time_min, time_max);
 				added_Identification_Batch = true;
 			}
 
 			bool passed_misIdentification = passConditions(matchcondition_cases, functions, par, recon, particle_search_index, threshold);
 			if (!added_misIdentification_Batch && passed_misIdentification && (par.name == particle_search) && (misIdentificationEvents_count < max_count)){
-				AddBatch(entry, i, misIdentificationEvents, par_outs, pars, photon_reconstruction.Photons, cheat_phos, index, recons, particle_compare, misIdentificationEvents_count, threshold, plotType);
+				AddBatch(entry, i, misIdentificationEvents, par_outs, pars, photon_reconstruction.Photons, cheat_phos, index, recons, particle_compare, misIdentificationEvents_count, threshold, plotType, time_min, time_max);
 				added_misIdentification_Batch = true;
 			}
 

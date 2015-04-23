@@ -1,5 +1,5 @@
 #include "dirc_objects.h"
-#include "../headers/generator.h"
+#include "generator.h"
 
 vector<Particle> generate(int nparticles, gParticle& gPar, Detector d, int maxPars, bool print){
 

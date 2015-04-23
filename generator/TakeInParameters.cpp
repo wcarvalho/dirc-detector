@@ -6,7 +6,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include "../headers/generator.h"
+#include "generator.h"
 
 
 using namespace std;
@@ -28,7 +28,7 @@ vector<string> ReadValues(char value[256]){
 
 
 void ReadFloats(double into[2], vector<string> from){
-	
+
 	string delimiter = "pi";
 	for (unsigned int val = 0; val < from.size(); ++val){
 			string &cur_val = from[val];

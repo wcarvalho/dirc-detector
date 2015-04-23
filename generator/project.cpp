@@ -2,7 +2,7 @@
 #define M_PI 3.14159265358979312
 #endif
 
-#include "../headers/generator.h"
+#include "generator.h"
 
 static inline double sign(double x)
 {

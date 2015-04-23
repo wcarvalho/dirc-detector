@@ -1,7 +1,7 @@
 #include "dirc_objects.h"
 #include "TMath.h"
 #include "../headers/functions.h"
-#include "../headers/simulator.h"
+#include "simulator.h"
 #include "Simulate.h"
 
 using namespace std;
