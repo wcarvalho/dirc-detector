@@ -4,7 +4,7 @@
 #include "dirc_objects.h"
 #include "TCanvas.h"
 #include "TGraph.h"
-#include "../headers/simulator.h"
+#include "simulator.h"
 #include "../headers/functions.h"
 
 
@@ -20,7 +20,7 @@ void GraphRest(TCanvas *c1, TGraph*& rest, PhotonEvent photon_event, string Outp
 
   if (Output == "yes")
   {
-		TabToLevel(2); cout << "GraphRest:\n";	
+		TabToLevel(2); cout << "GraphRest:\n";
   }
 
 	focus_size = Photons_Rest(photon_event, photon_event.Focus);

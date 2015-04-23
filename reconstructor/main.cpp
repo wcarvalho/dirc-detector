@@ -128,8 +128,6 @@ int main(int argc, char** argv)
 		for (unsigned i = 0; i < reconstruction.Photons.at(0).size(); ++i)
 			A.index.push_back(-10);				// for each photon set photon to a value that won't be used (e.g. -10)
 
-		auto index_copy = A.index;
-
 	  static unordered_map <int, int> photon_overlap;
 	  static unordered_map <int, int> photons_per_particle;
 	  photon_overlap.clear();

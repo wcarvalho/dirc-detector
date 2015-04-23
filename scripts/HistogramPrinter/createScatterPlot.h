@@ -50,7 +50,7 @@ void DrawScatterPlot(TMultiGraph*& mg, TLegend& L, vector<ParticleOut> const& pa
 	stringstream ss;
 	for (unsigned i = 0; i < nparticles; ++i){
 		auto const& particle = particles.at(i);
-		 ss.str(""); ss << i << ": (" << std::setprecision(2) << particle.Theta << ", " << std::setprecision(2) << particle.Phi << "), (" << int(particle.X) << ", " << std::setprecision(2) << particle.Y << ")";
+		 ss.str(""); ss << i << ": (" << std::setprecision(2) << particle.Theta << ", " << std::setprecision(2) << particle.Phi << "), " << int(particle.X);
 		createGraph(graphs, L, ss.str(), photons, index, i, markerstyle, i+2, markersize);
 	}
 

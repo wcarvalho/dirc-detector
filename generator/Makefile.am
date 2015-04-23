@@ -20,7 +20,7 @@ commonSources = \
 
 H=../headers
 include_HEADERS = \
-	$(H)/generator.h \
+	generator.h \
 	$(H)/functions.h \
 	$(H)/myrandom.h
 
