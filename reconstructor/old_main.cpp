@@ -112,58 +112,13 @@ int main(int argc, char** argv)
 		events->GetEntry(ev);
 
 		vector<ParticleOut> &pars = event_output->Particles;
-    // remove all particles except for last particles determined by option 'l'
-    if (ai.last_given) removeFirstParticles(event_output, last, print);
-
-    unsigned npars = pars.size();
-		if (print) cout << "\t" << npars << " particles\n";
-		if ( pars.empty() ){
+    if (ai.last_given) removeFirstParticles(event_output, last, print); 	// remove all particles except for last particles determined by option 'l'
+		int npar = pars.size();
+		if (print) cout << "\t" << npar << " particles\n";
+		if (npar == 0) {
 			tree->Fill();
 			continue;
 		}
-
-		auto const& particle_types = pars.at(0).deftypes;
-		auto const reconstructed_photons = reconstruct_photons(event_output->Photons);
-
-		vector<int>& index = A.index;
-		index.resize(reconstructed_photons.size(), -10);
-		static unordered_map <int, int> photons_per_particle;
-	  photons_per_particle.clear();
-	  for (unsigned i = 0; i < pars.size(); ++i)
-	  	photons_per_particle[i] = 0;
-
-
-		for (auto& current_particle_type: particle_types){
-
-			for (unsigned i = 0; i < npars; ++i){
-				auto& particle = pars.at(i);
-				auto emission_angle_map = particle.EmissionAngleMap();
-				double emission_angle = emission_angle_map[current_particle_type];
-
-				auto photons_in_frame = rotate_photons_into_particle_frame(particle.Theta, particle.Phi, reconstructed_photons);
-
-				index_photons(particle, i, photons_in_frame, index, band_search_width, emission_angle, photons_per_particle, print);
-
-				TH1D* reduced_histogram_theta_projection = ReducedHistogram(phos, A, par);
-
-				if (print) cout << "Fitting particle " << par << " with " << photons_per_particle[par] << " expected photons\n";
-
-				delete reduced_histogram_theta_projection;
-			}
-
-
-		}
-		exit(1);
-
-
-
-
-		break;
-
-
-
-
-
 	  ReconstructEvent(reconstruction, event_output, print);
 	  if (reconstruction.Photons.back().empty())	{
 	  	tree->Fill();
@@ -174,6 +129,7 @@ int main(int argc, char** argv)
 			A.index.push_back(-10);				// for each photon set photon to a value that won't be used (e.g. -10)
 
 	  static unordered_map <int, int> photon_overlap;
+	  static unordered_map <int, int> photons_per_particle;
 	  photon_overlap.clear();
 	  photons_per_particle.clear();
 	  for (unsigned i = 0; i < pars.size(); ++i){

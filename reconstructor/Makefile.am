@@ -28,6 +28,8 @@ FitGaussianPlusConstant.cpp \
 IndexPhotons.cpp \
 CreateReducedHistogram.cpp \
 rebinHistogram.cpp \
+reconstruct_photons.cpp \
+rotate_photons_into_particle_frame.cpp \
 ##=====================================
 ##
 ##					Mutual functions
@@ -45,10 +47,7 @@ rebinHistogram.cpp \
 ../functions/Rotated_Vector.cpp \
 ../functions/Update_Photon_ThetaPhi.cpp \
 ../functions/random_numbers.cpp \
-../functions/Check_PhotonEvent.cpp \
-../functions/Corresponding_Photons.cpp \
 ../functions/Photons_Rest.cpp \
-../functions/Check_ParticleEvent.cpp \
 ../functions/GraphFocus.cpp \
 ../functions/GraphRest.cpp \
 ../functions/GraphBounds.cpp \

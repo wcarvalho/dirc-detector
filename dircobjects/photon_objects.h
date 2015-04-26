@@ -15,6 +15,11 @@ public:
 	PhotonOut(double theta=0., double phi=0.) : Theta(theta), Phi(phi), X(0.), Y(0.), Z(0.), Time_Traveled(0.) {}
   ~PhotonOut(){}
 
+  virtual void SetAngle(double const t, double const p){ Theta = t; Phi = p; }
+  friend ostream& operator<<(ostream& os, const PhotonOut& p){
+    os << p.Theta << ", " << p.Phi;
+    return os;
+  }
 
   double Theta;
   double Phi;
@@ -45,10 +50,6 @@ public:
   Photon To_Photon(PhotonOut p){ return Photon(p.Theta, p.Phi); }
   PhotonOut To_PhotonOut(Photon p){ return PhotonOut(p.Theta, p.Phi); }
 
-  friend ostream& operator<<(ostream& os, const Photon& p){
-    os << p.Theta << ", " << p.Phi;
-    return os;
-  }
 
   int WhichParticle;
   int Which;

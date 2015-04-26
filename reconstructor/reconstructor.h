@@ -32,7 +32,14 @@
 //------------------------------------------
 
 
+typedef std::vector<PhotonOut> Photons;
 typedef vector< pair<double, double> > vec_pair;
+
+Photons reconstruct_photons(Photons const& set);
+Photons rotate_photons_into_particle_frame(double const theta, double const phi, Photons const& original_photons);
+
+void index_photons(ParticleOut & particle, int const& particle_index, vector<PhotonOut> const& photons, vector<int>& index, double const& band_search_width, double const& center, unordered_map <int, int>& photons_per_particle, bool const& print);
+
 
 
 void ReconstructEvent(Reconstruction &reconstruction, GeneratorOut*& event_output, bool print = false);
