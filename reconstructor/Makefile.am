@@ -15,7 +15,6 @@ include_HEADERS = reconstructor.h \
 ../headers/file-properties.h
 
 commonSources = LookUpTable.cpp \
-CalculateParticleFits.cpp \
 cmdline.cpp \
 reconstructor.cpp \
 ReconstructEvent.cpp \
@@ -30,6 +29,9 @@ CreateReducedHistogram.cpp \
 rebinHistogram.cpp \
 reconstruct_photons.cpp \
 rotate_photons_into_particle_frame.cpp \
+histogram_photon_angles.cpp \
+getExpectedPhotonMap.cpp \
+CalculateParticleFit.cpp \
 ##=====================================
 ##
 ##					Mutual functions

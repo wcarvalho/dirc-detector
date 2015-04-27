@@ -41,12 +41,11 @@ public:
 	double getIntegralHeightAt(int const i) const { return Params.at(i).at(0); }
 	int getIndexOf(std::string type);
 	std::string getBestFit(double const threshold);
-
-	// TMultiGraph* getIndexedPhotonScatterPlot(){ return &mg; }
-	// void setIndexedPhotonScatterPlot(TMultiGraph graph){ graph.Copy(mg); }
+	void AddFinalHistogram(TH1D h){ Final1Ds.push_back(std::move(h)); }
+	void LinkHistogramAt(int const i, TH1D &h){ h = Final1Ds.at(i); }
 
 	TH2D Hist2D;
-	TH1D Final1D;
+	std::vector <TH1D> Final1Ds;
 	std::vector < std::string > Options; 			// every particle type
 	std::vector < double > delSigTheta;				// delta sigma theta for every particle
 	std::vector < double > delSigArea;				// delta sigma area for every particle

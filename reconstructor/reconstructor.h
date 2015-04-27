@@ -33,12 +33,21 @@
 
 
 typedef std::vector<PhotonOut> Photons;
-typedef vector< pair<double, double> > vec_pair;
+typedef std::map< std::string, pair<double, double> > vec_pair;
+typedef std::vector< Photons > Photon_Sets;
+
+void getExpectedPhotonMap(vector<ParticleOut> & pars, unordered_map <int, vec_pair>& expectedPhotonMap, std::pair<double, double> (*ExpectedNumberofPhotons)(double const&, double const&, double const&, double const&, double const&));
+
 
 Photons reconstruct_photons(Photons const& set);
 Photons rotate_photons_into_particle_frame(double const theta, double const phi, Photons const& original_photons);
 
 void index_photons(ParticleOut & particle, int const& particle_index, vector<PhotonOut> const& photons, vector<int>& index, double const& band_search_width, double const& center, unordered_map <int, int>& photons_per_particle, bool const& print);
+
+TH2D histogram_photon_angles(int const& event, int const& particle, vector<PhotonOut> const& photons);
+
+TH1D* ReducedHistogram(vector<PhotonOut> const& photons, TH2D const& h2, vector<int> const& index, int const& particle_index, string const& current_particle_type);
+
 
 
 
@@ -52,11 +61,13 @@ void removeFirstParticles(GeneratorOut*& event_output, int last, bool print);
 void CreateHistogram_1D2D(int ev, int par, Analysis &A, std::vector<PhotonOut> &phos, int xbins, int ybins);
 void IndexPhotons(ParticleOut & particle, int const& particle_index, vector<PhotonOut> const& photons, Analysis & A, double const& smear, unsigned const& band_search_case, double const& band_search_width, unordered_map <int, int>& photon_overlap, unordered_map <int, int>& photons_per_particle, vec_pair const&expected_photons, map<string,double> const& anglemap, bool const& print);
 
-TH1D* ReducedHistogram(vector<PhotonOut> const& photons, Analysis const& A, int const& particle_index);
 TH1D* CreateReducedHistogram(vector<PhotonOut> const& photons, vector<int> const& index, int const particle_index, string histname, int nbins, double xlow, double xhi);
 
+void CalculateParticleFit(TH1D &histogram, ParticleOut const &P, TrackRecon &T, vec_pair & expected_photons, double const& emission_angle, string const& current_particle_type, double const& smear, bool print);
 
-void CalculateParticleFits(TH1D &histogram, ParticleOut &P, const vector<PhotonOut>& phos, Analysis &A, const int particle_index, double smear, int const& loss, vec_pair& expected_photons, bool print);
+
+
+// void CalculateParticleFits(TH1D &histogram, ParticleOut &P, const vector<PhotonOut>& phos, Analysis &A, const int particle_index, double smear, int const& loss, vec_pair& expected_photons, bool print);
 TH1D rebinHistogram(TH1D& h, double minimum = 10.);
 
 

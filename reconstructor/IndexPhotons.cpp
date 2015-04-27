@@ -53,18 +53,19 @@ void indexSet(vector<int>& index, vector<int> const& photonset, unordered_map <i
 
 	for (auto& i: photonset){
 		auto& current_index = index.at(i);
-		// cout << i << "\tcurrent_index: " << current_index << " -> ";
+
 		if (current_index > -1	) {
 			--photons_per_particle[current_index];
 			current_index = -1;
 		}
-		else {
+
+		else if (current_index < -1	){
 			current_index = particle_index;
 			++photons_per_particle[particle_index];
-			// cout << "frame: " << particle_index << "\t"<< i << "\tindex = " << current_index << "\tphotons_per_particle " << photons_per_particle[particle_index] << endl;
 		}
 
 	}
+
 }
 
 void diagnostic_print(vector<int> const& index, int const& particle_index, vector<PhotonOut> const& photons, vector<int> const& photonset, double const& theta_center_min, double const& theta_center_max, double const& time_min, double const& time_max){
@@ -76,9 +77,9 @@ void diagnostic_print(vector<int> const& index, int const& particle_index, vecto
 		auto& current_index = index.at(i);
 		auto& t = photon.Time_Traveled;
 		// if (current_index == -1){
-			cout << "frame: " << particle_index << "\t"<< i << "\tindex = " << current_index << endl;
-			cout << "\t\ttheta = " << theta << " in band: " <<  theta_center_min << ", " << theta_center_max << endl;
-			cout << "\t\ttime = " << t << " in band: " <<  time_min << ", " << time_max << endl;
+			cout << "frame: " << particle_index << "\tindex "<< i << "\tindex = " << current_index << endl;
+			cout << "\t\t\ttheta = " << theta << " in band: " <<  theta_center_min << ", " << theta_center_max << endl;
+			cout << "\t\t\ttime = " << t << " in band: " <<  time_min << ", " << time_max << endl;
 		// }
 	}
 }
@@ -104,6 +105,8 @@ void index_photons(ParticleOut & particle, int const& particle_index, vector<Pho
 		bool inThetaBand = isPhotonInThetaBand(photons, photonset, theta_center_min, theta_center_max, print);
 
 		bool inTimeBand = isPhotonInTimeBand(photons, photonset, min_photon_time, max_photon_time, print);
+
+		// inTimeBand = true;
 
 		if ( inThetaBand && inTimeBand ){
 			indexSet(index, photonset, photons_per_particle, particle_index, print);

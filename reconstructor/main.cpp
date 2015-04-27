@@ -81,9 +81,6 @@ int main(int argc, char** argv)
 
 	// Classes used for analysis
   Reconstruction reconstruction;							// used to reconstruct original photon trajectories
-	// ReconstructionData data;
-	// reconstruction.Track.push_back(data);
-	Analysis A;																	// class used to create histograms
 	TrackRecons Tracks;		// stores information on particle identity guesses
 
   // pointers to data from ROOT File
@@ -117,151 +114,83 @@ int main(int argc, char** argv)
 
     unsigned npars = pars.size();
 		if (print) cout << "\t" << npars << " particles\n";
-		if ( pars.empty() ){
-			tree->Fill();
-			continue;
-		}
+		if ( pars.empty() ){ tree->Fill(); continue; }
 
-		auto const& particle_types = pars.at(0).deftypes;
-		auto const reconstructed_photons = reconstruct_photons(event_output->Photons);
+	  Tracks.Recon.clear();
+	  Tracks.Recon.resize(npars);
 
-		vector<int>& index = A.index;
-		index.resize(reconstructed_photons.size(), -10);
+		auto const& particle_types = pars.at(0).deftypes; // get particle types
+		auto const reconstructed_photons = reconstruct_photons(event_output->Photons); // find all reflections photons might have udnergone
+
+
+		vector<int>& index = Tracks.index; 				// used to color photons
 		static unordered_map <int, int> photons_per_particle;
-	  photons_per_particle.clear();
-	  for (unsigned i = 0; i < pars.size(); ++i)
-	  	photons_per_particle[i] = 0;
+		static Photon_Sets photons_in_different_frames;
+		photons_in_different_frames.clear();
+		photons_in_different_frames.resize(npars);		// 1 set of photons per particle
 
-
-		for (auto& current_particle_type: particle_types){
-
-			for (unsigned i = 0; i < npars; ++i){
-				auto& particle = pars.at(i);
-				auto emission_angle_map = particle.EmissionAngleMap();
-				double emission_angle = emission_angle_map[current_particle_type];
-
-				auto photons_in_frame = rotate_photons_into_particle_frame(particle.Theta, particle.Phi, reconstructed_photons);
-
-				index_photons(particle, i, photons_in_frame, index, band_search_width, emission_angle, photons_per_particle, print);
-
-				TH1D* reduced_histogram_theta_projection = ReducedHistogram(phos, A, par);
-
-				if (print) cout << "Fitting particle " << par << " with " << photons_per_particle[par] << " expected photons\n";
-
-				delete reduced_histogram_theta_projection;
-			}
-
-
-		}
-		exit(1);
-
-
-
-
-		break;
-
-
-
-
-
-	  ReconstructEvent(reconstruction, event_output, print);
-	  if (reconstruction.Photons.back().empty())	{
-	  	tree->Fill();
-	  	continue;
-	  }
-
-		for (unsigned i = 0; i < reconstruction.Photons.at(0).size(); ++i)
-			A.index.push_back(-10);				// for each photon set photon to a value that won't be used (e.g. -10)
-
-	  static unordered_map <int, int> photon_overlap;
-	  photon_overlap.clear();
-	  photons_per_particle.clear();
-	  for (unsigned i = 0; i < pars.size(); ++i){
-	  	photon_overlap[i] = 0;
-	  	photons_per_particle[i] = 0;
-	  }
 
 		static unordered_map <int, vec_pair> expectedPhotonMap;
-		static std::map<std::string, double> massmap; massmap.clear();
-		static std::map<std::string, double> anglemap; anglemap.clear();
+		getExpectedPhotonMap(pars, expectedPhotonMap, ExpectedNumberofPhotons);
 
-		static double momentum_indexing_threshold = ai.momentum_indexing_threshold_arg;
-	  for (unsigned int par = 0; par < pars.size(); par++){
-			vector<PhotonOut> &phos = reconstruction.Photons.at(par);
+	  unsigned iteration = 0; // used so that some actions are only completed once (e.g. creating the histogram of photons in a particular particle's frame)
 
-			if ( phos.empty() ) continue;
-			CreateHistogram_1D2D(ev, par, A, phos, xbins, ybins);
-			A.AddTrackRecon();
-			TrackRecon &guess  = A.Recon.back();
-			guess.Hist2D       = A.Hists2D.back();
+		for (auto& current_particle_type: particle_types){
+			if (print) cout << "\t" << current_particle_type << endl;
 
-
-			ParticleOut &P = pars.at(par);
-
-			massmap = P.MassMap();
-			anglemap = P.EmissionAngleMap();
-		  static vec_pair expectedNPhotons; expectedNPhotons.clear();
-			for (auto i = anglemap.begin(); i != anglemap.end(); ++i){
-				const string &temp_name = i->first;
-				double Beta = P.CalculateBeta(massmap[temp_name]);
-				expectedNPhotons.push_back(ExpectedNumberofPhotons(P.X, P.Y, P.Theta, P.Phi, Beta));
-			}
-			expectedPhotonMap[par] = expectedNPhotons;
-
-			// if (passed_index_photons_condition(P, momentum_indexing_threshold)){
-			if (print) cout << "Indexing particle " << par << endl;
-			IndexPhotons(P, par, phos, A, smear, band_search_case, band_search_width, photon_overlap, photons_per_particle, expectedNPhotons, anglemap, print);
-
-			// }
-			// else
-			// 	if (print) cout << "\tNot indexing particle " << par << endl;
-
-	  }
-
-	  for (unsigned int par = 0; par < pars.size(); par++){
-			auto& phos = reconstruction.Photons.at(par);
-			auto& P = pars.at(par);
-
-			TH1D* reduced_histogram_theta_projection = ReducedHistogram(phos, A, par);
-
-			if (print) cout << "Fitting particle " << par << " with " << photons_per_particle[par] << " expected photons\n";
-
-			if (photons_per_particle[par] != 0 ){
-				gettimeofday(&t1, NULL);
-				CalculateParticleFits(*reduced_histogram_theta_projection, P, phos, A, par, smear, photon_overlap[par], expectedPhotonMap[par], print);				// for one particle, 1 fit is calculated for every possible mass (5 masses means 5 fits for 1 particle)
-				gettimeofday(&t2, NULL);
-			}
+			////////// reset stats for every particle type
+			index.clear();
+			index.resize(reconstructed_photons.size(), -10);
+		  photons_per_particle.clear();
+		  for (unsigned i = 0; i < pars.size(); ++i)
+		  	photons_per_particle[i] = 0;
+		  static vector<double> emission_angles; emission_angles.clear();
+		  ///////////////////////////////////////////////
 
 
-			if (print){
-				auto& current_reconstruction = A.Recon.at(par);
-				for (unsigned k = 0; k < current_reconstruction.NReconstructions(); ++k){
-					cout << "\t" << current_reconstruction.getNameAt(k) << endl;
-					cout << "\t\tdelSigA = " << current_reconstruction.getnSigmaAreaAt(k) << endl;
-					cout << "\t\tdelSigTheta = " << current_reconstruction.getnSigmaThetaAt(k) << endl;
+		  /////////// rotate photons and index them for every particle
+			for (unsigned i = 0; i < npars; ++i){
+				auto& photons_in_frame = photons_in_different_frames.at(i);
+				auto& particle = pars.at(i);
+				auto emission_angle_map = particle.EmissionAngleMap();
+				emission_angles.push_back(emission_angle_map[current_particle_type]);
+				double& emission_angle = emission_angles.back();
+
+				if (iteration == 0){
+					photons_in_frame = std::move(rotate_photons_into_particle_frame(particle.Theta, particle.Phi, reconstructed_photons));
+					Tracks.Recon.at(i).Hist2D = histogram_photon_angles(ev, i, photons_in_frame);
+					// if (i == 4) Tracks.Recon.at(i).Hist2D.SaveAs("Initial_Full.root");
 				}
+
+				index_photons(particle, i, photons_in_frame, index, band_search_width, emission_angle, photons_per_particle, print);
 			}
+			//////////// Finished Indexing /////////////
 
 
+			////////// Create 1D Histograms and Fit them
+			for (unsigned i = 0; i < npars; ++i){
+				auto& photons_in_frame = photons_in_different_frames.at(i);
+				auto& particle = pars.at(i);
+				double& emission_angle = emission_angles.at(i);
+				auto& current_recon = Tracks.Recon.at(i);
 
-			time1 = (double)(t1.tv_sec) + (double)(t1.tv_usec)/1.0e6;
-			time2 = (double)(t2.tv_sec) + (double)(t2.tv_usec)/1.0e6;
-			calculateFits_time += (time2-time1);
-			delete reduced_histogram_theta_projection;
-	  }
-	  if ( reconstruction.Photons.back().size() != A.index.size()){
-		  cout << "photons size: " << reconstruction.Photons.back().size() << endl;
-		  cout << "index size: " << A.index.size() << endl;
-		  cout << "Error!\n";
-		  break;
-	  }
-	  Tracks.Recon = std::move(A.Recon);
-	  Tracks.index = std::move(A.index);
-	  tree->Fill();
-		A.Hists1D.clear(); A.Hists1D.shrink_to_fit(); // freeing memory
-		A.Hists2D.clear(); A.Hists2D.shrink_to_fit(); // freeing memory
-		A.Recon.clear();
-	  A.index.clear();
+				TH1D* reduced_histogram_theta_projection = ReducedHistogram(photons_in_frame, current_recon.Hist2D, index, i, current_particle_type);
+				// if (i == 4) reduced_histogram_theta_projection->SaveAs("Reduced.root");
+				if (print) cout << "\t\tFitting particle " << i << " with " << photons_per_particle[i] << " expected photons\n";
+
+				if (photons_per_particle[i] != 0 )
+					CalculateParticleFit(*reduced_histogram_theta_projection, particle, current_recon, expectedPhotonMap[i], emission_angle, current_particle_type, smear, print);
+
+				// if (i == 4) current_recon.Final1D.SaveAs("Rebinned.root");
+				delete reduced_histogram_theta_projection;
+			}
+			///////////// Finished Fitting ////////////
+
+			++iteration;
+		}
+
+		tree->Fill();
+
   }
 
   file2.cd();
@@ -271,7 +200,6 @@ int main(int argc, char** argv)
   file.cd();
   file.Close();
 
-  if (!quiet) cout << "Time to calculate fits = " << calculateFits_time << endl;
   if (!quiet) cout << "reconstruction file: " << wf << endl;
 
   return 0;
