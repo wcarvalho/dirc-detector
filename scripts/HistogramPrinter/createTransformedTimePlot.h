@@ -7,7 +7,7 @@
 #include "TFile.h"
 using namespace std;
 
-void createGraph(vector<TGraph*>& graphs, TLegend& L, string legend_entry, vector<PhotonOut> const& photons, vector<int> const& index, int particle_index, int markerstyle, int markercolor, double markersize){
+void createTimeGraph(vector<TGraph*>& graphs, TLegend& L, string legend_entry, vector<PhotonOut> & photons, vector<int> const& index, int particle_index, int markerstyle, int markercolor, double markersize){
 	TGraph* g = new TGraph;
 	g->SetMarkerStyle(markerstyle);
 	g->SetMarkerSize(markersize);
@@ -21,9 +21,10 @@ void createGraph(vector<TGraph*>& graphs, TLegend& L, string legend_entry, vecto
 	for (unsigned j = 0; j < nphotons; ++j){
 		// cout << "index at " << j << " = " << index.at(j) << endl;
 		if (index.at(j) != particle_index ) continue;
-		auto const& photon = photons.at(j);
+		auto & photon = photons.at(j);
 		double const& x = photon.Phi;
-		double const& y = photon.Theta;
+		double& y = photon.Time_Traveled;
+		y *= 300*TMath::Cos(photon.Phi)*TMath::Sin(photon.Theta);
 		g->SetPoint(point, x, y);
 		++point;
 	}
@@ -35,7 +36,7 @@ void createGraph(vector<TGraph*>& graphs, TLegend& L, string legend_entry, vecto
 	// cout << "particle "<< particle_index <<": points = " << point << endl;
 }
 
-void DrawScatterPlot(TMultiGraph*& mg, TLegend& L, vector<ParticleOut> const& particles, vector<PhotonOut> const& photons, vector<int> const& index, int particle_index){
+void DrawTransformedTimePlot(TMultiGraph*& mg, TLegend& L, vector<ParticleOut> const& particles, vector<PhotonOut> & photons, vector<int> const& index, int particle_index){
 
 	int nparticles = particles.size();
 	int	nphotons = photons.size();
@@ -51,7 +52,7 @@ void DrawScatterPlot(TMultiGraph*& mg, TLegend& L, vector<ParticleOut> const& pa
 	for (unsigned i = 0; i < nparticles; ++i){
 		auto const& particle = particles.at(i);
 		 ss.str(""); ss << i << ": (" << std::setprecision(2) << particle.Theta << ", " << std::setprecision(2) << particle.Phi << "), " << int(particle.X);
-		createGraph(graphs, L, ss.str(), photons, index, i, markerstyle, i+2, markersize);
+		createTimeGraph(graphs, L, ss.str(), photons, index, i, markerstyle, i+2, markersize);
 	}
 
 	createGraph(graphs, L, "shared index", photons, index, -1, markerstyle, 1, markersize);
@@ -65,23 +66,4 @@ void DrawScatterPlot(TMultiGraph*& mg, TLegend& L, vector<ParticleOut> const& pa
 	mg->SetTitle(ss.str().c_str());
 
 
-}
-
-void createIndexedPhotonScatterPlot(vector<ParticleOut> const& particles, vector<PhotonOut> const& photons, vector<int> const& index, int particle_index, string histogramname, string filename, string status){
-
-
-	TCanvas c1("c2","c2",10,10,800,600);
-	TMultiGraph *mg = new TMultiGraph;
-	TLegend L(0.1,0.6,0.25,0.9, "particle #theta, #phi");
-	DrawScatterPlot(mg, L, particles, photons, index, particle_index);
-	mg->Draw("AP");
-	L.Draw();
-	TFile f(filename.c_str(), status.c_str());
-	c1.Write(histogramname.c_str());
-	f.Close();
-	c1.Clear();
-	delete mg;
-	// for (auto*& graph: graphs){
-	// 	delete graph;
-	// }
 }

@@ -42,13 +42,18 @@ void getExpectedPhotonMap(vector<ParticleOut> & pars, unordered_map <int, vec_pa
 Photons reconstruct_photons(Photons const& set);
 Photons rotate_photons_into_particle_frame(double const theta, double const phi, Photons const& original_photons);
 
-void index_photons(ParticleOut & particle, int const& particle_index, vector<PhotonOut> const& photons, vector<int>& index, double const& band_search_width, double const& center, unordered_map <int, int>& photons_per_particle, bool const& print);
+void index_photons(ParticleOut & particle, int const& particle_index, vector<PhotonOut> const& photons, vector<int>& index, TH2D& h, double const& smear, unsigned const& band_search_case, double const& band_search_width, unordered_map <int, int>& photons_per_particle, vec_pair const&expected_photons, bool const& print);
 
 TH2D histogram_photon_angles(int const& event, int const& particle, vector<PhotonOut> const& photons);
 
-TH1D* ReducedHistogram(vector<PhotonOut> const& photons, TH2D const& h2, vector<int> const& index, int const& particle_index, string const& current_particle_type);
+TH1D* ReducedHistogram(vector<PhotonOut> const& photons, TH2D const& h2, vector<int> const& index, int const& particle_index);
 
 
+
+
+void reset_photons_per_particle(unordered_map <int, int>& photons_per_particle, unsigned const npar);
+void reset_Tracks(TrackRecons &Tracks, unsigned const npars, unsigned const nphotons);
+void reset_photons_in_different_frames(Photon_Sets& photons_in_different_frames, unsigned const npars);
 
 
 void ReconstructEvent(Reconstruction &reconstruction, GeneratorOut*& event_output, bool print = false);
@@ -63,7 +68,7 @@ void IndexPhotons(ParticleOut & particle, int const& particle_index, vector<Phot
 
 TH1D* CreateReducedHistogram(vector<PhotonOut> const& photons, vector<int> const& index, int const particle_index, string histname, int nbins, double xlow, double xhi);
 
-void CalculateParticleFit(TH1D &histogram, ParticleOut const &P, TrackRecon &T, vec_pair & expected_photons, double const& emission_angle, string const& current_particle_type, double const& smear, bool print);
+void CalculateParticleFits(TH1D &histogram, ParticleOut &P, TrackRecon &T, vec_pair& expected_photons, const int particle_index, double smear, bool print);
 
 
 

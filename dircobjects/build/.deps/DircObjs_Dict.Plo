@@ -228,6 +228,7 @@ DircObjs_Dict.lo: DircObjs_Dict.cpp \
   /Users/wilkacarvalho/myapps/include/root/TPoint.h \
   /Users/wilkacarvalho/myapps/include/root/TAttCanvas.h \
   /Users/wilkacarvalho/myapps/include/root/TCanvasImp.h \
+  /Users/wilkacarvalho/myapps/include/root/TMultiGraph.h \
   ../event_parsers.h /Users/wilkacarvalho/myapps/include/root/TTree.h \
   /Users/wilkacarvalho/myapps/include/root/TBranch.h \
   /Users/wilkacarvalho/myapps/include/root/TDataType.h \
@@ -834,6 +835,8 @@ DircObjs_Dict.h:
 /Users/wilkacarvalho/myapps/include/root/TAttCanvas.h:
 
 /Users/wilkacarvalho/myapps/include/root/TCanvasImp.h:
+
+/Users/wilkacarvalho/myapps/include/root/TMultiGraph.h:
 
 ../event_parsers.h:
 

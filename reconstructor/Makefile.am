@@ -31,7 +31,8 @@ reconstruct_photons.cpp \
 rotate_photons_into_particle_frame.cpp \
 histogram_photon_angles.cpp \
 getExpectedPhotonMap.cpp \
-CalculateParticleFit.cpp \
+CalculateParticleFits.cpp \
+reset_variables.cpp \
 ##=====================================
 ##
 ##					Mutual functions

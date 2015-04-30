@@ -86,6 +86,6 @@ void CalculateParticleFit(TH1D &histogram, ParticleOut const &P, TrackRecon &T, 
 	guess.Sigmas.push_back(delSigma);
 	guess.Areas.push_back(Area);
 	guess.ExpectedNumber.push_back(N);
-	guess.AddFinalHistogram(rebinned_histogram);
+	guess.Final1D = rebinned_histogram;
 
 }

@@ -207,6 +207,7 @@ analysis.lo: ../analysis.cpp ../dirc_objects.h \
   /Users/wilkacarvalho/myapps/include/root/TPoint.h \
   /Users/wilkacarvalho/myapps/include/root/TAttCanvas.h \
   /Users/wilkacarvalho/myapps/include/root/TCanvasImp.h \
+  /Users/wilkacarvalho/myapps/include/root/TMultiGraph.h \
   /Users/wilkacarvalho/myapps/include/root/TMath.h \
   /Users/wilkacarvalho/myapps/include/root/TVirtualFitter.h \
   /Users/wilkacarvalho/myapps/include/root/TMethodCall.h \
@@ -748,6 +749,8 @@ analysis.lo: ../analysis.cpp ../dirc_objects.h \
 /Users/wilkacarvalho/myapps/include/root/TAttCanvas.h:
 
 /Users/wilkacarvalho/myapps/include/root/TCanvasImp.h:
+
+/Users/wilkacarvalho/myapps/include/root/TMultiGraph.h:
 
 /Users/wilkacarvalho/myapps/include/root/TMath.h:
 

@@ -18,19 +18,16 @@ double CalculateArea(TH1D & h, double const& xlow, double const& xhi, double con
 	double area_below_gaussian = constant*(xhi-xlow);
 
 	return sum - area_below_gaussian;
-		// Area = sqrt(2*pi)/histogram.GetBinWidth(1)*height*width;
-		// TrackRecon &guess  = A.Recon.at(particle_index);
 }
 
 
 
 // for one particle this function will calculate the histogram fit, the area under the fit, the expected number of photons for each mass. the area and expected number of photons are compared and a delta sigma is delta_Sigma is calculated
-void CalculateParticleFits(TH1D &histogram, ParticleOut &P, const vector<PhotonOut>& phos, Analysis &A, const int particle_index, double smear, int const& loss, vec_pair& expected_photons, bool print){
+void CalculateParticleFits(TH1D &histogram, ParticleOut &P, TrackRecon &T, vec_pair& expected_photons, const int particle_index, double smear, bool print){
 
 	auto massmap = P.MassMap();
 	auto anglemap = P.EmissionAngleMap();
 
-	unsigned count = 0;
 	for(auto i = anglemap.begin(); i != anglemap.end(); ++i){
 		static TCanvas c1("c1","c1",10,10,800,600);
 		static TCanvas *c1_p = &c1;
@@ -65,11 +62,11 @@ void CalculateParticleFits(TH1D &histogram, ParticleOut &P, const vector<PhotonO
 		xhi = center + .03;
 		// Area = sqrt(2*pi)/histogram.GetBinWidth(1)*height*width;
 		Area = CalculateArea(histogram, xlow, xhi, constant);
-		TrackRecon &guess  = A.Recon.at(particle_index);
+		TrackRecon &guess  = T;
 
 		vector<double> params = {height, center, width, constant, xlow, xhi};
-		A.Recon.at(particle_index).Params.push_back(std::move(params));
-		auto& vals = expected_photons.at(count);
+		T.Params.push_back(std::move(params));
+		auto& vals = expected_photons[name];
 
 		double &N = vals.first;
 		double &Sigma_N = vals.second;
@@ -89,6 +86,5 @@ void CalculateParticleFits(TH1D &histogram, ParticleOut &P, const vector<PhotonO
 		guess.ExpectedNumber.push_back(N);
 		guess.Final1D = rebinned_histogram;
 		// if (print) guess.printLatest();
-		++count;
 	}
 }

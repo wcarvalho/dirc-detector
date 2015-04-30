@@ -15,6 +15,8 @@ TH2D histogram_photon_angles(int const& event, int const& particle, vector<Photo
 	if ( photons.empty() )
 		return std::move(histogram);
 
+	histogram.SetDefaultSumw2();
+
 	for (auto& photon: photons){
 		double theta = photon.Theta;
 		double phi = photon.Phi;

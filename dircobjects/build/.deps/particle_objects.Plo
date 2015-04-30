@@ -207,6 +207,7 @@ particle_objects.lo: ../particle_objects.cpp ../dirc_objects.h \
   /Users/wilkacarvalho/myapps/include/root/TPoint.h \
   /Users/wilkacarvalho/myapps/include/root/TAttCanvas.h \
   /Users/wilkacarvalho/myapps/include/root/TCanvasImp.h \
+  /Users/wilkacarvalho/myapps/include/root/TMultiGraph.h \
   /Users/wilkacarvalho/myapps/include/root/TMath.h
 
 ../dirc_objects.h:
@@ -742,5 +743,7 @@ particle_objects.lo: ../particle_objects.cpp ../dirc_objects.h \
 /Users/wilkacarvalho/myapps/include/root/TAttCanvas.h:
 
 /Users/wilkacarvalho/myapps/include/root/TCanvasImp.h:
+
+/Users/wilkacarvalho/myapps/include/root/TMultiGraph.h:
 
 /Users/wilkacarvalho/myapps/include/root/TMath.h:

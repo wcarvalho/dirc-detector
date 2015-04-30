@@ -138,20 +138,9 @@ am__DEPENDENCIES_1 =
 am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 libSimObjs_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am__dirstamp = $(am__leading_dot)dirstamp
-am__objects_1 = cmdline.lo find_critical_angle.lo \
-	PushBack_ParticleEvent.lo Fill_ParticleEvent.lo \
-	PushBack_PhotonEvent.lo Simulate_PhotonPath.lo \
-	Simulate_ParticlePath.lo CheckForFlag.lo \
-	Get_ParticleDistance.lo Find_Particle_X_Distance.lo \
-	Find_Particle_Y_Distance.lo Find_Particle_Z_Distance.lo \
-	Get_ParticleWall.lo Random_Emission_Times.lo \
-	Push_Corresponding_Coordinates.lo Get_ParticleCoordinate.lo \
-	Get_PhotonDistance.lo Find_Photon_X_Distance.lo \
-	Find_Photon_Y_Distance.lo Find_Photon_Z_Distance.lo \
-	Get_PhotonWall.lo CheckAngel.lo Check_PhotonDirection.lo \
-	Move_Photon.lo Change_Angle.lo GraphEvent.lo GenerateEvent.lo \
-	FillTree.lo ScanTheta.lo ScanX.lo ScanY.lo ScanPhi.lo \
-	Pull_Data.lo Release_Photons.lo Simulate.lo \
+am__objects_1 = cmdline.lo Simulate_PhotonPath.lo \
+	Simulate_ParticlePath.lo CheckForFlag.lo CheckAngel.lo \
+	Check_PhotonDirection.lo FillTree.lo Simulate.lo Pull_Data.lo \
 	../functions/TabToLevel.lo \
 	../functions/Get_Photon_UnitVector.lo \
 	../functions/Get_Particle_UnitVector.lo \
@@ -160,14 +149,11 @@ am__objects_1 = cmdline.lo find_critical_angle.lo \
 	../functions/Print_2D_Vector.lo \
 	../functions/Rotation_Vector.lo ../functions/Rotated_Vector.lo \
 	../functions/Update_Photon_ThetaPhi.lo \
-	../functions/random_numbers.lo \
-	../functions/Check_PhotonEvent.lo \
-	../functions/Corresponding_Photons.lo \
-	../functions/Photons_Rest.lo \
-	../functions/Check_ParticleEvent.lo ../functions/GraphFocus.lo \
-	../functions/GraphRest.lo ../functions/GraphBounds.lo \
-	../functions/Rotater.lo ../functions/returnEnd.lo \
-	../functions/addtoFile.lo ../functions/file-properties.lo
+	../functions/random_numbers.lo ../functions/Photons_Rest.lo \
+	../functions/GraphFocus.lo ../functions/GraphRest.lo \
+	../functions/GraphBounds.lo ../functions/Rotater.lo \
+	../functions/returnEnd.lo ../functions/addtoFile.lo \
+	../functions/file-properties.lo
 am_libSimObjs_la_OBJECTS = $(am__objects_1)
 libSimObjs_la_OBJECTS = $(am_libSimObjs_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -400,40 +386,14 @@ $(DIRC_LIB)
 
 commonSources = \
 	cmdline.cpp \
-	find_critical_angle.cpp \
-	PushBack_ParticleEvent.cpp \
-	Fill_ParticleEvent.cpp \
-	PushBack_PhotonEvent.cpp \
 	Simulate_PhotonPath.cpp \
 	Simulate_ParticlePath.cpp \
 	CheckForFlag.cpp \
-	Get_ParticleDistance.cpp \
-	Find_Particle_X_Distance.cpp \
-	Find_Particle_Y_Distance.cpp \
-	Find_Particle_Z_Distance.cpp \
-	Get_ParticleWall.cpp \
-	Random_Emission_Times.cpp \
-	Push_Corresponding_Coordinates.cpp \
-	Get_ParticleCoordinate.cpp \
-	Get_PhotonDistance.cpp \
-	Find_Photon_X_Distance.cpp \
-	Find_Photon_Y_Distance.cpp \
-	Find_Photon_Z_Distance.cpp \
-	Get_PhotonWall.cpp \
 	CheckAngel.cpp \
 	Check_PhotonDirection.cpp \
-	Move_Photon.cpp \
-	Change_Angle.cpp \
-	GraphEvent.cpp \
-	GenerateEvent.cpp \
 	FillTree.cpp \
-	ScanTheta.cpp \
-	ScanX.cpp \
-	ScanY.cpp \
-	ScanPhi.cpp \
-	Pull_Data.cpp \
-	Release_Photons.cpp \
 	Simulate.cpp \
+	Pull_Data.cpp \
 	../functions/TabToLevel.cpp \
 	../functions/Get_Photon_UnitVector.cpp \
 	../functions/Get_Particle_UnitVector.cpp \
@@ -445,10 +405,7 @@ commonSources = \
 	../functions/Rotated_Vector.cpp \
 	../functions/Update_Photon_ThetaPhi.cpp \
 	../functions/random_numbers.cpp \
-	../functions/Check_PhotonEvent.cpp \
-	../functions/Corresponding_Photons.cpp \
 	../functions/Photons_Rest.cpp \
-	../functions/Check_ParticleEvent.cpp \
 	../functions/GraphFocus.cpp \
 	../functions/GraphRest.cpp \
 	../functions/GraphBounds.cpp \
@@ -457,7 +414,8 @@ commonSources = \
 	../functions/addtoFile.cpp \
 	../functions/file-properties.cpp
 
-include_HEADERS = ../headers/simulator.h \
+include_HEADERS = simulator.h \
+Rotater.h \
 ../headers/functions.h \
 ../headers/Parameters.h \
 ../headers/file-properties.h
@@ -573,13 +531,7 @@ clean-libLTLIBRARIES:
 	../functions/$(DEPDIR)/$(am__dirstamp)
 ../functions/random_numbers.lo: ../functions/$(am__dirstamp) \
 	../functions/$(DEPDIR)/$(am__dirstamp)
-../functions/Check_PhotonEvent.lo: ../functions/$(am__dirstamp) \
-	../functions/$(DEPDIR)/$(am__dirstamp)
-../functions/Corresponding_Photons.lo: ../functions/$(am__dirstamp) \
-	../functions/$(DEPDIR)/$(am__dirstamp)
 ../functions/Photons_Rest.lo: ../functions/$(am__dirstamp) \
-	../functions/$(DEPDIR)/$(am__dirstamp)
-../functions/Check_ParticleEvent.lo: ../functions/$(am__dirstamp) \
 	../functions/$(DEPDIR)/$(am__dirstamp)
 ../functions/GraphFocus.lo: ../functions/$(am__dirstamp) \
 	../functions/$(DEPDIR)/$(am__dirstamp)
@@ -660,9 +612,6 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@../functions/$(DEPDIR)/Check_ParticleEvent.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@../functions/$(DEPDIR)/Check_PhotonEvent.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@../functions/$(DEPDIR)/Corresponding_Photons.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../functions/$(DEPDIR)/Get_Particle_UnitVector.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../functions/$(DEPDIR)/Get_Photon_UnitVector.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../functions/$(DEPDIR)/GraphBounds.Plo@am__quote@
@@ -682,41 +631,15 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@../functions/$(DEPDIR)/file-properties.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../functions/$(DEPDIR)/random_numbers.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../functions/$(DEPDIR)/returnEnd.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Change_Angle.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CheckAngel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CheckForFlag.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Check_PhotonDirection.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FillTree.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Fill_ParticleEvent.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Find_Particle_X_Distance.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Find_Particle_Y_Distance.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Find_Particle_Z_Distance.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Find_Photon_X_Distance.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Find_Photon_Y_Distance.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Find_Photon_Z_Distance.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GenerateEvent.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Get_ParticleCoordinate.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Get_ParticleDistance.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Get_ParticleWall.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Get_PhotonDistance.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Get_PhotonWall.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GraphEvent.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Move_Photon.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Pull_Data.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PushBack_ParticleEvent.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PushBack_PhotonEvent.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Push_Corresponding_Coordinates.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Random_Emission_Times.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Release_Photons.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ScanPhi.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ScanTheta.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ScanX.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ScanY.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Simulate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Simulate_ParticlePath.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Simulate_PhotonPath.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cmdline.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/find_critical_angle.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 
 .cpp.o:

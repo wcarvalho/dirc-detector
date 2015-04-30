@@ -24,7 +24,6 @@ bool isPhotonInThetaBand(vector<PhotonOut> const& photons, vector<int> const& ph
 		auto& photon = photons.at(i);
 		auto& theta = photon.Theta;
 		auto& phi = photon.Phi;
-		// cout << i << "\t" << theta << ", " << phi << endl;
 		if ((theta<theta_center_max)&&(theta>theta_center_min)){
 			inside_band = true; break;
 		}
@@ -84,17 +83,20 @@ void diagnostic_print(vector<int> const& index, int const& particle_index, vecto
 	}
 }
 
-void index_photons(ParticleOut & particle, int const& particle_index, vector<PhotonOut> const& photons, vector<int>& index, double const& band_search_width, double const& emission_angle, unordered_map <int, int>& photons_per_particle, bool const& print){
+void index_photons(ParticleOut & particle, int const& particle_index, vector<PhotonOut> const& photons, vector<int>& index, TH2D& h, double const& smear, unsigned const& band_search_case, double const& band_search_width, unordered_map <int, int>& photons_per_particle, vec_pair const&expected_photons, bool const& print){
 
+	void (*findThetaBand)(ParticleOut &, TH2D const&, double const&, double const&, double&, double&, vec_pair const&, bool const&);
+	switch(band_search_case){
+		case 1: findThetaBand=&TallestBinContent; break;
+	}
 
 	static double theta_center_min = 0.;
 	static double theta_center_max = 0.;
-	theta_center_min = emission_angle - band_search_width;
-	theta_center_max = emission_angle + band_search_width;
+	findThetaBand(particle, h, smear, band_search_width, theta_center_min, theta_center_max, expected_photons, print);
 
 	static double min_photon_time = 0.;
 	static double max_photon_time = 0.;
-	findTimeBand(min_photon_time, max_photon_time, emission_angle, particle);
+	findTimeBand(min_photon_time, max_photon_time, particle);
 
 	int nphotons = photons.size()/4;
 	vector<int> photonset{0, 0, 0, 0};
@@ -105,9 +107,7 @@ void index_photons(ParticleOut & particle, int const& particle_index, vector<Pho
 		bool inThetaBand = isPhotonInThetaBand(photons, photonset, theta_center_min, theta_center_max, print);
 
 		bool inTimeBand = isPhotonInTimeBand(photons, photonset, min_photon_time, max_photon_time, print);
-
-		// inTimeBand = true;
-
+		// inTimeBand  = true;
 		if ( inThetaBand && inTimeBand ){
 			indexSet(index, photonset, photons_per_particle, particle_index, print);
 		}

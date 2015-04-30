@@ -10,7 +10,7 @@ using namespace std;
 TH1D* CreateReducedHistogram(vector<PhotonOut> const& photons, vector<int> const& index, int const particle_index, string histname, int nbins, double xlow, double xhi){
 
 	TH1D* h1 = new TH1D(histname.c_str(), histname.c_str(), nbins, xlow, xhi);
-
+	h1->SetDefaultSumw2();
 	for (unsigned i = 0; i < photons.size(); ++i){
 		if (index.at(i) != particle_index) continue;
 		auto const& photon = photons.at(i);
@@ -21,10 +21,10 @@ TH1D* CreateReducedHistogram(vector<PhotonOut> const& photons, vector<int> const
 	return std::move(h1);
 }
 
-TH1D* ReducedHistogram(vector<PhotonOut> const& photons, TH2D const& h2, vector<int> const& index, int const& particle_index, string const& current_particle_type){
+TH1D* ReducedHistogram(vector<PhotonOut> const& photons, TH2D const& h2, vector<int> const& index, int const& particle_index){
 
 	string histogram_name = h2.GetName();
-	histogram_name.append("_reduced1D_"); histogram_name.append(current_particle_type);
+	histogram_name.append("_reduced1D_");
 
 	double xlow = h2.GetYaxis()->GetXmin();
 	double xhi = h2.GetYaxis()->GetXmax();

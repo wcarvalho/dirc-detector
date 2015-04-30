@@ -1,83 +1,57 @@
-// #include <cv.hpp>
-// #include <highgui.h>
-#include "Rounder.h"
-#include <math.h>
+#include "Simulate.h"
 #include "reconstructor.h"
-#include <unordered_map>
-#include <TSpectrum.h>
-#include "Rotater.h"
 
-double pi=3.14159265358979312;
+void TallestBinContent(ParticleOut & particle, TH2D const& h, double const& smear, double const& width, double& center_min, double &center_max, vec_pair const&expected_photons, bool const& print){
+	TH1D* h1 = h.ProjectionY();
 
-bool isVectorForward(double const phi){
-	if ( (phi > pi/2)  && (phi < 3*pi/2) )
-		return false;
-	else
-		return true;
+	for (unsigned i = 0; i < h1->GetNbinsX(); ++i){
+		double bin_center = h1->GetBinCenter(i);
+		if ((bin_center > 1.) || (bin_center < .3)){
+			h1->SetBinContent(i, 0);
+		}
+	}
+
+	int max_bin = h1->GetMaximumBin();
+	double center = h1->GetBinCenter(max_bin);
+	center_min = center - width;
+	center_max = center + width;
 }
 
+void findTimeBand(double& time_min, double& time_max, ParticleOut& P){
 
-double distance_traveled(double theta, double phi, double x){
-
-	static double xy = 0.;
-	static double xyz = 0.;
-	xy = sqrt(x*x*(TMath::Tan(phi)*TMath::Tan(phi) + 1));
-	xyz = xy/TMath::Sin(theta);
-
-	return xyz;
-}
-
-
-void findTimeBand(double& min_time, double& max_time, double const& emission_angle, ParticleOut const& particle){
+	static double x_start;
+	static double x_final;
 
 	static Detector d;
+	static Simulate sim(0.,0.);
 
-	static Rotater r; r.Feed_Particle(particle.Theta, particle.Phi);
-	r.ChangeFrame();
+	double& l = d.Length;
+	double& w = d.Width;
+	double& h = d.Height;
 
+	sim.SetAngle(P.Theta, P.Phi);
+	sim.SetDim(l, w, h);
+	sim.SetStart(P.X, P.Y, 0.);
 
-	int N = 100;
-	static vector<double> phis; phis.resize(N,0.);
+	sim.GotoWall();
 
-	static double target = 0.;
-	static double delta_x = 0.;
-	if (isVectorForward(particle.Phi)){
-		target = 0.;
-		delta_x = d.Length - particle.X;
+	x_start = P.X;
+	x_final = sim.coord[0];
+
+	if ( (x_final - x_start) >= 0 ){
+		time_min = l - x_final;
+		time_max = l - x_start;
 	}
 	else{
-		target = pi;
-		delta_x = particle.X;
+		time_min = -x_start;
+		time_max = -x_final;
 	}
 
-	static double target_difference = 0.;
-	static double min_target_difference = 0.;
-	static double closest_theta;
-	static double closest_phi;
-	static double current_theta;
-	min_target_difference = 1.e10;
+	static double width = 3;
 
-	for (unsigned i = 0; i < N; ++i){
-		double& phi = phis.at(i);
-		phi = i*((double)2*pi/N);
-		current_theta = emission_angle;
-		r.Rotate_Photon(current_theta, phi);
-
-		target_difference = fabs(phi - target);
-		if (target_difference < min_target_difference){
-			min_target_difference = target_difference;
-			closest_theta = current_theta;
-			closest_phi = phi;
-		}
-
+	time_min -= width;
+	time_max += width;
+	if (time_max < time_min){
+		cout << "ERROR! time max < time min!\n\nExiting!!\n"; exit(1);
 	}
-
-	static double photon_distance = 0.;
-	photon_distance = distance_traveled(closest_theta, closest_phi, delta_x);
-
-	static double shortest_time = 0.;
-	shortest_time = photon_distance*1.e-2/3;
-
-	min_time = shortest_time - .02;
-	max_time = shortest_time + .08;
 }

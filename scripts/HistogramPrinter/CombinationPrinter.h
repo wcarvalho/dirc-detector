@@ -2,6 +2,7 @@
 #include "TObject.h"
 #include "Rotater.h"
 #include "create2DTimeProjection.h"
+#include "createTransformedTimePlot.h"
 
 typedef std::unordered_map<int, bool(*)(const Particle&, const TrackRecon&, const int&, const double&)> func_map;
 
@@ -40,7 +41,22 @@ void addScatterPlot(TPad& pad, TMultiGraph *mg, TLegend& L, vector<ParticleOut> 
 
 	DrawScatterPlot(mg, L, particles, photons, index, particle_index);
 
-	mg->SetTitle("Indexed Photons; #phi (radians); #theta (radians)");
+	mg->SetTitle("Angular Distribution; #phi (radians); #theta (radians)");
+
+	pad.cd();
+	mg->Draw("AP");
+
+	pad.Update();
+	pad.Modified();
+}
+void addTimeTransformationPlot(TPad& pad, TMultiGraph *mg, TLegend& L, vector<ParticleOut> const& particles, vector<Photon> const& photons, vector<int> const& index, int particle_index){
+
+	vector<PhotonOut> photon_outs(photons.begin(), photons.end());
+	auto reconstructed_photons = std::move(reconstruct_photons(photon_outs));
+
+	DrawTransformedTimePlot(mg, L, particles, reconstructed_photons, index, particle_index);
+
+	mg->SetTitle("Distance Distribution; #phi (radians); distance (cm)");
 
 	pad.cd();
 	mg->Draw("AP");
@@ -300,76 +316,6 @@ vector<Photon> getPhotonSet(Photon const& original){
 	vector <Photon> set {original, copy1, copy2, copy3};
 	return std::move(set);
 }
-void AddPhiTimePlot(TPad& pad, TMultiGraph*& mg, vector<Photon> const& cheat_photons, ParticleOut const& particle, int particle_index){
-
-	TGraph* g1_p = new TGraph();
-	TGraph &g1 = *g1_p;
-
-	TGraph* g2_p = new TGraph();
-	TGraph &g2 = *g2_p;
-
-	g1.SetMarkerStyle(8);
-	g1.SetMarkerColor(2);
-	g1.SetLineColor(2);
-	g1.SetMarkerSize(.75);
-
-	g2.SetMarkerStyle(8);
-	g2.SetMarkerColor(1);
-	g2.SetLineColor(1);
-	g2.SetMarkerSize(.75);
-
-	static double theta_low = .79;
-	static double theta_high = .85;
-
-	static Rotater r;
-	r.Feed_Particle(particle.Theta, particle.Phi);
-	r.ChangeFrame();
-
-	int main = 0;
-	int others = 0;
-	for (auto& cheat_pho : cheat_photons){
-		static vector<Photon> photon_set; photon_set.clear();
-		photon_set = getPhotonSet(cheat_pho);
-
-		for (auto& pho: photon_set){
-			r.Rotate_Photon(pho.Theta, pho.Phi);
-			if ((pho.Theta > theta_high) || (pho.Theta < theta_low)) continue;
-			if (pho.WhichParticle == particle_index){
-				g1.SetPoint(main, pho.Phi, 10.*pho.Time_Traveled);
-				++main;
-			}
-			else{
-				g2.SetPoint(others, pho.Phi, 10.*pho.Time_Traveled);
-				++others;
-			}
-		}
-	}
-
-	static stringstream ss; ss.str("");
-	ss << "#theta: " << theta_low << ", " << theta_high;
-	TLegend L(0., 0.9, 0.35, 1.0, ss.str().c_str());
-
-	if ((main == 0) && (others == 0)) return;
-	if (main != 0) L.AddEntry(g1_p, "current particle", "lp");
-	if (others != 0) L.AddEntry(g2_p, "other particles", "lp");
-
-	if (main != 0) mg->Add(g1_p);
-	if (others != 0) mg->Add(g2_p);
-
-	mg->SetTitle("Particle Band Photon Times; #phi(radians); time(ns)");
-	static double pi = TMath::Pi();
-
-
-
-	pad.cd();
-	mg->Draw("AP");
-	L.Draw();
-	pad.Update();
-	pad.Modified();
-	mg->GetXaxis()->SetRangeUser(-pi, pi);
-
-
-}
 
 void AddTimeScatterCombination(string canvasname, TFile& f, vector<ParticleOut> & particles, vector<PhotonOut> const& photons, vector<Photon> const& cheat_photons, vector<int> const& index, int particle_index, TrackRecon const& R, int search_index, double const& momentum, string particle_type, string particle_search, double threshold, int plotType, double time_min, double time_max, bool print = false){
 
@@ -384,64 +330,80 @@ void AddTimeScatterCombination(string canvasname, TFile& f, vector<ParticleOut> 
   TPad* upperpad = (TPad*)C.GetPad(1);
   TPad* lowerpad = (TPad*)C.GetPad(2);
 
-  upperpad->Divide(2,1);
+  upperpad->Divide(3,1);
   TPad* upperleft = (TPad*)upperpad->GetPad(1);
-  TPad* upperright = (TPad*)upperpad->GetPad(2);
+  TPad* uppermiddle = (TPad*)upperpad->GetPad(2);
+  TPad* upperright = (TPad*)upperpad->GetPad(3);
 	upperleft->SetPad( 0, 0, .15, 1. );
-	upperright->SetPad( .15, 0, 1. , 1. );
+	uppermiddle->SetPad( .15, 0, .55, 1. );
+	upperright->SetPad( .55, 0., 1. , 1. );
 
   lowerpad->Divide(3,1);
   TPad* lowerleft = (TPad*)lowerpad->GetPad(1);
   TPad* lowermiddle = (TPad*)lowerpad->GetPad(2);
   TPad* lowerright = (TPad*)lowerpad->GetPad(3);
-	lowerleft->SetPad(0., 0., .15, 1.);
-	lowermiddle->SetPad(.15, 0., .6, 1.);
-	lowerright->SetPad(.6, 0., 1. , 1.);
+	lowerleft->SetPad(0., 0., .45, 1.);
+	lowermiddle->SetPad(.41, 0., .85, 1.);
+	lowerright->SetPad(.81, 0., 1. , 1.);
 
 	if (print) cout << "\tmakepads\n";
 
+  TMultiGraph *mg = new TMultiGraph();
+  TLegend* L_P = 0;
 
-  TLegend* scatterLegend = 0;
-	scatterLegend = new TLegend(0.15, 0.1, 1., 1., "Particle Incident (#theta, #phi) and z");
-  TMultiGraph *scattermg = new TMultiGraph();
-	addScatterPlot(*upperright, scattermg, *scatterLegend, particles, photons, index, particle_index);
+	L_P = new TLegend(0.15, 0.1, 1., 1., "Particle Incident (#theta, #phi) and z");
+	addScatterPlot(*uppermiddle, mg, *L_P, particles, photons, index, particle_index);
+	TLegend* Dummy = new TLegend(0.15, 0.1, 1., 1., "Particle Incident (#theta, #phi) and z");
+  TMultiGraph *mg2 = new TMultiGraph();
 
-	scatterLegend->SetTextSize(.06);
+	addTimeTransformationPlot(*upperright, mg2, *Dummy, particles, cheat_photons, index, particle_index);
+
+
+	TLegend &LScatter = *L_P;
+	LScatter.SetTextSize(.06);
 	upperleft->cd();
-	scatterLegend->Draw();
+	LScatter.Draw();
 	upperleft->Update();
 	upperleft->Modified();
 
-  TLegend* timeLegend = 0;
-	timeLegend = new TLegend(0.15, 0.1, 1., 1., "Photon Time Bands (ns)");
+	vector< TF1* > functions;
 
-  TMultiGraph *timemg = new TMultiGraph();
-	create2DTimeProjection(*lowermiddle, timemg, *timeLegend, photons, cheat_photons, particle_index, time_min, time_max);
+	TH1D* hf = addFullHistogram(*lowerleft, R, photons, index, particle_index, search_index, functions);
+	hf->GetXaxis()->SetRangeUser(.75, .9);
+	if (print) cout << "\tfull histogram\n";
 
-	timeLegend->SetTextSize(.06);
-	lowerleft->cd();
-	timeLegend->Draw();
-	upperleft->Update();
-	upperleft->Modified();
 
-	TMultiGraph *particlebandmg = new TMultiGraph();
-	AddPhiTimePlot(*lowerright, particlebandmg, cheat_photons, particles.at(particle_index), particle_index);
+	TH1D* hr = addReducedHistogram(*lowermiddle, R, photons, index, particle_index, search_index, functions);
+	hr->GetXaxis()->SetRangeUser(.75, .9);
+	if (print) cout << "\treduced histogram\n";
 
 	stringstream ss; ss << "Particle "<< particle_index << ": " << particle_type << " with p = "<< setprecision(2) << momentum << "GeV";
-	TLegend L(0., 0.9, 0.15, 1.0, ss.str().c_str());
+	TLegend L(0., 0.9, 0.35, 1.0, ss.str().c_str());
 	L.SetTextSize(.035);
 
-  AddEventDetails(*upperright, L, particles.at(particle_index), R, search_index, momentum, particle_search, threshold);
+  AddEventDetails(*lowermiddle, L, particles.at(particle_index), R, search_index, momentum, particle_search, threshold);
+	if (print) cout << "\tevent details\n";
 
+
+	TLegend FitLegend(0., 0., 1., 1., "Emission Angle: Expected Vs. Found");
+	FitLegend.SetTextSize(.045);
+	AddFitDetails(*lowerright, FitLegend, particles.at(particle_index), R, functions);
+	if (print) cout << "\tfit details\n";
 
 	f.cd();
 	C.Write();
 
-	delete scattermg;
-	delete timemg;
-	delete scatterLegend;
-	delete timeLegend;
-	delete particlebandmg;
+	hr->GetListOfFunctions()->Clear();
+	hf->GetListOfFunctions()->Clear();
+	delete hr;
+	for (auto& function: functions)
+		delete function;
+	delete mg;
+	delete mg2;
+	delete L_P;
+	delete Dummy;
+
+
 }
 
 void AddBatch(int event, int match, TFile& f, vector<ParticleOut> & particle_outs, vector<Particle> & particles, vector< vector<PhotonOut> > const& photon_sets, vector<Photon> cheat_photons, vector<int> const& index, vector< TrackRecon> & reconstructions, string & particle_compare, unsigned& count, double threshold, int plotType, double time_min, double time_max){

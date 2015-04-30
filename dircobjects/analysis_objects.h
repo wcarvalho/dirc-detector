@@ -11,6 +11,7 @@
 #include "TH2D.h"
 #include "TF1.h"
 #include "TCanvas.h"
+#include "TMultiGraph.h"
 #include "dirc_objects.h"
 
 class TrackRecon : public TObject
@@ -21,31 +22,32 @@ public:
 
 	void clear();
 	void printLatest();
+	void LinkHistogram(TH1D &h){ h = Final1D; }
 	int size() const { return Options.size(); }
 	int size(){ return Options.size(); }
 	int NReconstructions(){ return Options.size(); } // deprecated
+	int getIndexOf(std::string type);
 	double getLatestIntegralCenter(){ return Params.back().at(1); }
 	double getLatestIntegralCenter() const { return Params.back().at(1); }
 	double getIntegralCenterAt(int const i){ return Params.at(i).at(1); }
 	double getIntegralCenterAt(int const i) const { return Params.at(i).at(1); }
-	std::string getNameAt(int const i) const { return Options.at(i); }
 	double getnSigmaAreaAt(int const i) const {
-		if (getIntegralAt(i) < 5) return 1.e100;
+		if (getIntegralAt(i) < 10) return 1.e100;
 		else return delSigArea.at(i);
 	}
 	double getnSigmaThetaAt(int const i) const {
-		if (getIntegralAt(i) < 5) return 1.e100;
+		if (getIntegralAt(i) < 10) return 1.e100;
 		else return delSigTheta.at(i);
 	}
 	double getIntegralAt(int const i) const { return Areas.at(i); }
 	double getIntegralHeightAt(int const i) const { return Params.at(i).at(0); }
-	int getIndexOf(std::string type);
 	std::string getBestFit(double const threshold);
-	void AddFinalHistogram(TH1D h){ Final1Ds.push_back(std::move(h)); }
-	void LinkHistogramAt(int const i, TH1D &h){ h = Final1Ds.at(i); }
+	std::string getNameAt(int const i) const { return Options.at(i); }
+
 
 	TH2D Hist2D;
-	std::vector <TH1D> Final1Ds;
+	TH1D Final1D;
+
 	std::vector < std::string > Options; 			// every particle type
 	std::vector < double > delSigTheta;				// delta sigma theta for every particle
 	std::vector < double > delSigArea;				// delta sigma area for every particle
@@ -61,18 +63,30 @@ public:
 class TrackRecons : public TObject
 {
 public:
-	TrackRecons(){}
+	TrackRecons() {}
 	~TrackRecons(){}
 
 	void AddTrackRecon();
 	void PushBackParams();
+	// void SetIndex(std::vector< int > i){ index = std::move(index) ; }
+	// void SetPhotonPlot(int const i, TCanvas C){
+	// 	ColoredPhotons.at(i) = *C.Clone();
+	// }
 
-	std::vector<TrackRecon> Recon;
-	std::vector< int > index;
-	// std::vector<TGraph> indexedPhotonScatterPlot;
+	std::vector< TrackRecon > Recon;
+	std::vector < int > index;
+	// std::vector < TCanvas > ColoredPhotons;			// One Coloring set per particle_type
 
 	ClassDef(TrackRecons, 1);
 };
+
+
+
+
+
+
+
+///////////////// Deprecated  //////////////
 // makes and stores histograms for an event
 class Analysis : public TrackRecons
 {
