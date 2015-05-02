@@ -20,6 +20,9 @@ void Simulate_PhotonPath(Detector& d, Photon &photon, double smear, bool print)
 	simPho.SetAngle(photon.Theta, photon.Phi);
 	simPho.SetStart(photon.X, photon.Y, photon.Z);
 	simPho.SetDim(d.Length, d.Width, d.Height);
+	static double photon_velocity = 1/d.n;
+	simPho.SetVelocity(photon_velocity);
+	photon.SetVelocity(photon_velocity);
 
 	Random r;
 	while ((photon.X != d.Length) && (photon.X != 0))
@@ -32,7 +35,7 @@ void Simulate_PhotonPath(Detector& d, Photon &photon, double smear, bool print)
 			photon.X = simPho.coord[0];
 			photon.Y = simPho.coord[1];
 			photon.Z = simPho.coord[2];
-			photon.Time_Traveled = simPho.GetTimeTraveled();
+			photon.Time_Traveled += simPho.GetTimeTraveled();
 			return;
 		}
 
