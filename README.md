@@ -2,11 +2,11 @@
 This is a software library for modeling a Detection of Internall Reflected Cherenkov light (DIRC) particle detector. Particle-Generator
 
 It has 3 main libraries (links here) and numerous scripts (link to section on scripts) to streamline common tasks.
-# Particle-Generator
+### Particle-Generator
 
-# Photon-Generator
+### Photon-Generator
 
-# Particle-Reconstructor
+### Particle-Reconstructor
 
 
 
