@@ -102,9 +102,13 @@ int main(int argc, char** argv)
   //              Beginning of Program;
   //--------------------------------------------------
 
+<<<<<<< HEAD
 	int focus_event = 0;
   for (unsigned int ev = 0; ev < events->GetEntries(); ++ev)
   {
+=======
+  for (unsigned int ev = 0; ev < events->GetEntries(); ++ev){
+>>>>>>> e0fc344b779ba85e8a307ece60221c2ba94f5b5c
 		if (!quiet) cout << "Event " << ev << "\n";
 		events->GetEntry(ev);
 
@@ -158,8 +162,9 @@ int main(int argc, char** argv)
 		vector<int>& index = Tracks.index; 				// used to color photons
 
 		// transform time_traveled into length_traveled
+		// FIXME::This no longer works as it works on the assumption that this time is the time traveled by the photon and the photon time will include the time traveled by the/a particle. Must also fix the indexing
 		for (auto& photon: reconstructed_photons){
-			photon.Time_Traveled *= 300*TMath::Cos(photon.Phi)*TMath::Sin(photon.Theta);
+			photon.Time_Traveled *= 10*TMath::Cos(photon.Phi)*TMath::Sin(photon.Theta);
 		}
 
 		static unordered_map <int, int> photons_per_particle;

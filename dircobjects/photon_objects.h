@@ -20,6 +20,7 @@ public:
     os << p.Theta << ", " << p.Phi;
     return os;
   }
+  void SetVelocity(double const v) const { velocity = v; }
 
   double Theta;
   double Phi;
@@ -27,6 +28,7 @@ public:
   double Y;
   double Z;
   double Time_Traveled;
+  double velocity;
 
   ClassDef(PhotonOut, 1);
 

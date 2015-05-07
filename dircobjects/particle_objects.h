@@ -14,7 +14,7 @@
 class ParticleOut : public TObject
 {
 public:
-	ParticleOut(double theta=1., double phi=0.) : Theta(theta), Phi(phi), Eta(0.), pt(0.), PhotonsPercm(1000), NumberofPhotons(0) { PossibleMasses(); }
+	ParticleOut(double theta=1., double phi=0.) : Theta(theta), Phi(phi), Eta(0.), pt(0.), Time_Traveled(0.) { PossibleMasses(); }
 	~ParticleOut(){}
 
 
@@ -43,10 +43,12 @@ public:
 	double Eta;
 	double pt;
 	double p[3];
-	int Charge;
 	double masses[5];
 	double PhotonsPercm;
+	double Time_Traveled;
+	int Charge;
 	int NumberofPhotons;
+
 	std::vector<std::string> deftypes;
 	std::vector<std::string> types;
 

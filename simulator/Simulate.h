@@ -36,6 +36,9 @@ public:
 	void SetAngle(double t = 0., double p = 0.){
 		Theta=t; Phi=p; SetVec(Theta, Phi);
 	}
+	void resetTime(){ time_traveled = 0.; }
+	void getTime(){ return time_traveled; }
+	void setTime(double const t){ time_traveled = t; }
 	void SetDim(double l, double w, double h){ Dim[0] = l; Dim[1] = w; Dim[2] = h; }
 	void SetStart(double x, double y, double z){ coord[0] = x; coord[1]=y; coord[2]=z; }
 	void SetVec(double theta, double phi)
