@@ -6,7 +6,7 @@ commonAdds = \
 
 commonSources = \
 	cmdline.cpp \
-	generate_particle_data.cpp \
+	gParticle.cpp \
 	project.cpp \
 	TakeInParameters.cpp \
 	generate.cpp \
@@ -15,8 +15,7 @@ commonSources = \
 ##					Mutual functions
 ##
 ##=====================================
-	../functions/random_numbers.cpp \
-	../functions/TabToLevel.cpp
+	../functions/random_numbers.cpp
 
 H=../headers
 include_HEADERS = \

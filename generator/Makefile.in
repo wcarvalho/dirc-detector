@@ -138,9 +138,8 @@ am__DEPENDENCIES_1 =
 am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 libGenObjs_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am__dirstamp = $(am__leading_dot)dirstamp
-am__objects_1 = cmdline.lo generate_particle_data.lo project.lo \
-	TakeInParameters.lo generate.lo ../functions/random_numbers.lo \
-	../functions/TabToLevel.lo
+am__objects_1 = cmdline.lo gParticle.lo project.lo TakeInParameters.lo \
+	generate.lo ../functions/random_numbers.lo
 am_libGenObjs_la_OBJECTS = $(am__objects_1)
 libGenObjs_la_OBJECTS = $(am_libGenObjs_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -373,12 +372,11 @@ commonAdds = \
 
 commonSources = \
 	cmdline.cpp \
-	generate_particle_data.cpp \
+	gParticle.cpp \
 	project.cpp \
 	TakeInParameters.cpp \
 	generate.cpp \
-	../functions/random_numbers.cpp \
-	../functions/TabToLevel.cpp
+	../functions/random_numbers.cpp
 
 H = ../headers
 include_HEADERS = \
@@ -477,8 +475,6 @@ clean-libLTLIBRARIES:
 	@: > ../functions/$(DEPDIR)/$(am__dirstamp)
 ../functions/random_numbers.lo: ../functions/$(am__dirstamp) \
 	../functions/$(DEPDIR)/$(am__dirstamp)
-../functions/TabToLevel.lo: ../functions/$(am__dirstamp) \
-	../functions/$(DEPDIR)/$(am__dirstamp)
 
 libGenObjs.la: $(libGenObjs_la_OBJECTS) $(libGenObjs_la_DEPENDENCIES) $(EXTRA_libGenObjs_la_DEPENDENCIES) 
 	$(AM_V_CXXLD)$(libGenObjs_la_LINK) -rpath $(libdir) $(libGenObjs_la_OBJECTS) $(libGenObjs_la_LIBADD) $(LIBS)
@@ -544,12 +540,11 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@../functions/$(DEPDIR)/TabToLevel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../functions/$(DEPDIR)/random_numbers.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TakeInParameters.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cmdline.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gParticle.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/generate.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/generate_particle_data.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/project.Plo@am__quote@
 

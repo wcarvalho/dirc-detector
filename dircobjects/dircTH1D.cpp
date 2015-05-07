@@ -55,7 +55,7 @@ namespace dirc
 		if (print) std::cout << "Total distributionIntegral = " << distributionIntegral << std::endl;
 
 		int sigmaBinDistance;
-		sigmaBinDistance = fabs(findBinDistance(center_guess, sigma_guess));
+		sigmaBinDistance = std::abs(findBinDistance(center_guess, sigma_guess));
 
 		int sigmaBinDistance_start = sigmaBinDistance;
 
@@ -115,7 +115,7 @@ namespace dirc
 				distributionCenter = center_guess;
 				double centerheight = GetBinContent(center_bin);
 				distributionSigma = sqrt(centerheight);
-				sigmaBinDistance = fabs(findBinDistance(distributionCenter, distributionSigma));
+				sigmaBinDistance = std::abs(findBinDistance(distributionCenter, distributionSigma));
 				return getpercent(binlow, binhi, sigmaBinDistance);
 			}
 			else if (sigmaBinDistance < 0) {

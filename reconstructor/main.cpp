@@ -8,20 +8,19 @@
 #include "boost/bind.hpp"
 #include "boost/function.hpp"
 
+#define pi 3.14159265358979312
+
 int main(int argc, char** argv)
 {
 	gengetopt_args_info ai;
 	if (cmdline_parser (argc, argv, &ai) != 0){ exit(1); }
 
-    double pi = TMath::Pi();
+    // double pi = TMath::Pi();
 
     int last     = 0;
-    int xbins    = 1000;
-    int ybins    = 1000;
     double smear = .01;
 
  		int ExpectedPhotonCase = ai.expected_photons_case_arg;
-
 
     // measuring time
     timeval t1, t2;
@@ -103,6 +102,7 @@ int main(int argc, char** argv)
   //              Beginning of Program;
   //--------------------------------------------------
 
+	int focus_event = 0;
   for (unsigned int ev = 0; ev < events->GetEntries(); ++ev)
   {
 		if (!quiet) cout << "Event " << ev << "\n";
@@ -118,6 +118,35 @@ int main(int argc, char** argv)
 
 
 		auto const& particle_types = pars.at(0).deftypes; // get particle types
+
+		auto createTH2D = [](string name, double xlow = -pi, double xhi = pi, double ylow = 0., double yhi = pi, int nbinsx = 2000, int nbinsy = 1000){
+
+			TH2D h(name.c_str(), name.c_str(), nbinsx, xlow, xhi, nbinsy, ylow, yhi);
+			h.SetDefaultSumw2();
+			h.SetStats(0);
+			h.GetXaxis()->SetTitle("#theta (radians)");
+			h.GetYaxis()->SetTitle("#phi (radians)");
+			return std::move(h);
+		};
+
+		TCanvas C("C", "C", 800, 600);
+		auto SaveHist = [&C](TH2D& h, string filename){
+			static stringstream ss;
+			ss.str(""); ss << "nims/" << filename << ".root";
+			h.SaveAs(ss.str().c_str());
+			h.Draw();
+			ss.str(""); ss << "nims/" << filename << ".eps";
+			C.Print(ss.str().c_str());
+			C.Clear();
+		};
+		if (ev == focus_event){
+			TH2D h_original_photons = createTH2D("pre photon reconstruction");
+			for (auto& photon: event_output->Photons)
+				h_original_photons.Fill(photon.Phi, photon.Theta);
+			SaveHist(h_original_photons, "photon_pre_reconstruction");
+		}
+
+
 		auto reconstructed_photons = reconstruct_photons(event_output->Photons); // find all reflections photons might have udnergone
 		unsigned nphotons = reconstructed_photons.size();
 		if ( reconstructed_photons.empty() ){ tree->Fill(); continue; }
@@ -167,7 +196,6 @@ int main(int argc, char** argv)
 		}
 
 		tree->Fill();
-
   }
 
   file2.cd();

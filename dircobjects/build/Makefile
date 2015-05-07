@@ -88,8 +88,8 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-build_triplet = x86_64-apple-darwin14.1.0
-host_triplet = x86_64-apple-darwin14.1.0
+build_triplet = x86_64-apple-darwin14.3.0
+host_triplet = x86_64-apple-darwin14.3.0
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -248,7 +248,7 @@ CC = gcc
 CCDEPMODE = depmode=gcc3
 CFLAGS = -g -O2
 CPP = gcc -E
-CPPFLAGS =  -std=c++11 -pipe -Wno-deprecated-register -O3 -march=native -I/Users/wilkacarvalho/myapps/include/root -I/Users/wilkacarvalho/libraries/include  -I/Users/wilkacarvalho/libraries/libseamstress/include -I/Users/wilkacarvalho/libraries/eigen3/include/eigen3 -I/Users/wilkacarvalho/libraries/fitnewton/include 
+CPPFLAGS =  -std=c++11 -pipe -Wno-deprecated-register -O3 -march=native -I/Users/wilkacarvalho/libraries/include/root -I/Users/wilkacarvalho/libraries/include  -I/Users/wilkacarvalho/libraries/libseamstress/include -I/Users/wilkacarvalho/libraries/eigen3/include/eigen3 -I/Users/wilkacarvalho/libraries/fitnewton/include 
 CXX = g++
 CXXCPP = g++ -E
 CXXDEPMODE = depmode=gcc3
@@ -302,9 +302,9 @@ PACKAGE_VERSION = 0.0.1
 PATH_SEPARATOR = :
 PKG_CONFIG = /usr/local/bin/pkg-config
 PKG_CONFIG_LIBDIR = 
-PKG_CONFIG_PATH = :/Users/wilkacarvalho/libraries/lib/pkgconfig:/Users/wilkacarvalho/libraries/libseamstress/lib/pkgconfig:/Users/wilkacarvalho/libraries/eigen3/share/pkgconfig:/Users/wilkacarvalho/libraries/fitnewton/lib/pkgconfig/
+PKG_CONFIG_PATH = :/Users/wilkacarvalho/libraries/lib/pkgconfig:/Users/wilkacarvalho/libraries/libseamstress/lib/pkgconfig:/Users/wilkacarvalho/libraries/eigen3/share/pkgconfig:/Users/wilkacarvalho/libraries/fitnewton/lib/pkgconfig/:/Users/wilkacarvalho/libraries/lib/pkgconfig:/Users/wilkacarvalho/libraries/libseamstress/lib/pkgconfig:/Users/wilkacarvalho/libraries/eigen3/share/pkgconfig:/Users/wilkacarvalho/libraries/fitnewton/lib/pkgconfig/
 RANLIB = ranlib
-ROOT_LIBS = -L/Users/wilkacarvalho/myapps/lib/root -lCore -lCint -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -lpthread -stdlib=libc++ -lm -ldl
+ROOT_LIBS = -L/Users/wilkacarvalho/libraries/lib/root -lCore -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -lpthread -stdlib=libc++ -lm -ldl
 SED = /usr/bin/sed
 SET_MAKE = 
 SHELL = /bin/sh
@@ -327,10 +327,10 @@ am__quote =
 am__tar = $${TAR-tar} chof - "$$tardir"
 am__untar = $${TAR-tar} xf -
 bindir = ${exec_prefix}/bin
-build = x86_64-apple-darwin14.1.0
+build = x86_64-apple-darwin14.3.0
 build_alias = 
 build_cpu = x86_64
-build_os = darwin14.1.0
+build_os = darwin14.3.0
 build_vendor = apple
 builddir = .
 datadir = ${datarootdir}
@@ -338,10 +338,10 @@ datarootdir = ${prefix}/share
 docdir = ${datarootdir}/doc/${PACKAGE_TARNAME}
 dvidir = ${docdir}
 exec_prefix = ${prefix}
-host = x86_64-apple-darwin14.1.0
+host = x86_64-apple-darwin14.3.0
 host_alias = 
 host_cpu = x86_64
-host_os = darwin14.1.0
+host_os = darwin14.3.0
 host_vendor = apple
 htmldir = ${docdir}
 includedir = ${prefix}/include
