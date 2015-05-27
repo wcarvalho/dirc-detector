@@ -89,6 +89,9 @@ void FitGaussianPlusConstant(TH1D &h, double xlow, double xhi, double centerboun
 
   for(int i=lbin;i<=hbin;++i)
   {
+    // FIXME don't multiply bin width if histogram isn't
+    // divided by bin width
+    // also need to fix the errors below
     data.push_back( h.GetBinContent(i) * h.GetBinWidth(i) );
     one_point[0] = h.GetBinLowEdge(i);
     one_point[1] = h.GetBinLowEdge(i) + h.GetBinWidth(i);

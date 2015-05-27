@@ -10,7 +10,8 @@ include_HEADERS  =  \
 	dircTH1D.h \
 	dircTFile.h \
 	dircComparisons.h \
-	calibration_data.h
+	calibration_data.h \
+	dirc_io.h
 
 
 DircObjs_Dict.cpp: \

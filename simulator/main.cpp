@@ -169,11 +169,20 @@ int main(int argc, char** argv)
 		double totalphotons = photon_event.Photons.size();
 		for (int i = 0; i < photon_event.Photons.size(); i++)
 		{
-			Simulate_PhotonPath(*d, photon_event.Photons[i], seed, false);
-			if (photon_event.Photons[i].Flag == 1){
-				ParEvent->Particles.at(photon_event.Photons[i].WhichParticle).nPhotonsPassed -= 1;
+			auto& photon = photon_event.Photons.at(i);
+			Simulate_PhotonPath(*d, photon, seed, false);
+			if (photon.Flag == 1){
+				ParEvent->Particles.at(photon.WhichParticle).nPhotonsPassed -= 1;
 			}
+			bool flag = (photon.Flag == 1);
 			CheckForFlag(photon_event, i, "no");
+			if (flag) continue;
+			double t = photon.Time_Traveled*300*TMath::Cos(photon.Phi)*TMath::Sin(photon.Theta);
+			if (fabs(t) < 100){
+				cout << "Error with time!\n";
+				cout << "time = " << t << endl;
+				exit(1);
+			}
 		}
 		if (ai.print_photons_given) cout << "total photons: " << photon_event.Photons.size() << endl;
 		FillTree(sim_out, *ParEvent, photon_event, *event_output, "no", event_outputCopy, Append, quiet);

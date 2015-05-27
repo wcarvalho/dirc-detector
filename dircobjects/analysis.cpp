@@ -42,8 +42,38 @@ int TrackRecon::getIndexOf(std::string type){
 	}
 	return -1;
 }
+void TrackRecon::addFitsToHistogram(TH1D &h){
 
+	if (Params.empty()) return;
 
+	for (int i = 0; i < size(); ++i){
+		TF1* f1 = new TF1(getNameAt(i).c_str(), "[0]*exp( -(x-[1])*(x-[1])/(2.*[2]*[2]) ) + [3]");
+		for (unsigned int j = 0; j < 4; j++)
+				f1->SetParameter(j, Params.at(i).at(j));
+
+		const double& xlow = Params.at(i).at(4);
+		const double& xhi = Params.at(i).at(5);
+		f1->SetRange(xlow, xhi);
+		f1->SetLineColor(i+1);
+		h.GetListOfFunctions()->Add(f1);
+	}
+}
+void TrackRecon::addFitToHistogram(TH1D &h, std::string type){
+
+	if (Params.empty()) return;
+
+	int i = getIndexOf(type);
+	if (i < 0) return;
+	TF1* f1 = new TF1(getNameAt(i).c_str(), "[0]*exp( -(x-[1])*(x-[1])/(2.*[2]*[2]) ) + [3]");
+	for (unsigned int j = 0; j < 4; j++)
+			f1->SetParameter(j, Params.at(i).at(j));
+
+	const double& xlow = Params.at(i).at(4);
+	const double& xhi = Params.at(i).at(5);
+	f1->SetRange(xlow, xhi);
+	f1->SetLineColor(2);
+	h.GetListOfFunctions()->Add(f1);
+}
 void TrackRecons::AddTrackRecon(){
 	TrackRecon tr;
 	Recon.push_back(tr);
@@ -52,8 +82,6 @@ void TrackRecons::PushBackParams(){
 	vector<double> temp;
 	Recon.back().Params.push_back(temp);
 }
-
-
 void Analysis::AddTH1D(const char* name, const char* title, int nbinsx, double xlow, double xup, int which)
 {
 	TH1D h1(name, title, nbinsx, xlow, xup);

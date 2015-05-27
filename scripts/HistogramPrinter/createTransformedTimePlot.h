@@ -55,9 +55,9 @@ void DrawTransformedTimePlot(TMultiGraph*& mg, TLegend& L, vector<ParticleOut> c
 		createTimeGraph(graphs, L, ss.str(), photons, index, i, markerstyle, i+2, markersize);
 	}
 
-	createGraph(graphs, L, "shared index", photons, index, -1, markerstyle, 1, markersize);
+	createTimeGraph(graphs, L, "shared index", photons, index, -1, markerstyle, 1, markersize);
 
-	// createGraph(graphs, L, "not indexed", photons, index, -10, markerstyle, nparticles+2, markersize);
+	createTimeGraph(graphs, L, "not indexed", photons, index, -10, markerstyle, nparticles+2, markersize);
 
 	for (auto& graph: graphs){
 		mg->Add(graph);

@@ -8,6 +8,7 @@
 #include "passConditions.h"
 #include "reconstructor.h"
 #include "dirc_objects.h"
+#include "dirc_io.h"
 #include "createScatterPlot.h"
 #include "CombinationPrinter.h"
 #include <tclap/CmdLine.h>
@@ -116,25 +117,25 @@ int main(int argc, char const *argv[])
 	functions[3] = &inside_circle;
 	functions[4] = &xyplane;
 
-
-	TFile photon_Tfile(photon_file.c_str(), "read"); checkValid(photon_Tfile);
-	TTree* photon_tree = (TTree*)photon_Tfile.Get("sim_out");
+	TFile* photon_Tfile_p = 0;
+	TTree* photon_tree = 0;
 	GeneratorOut* photon_event = 0;
-	photon_tree->SetBranchAddress("simEvent", &photon_event);
+	Detector* d = 0;
+	readInGeneratorData(photon_Tfile_p, photon_file, photon_tree, photon_event, d);
 
 
-	TFile particle_Tfile(particle_file.c_str(), "read"); checkValid(particle_Tfile);
-	TTree* particle_tree = (TTree*)particle_Tfile.Get("cheat_info");
+	TFile* particle_Tfile_p = 0;
+	TTree* particle_tree = 0;
 	ParticleEvent *originals = 0;
 	PhotonEvent *cheat_photons = 0;
-	particle_tree->SetBranchAddress("Particle Event", &originals);
-	particle_tree->SetBranchAddress("Photon Event", &cheat_photons);
+	Detector* d2 = 0;
+	readInCheatData(particle_Tfile_p, particle_file, particle_tree, originals, cheat_photons, d2);
 
-	TFile reconstruction_Tfile(reconstruction_file.c_str(), "read"); checkValid(reconstruction_Tfile);
-	TTree* reconstruction_tree = (TTree*)reconstruction_Tfile.Get("identifications");
+
+	TFile* reconstruction_Tfile_p = 0;
+	TTree* reconstruction_tree = 0;
 	TrackRecons *reconstructions = 0;
-	reconstruction_tree->SetBranchAddress("guesses", &reconstructions);
-
+	readInReconstructionData(reconstruction_Tfile_p, reconstruction_file, reconstruction_tree, reconstructions);
 
 	auto &pars   = originals->Particles;
 	auto &cheat_phos = cheat_photons->Photons;
@@ -241,18 +242,22 @@ int main(int argc, char const *argv[])
 if (print) cout << "final incorrect count: = " << misIdentificationEvents_count << endl;
 if (print) cout << "final correct count:   = " << particleEvents_count << endl;
 cout << particleEvents.GetName() << endl;
-
 cout << misIdentificationEvents.GetName() << endl;
 
-photon_Tfile.cd();
-photon_Tfile.Close();
-particle_Tfile.cd();
-particle_Tfile.Close();
-reconstruction_Tfile.cd();
-reconstruction_Tfile.Close();
+
+photon_Tfile_p->cd();
+photon_Tfile_p->Close();
+
+particle_Tfile_p->cd();
+particle_Tfile_p->Close();
+
+reconstruction_Tfile_p->cd();
+reconstruction_Tfile_p->Close();
+
 particleEvents.cd();
 particleEvents.Write();
 particleEvents.Close();
+
 misIdentificationEvents.cd();
 misIdentificationEvents.Write();
 misIdentificationEvents.Close();

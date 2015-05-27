@@ -58,6 +58,19 @@ int main(int argc, char** argv)
 	if (ai.Smear_given) smear = ai.Smear_arg;
 	if (ai.graph_prefix_given) graphprefix = ai.graph_prefix_arg;
 
+	vector<int> band_cases;
+	if (ai.band_cases_given){
+		if (!quiet) cout << "cases used:\t";
+		for (unsigned i = 0; i < ai.band_cases_given; ++i){
+			auto& C = ai.band_cases_arg[i];
+			band_cases.push_back(C);
+			if (!quiet) cout << C << "\t";
+		}
+		if (!quiet) cout << endl;
+	}
+	else
+		band_cases = {1, 2};
+
 	unsigned band_search_case = ai.band_search_case_arg;
 	double band_search_width = ai.band_search_width_arg;
 
@@ -102,18 +115,19 @@ int main(int argc, char** argv)
   //              Beginning of Program;
   //--------------------------------------------------
 
-<<<<<<< HEAD
-	int focus_event = 0;
-  for (unsigned int ev = 0; ev < events->GetEntries(); ++ev)
-  {
-=======
-  for (unsigned int ev = 0; ev < events->GetEntries(); ++ev){
->>>>>>> e0fc344b779ba85e8a307ece60221c2ba94f5b5c
-		if (!quiet) cout << "Event " << ev << "\n";
-		events->GetEntry(ev);
 
+  for (unsigned ev = 0; ev < events->GetEntries(); ++ev){
+		events->GetEntry(ev);
+		static bool will_focus_event = ai.fe_given;
+		static int event_to_focus {0};
+		bool focus_event;
+		if (will_focus_event){
+			event_to_focus = ai.fe_arg;
+			focus_event = (ev == event_to_focus);
+		}
 		vector<ParticleOut> &pars = event_output->Particles;
     // remove all particles except for last particles determined by option 'l'
+		if (!quiet) cout << "Event " << ev << ", " << pars.size() << " particles\n";
     if (ai.last_given) removeFirstParticles(event_output, last, print);
 
     unsigned npars = pars.size();
@@ -123,35 +137,10 @@ int main(int argc, char** argv)
 
 		auto const& particle_types = pars.at(0).deftypes; // get particle types
 
-		auto createTH2D = [](string name, double xlow = -pi, double xhi = pi, double ylow = 0., double yhi = pi, int nbinsx = 2000, int nbinsy = 1000){
-
-			TH2D h(name.c_str(), name.c_str(), nbinsx, xlow, xhi, nbinsy, ylow, yhi);
-			h.SetDefaultSumw2();
-			h.SetStats(0);
-			h.GetXaxis()->SetTitle("#theta (radians)");
-			h.GetYaxis()->SetTitle("#phi (radians)");
-			return std::move(h);
-		};
-
 		TCanvas C("C", "C", 800, 600);
-		auto SaveHist = [&C](TH2D& h, string filename){
-			static stringstream ss;
-			ss.str(""); ss << "nims/" << filename << ".root";
-			h.SaveAs(ss.str().c_str());
-			h.Draw();
-			ss.str(""); ss << "nims/" << filename << ".eps";
-			C.Print(ss.str().c_str());
-			C.Clear();
-		};
-		if (ev == focus_event){
-			TH2D h_original_photons = createTH2D("pre photon reconstruction");
-			for (auto& photon: event_output->Photons)
-				h_original_photons.Fill(photon.Phi, photon.Theta);
-			SaveHist(h_original_photons, "photon_pre_reconstruction");
-		}
-
 
 		auto reconstructed_photons = reconstruct_photons(event_output->Photons); // find all reflections photons might have udnergone
+
 		unsigned nphotons = reconstructed_photons.size();
 		if ( reconstructed_photons.empty() ){ tree->Fill(); continue; }
 
@@ -174,29 +163,40 @@ int main(int argc, char** argv)
 		getExpectedPhotonMap(pars, expectedPhotonMap, ExpectedNumberofPhotons);
 
 	  /////////// rotate photons and index them for every particle
+		static bool will_focus_particle = ai.fp_given;
+		static int particle_to_focus {0};
+		static bool focus_particle;
+		if (will_focus_particle){
+			particle_to_focus = ai.fp_arg;
+			if (print) cout << "particle_to_focus = " << particle_to_focus << endl;
+		}
 		for (unsigned i = 0; i < npars; ++i){
+			focus_particle = (i == particle_to_focus);
 			auto& photons_in_frame = photons_in_different_frames.at(i);
 			auto& particle = pars.at(i);
 			auto& histogram_photons_in_frame = Tracks.Recon.at(i).Hist2D;
 
 			photons_in_frame = std::move(rotate_photons_into_particle_frame(particle.Theta, particle.Phi, reconstructed_photons));
+
 			histogram_photons_in_frame = histogram_photon_angles(ev, i, photons_in_frame);
 
-			index_photons(particle, i, photons_in_frame, index, histogram_photons_in_frame, smear, band_search_case, band_search_width, photons_per_particle, expectedPhotonMap[i], print);
+			index_photons(particle, i, photons_in_frame, index, histogram_photons_in_frame, smear, band_cases, band_search_case, band_search_width, photons_per_particle, expectedPhotonMap[i], print);
 		}
 
 		////////// Create 1D Histograms and Fit them
 		for (unsigned i = 0; i < npars; ++i){
+			focus_particle = (i == particle_to_focus);
 			auto& photons_in_frame = photons_in_different_frames.at(i);
 			auto& particle = pars.at(i);
 			auto& current_recon = Tracks.Recon.at(i);
+			auto& Hist2D = current_recon.Hist2D;
 
-			TH1D* reduced_histogram_theta_projection = ReducedHistogram(photons_in_frame, current_recon.Hist2D, index, i);
+			TH1D* reduced_histogram_theta_projection = ReducedHistogram(photons_in_frame, Hist2D, index, i);
+
 			if (print) cout << "\t\tFitting particle " << i << " with " << photons_per_particle[i] << " expected photons\n";
 
 			if (photons_per_particle[i] != 0 )
 				CalculateParticleFits(*reduced_histogram_theta_projection, particle, current_recon, expectedPhotonMap[i], i, smear, print);
-
 			delete reduced_histogram_theta_projection;
 		}
 

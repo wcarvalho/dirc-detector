@@ -378,7 +378,8 @@ include_HEADERS = \
 	dircTH1D.h \
 	dircTFile.h \
 	dircComparisons.h \
-	calibration_data.h
+	calibration_data.h \
+	dirc_io.h
 
 libDircObjs_la_SOURCES = \
 	analysis.cpp \

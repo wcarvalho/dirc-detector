@@ -56,7 +56,7 @@ void Simulate_ParticlePath(Detector const& d, Particle &particle, int parnum, Ph
 		static double photon_time;
 		theta = particle.ConeAngle;
 		phi = r.Uniform(2*TMath::Pi());
-		photon_time = simPar.getTime();
+		photon_time = 0.;//simPar.GetTimeTraveled();
 		P.SetAngle(theta, phi);
 		P.X = simPar.coord[0];
 		P.Y = simPar.coord[1];

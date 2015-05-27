@@ -21,10 +21,17 @@ option "expected-photons-case" e "\n\tcase 1: look-up table. \n\tcase 2: riemann
 
 option "LookUpTable" L "file for look-up table" string default="LookUpTable" argoptional optional dependon="expected-photons-case"
 
-option "band-search-case" b "\n\tcase 1: Search 1D theta projection for gaussian peak. \n\tcase 2: apply hough transform to 2D theta vs. phi histogram" argoptional int optional default="1"
+
+option "band-cases" b "\ncase 1: Use Theta Band. \ncase 2: Use Time Band" argoptional int optional multiple default="1"
+
+option "band-search-case" B "\n\tcase 1: Search 1D theta projection for gaussian peak. \n\tcase 2: apply hough transform to 2D theta vs. phi histogram" argoptional int optional default="1"
 
 option "band-search-width" w "width to use in theta band for each particle" double optional argoptional default=".03"
 
 option "momentum-indexing-threshold" - "momentum threshold to determine whether an attemp will be made to index photons to a particular particle" double optional default=".5"
 
 option "event-range" r "Event Range" double optional
+
+option "fe" - "Debugging tool: focus event. This links to a boolean which checks if the current event in the analysis is the \"focus event\"" int optional
+
+option "fp" - "Debugging tool: focus particle. This links to a boolean which checks if the current particle in the analysis is the \"focus particle\"" int optional

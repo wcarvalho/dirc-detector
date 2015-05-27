@@ -38,7 +38,7 @@ TH1D rebinHistogram(TH1D& h, double minimum){
 
 	// h_rebinned->SaveAs("post_rebinning.root");
 
-	return *h_rebinned;
+	return std::move(*h_rebinned);
 	// static vector<double> binvalues; binvalues.clear();
 	// static
 	// 	binvalues.push_back(h.GetBinContent());

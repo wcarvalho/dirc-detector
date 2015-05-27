@@ -10,13 +10,10 @@ void getCurrentPhotonSet(unsigned const& i, int const& nphotons, vector<int>& ph
 	photonset.at(2) = 3*i + nphotons + 1;
 	photonset.at(3) = 3*i + nphotons + 2;
 }
-
-
 bool inBand(double const& min, double const& max, double const& val){
 	if ((val < max) && (val > min)) return true;
 	else return false;
 }
-
 bool isPhotonInThetaBand(vector<PhotonOut> const& photons, vector<int> const& photonset, double const& theta_center_min, double const& theta_center_max, bool print){
 	static bool inside_band;
 	inside_band = false;
@@ -30,7 +27,6 @@ bool isPhotonInThetaBand(vector<PhotonOut> const& photons, vector<int> const& ph
 	}
 	return inside_band;
 }
-
 bool isPhotonInTimeBand(vector<PhotonOut> const& photons, vector<int> const& photonset, double const& time_min, double const& time_max, bool print){
 
 	static bool inside_band;
@@ -46,8 +42,6 @@ bool isPhotonInTimeBand(vector<PhotonOut> const& photons, vector<int> const& pho
 		return false;
 
 }
-
-
 void indexSet(vector<int>& index, vector<int> const& photonset, unordered_map <int, int>& photons_per_particle, int const& particle_index, bool print){
 
 	for (auto& i: photonset){
@@ -66,7 +60,6 @@ void indexSet(vector<int>& index, vector<int> const& photonset, unordered_map <i
 	}
 
 }
-
 void diagnostic_print(vector<int> const& index, int const& particle_index, vector<PhotonOut> const& photons, vector<int> const& photonset, double const& theta_center_min, double const& theta_center_max, double const& time_min, double const& time_max){
 
 	for (auto& i: photonset){
@@ -83,7 +76,15 @@ void diagnostic_print(vector<int> const& index, int const& particle_index, vecto
 	}
 }
 
-void index_photons(ParticleOut & particle, int const& particle_index, vector<PhotonOut> const& photons, vector<int>& index, TH2D& h, double const& smear, unsigned const& band_search_case, double const& band_search_width, unordered_map <int, int>& photons_per_particle, vec_pair const&expected_photons, bool const& print){
+
+
+
+
+
+
+typedef std::unordered_map<int, bool(*)(vector<PhotonOut> const&, vector<int> const&, double const&, double const&, bool)> band_case_map;
+
+void index_photons(ParticleOut & particle, int const& particle_index, vector<PhotonOut> const& photons, vector<int>& index, TH2D& h, double const& smear, vector<int> const& cases, unsigned const& band_search_case, double const& band_search_width, unordered_map <int, int>& photons_per_particle, vec_pair const&expected_photons, bool const& print){
 
 	void (*findThetaBand)(ParticleOut &, TH2D const&, double const&, double const&, double&, double&, vec_pair const&, bool const&);
 	switch(band_search_case){
@@ -98,17 +99,32 @@ void index_photons(ParticleOut & particle, int const& particle_index, vector<Pho
 	static double max_photon_time = 0.;
 	findTimeBand(min_photon_time, max_photon_time, particle);
 
+	static band_case_map case_map;
+	case_map[1] = &isPhotonInThetaBand;
+	case_map[2] = &isPhotonInTimeBand;
+
 	int nphotons = photons.size()/4;
 	vector<int> photonset{0, 0, 0, 0};
 	for (unsigned i = 0; i < nphotons; ++i){
 
 		getCurrentPhotonSet(i, nphotons, photonset);
 
-		bool inThetaBand = isPhotonInThetaBand(photons, photonset, theta_center_min, theta_center_max, print);
+		bool passedBandTest = true;
+		for (auto&c : cases){
+			static double max, min;
+			switch(c){
+				case 1: min = theta_center_min; max = theta_center_max; break;
+				case 2: min = min_photon_time; max = max_photon_time; break;
+			}
+			passedBandTest *= case_map[c](photons, photonset, min, max, print);
+		}
 
-		bool inTimeBand = isPhotonInTimeBand(photons, photonset, min_photon_time, max_photon_time, print);
+		// bool inThetaBand = isPhotonInThetaBand(photons, photonset, theta_center_min, theta_center_max, print);
+
+		// bool inTimeBand = isPhotonInTimeBand(photons, photonset, min_photon_time, max_photon_time, print);
+
 		// inTimeBand  = true;
-		if ( inThetaBand && inTimeBand ){
+		if ( passedBandTest ){
 			indexSet(index, photonset, photons_per_particle, particle_index, print);
 		}
 		// diagnostic_print(index, particle_index, photons, photonset, theta_center_min, theta_center_max, min_photon_time, max_photon_time);

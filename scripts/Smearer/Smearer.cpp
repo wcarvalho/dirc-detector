@@ -20,6 +20,7 @@ string cheatin;
 string photonsout;
 string cheatout;
 
+int seed;
 double smear;
 
 bool submittedCheatFile;
@@ -35,6 +36,7 @@ try{
 	TCLAP::ValueArg<std::string> cheatoutFileArg("C","cheat-out-file","file with cheat data from simulation",false,"cheat.root","string", cmd);
 
 	TCLAP::ValueArg<double> smearArg("s","smear","the value with each the angle will be smeared",false,0.01,"string", cmd);
+	TCLAP::ValueArg<double> seedArg("S","seed","seed value for random number generator",false,0,"int", cmd);
 
 	TCLAP::SwitchArg verboseArg("v","verbose","", cmd, false);
 
@@ -48,12 +50,14 @@ try{
 		cheatout = cheatoutFileArg.getValue();
 	}
 	smear = smearArg.getValue();
+	seed = seedArg.getValue();
 	print = verboseArg.getValue();
 }
 catch( TCLAP::ArgException& e )
 { cout << "ERROR: " << e.error() << " " << e.argId() << endl; }
 
 	TRandom3 r;
+	r.SetSeed(seed);
 	GeneratorOut *event_output = 0;
 	PhotonEvent *photon_event = 0;
 	// need Detector to preserve structure of cheat and sim. both carry the detector information

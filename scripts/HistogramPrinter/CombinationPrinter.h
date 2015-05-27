@@ -13,12 +13,7 @@ bool withinrange(vector<T>& range, T value){
 	else return true;
 }
 
-void checkValid(const TFile& f){
-	if (!(f.IsOpen())) {
-		cout << f.GetName() << " invalid!\n";
-		exit(1);
-	}
-}
+
 std::string findBestFit(TrackRecon const& R, double const& threshold){
 
 	static double min_nSigma {0.}; min_nSigma = 1e1000;

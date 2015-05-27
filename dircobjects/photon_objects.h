@@ -20,7 +20,7 @@ public:
     os << p.Theta << ", " << p.Phi;
     return os;
   }
-  void SetVelocity(double const v) const { velocity = v; }
+  void SetVelocity(double const v) { velocity = v; }
 
   double Theta;
   double Phi;

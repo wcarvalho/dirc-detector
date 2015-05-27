@@ -22,7 +22,9 @@ public:
 
 	void clear();
 	void printLatest();
-	void LinkHistogram(TH1D &h){ h = Final1D; }
+	void LinkHistogram(TH1D* h){ h = &Final1D; }
+	void addFitsToHistogram(TH1D &h);
+	void addFitToHistogram(TH1D &h, std::string type);
 	int size() const { return Options.size(); }
 	int size(){ return Options.size(); }
 	int NReconstructions(){ return Options.size(); } // deprecated
@@ -68,6 +70,7 @@ public:
 
 	void AddTrackRecon();
 	void PushBackParams();
+	void CreateIndexedPlot(TCanvas &C);
 	// void SetIndex(std::vector< int > i){ index = std::move(index) ; }
 	// void SetPhotonPlot(int const i, TCanvas C){
 	// 	ColoredPhotons.at(i) = *C.Clone();
