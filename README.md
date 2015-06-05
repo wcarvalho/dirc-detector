@@ -3,7 +3,13 @@
 #Modeling a DIRC for high-multiplicity collisions
 
 This library was made for a project *modeling a Detection of Internally Reflected Cherenkov light ([DIRC](http://en.wikipedia.org/wiki/Detection_of_internally_reflected_Cherenkov_light)) particle detector* at Stony Brook University. I collaborated with professor Axel Drees and research professor [Alan Dion](https://github.com/alandion).
-It has 4 main sub-libraries **Dirc-Objects**, **Particle-Generator**, **Photon-Generator**, and **Particle-Reconstructor**, and numerous **scripts** to streamline common tasks in this project.
+This library has 4 main sub-libraries **Dirc-Objects**, **Particle-Generator**, **Photon-Generator**, and **Particle-Reconstructor**, and numerous **scripts** to streamline common tasks in this project.
+
+---
+
+**Click [HERE](https://github.com/wcarvalho/dirc-detector#Installation Instructions) to skip to installation instruction**
+
+---
 
 ### [Dirc-Objects]
 #####Collection of ROOT classes to store relevant data
@@ -25,28 +31,28 @@ It has 4 main sub-libraries **Dirc-Objects**, **Particle-Generator**, **Photon-G
 ######Contains:
 - a class that simulates the trajectory of a particle within a rectangular prism 
 - a class which rotates vectors
-- an executable that simulates the trajectory of particles in the modeled DIRC and produces the Cherenkov light data that would be read from the DIRC surface
+- an executable that simulates the trajectory of particles in the modeled DIRC and produces the Cherenkov light data that would be read from the DIRC photon detector
 - etc.
 
 ### [Particle-Reconstructor]
-#####Used to reconstruct the original particles
+#####Used to reconstruct original particles from photon data
 ######Contains:
-- a function that fits $$$f(\theta) = a \cdot exp\left(\frac{(\theta - b)^2}{c^2})\right+d$$$ to a ROOT histogram
 - a function that calculates the number of photons expected to be detected by the DIRC for a particular particle
+- a function that indexes photons by the particle they were most likely emitted from
 - an executable that determines the likelihood that each particle is a certain particle type
 - etc.
 
 ### [Scripts]
 ######examples of script functions include:
 - embedding a particle into a particle set
-- smearing the angles of the photons
-- etc.
-
+- smearing the angles of a set of photons
 
 ---
+##Installation Instructions
 There are 3 pre-requisite libraries: 
 
-1. [ROOT](https://root.cern.ch/drupal/)
+1. [ROOT](https://root.cern.ch/drupal/) (version 5.34)
+2. [pkg-config](http://www.freedesktop.org/wiki/Software/pkg-config/) (I recommend this for general library installation)
 2. [libseamstress](https://code.google.com/p/libseamstress/)
 3. [fitnewton](https://code.google.com/p/fitnewton/)
 
@@ -56,7 +62,7 @@ You may contact with me any concerns with this library via: wcarvalho92@gmail.co
 
 
 [Dirc-Objects]:https://github.com/wcarvalho/dirc-detector/tree/master/dircobjects
-[Particle-Generator]:https://github.com/wcarvalho/dirc-detector#particle-generator
-[Photon-Generator]:https://github.com/wcarvalho/dirc-detector/tree/master/generator
-[Particle-Reconstructor]:https://github.com/wcarvalho/dirc-detector/tree/master/simulator
+[Particle-Generator]:https://github.com/wcarvalho/dirc-detector/tree/master/generator
+[Photon-Generator]:https://github.com/wcarvalho/dirc-detector/tree/master/simulator
+[Particle-Reconstructor]:https://github.com/wcarvalho/dirc-detector/tree/master/reconstructor
 [scripts]:https://github.com/wcarvalho/dirc-detector/tree/master/scripts
