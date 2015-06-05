@@ -19,7 +19,7 @@ It has 4 main sub-libraries **Dirc-Objects**, **Particle-Generator**, **Photon-G
 - an executable which produces *N* events with up to *n* particles that would intersect with the modeled DIRC.
 - etc.
 <figure>
-	<img src="https://github.com/wcarvalho/dirc-detector/blob/master/img/beams.jpg?raw=true" alt="beams" style="width: 500px;"/>
+	<img src="https://github.com/wcarvalho/dirc-detector/blob/master/img/beams.jpg?raw=true" alt="beams" style="width: 400px;"/>
   <figcaption> </figcaption>
 </figure>
 
@@ -31,7 +31,7 @@ It has 4 main sub-libraries **Dirc-Objects**, **Particle-Generator**, **Photon-G
 - a class which rotates vectors
 - etc.
 <figure>
-	<img src="https://github.com/wcarvalho/dirc-detector/blob/master/img/dirc.jpg?raw=true" alt="dirc" style="width: 500px;"/>
+	<img src="https://github.com/wcarvalho/dirc-detector/blob/master/img/dirc.jpg?raw=true" alt="dirc" style="width: 400px;"/>
   <figcaption> </figcaption>
 </figure>
 
