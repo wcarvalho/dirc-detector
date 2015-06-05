@@ -11,24 +11,37 @@ It has 4 main sub-libraries **Dirc-Objects**, **Particle-Generator**, **Photon-G
 - photon data
 - particle reconstruction data
 - etc.
-<i class="icon-cog"></i>
+
 ### [Particle-Generator]
 #####Used to generate particles
 ######Contains:
 - functions the generate particles
-- an executable which produces *N* events with up to *n* particles that would intersect with the modeled DIRC.
-- etc.
+- an executable that produces *N* events with up to *n* particles that would intersect with the modeled DIRC.
 
 ### [Photon-Generator]
 #####Used to generate Cherenkov light data from particles traversing through DIRC
 ######Contains:
 - a class that simulates the trajectory of a particle within a rectangular prism 
 - a class which rotates vectors
+- an executable that simulates the trajectory of particles in the modeled DIRC and produces the Cherenkov light data that would be read from the DIRC surface
 - etc.
 
 ### [Particle-Reconstructor]
+#####Used to reconstruct the original particles
+######Contains:
+- a function that fits $$$f(\theta) = a \cdot exp(\frac{(\theta - b)^2}{c^2})+d$$$ to a ROOT histogram
+- a function that calculates the number of photons expected to be detected by the DIRC for a particular particle
+- an executable that determines the likelihood that each particle is a certain particle type
+- etc.
 
 ### [Scripts]
+######examples of script functions include:
+- embedding a particle into a particle set
+- smearing the $$$\theta$$$ and $$$\phi$$$ values of the photons
+- etc.
+
+
+---
 There are 3 pre-requisite libraries: 
 
 1. [ROOT](https://root.cern.ch/drupal/)
