@@ -77,11 +77,14 @@ bool inside_box_xyplane(const Particle& P, const TrackRecon& R, const int& rec_i
 typedef std::unordered_map<int, bool(*)(const Particle&, const TrackRecon&, const int&, const double&)> flag_fun_map;
 
 bool passed_conditions(const Particle& P, const TrackRecon& R, const int& rec_i, const double& threshold,
-	flag_fun_map& func_map, vector<int> const& conditions){
+	flag_fun_map& func_map, vector<int> const& conditions, bool print = false){
 	static bool passed;
+	static bool conditional_pass;
 	passed = true;
 	for(auto i: conditions){
-		passed *= func_map[i](P, R, rec_i, threshold);
+		conditional_pass = func_map[i](P, R, rec_i, threshold);
+		if (print) cout << "condition: " << i << ", pass: " << conditional_pass << endl;
+		passed *= conditional_pass;
 	}
 	return passed;
 }

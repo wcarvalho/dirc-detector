@@ -22,6 +22,6 @@ bool within_sigma_threshold(const Particle& P, const TrackRecon& R, const int& r
 	return ( inbox );
 }
 
-bool passConditions(const vector<int>& flags, flag_fun_map& fmap, const Particle& P, const TrackRecon& R, const int& rec_i, const double& threshold){
-	return passed_conditions(P, R, rec_i, threshold, fmap, flags);
+bool passConditions(const vector<int>& flags, flag_fun_map& fmap, const Particle& P, const TrackRecon& R, const int& rec_i, const double& threshold, bool print = false){
+	return passed_conditions(P, R, rec_i, threshold, fmap, flags, print);
 }

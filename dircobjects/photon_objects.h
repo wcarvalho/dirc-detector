@@ -16,11 +16,11 @@ public:
   ~PhotonOut(){}
 
   virtual void SetAngle(double const t, double const p){ Theta = t; Phi = p; }
-  friend std::ostream& operator<<(std::ostream& os, const PhotonOut& p){
+  friend std::ostream& operator<<(std::ostream& os, PhotonOut& p){
     os << p.Theta << ", " << p.Phi;
     return os;
   }
-  void SetVelocity(double const v) const { velocity = v; }
+  void SetVelocity(double const v) { velocity = v; }
 
   double Theta;
   double Phi;

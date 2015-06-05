@@ -10,9 +10,12 @@ using namespace std;
 /*================================================================================================
 Simulate the trajectories for a single Photon of a single Event
 ================================================================================================*/
-
+bool checkFinalAngle(double const& theta_out, double const& phi_out, double const& theta_in, double const& phi_in);
+bool withinDiff(double const& v1, double const& v2, double diff);
 void Simulate_PhotonPath(Detector& d, Photon &photon, double smear, bool print)
 {
+	static double original_theta; original_theta = photon.Theta;
+	static double original_phi; original_phi = photon.Phi;
 	print = false; // TEMPORARY
 	if (print){ TabToLevel(2); cout << "Simulate_PhotonPath:\n"; }
 	static Simulate simPho(0, 0);
@@ -29,13 +32,20 @@ void Simulate_PhotonPath(Detector& d, Photon &photon, double smear, bool print)
 	{
 		simPho.GotoWall(print);
 		double &x_p = simPho.coord[0];
-		if((x_p == 0 ) || (x_p == d.Length))
+		if( withinDiff(x_p, 0., .01) || withinDiff(x_p, d.Length, .01) )
 		{
 			photon.SetAngle(simPho.Theta, simPho.Phi);
 			photon.X = simPho.coord[0];
 			photon.Y = simPho.coord[1];
 			photon.Z = simPho.coord[2];
 			photon.Time_Traveled += simPho.GetTimeTraveled();
+			static bool angle_passed;
+			angle_passed = checkFinalAngle(photon.Theta, photon.Phi, original_theta, original_phi);
+			if (!angle_passed){
+				cout << "\noriginal: " << original_theta << ", " << original_phi << endl;
+				cout << "current: " << photon << '\n';
+				exit(1);
+			}
 			return;
 		}
 
@@ -43,6 +53,7 @@ void Simulate_PhotonPath(Detector& d, Photon &photon, double smear, bool print)
 		double ph = simPho.Phi;
 		Photon pho_temp(th, ph);
 		pho_temp.Wall = simPho.wall;
+		// cout << pho_temp.Wall << ": " << pho_temp << endl;
 		CheckAngel(d, pho_temp, "no");
 		photon.Flag = pho_temp.Flag;
 		if (photon.Flag == 1){
@@ -57,4 +68,29 @@ void Simulate_PhotonPath(Detector& d, Photon &photon, double smear, bool print)
 		// 	return;
 		// }
 	}
+}
+
+bool checkFinalAngle(double const& theta_out, double const& phi_out, double const& theta_in, double const& phi_in){
+
+	static double theta_reflect;
+	static double phi_reflect;
+
+	theta_reflect = TMath::Pi() - theta_in;
+	phi_reflect = -phi_in;
+
+	bool theta_pass = ( withinDiff(theta_out, theta_in, .01) || withinDiff(theta_out, theta_reflect, .01) );
+	bool phi_pass = (withinDiff(phi_out, phi_in, .01) || withinDiff(phi_out, phi_reflect, .01));
+
+	if (theta_pass && phi_pass)
+		return true;
+	else return false;
+
+}
+
+bool withinDiff(double const& v1, double const& v2, double diff){
+
+	static double v1_v2;
+	v1_v2 = fabs(v1-v2);
+	if (v1_v2 <= diff) return true;
+	else return false;
 }

@@ -24,7 +24,7 @@ void stringsIntoVector(string file, vector<string> &v);
 void checkValid(const TFile& f);
 string getGraphName(string& file);
 void getGraph(string& file, TGraphAsymmErrors*& Plot);
-void extractGraphData(TGraphAsymmErrors matches, TGraphAsymmErrors fakes,data_t& data);
+void extractGraphData(TGraphAsymmErrors matches, TGraphAsymmErrors fakes,data_t& data, double& highestx, double& highesty);
 void MakeGraph(const double& pt, const xy_t& xy, int graphnumber, TGraph*& g);
 
 int main(int argc, char const *argv[])
@@ -61,25 +61,28 @@ catch( TCLAP::ArgException& e )
 	TGraphAsymmErrors* matchPlot;
 	TGraphAsymmErrors* fakePlot;
 
+	double highestx {0.};
+	double highesty {0.};
+
 	for (unsigned i = 0; i < matches.size(); ++i){
 		getGraph(matches.at(i), matchPlot);
 		getGraph(fakes.at(i), fakePlot);
-		extractGraphData(*matchPlot, *fakePlot, data);
+		extractGraphData(*matchPlot, *fakePlot, data, highestx, highesty);
 	}
 
 	ordered_data_t ordered_data(data.begin(), data.end());
 	TCanvas C("C", "C", 1000, 600);
 	C.SetGrid();
-	TLegend L(0.1,0.5,0.2,0.9, "pt");
+	TLegend L(0.1,0.5,0.2,0.9, "momentum");
 	L.SetTextSize(.025);
 	vector < TGraph* > graphs;
 	int count = 0;
 	TGraph g;
 	g.SetPoint(0, 0, 0);
-	g.SetPoint(1, 1, .8);
-	g.SetTitle("Fake Rate vs. Efficiency");
-	g.GetXaxis()->SetTitle("Efficiency (electrons identified as electrons)");
-	g.GetYaxis()->SetTitle("Fake Rate (pions identified as electrons)");
+	g.SetPoint(1, highestx, highesty);
+	g.SetTitle("False-Positive Rate vs. Efficiency");
+	g.GetXaxis()->SetTitle("Efficiency (% of electrons identified as electrons)");
+	g.GetYaxis()->SetTitle("False-Positive Rate (% of pions identified as electrons)");
 	g.Draw("AP");
 	TGraph *G = 0;
 	for (auto i = ordered_data.begin(); i != ordered_data.end(); ++i){
@@ -130,7 +133,7 @@ void getGraph(string& file, TGraphAsymmErrors*& Plot){
 	TKey *key = (TKey*)nextkey();
 	Plot = (TGraphAsymmErrors*)key->ReadObj();
 }
-void extractGraphData(TGraphAsymmErrors matches, TGraphAsymmErrors fakes,data_t& data){
+void extractGraphData(TGraphAsymmErrors matches, TGraphAsymmErrors fakes,data_t& data, double& highestx, double& highesty){
 
 	int npoints = matches.GetN();
 	if (matches.GetN() != fakes.GetN()){
@@ -147,6 +150,11 @@ void extractGraphData(TGraphAsymmErrors matches, TGraphAsymmErrors fakes,data_t&
 		fakes.GetPoint(i, fakex, fakey);
 		double &pt = effx;
 
+		effy *=100.;
+		fakey *=100.;
+		if (highestx < effy) highestx = effy;
+		if (highesty < fakey) highesty = fakey;
+
 		pair<double,double> FE(effy,fakey);
 		data[pt].push_back(FE);
 		// cout << pt << ": x = " << effy << ", y = " << fakey << endl;
@@ -156,7 +164,7 @@ void extractGraphData(TGraphAsymmErrors matches, TGraphAsymmErrors fakes,data_t&
 void MakeGraph(const double& pt, const xy_t& xy, int graphnumber, TGraph*& g){
 
 	stringstream ss; ss.str("");
-	ss << "pt=" << pt;
+	ss << "momentum=" << pt;
 	g->SetName(ss.str().c_str());
 
 	for (unsigned i = 0; i < xy.size(); ++i){

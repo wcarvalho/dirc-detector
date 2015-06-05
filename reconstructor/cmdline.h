@@ -76,6 +76,21 @@ struct gengetopt_args_info
   char * LookUpTable_arg;	/**< @brief file for look-up table (default='LookUpTable').  */
   char * LookUpTable_orig;	/**< @brief file for look-up table original value given at command line.  */
   const char *LookUpTable_help; /**< @brief file for look-up table help description.  */
+  int* band_cases_arg;	/**< @brief 
+  case 1: Use Theta Band. 
+  case 2: Use Time Band (default='1').  */
+  char ** band_cases_orig;	/**< @brief 
+  case 1: Use Theta Band. 
+  case 2: Use Time Band original value given at command line.  */
+  unsigned int band_cases_min; /**< @brief 
+  case 1: Use Theta Band. 
+  case 2: Use Time Band's minimum occurreces */
+  unsigned int band_cases_max; /**< @brief 
+  case 1: Use Theta Band. 
+  case 2: Use Time Band's maximum occurreces */
+  const char *band_cases_help; /**< @brief 
+  case 1: Use Theta Band. 
+  case 2: Use Time Band help description.  */
   int band_search_case_arg;	/**< @brief 
   \tcase 1: Search 1D theta projection for gaussian peak. 
   \tcase 2: apply hough transform to 2D theta vs. phi histogram (default='1').  */
@@ -94,6 +109,12 @@ struct gengetopt_args_info
   double event_range_arg;	/**< @brief Event Range.  */
   char * event_range_orig;	/**< @brief Event Range original value given at command line.  */
   const char *event_range_help; /**< @brief Event Range help description.  */
+  int fe_arg;	/**< @brief Debugging tool: focus event. This links to a boolean which checks if the current event in the analysis is the \"focus event\".  */
+  char * fe_orig;	/**< @brief Debugging tool: focus event. This links to a boolean which checks if the current event in the analysis is the \"focus event\" original value given at command line.  */
+  const char *fe_help; /**< @brief Debugging tool: focus event. This links to a boolean which checks if the current event in the analysis is the \"focus event\" help description.  */
+  int fp_arg;	/**< @brief Debugging tool: focus particle. This links to a boolean which checks if the current particle in the analysis is the \"focus particle\".  */
+  char * fp_orig;	/**< @brief Debugging tool: focus particle. This links to a boolean which checks if the current particle in the analysis is the \"focus particle\" original value given at command line.  */
+  const char *fp_help; /**< @brief Debugging tool: focus particle. This links to a boolean which checks if the current particle in the analysis is the \"focus particle\" help description.  */
   
   unsigned int help_given ;	/**< @brief Whether help was given.  */
   unsigned int version_given ;	/**< @brief Whether version was given.  */
@@ -108,10 +129,13 @@ struct gengetopt_args_info
   unsigned int Smear_given ;	/**< @brief Whether Smear was given.  */
   unsigned int expected_photons_case_given ;	/**< @brief Whether expected-photons-case was given.  */
   unsigned int LookUpTable_given ;	/**< @brief Whether LookUpTable was given.  */
+  unsigned int band_cases_given ;	/**< @brief Whether band-cases was given.  */
   unsigned int band_search_case_given ;	/**< @brief Whether band-search-case was given.  */
   unsigned int band_search_width_given ;	/**< @brief Whether band-search-width was given.  */
   unsigned int momentum_indexing_threshold_given ;	/**< @brief Whether momentum-indexing-threshold was given.  */
   unsigned int event_range_given ;	/**< @brief Whether event-range was given.  */
+  unsigned int fe_given ;	/**< @brief Whether fe was given.  */
+  unsigned int fp_given ;	/**< @brief Whether fp was given.  */
 
 } ;
 

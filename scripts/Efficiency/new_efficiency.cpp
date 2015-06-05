@@ -173,7 +173,7 @@ catch( TCLAP::ArgException& e )
 
 	auto fillHistogram = [&threshold, &functions, &graph_choice, &multiplicity, &matchcondition_cases](TrackRecon& r, Particle& p, string& search, TH1D_map& numerator, TH1D_map& denominator, const double& momentum, bool print){
 
-		string bestfit = findBestFit(r, threshold);
+		string bestfit = r.getBestFit(threshold);
 		if (bestfit == "") return;
 		for (unsigned i = 0; i < r.Options.size(); ++i){
 			string name = r.Options.at(i);

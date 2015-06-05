@@ -186,7 +186,7 @@ catch( TCLAP::ArgException& e )
 				ParEvent->Particles.at(photon_i.WhichParticle - old_ParEvent->Particles.size()).nPhotonsPassed -= 1;
 			}
 			// if (counter == 149) cout << photon_i.Theta << ", " << photon_i.Phi << endl;
-			CheckForFlag(photon_event, i, "false");
+			CheckForFlag(photon_event, i, "no");
 			++counter;
 		}
 

@@ -20,13 +20,17 @@ double CalculateArea(TH1D & h, double const& xlow, double const& xhi, double con
 	return sum - area_below_gaussian;
 }
 
-
-
 // for one particle this function will calculate the histogram fit, the area under the fit, the expected number of photons for each mass. the area and expected number of photons are compared and a delta sigma is delta_Sigma is calculated
 void CalculateParticleFits(TH1D &histogram, ParticleOut &P, TrackRecon &T, vec_pair& expected_photons, const int particle_index, double smear, bool print){
 
 	auto massmap = P.MassMap();
 	auto anglemap = P.EmissionAngleMap();
+
+	TrackRecon &guess  = T;
+	// static TH1D rebinned_histogram;
+	// rebinned_histogram = rebinHistogram(histogram);
+	// guess.Final1D = rebinned_histogram
+	guess.Final1D = histogram;
 
 	for(auto i = anglemap.begin(); i != anglemap.end(); ++i){
 		static TCanvas c1("c1","c1",10,10,800,600);
@@ -50,19 +54,16 @@ void CalculateParticleFits(TH1D &histogram, ParticleOut &P, TrackRecon &T, vec_p
 		xhi = angle + .05;
 
 		// histogram.SaveAs("pre_rebinning.root");
-		static TH1D rebinned_histogram;
-		rebinned_histogram = rebinHistogram(histogram);
 
-		FitGaussianPlusConstant(rebinned_histogram, xlow, xhi, 0, pi, -1.10, 1.e10, center, width, constant, height, 8);
+		FitGaussianPlusConstant(guess.Final1D, xlow, xhi, 0, pi, -1.e10, 1.e10, center, width, constant, height, 8);
 
 		xlow = center - .03;
 		xhi = center + .03;
-		FitGaussianPlusConstant(rebinned_histogram, xlow, xhi, 0, pi, -1.10, 1.e10, center, width, constant, height, 8);
+		FitGaussianPlusConstant(guess.Final1D, xlow, xhi, 0, pi, -1.10, 1.e10, center, width, constant, height, 8);
 		xlow = center - .03;
 		xhi = center + .03;
-		// Area = sqrt(2*pi)/histogram.GetBinWidth(1)*height*width;
-		Area = CalculateArea(histogram, xlow, xhi, constant);
-		TrackRecon &guess  = T;
+		// Area = sqrt(2*pi)/guess.Final1D.GetBinWidth(1)*height*width;
+		Area = CalculateArea(guess.Final1D, xlow, xhi, constant);
 
 		vector<double> params = {height, center, width, constant, xlow, xhi};
 		T.Params.push_back(std::move(params));
@@ -73,7 +74,7 @@ void CalculateParticleFits(TH1D &histogram, ParticleOut &P, TrackRecon &T, vec_p
 		// if (print) cout << "X, Y, Theta, Phi, Beta = " << P.X << ", " << P.Y << ", " << P.Theta << ", " << P.Phi << ", " << Beta << endl;
 
 		double pi2 = TMath::Pi()/2;
-		double sigma_Theta = smear/(Sigma_N);
+		double sigma_Theta = smear/(sqrt(Area));
 		double delSigTheta = (angle - center)/(sigma_Theta);
 		double delSigA = (N-Area)/Sigma_N;
 		double delSigma = sqrt(delSigTheta*delSigTheta + delSigA*delSigA);
@@ -84,7 +85,7 @@ void CalculateParticleFits(TH1D &histogram, ParticleOut &P, TrackRecon &T, vec_p
 		guess.Sigmas.push_back(delSigma);
 		guess.Areas.push_back(Area);
 		guess.ExpectedNumber.push_back(N);
-		guess.Final1D = rebinned_histogram;
 		// if (print) guess.printLatest();
 	}
+
 }

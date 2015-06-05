@@ -35,12 +35,12 @@ void createGraph(vector<TGraph*>& graphs, TLegend& L, string legend_entry, vecto
 	// cout << "particle "<< particle_index <<": points = " << point << endl;
 }
 
-void DrawScatterPlot(TMultiGraph*& mg, TLegend& L, vector<ParticleOut> const& particles, vector<PhotonOut> const& photons, vector<int> const& index, int particle_index){
+void DrawScatterPlot(TMultiGraph*& mg, TLegend& L, vector<ParticleOut> const& particles, vector<PhotonOut> const& photons, vector<int> const& index, int particle_index, double markersize = 0.5)
+{
 
 	int nparticles = particles.size();
 	int	nphotons = photons.size();
-	double markersize = .5;
-	int markerstyle = 21;
+	int markerstyle = 8;
 
 	vector<TGraph*> graphs;
 	graphs.clear();
@@ -56,7 +56,7 @@ void DrawScatterPlot(TMultiGraph*& mg, TLegend& L, vector<ParticleOut> const& pa
 
 	createGraph(graphs, L, "shared index", photons, index, -1, markerstyle, 1, markersize);
 
-	// createGraph(graphs, L, "not indexed", photons, index, -10, markerstyle, nparticles+2, markersize);
+	createGraph(graphs, L, "not indexed", photons, index, -10, markerstyle, nparticles+2, markersize);
 
 	for (auto& graph: graphs){
 		mg->Add(graph);
