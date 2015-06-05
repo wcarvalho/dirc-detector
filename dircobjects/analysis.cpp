@@ -4,6 +4,7 @@
 #include "analysis_objects.h"
 #include <algorithm>
 #include "TMath.h"
+#include "TList.h"
 #include "TVirtualFitter.h"
 #include "iomanip"
 using namespace std;

@@ -213,18 +213,17 @@ int main(int argc, char const *argv[])
 
 			if (!withinrange(momentum_range, momentum)) continue;
 
-
-			int particle_search_index = getReconIndex(recon, particle_compare);
+			int particle_search_index = recon.getIndexOf(particle_compare);
 			if (particle_search_index == -1) continue;
-
-
-			bool passed_Identification = passConditions(matchcondition_cases, functions, par, recon, particle_search_index, -threshold);
+			cout << "Identification\n";
+			bool passed_Identification = passConditions(matchcondition_cases, functions, par, recon, particle_search_index, -threshold, print);
 			if (!added_Identification_Batch && passed_Identification && (par.name == particle_search) && (particleEvents_count < max_count)){
 				AddBatch(entry, i, particleEvents, par_outs, pars, photon_reconstruction.Photons, cheat_phos, index, recons, particle_compare, particleEvents_count, threshold, plotType, time_min, time_max);
 				added_Identification_Batch = true;
 			}
 
-			bool passed_misIdentification = passConditions(matchcondition_cases, functions, par, recon, particle_search_index, threshold);
+			cout << "misIdentification\n";
+			bool passed_misIdentification = passConditions(matchcondition_cases, functions, par, recon, particle_search_index, threshold, print);
 			if (!added_misIdentification_Batch && passed_misIdentification && (par.name == particle_search) && (misIdentificationEvents_count < max_count)){
 				AddBatch(entry, i, misIdentificationEvents, par_outs, pars, photon_reconstruction.Photons, cheat_phos, index, recons, particle_compare, misIdentificationEvents_count, threshold, plotType, time_min, time_max);
 				added_misIdentification_Batch = true;

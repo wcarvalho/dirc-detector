@@ -51,12 +51,10 @@ void indexSet(vector<int>& index, vector<int> const& photonset, unordered_map <i
 			--photons_per_particle[current_index];
 			current_index = -1;
 		}
-
 		else if (current_index < -1	){
 			current_index = particle_index;
 			++photons_per_particle[particle_index];
 		}
-
 	}
 
 }

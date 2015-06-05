@@ -193,7 +193,7 @@ int main(int argc, char** argv)
 
 			TH1D* reduced_histogram_theta_projection = ReducedHistogram(photons_in_frame, Hist2D, index, i);
 
-			if (print) cout << "\t\tFitting particle " << i << " with " << photons_per_particle[i] << " expected photons\n";
+			if (print) cout << "\t\tFitting particle " << i << " with " << photons_per_particle[i] << " photon angles (" << (int)photons_per_particle[i]/4 << ")\n";
 
 			if (photons_per_particle[i] != 0 )
 				CalculateParticleFits(*reduced_histogram_theta_projection, particle, current_recon, expectedPhotonMap[i], i, smear, print);

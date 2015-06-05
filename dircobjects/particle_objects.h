@@ -35,6 +35,10 @@ public:
 	virtual double CalculateMomentum(double m) const {
 		return CalculateMomentum(m);
 	}
+  friend std::ostream& operator<<(std::ostream& os, ParticleOut& p){
+    os << p.Theta << ", " << p.Phi;
+    return os;
+  }
 
 	double Theta;
 	double Phi;

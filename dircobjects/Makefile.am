@@ -8,10 +8,11 @@ include_HEADERS  =  \
 	analysis_objects.h \
 	event_parsers.h \
 	dircTH1D.h \
-	dircTFile.h \
-	dircComparisons.h \
-	calibration_data.h \
-	dirc_io.h
+	calibration_data.h
+
+# dircComparisons.h
+# dircTFile.h
+# dirc_io.h
 
 
 DircObjs_Dict.cpp: \
@@ -21,6 +22,7 @@ DircObjs_Dict.cpp: \
 	analysis_objects.h \
 	event_parsers.h \
 	calibration_data.h \
+	dircTH1D.h \
 	LinkDef.h
 		rootcint -f $@ -c $(DEFAULT_INCLUDES) $(INCLUDES) $^
 

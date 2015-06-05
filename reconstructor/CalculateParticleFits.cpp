@@ -74,7 +74,7 @@ void CalculateParticleFits(TH1D &histogram, ParticleOut &P, TrackRecon &T, vec_p
 		// if (print) cout << "X, Y, Theta, Phi, Beta = " << P.X << ", " << P.Y << ", " << P.Theta << ", " << P.Phi << ", " << Beta << endl;
 
 		double pi2 = TMath::Pi()/2;
-		double sigma_Theta = smear/(Sigma_N);
+		double sigma_Theta = smear/(sqrt(Area));
 		double delSigTheta = (angle - center)/(sigma_Theta);
 		double delSigA = (N-Area)/Sigma_N;
 		double delSigma = sqrt(delSigTheta*delSigTheta + delSigA*delSigA);
