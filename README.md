@@ -3,30 +3,29 @@
 #Modeling a DIRC for high-multiplicity collisions
 
 This library was made for a project *modeling a Detection of Internally Reflected Cherenkov light ([DIRC](http://en.wikipedia.org/wiki/Detection_of_internally_reflected_Cherenkov_light)) particle detector* at Stony Brook University. I collaborated with professor Axel Drees and research professor [Alan Dion](https://github.com/alandion).
-This library has 4 main sub-libraries **Dirc-Object**, **Particle-Generator**, **Photon-Generator**, and **Particle-Reconstructor**, and numerous **scripts** to streamline common tasks in this project.
+This library has 4 main sub-libraries **Dirc-Object**, **Particle-Generator**, **Photon-Generator**, and **Particle-Reconstructor**, and numerous **scripts** to streamline common tasks.
 
 ---
 
-**Click [HERE](https://github.com/wcarvalho/dirc-detector#installation-instructions) to skip to the installation instruction**
+**Click [HERE](https://github.com/wcarvalho/dirc-detector#installation-instructions) to skip to the installation instructions**
 
 ---
-
-### [Dirc-Objects]
+## Brief Description of Components
+### 1. [Dirc-Objects]
 #####Collection of ROOT classes to store data
 ######Examples of data stored include:
 - DIRC parameters
 - particle data
 - photon data
 - particle reconstruction data
-- etc.
 
-### [Particle-Generator]
+### 2. [Particle-Generator]
 #####Used to generate particles
 ######Contains:
 - functions the generate particles
 - an executable that produces *N* events with up to *n* particles that would intersect with the modeled DIRC.
 
-### [Photon-Generator]
+### 3. [Photon-Generator]
 #####Used to generate Cherenkov light data from particles traversing through DIRC
 ######Contains:
 - a class that simulates the trajectory of a particle within a rectangular prism 
@@ -34,7 +33,7 @@ This library has 4 main sub-libraries **Dirc-Object**, **Particle-Generator**, *
 - an executable that simulates the trajectory of particles in the modeled DIRC and produces the Cherenkov light data that would be read from the DIRC photon detector
 - etc.
 
-### [Particle-Reconstructor]
+### 4. [Particle-Reconstructor]
 #####Used to reconstruct original particles from photon data
 ######Contains:
 - a function that calculates the number of photons expected to be detected by the DIRC for a particular particle
@@ -42,7 +41,7 @@ This library has 4 main sub-libraries **Dirc-Object**, **Particle-Generator**, *
 - an executable that determines the likelihood that each particle is a certain particle type
 - etc.
 
-### [Scripts]
+### 5. [Scripts]
 ######examples of script functions include:
 - embedding a particle into a particle set
 - smearing the angles of a set of photons
@@ -56,7 +55,15 @@ There are numerous pre-requisite libraries:
 2. [libseamstress](https://code.google.com/p/libseamstress/)
 3. [fitnewton](https://code.google.com/p/fitnewton/)
 
-You may contact with me any concerns with this library via: wcarvalho92@gmail.com
+Instructions on how to install each component of this library is located within each component's README. Follow each of the following links for details on installation:
+
+1. [Dirc-Objects]
+2. [Particle-Generator]
+3. [Photon-Generator]
+4. [Particle-Reconstructor]
+5. [scripts]
+
+You may contact with me any concerns about this library via: wcarvalho92@gmail.com
 
 **Note:** Installation for this library has only been tested on Mac OSX 10.0+ and Linux Ubuntu 14.0+. It has `NOT` been tested for Windows. While this installation may work on other UNIX-based systems (and windows builds), this is not guarenteed and you continue with installation at your own risk.
 
