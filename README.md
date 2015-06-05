@@ -31,7 +31,7 @@ It has 4 main sub-libraries **Dirc-Objects**, **Particle-Generator**, **Photon-G
 ### [Particle-Reconstructor]
 #####Used to reconstruct the original particles
 ######Contains:
-- a function that fits $$$f(\theta) = a \cdot exp(\frac{(\theta - b)^2}{c^2})+d$$$ to a ROOT histogram
+- a function that fits $$$f(\theta) = a \cdot exp\left(\frac{(\theta - b)^2}{c^2})\right+d$$$ to a ROOT histogram
 - a function that calculates the number of photons expected to be detected by the DIRC for a particular particle
 - an executable that determines the likelihood that each particle is a certain particle type
 - etc.
@@ -39,7 +39,7 @@ It has 4 main sub-libraries **Dirc-Objects**, **Particle-Generator**, **Photon-G
 ### [Scripts]
 ######examples of script functions include:
 - embedding a particle into a particle set
-- smearing the $$$\theta$$$ and $$$\phi$$$ values of the photons
+- smearing the angles of the photons
 - etc.
 
 
