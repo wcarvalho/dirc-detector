@@ -2,8 +2,8 @@
 
 #Modeling a DIRC for high-multiplicity collisions
 
-This library was made for a project *modeling a Detection of Internally Reflected Cherenkov light ([DIRC](http://en.wikipedia.org/wiki/Detection_of_internally_reflected_Cherenkov_light)) particle detector* at Stony Brook University. I collaborated with professor Axel Drees and research professor [Alan Dion](https://github.com/alandion).
-This library has 4 main sub-libraries **Dirc-Object**, **Particle-Generator**, **Photon-Generator**, and **Particle-Reconstructor**, and numerous **scripts** to streamline common tasks.
+This C++11 library was made for a project *modeling a Detection of Internally Reflected Cherenkov light ([DIRC](http://en.wikipedia.org/wiki/Detection_of_internally_reflected_Cherenkov_light)) particle detector* at Stony Brook University. I collaborated with professor Axel Drees and research professor [Alan Dion](https://github.com/alandion).
+This library has 5 components: 4 sub-libraries **Dirc-Object**, **Particle-Generator**, **Photon-Generator**, and **Particle-Reconstructor**, and **scripts** to streamline common tasks.
 
 ---
 
@@ -42,7 +42,7 @@ This library has 4 main sub-libraries **Dirc-Object**, **Particle-Generator**, *
 - etc.
 
 ### 5. [Scripts]
-######examples of script functions include:
+######Examples of script functions include:
 - embedding a particle into a particle set
 - smearing the angles of a set of photons
 
@@ -52,20 +52,21 @@ There are numerous pre-requisite libraries:
 
 1. [ROOT](https://root.cern.ch/drupal/) (version 5.34)
 2. [pkg-config](http://www.freedesktop.org/wiki/Software/pkg-config/)
+2. [eigin](http://eigen.tuxfamily.org/index.php?title=Main_Page)
 2. [libseamstress](https://code.google.com/p/libseamstress/)
 3. [fitnewton](https://code.google.com/p/fitnewton/)
 
 Instructions on how to install each component of this library is located within each component's README. Follow each of the following links for details on installation:
 
-1. [Dirc-Objects]
-2. [Particle-Generator]
-3. [Photon-Generator]
-4. [Particle-Reconstructor]
-5. [scripts]
+1. [Dirc-Objects](https://github.com/wcarvalho/dirc-detector/tree/master/dircobjects#installation-instructions)
+2. [Particle-Generator](https://github.com/wcarvalho/dirc-detector/tree/master/generator#installation-instructions)
+3. [Photon-Generator](https://github.com/wcarvalho/dirc-detector/tree/master/simulator#installation-instructions)
+4. [Particle-Reconstructor](https://github.com/wcarvalho/dirc-detector/tree/master/reconstructor#installation-instructions)
+5. [Scripts](https://github.com/wcarvalho/dirc-detector/tree/master/scripts#installation-instructions)
 
 You may contact with me any concerns about this library via: wcarvalho92@gmail.com
 
-**Note:** Installation for this library has only been tested on Mac OSX 10.0+ and Linux Ubuntu 14.0+. It has `NOT` been tested for Windows. While this installation may work on other UNIX-based systems (and windows builds), this is not guarenteed and you continue with installation at your own risk.
+...**Note:** Installation for this library has only been tested on [Mac OSX 10.0+](https://www.apple.com/osx/) and [Linux Ubuntu 14.0+](http://www.ubuntu.com/download/desktop). It has `NOT` been tested for Windows. While this installation may work on other UNIX-based systems (and windows builds), this is not guarenteed and you continue with installation at your own risk.
 
 
 [Dirc-Objects]:https://github.com/wcarvalho/dirc-detector/tree/master/dircobjects
