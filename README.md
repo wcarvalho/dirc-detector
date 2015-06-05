@@ -4,20 +4,26 @@ This library was made for a project *modeling a Detection of Internally Reflecte
 It has 4 main sub-libraries **Dirc-Objects**, **Particle-Generator**, **Photon-Generator**, and **Particle-Reconstructor**, and numerous **scripts** to streamline common tasks in this project.
 
 ### [Dirc-Objects]
-#####Collection of ROOT classes to store relevant data. Examples of data stored include:
+#####Collection of ROOT classes to store relevant data
+######Examples of data stored include:
 - DIRC parameters
 - particle data
 - photon data
 - particle reconstruction data
 
 ### [Particle-Generator]
-#####Used to generate particles. Contains:
+#####Used to generate particles
+######Contains:
 - functions the generate particles
-- an executable which produces *N* events with up to *n* particles that would intersect with the modeled DIRC. For
+- an executable which produces *N* events with up to *n* particles that would intersect with the modeled DIRC.
+![beams](https://github.com/wcarvalho/dirc-detector/blob/master/img/beams.jpg?raw=true)
 
 ### [Photon-Generator]
-#####Used to generate a set of particles through modeled DIRC.
-It contains an executable 
+#####Used to generate Cherenkov light data from particles traversing through DIRC
+######Contains:
+- as
+- as
+![beams](https://github.com/wcarvalho/dirc-detector/blob/master/img/dirc.jpg?raw=true)
 ### [Particle-Reconstructor]
 
 ### [Scripts]
