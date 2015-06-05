@@ -65,7 +65,7 @@ Instructions on how to install each component of this library is located within 
 
 You may contact with me any concerns about this library via wcarvalho92@gmail.com
 
-**Note:** Installation for this library has only been tested on [Mac OSX 10.0+](https://www.apple.com/osx/) and [Linux Ubuntu 14.0+](http://www.ubuntu.com/download/desktop). It has **<span style="color:red">NOT</span>** been tested for Windows. While this installation may work on other UNIX-based systems (and windows builds), this is not guarenteed and you continue with installation at your own risk.
+**Note:** Installation for this library has only been tested on [Mac OSX 10.0+](https://www.apple.com/osx/) and [Linux Ubuntu 14.0+](http://www.ubuntu.com/download/desktop). It has <span style="color:red;font-weight:bold">NOT</span> been tested for Windows. While this installation may work on other UNIX-based systems (and windows builds), this is not guarenteed and you continue with installation at your own risk.
 
 
 [Dirc-Objects]:https://github.com/wcarvalho/dirc-detector/tree/master/dircobjects
