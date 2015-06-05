@@ -18,11 +18,6 @@ It has 4 main sub-libraries **Dirc-Objects**, **Particle-Generator**, **Photon-G
 - functions the generate particles
 - an executable which produces *N* events with up to *n* particles that would intersect with the modeled DIRC.
 - etc.
-<figure>
-	<img src="https://github.com/wcarvalho/dirc-detector/blob/master/img/beams.jpg?raw=true" alt="beams" style="width: 400px;"/>
-  <figcaption> </figcaption>
-</figure>
-
 
 ### [Photon-Generator]
 #####Used to generate Cherenkov light data from particles traversing through DIRC
@@ -30,10 +25,6 @@ It has 4 main sub-libraries **Dirc-Objects**, **Particle-Generator**, **Photon-G
 - a class that simulates the trajectory of a particle within a rectangular prism 
 - a class which rotates vectors
 - etc.
-<figure>
-	<img src="https://github.com/wcarvalho/dirc-detector/blob/master/img/dirc.jpg?raw=true" alt="dirc" style="width: 400px;"/>
-  <figcaption> </figcaption>
-</figure>
 
 ### [Particle-Reconstructor]
 
