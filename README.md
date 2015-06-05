@@ -3,16 +3,16 @@
 #Modeling a DIRC for high-multiplicity collisions
 
 This library was made for a project *modeling a Detection of Internally Reflected Cherenkov light ([DIRC](http://en.wikipedia.org/wiki/Detection_of_internally_reflected_Cherenkov_light)) particle detector* at Stony Brook University. I collaborated with professor Axel Drees and research professor [Alan Dion](https://github.com/alandion).
-This library has 4 main sub-libraries **Dirc-Objects**, **Particle-Generator**, **Photon-Generator**, and **Particle-Reconstructor**, and numerous **scripts** to streamline common tasks in this project.
+This library has 4 main sub-libraries **Dirc-Object**, **Particle-Generator**, **Photon-Generator**, and **Particle-Reconstructor**, and numerous **scripts** to streamline common tasks in this project.
 
 ---
 
-**Click [HERE](https://github.com/wcarvalho/dirc-detector#Installation Instructions) to skip to installation instruction**
+**Click [HERE](https://github.com/wcarvalho/dirc-detector#installation-instructions) to skip to the installation instruction**
 
 ---
 
 ### [Dirc-Objects]
-#####Collection of ROOT classes to store relevant data
+#####Collection of ROOT classes to store data
 ######Examples of data stored include:
 - DIRC parameters
 - particle data
@@ -49,10 +49,10 @@ This library has 4 main sub-libraries **Dirc-Objects**, **Particle-Generator**, 
 
 ---
 ##Installation Instructions
-There are 3 pre-requisite libraries: 
+There are numerous pre-requisite libraries: 
 
 1. [ROOT](https://root.cern.ch/drupal/) (version 5.34)
-2. [pkg-config](http://www.freedesktop.org/wiki/Software/pkg-config/) (I recommend this for general library installation)
+2. [pkg-config](http://www.freedesktop.org/wiki/Software/pkg-config/)
 2. [libseamstress](https://code.google.com/p/libseamstress/)
 3. [fitnewton](https://code.google.com/p/fitnewton/)
 
