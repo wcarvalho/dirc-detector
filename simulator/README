@@ -1,2 +1,0 @@
-Installation of this executable follows the typical ./configure, make, make install process.
-Make sure that you set prefix when using ./configure
