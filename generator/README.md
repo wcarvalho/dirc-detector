@@ -12,6 +12,14 @@ Using the diagram above as reference, the executable works as follows:
 ..* Some upper threshold for the number of particles emitted has been met
 3. <p> each particle that intersects with the DIRC has some z<sub>p</sub>, x<sub>p</sub>, y<sub>p</sub>, &theta;<sub>p</sub>, &phi;<sub>p</sub> &Beta; <p>
 
+1. First ordered list item
+2. Another item
+⋅⋅* Unordered sub-list.
+1. Actual numbers don't matter, just that it's a number
+⋅⋅1. Ordered sub-list
+4. And another item.
+
+
 This executable creates N particles with properties supplied by a text file.
 
 Sample file:
