@@ -6,19 +6,13 @@
 </figure>
 
 Using the diagram above as reference, the executable works as follows:
+
 1. <p> It emits particles from point (0,0,0) with a direction determined by solid angle (&eta;<sub>b</sub>, &theta;<sub>b</sub>)<p>
 + particle are emitted until either
     * The DIRC has the desired number of particles
     * Some upper threshold for the number of particles emitted has been met
-3. <p> each particle that intersects with the DIRC has some z<sub>p</sub>, x<sub>p</sub>, y<sub>p</sub>, &theta;<sub>p</sub>, &phi;<sub>p</sub> &Beta; <p>
-
-1. First ordered list item
-2. Another item
-⋅⋅* Unordered sub-list.
-1. Actual numbers don't matter, just that it's a number
-⋅⋅1. Ordered sub-list
-4. And another item.
-
+3. <p> each particle that intersects with the DIRC has some coordinate (z<sub>p</sub>, x<sub>p</sub>, y<sub>p</sub>), solid angle (&theta;<sub>p</sub>, &phi;<sub>p</sub>) and &Beta; <p>
+For more details on this process, please see: [nims-paper]
 
 This executable creates N particles with properties supplied by a text file.
 
@@ -41,3 +35,5 @@ Generates particles for a number of events which can be specified by the user.
 If you would like to generate the same particles every time, invoke option --random with a non-zero integer
 
 ##Installation Instructions
+
+[nims-paper]:https://www.dropbox.com/s/ns3p81k5c5hysz2/nims_draft4.pdf?dl=0
