@@ -7,7 +7,7 @@
 
 The main purpose of this library is to create the "**generator**" executable. Using the diagram above as reference, the executable will:
 - emit up to N particles from point (0,0,0)
-- determine if each particle will intersect with the DIRC at some coordinate (z<sub></sub>p, x<sub></sub>p, y<sub></sub>p)
+- determine if each particle will intersect with the DIRC at some coordinate (z<sub>p</sub>, x<sub>p</sub>, y<sub>p</sub>)
 
 
 This executable creates N particles with properties supplied by a text file.
