@@ -6,13 +6,13 @@
 </figure>
 
 Using the diagram above as reference, the executable works as follows:
-- <p> It emits particles from point (0,0,0) with a direction determined by solid angle (&eta;<sub>b</sub>, &theta;<sub>b</sub>)<p>
-- particle are emitted until either
+1. <p> It emits particles from point (0,0,0) with a direction determined by solid angle (&eta;<sub>b</sub>, &theta;<sub>b</sub>)<p>
+2. particle are emitted until either
 
 ⋅⋅⋅* The DIRC has the desired number of particles
 ...* Some upper threshold for the number of particles emitted has been met
 
-- <p> each particle that intersects with the DIRC has some z<sub>p</sub>, x<sub>p</sub>, y<sub>p</sub>, &theta;<sub>p</sub>, &phi;<sub>p</sub> &Beta; <p>
+3. <p> each particle that intersects with the DIRC has some z<sub>p</sub>, x<sub>p</sub>, y<sub>p</sub>, &theta;<sub>p</sub>, &phi;<sub>p</sub> &Beta; <p>
 
 This executable creates N particles with properties supplied by a text file.
 
