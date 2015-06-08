@@ -6,7 +6,7 @@
 </figure>
 
 The main purpose of this library is to create the "**generator**" executable. Using the diagram above as reference, the executable will:
-- emit up to N particles from point (0,0,0)
+- emit up to N particles from point (0,0,0) with a direction determined by solid angle (&#919, &#920)
 - determine if each particle will intersect with the DIRC at some coordinate (z<sub>p</sub>, x<sub>p</sub>, y<sub>p</sub>)
 
 
