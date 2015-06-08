@@ -5,17 +5,22 @@
   <figcaption> </figcaption>
 </figure>
 
-The main purpose of this library is to create the "**generator**" executable. This executable creates N particles with properties supplied by a text file.
+The main purpose of this library is to create the "**generator**" executable. Using the diagram above as reference, the executable will:
+- emit up to N particles from point (0,0,0)
+- determine if each particle will intersect with the DIRC at some coordinate (z<sub></sub>p, x<sub></sub>p, y<sub></sub>p)
+
+
+This executable creates N particles with properties supplied by a text file.
 
 Sample file:
 ```
 maxpars: 1
 nparticles: 0,10000
 eta: -.5, .5
-pt: .2, .3
-phi: .75pi, 1.5pi
+pt: 0, 3
+phi: .5, 1.5pi
 charge: 0
-types: electron
+types: electron, pion, kaon
 replace
 ```
 
