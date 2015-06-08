@@ -1,14 +1,16 @@
 ### Particle-Generator
-
+####The main purpose of this library is to create the "**generator**" executable.
 <figure>
 	<img src="https://github.com/wcarvalho/dirc-detector/blob/master/img/beams.jpg?raw=true" alt="beams" style="width: 400px;"/>
   <figcaption> </figcaption>
 </figure>
 
-The main purpose of this library is to create the "**generator**" executable. Using the diagram above as reference, the executable will:
-- <p>emit up to N particles from point (0,0,0) with a direction determined by solid angle (&#951;<sub>b</sub>, &#952;<sub>b</sub>)<p>
-- determine if each particle will intersect with the DIRC at some coordinate (z<sub>p</sub>, x<sub>p</sub>, y<sub>p</sub>)
-
+Using the diagram above as reference, the executable works as follows:
+- <p> It emits particles from point (0,0,0) with a direction determined by solid angle (&eta;<sub>b</sub>, &theta;<sub>b</sub>)<p>
+- particle are emitted until either
+... - The DIRC has the desired number of particles
+... - Some upper threshold for the number of particles emitted has been met
+- <p> each particle that intersects with the DIRC has some z<sub>p</sub>, x<sub>p</sub>, y<sub>p</sub>, &theta;<sub>p</sub>, &phi;<sub>p</sub> &Beta; <p>
 
 This executable creates N particles with properties supplied by a text file.
 
