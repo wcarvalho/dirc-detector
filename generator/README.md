@@ -7,9 +7,9 @@
 
 Using the diagram above as reference, the executable works as follows:
 1. <p> It emits particles from point (0,0,0) with a direction determined by solid angle (&eta;<sub>b</sub>, &theta;<sub>b</sub>)<p>
-2. particle are emitted until either
-⋅⋅* The DIRC has the desired number of particles
-..* Some upper threshold for the number of particles emitted has been met
++ particle are emitted until either
+    * The DIRC has the desired number of particles
+    * Some upper threshold for the number of particles emitted has been met
 3. <p> each particle that intersects with the DIRC has some z<sub>p</sub>, x<sub>p</sub>, y<sub>p</sub>, &theta;<sub>p</sub>, &phi;<sub>p</sub> &Beta; <p>
 
 1. First ordered list item
