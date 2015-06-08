@@ -1,7 +1,7 @@
 #Modeling a DIRC for high-multiplicity collisions
 
-This C++11 library was made for a project *modeling a Detection of Internally Reflected Cherenkov light ([DIRC](http://en.wikipedia.org/wiki/Detection_of_internally_reflected_Cherenkov_light)) particle detector* at Stony Brook University. I collaborated with professor Axel Drees and research professor [Alan Dion](https://github.com/alandion).
-This library has 5 components: 4 sub-libraries **(1) Dirc-Objects**, **(2) Particle-Generator**, **(3) Photon-Generator**, and **(4) Particle-Reconstructor**, and **(5) scripts** to streamline common tasks.
+This is a C++11 library made for a project *modeling a Detection of Internally Reflected Cherenkov light ([DIRC](http://en.wikipedia.org/wiki/Detection_of_internally_reflected_Cherenkov_light)) particle detector* at Stony Brook University. I collaborated with professor Axel Drees and research professor [Alan Dion](https://github.com/alandion).
+This library has 5 components: 4 sub-libraries **(1) Dirc-Objects**, **(2) Particle-Generator**, **(3) Photon-Generator**, **(4) Particle-Reconstructor**, and a set of **(5) scripts** to streamline common tasks.
 
 ---
 
@@ -19,17 +19,13 @@ This library has 5 components: 4 sub-libraries **(1) Dirc-Objects**, **(2) Parti
 
 ### 2. [Particle-Generator]
 #####Used to generate particles
-######Contains:
-- functions the generate particles
+######Main Function:
 - an executable that produces *N* events with up to *n* particles that would intersect with the modeled DIRC.
 
 ### 3. [Photon-Generator]
 #####Used to generate Cherenkov light data from particles traversing through DIRC
-######Contains:
-- a class that simulates the trajectory of a particle within a rectangular prism 
-- a class which rotates vectors
+######Main Function:
 - an executable that simulates the trajectory of particles in the modeled DIRC and produces the Cherenkov light data that would be read from the DIRC photon detector
-- etc.
 
 ### 4. [Particle-Reconstructor]
 #####Used to reconstruct original particles from photon data
@@ -55,7 +51,7 @@ There are numerous pre-requisite libraries:
 2. [libseamstress](https://code.google.com/p/libseamstress/)
 3. [fitnewton](https://code.google.com/p/fitnewton/)
 
-Instructions on how to install each component of this library is located within each component's README. Follow each of the following links for details:
+Instructions on how to install each component of this library are located within each component's README:
 
 1. [Dirc-Objects](https://github.com/wcarvalho/dirc-detector/tree/master/dircobjects#installation-instructions)
 2. [Particle-Generator](https://github.com/wcarvalho/dirc-detector/tree/master/generator#installation-instructions)
