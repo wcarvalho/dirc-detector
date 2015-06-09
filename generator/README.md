@@ -22,11 +22,7 @@ generator by default creates particles with the following parameters:
 
 | Command | Function | Example |
 | :---: | :--- | :---: |
-| c/custom-set | Used to provide the details for a custom generation process via a text file | `generator -c "custom-details.txt"` |
-+ **One can provide the details for a custom generation process in a text file via the c/custom-set command**:
-	+ `generator -c "custom-details.txt"`
-	+
-	+ below is an example text file
+| c/custom-set | Used to provide the details for a custom generation process via a text file | `generator -c "custom-details.txt"`
 ```
 // custom-details.txt
 maxpars: 1                     // The desired number of particles in the DIRC is 1
@@ -38,6 +34,11 @@ charge: 0                      // charge of the particles
 types: electron, pion, kaon    // types of particles that will be emitted
 replace                        // only generates custom set
 ```
+|
++ **One can provide the details for a custom generation process in a text file via the c/custom-set command**:
+	+ `generator -c "custom-details.txt"`
+	+
+	+ below is an example text file
 
 + **# of events**:
 	`generator -e 10 -f $particles_file -c $parameters`
