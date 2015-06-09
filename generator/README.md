@@ -44,7 +44,7 @@ pt: 0, 3                       // pt range
 phi: .5, 1.5pi                 // phi range
 charge: 0                      // charge of the particles
 types: electron, pion, kaon    // types of particles that will be emitted
-replace                        // only generates custom set
+replace                        // with this option enabled, this set supplants the original set
 ```
 
 
