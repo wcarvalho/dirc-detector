@@ -25,10 +25,9 @@ Using the diagram above as reference, the executable works as follows:
 ####- m/maxpars: The maximum # of particles that will intersect with the DIRC
 `generator `
 ####- r/random: Seed value
-`generator `
-    * if r=0, all numbers are random
-    * if r /= 0, numbers chosen by the random number generator will repeat in each run of the executable
-
+    - if r=0, all numbers are random
+    - if r /= 0, numbers chosen by the random number generator will repeat in each run of the executable
+`generator -r 1`
 ####- f/filename: output filename
 `generator `
 ####- c/custom-set
