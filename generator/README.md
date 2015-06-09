@@ -30,10 +30,12 @@ charge: 0                                    // charge of the particles
 types: electron, pion, kaon, muon, proton    // types of particles that will be emitted
 replace                        // only generates custom set
 ```
+
 	+ **command:** c/custom-set
 	+ **function:** Used to provide the details for a custom generation process via a text file
 	+ **example:** `generator -c "custom-details.txt"`
 	+ below is a sample:
+
 ```
 // custom-details.txt
 maxpars: 1                     // The desired number of particles in the DIRC is 1
