@@ -1,5 +1,6 @@
 # Particle-Generator
-##The main purpose of this library is to create the "**generator**" executable. Here you can find:
+##The main purpose of this library is to create the "**generator**" executable.
+**Here you can find:**
 1. the executable's [Command-line options](https://github.com/wcarvalho/dirc-detector/tree/master/generator#command-line-options)
 2. the library's [Installation instructions](https://github.com/wcarvalho/dirc-detector/tree/master/generator#installation-instructions)
 <figure>
