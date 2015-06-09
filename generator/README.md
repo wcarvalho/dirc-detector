@@ -34,7 +34,7 @@ Using the diagram above as reference, the executable works as follows:
     + e.g. `generator -f example_file_name.root` will output example_file_name.root
 + **c/custom-set**
 `generator -c "custom-details.txt"`
-+ **D/Direction**
++ **D/Directory**
 `generator `
 + **pt-distribution-function**
 `generator `
