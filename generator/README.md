@@ -25,9 +25,8 @@ Using the diagram above as reference, the executable works as follows:
 - **m/maxpars: The maximum # of particles that will intersect with the DIRC**
 `generator `
 - **r/random: Seed value**
-    - if r=0, all numbers are random
-    - if r /= 0, numbers chosen by the random number generator will repeat in each run of the executable
-`generator -r 1`
+    - if r=0 (i.e. `generator -r 0`) all numbers are random
+    - if r /= 0 (e.g. `generator -r 3`), all random numbers chosen will repeat in each run of the executable
 - **f/filename: output filename**
 `generator `
 - **c/custom-set**
