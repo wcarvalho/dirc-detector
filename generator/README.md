@@ -12,13 +12,21 @@ Using the diagram above as reference, the executable works as follows:
     * The DIRC has the desired number of particles
     * Some upper threshold for the number of particles emitted has been met
 + <p> Each particle that intersects with the DIRC has some coordinate (z<sub>p</sub>, x<sub>p</sub>, y<sub>p</sub>), solid angle (&theta;<sub>p</sub>, &phi;<sub>p</sub>) and &Beta;<p>
-
 **For more details on this process, please see [related paper][1]**
 
 ##Command line options:
-###Input
+###1. e/events - # of events
+###2. P/particle - # of particles thrown
+###3. m/maxpars - Max # of particles to intersect DIRC
+###4. r/random - Seed value
+###5. f/filename - output filename
+###6. c/custom-set
+###7. D/Direction - directory in which files will be saved
+###8. pt-distribution-function - function that determines the probability distribution for different pt values
 
-+ The generator, by default, creates particles with the following parameters:
+user-chosen options via commandline options
+
+The generator, by default, creates particles with the following parameters:
 ```
 // custom-details.txt
 maxpars: 5                     // The desired number of particles in the DIRC is 1
@@ -56,10 +64,6 @@ replace                        // with this option enabled, this set supplants t
 + **# of events**:
 	`generator -e 10 -f $particles_file -c $parameters`
 
-####Output
-<!-- Generates particles for a number of events which can be specified by the user.
-If you would like to generate the same particles every time, invoke option --random with a non-zero integer
- -->
 ##Installation Instructions
 
 [1]:https://www.dropbox.com/s/ns3p81k5c5hysz2/nims_draft4.pdf?dl=0
