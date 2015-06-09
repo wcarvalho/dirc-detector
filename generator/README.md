@@ -18,13 +18,22 @@ Using the diagram above as reference, the executable works as follows:
 ##Command line options:
 ###Input
 
-+ By default
++ The generator, by default, creates particles with the following parameters:
+```
+// custom-details.txt
+maxpars: 5                     // The desired number of particles in the DIRC is 1
+nparticles: 0,10000            // Up to 1000 particles will be emitted from (0,0,0)
+eta: -.5, .5                   // eta range
+pt: 0, 3                       // pt range
+phi: 0, 2pi                 // phi range
+charge: 0                                    // charge of the particles
+types: electron, pion, kaon, muon, proton    // types of particles that will be emitted
+replace                        // only generates custom set
+```
 	+ **command:** c/custom-set
 	+ **function:** Used to provide the details for a custom generation process via a text file
 	+ **example:** `generator -c "custom-details.txt"`
-	+ **below **is a sample:
-
-generator by default creates particles with the following parameters:
+	+ below is a sample:
 ```
 // custom-details.txt
 maxpars: 1                     // The desired number of particles in the DIRC is 1
