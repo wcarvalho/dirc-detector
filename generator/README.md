@@ -15,21 +15,21 @@ Using the diagram above as reference, the executable works as follows:
     * The DIRC has the desired number of particles
     * Some upper threshold for the number of particles emitted has been met
 + <p> Each particle that intersects with the DIRC has some coordinate (z<sub>p</sub>, x<sub>p</sub>, y<sub>p</sub>), solid angle (&theta;<sub>p</sub>, &phi;<sub>p</sub>) and &Beta;<p>
-**For more details on this process, please see [related paper][1]**
+**For more details on this process, please see the [related paper][1]**
 
 ##Command line options:
-#### - e/events: # of events
-#### - P/particle: # of particles thrown
-#### - m/maxpars: The maximum # of particles that will intersect with the DIRC
-#### - r/random: Seed value
+####+. e/events: # of events
+####+. P/particle: # of particles thrown
+####+. m/maxpars: The maximum # of particles that will intersect with the DIRC
+####+. r/random: Seed value
 
-    - if r=0, all numbers are random
-    - if r /= 0, numbers chosen by the random number generator will repeat in each run of the executable
+   +. if r=0, all numbers are random
+   +. if r /= 0, numbers chosen by the random number generator will repeat in each run of the executable
 
-#### - f/filename: output filename
-#### - c/custom-set
-#### - D/Direction: directory in which files will be saved
-#### - pt-distribution-function: function that determines the probability distribution for different pt values
+####+. f/filename: output filename
+####+. c/custom-set
+####+. D/Direction: directory in which files will be saved
+####+. pt-distribution-function: function that determines the probability distribution for different pt values
 
 user-chosen options via commandline options
 
