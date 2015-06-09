@@ -18,7 +18,7 @@ Using the diagram above as reference, the executable works as follows:
 **For more details on this process, please see the [related paper][1]**
 
 ##Command line options:
-1. **e/events: **
+1. **e/events**
   + takes in one int argument for the number of events
   + e.g. `generator -e 10` creates a file with 10 events
 <!--  -->
