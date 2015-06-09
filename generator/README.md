@@ -18,30 +18,32 @@ Using the diagram above as reference, the executable works as follows:
 **For more details on this process, please see the [related paper][1]**
 
 ##Command line options:
-1. **e/events: # of events**
+1. **e/events: **
+  + takes in one int argument for the number of events
+  + e.g. `generator -e 10` creates a file with 10 events
+<!--  -->
++ **P/particle**
+  + takes in 2 int arguments for the minimum and maximum number of particles emitted from the
+  + e.g. `generator -e 10` creates a file with 10 events
+<!--  -->
++ **m/maxpars**
 `generator `
 <!--  -->
-+ **P/particle: # of particles emitted from (0,0,0)**
-`generator `
-
-+ **m/maxpars: The maximum # of particles that will intersect with the DIRC**
-`generator `
-
-+ **r/random: Seed value**
++ **r/random**
     + if r=0 (i.e. `generator -r 0`), all numbers are random
     + if r /= 0 (e.g. `generator -r 3`), all random numbers chosen will repeat in each run of the executable
-
-+ **f/filename: output filename**
+<!--  -->
++ **f/filename**
     + sets the output filename (output file is a root file)
     + e.g. `generator -f example_file_name.root` will output example_file_name.root
-
+<!--  -->
 + **c/custom-set**
 `generator -c "custom-details.txt"`
-
-+ **D/Direction: directory in which files will be saved**
+<!--  -->
++ **D/Direction**
 `generator `
-
-+ **pt-distribution-function: function that determines the probability distribution for different pt values**
+<!--  -->
++ **pt-distribution-function**
 `generator `
 
 
