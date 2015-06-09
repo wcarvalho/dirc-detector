@@ -30,9 +30,9 @@ replace															// if
 
 executable commands:
 
-1. parameters
+1. **parameters**:
 	`bash generator -e 10 -f $particles_file -c $parameters`
-2. # of events
+2. **# of events**:
 	`bash
 	generator -e 10 -f $particles_file -c $parameters
 	`
