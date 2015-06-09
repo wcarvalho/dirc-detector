@@ -26,8 +26,8 @@ Using the diagram above as reference, the executable works as follows:
 `generator `
 ####- r/random: Seed value
 `generator `
-    - if r=0, all numbers are random
-    - if r /= 0, numbers chosen by the random number generator will repeat in each run of the executable
+    * if r=0, all numbers are random
+    * if r /= 0, numbers chosen by the random number generator will repeat in each run of the executable
 
 ####- f/filename: output filename
 `generator `
