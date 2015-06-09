@@ -19,7 +19,6 @@ Using the diagram above as reference, the executable works as follows:
 ###Input
 
 generator by default creates particles with the following parameters:
--
 
 + **One can provide the details for a custom generation process in a text file via the c/custom-set command**:
 	+ `generator -c "custom-details.txt"`
