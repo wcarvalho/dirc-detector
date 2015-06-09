@@ -35,7 +35,7 @@ replace                        // only generates custom set
 	+ **function:** Used to provide the details for a custom generation process via a text file
 	+ **example:** `generator -c "custom-details.txt"`
 	+ below is a sample:
-
+```
 ```
 // custom-details.txt
 maxpars: 1                     // The desired number of particles in the DIRC is 1
