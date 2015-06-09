@@ -1,5 +1,5 @@
-### Particle-Generator
-####The main purpose of this library is to create the "**generator**" executable.
+# Particle-Generator
+##The main purpose of this library is to create the "**generator**" executable.
 <figure>
 	<img src="https://github.com/wcarvalho/dirc-detector/blob/master/img/beams.jpg?raw=true" alt="beams" style="width: 400px;"/>
   <figcaption> </figcaption>
@@ -15,8 +15,8 @@ Using the diagram above as reference, the executable works as follows:
 
 **For more details on this process, please see [related paper][1]**
 
-####Command line options:
-#####Input
+##Command line options:
+###Input
 
 generator by default creates particles with the following parameters:
 -
@@ -40,7 +40,7 @@ replace                        // only generates custom set
 + **# of events**:
 	`generator -e 10 -f $particles_file -c $parameters`
 
-#####Output
+####Output
 <!-- Generates particles for a number of events which can be specified by the user.
 If you would like to generate the same particles every time, invoke option --random with a non-zero integer
  -->
