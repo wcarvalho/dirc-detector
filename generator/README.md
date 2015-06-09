@@ -21,7 +21,7 @@ Using the diagram above as reference, the executable works as follows:
 generator by default creates particles with the following parameters:
 
 | Command | Function | Example | Sample |
-| :---: | :--- | :---: |
+| :---: | :--- | :---: | --- |
 | c/custom-set | Used to provide the details for a custom generation process via a text file | `generator -c "custom-details.txt"`
 ``` |
 // custom-details.txt
