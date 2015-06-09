@@ -30,12 +30,10 @@ replace															// if
 
 executable commands:
 
-1. **parameters**:
-	`bash generator -e 10 -f $particles_file -c $parameters`
-2. **# of events**:
-	`bash
-	generator -e 10 -f $particles_file -c $parameters
-	`
++ **parameters**:
+	`generator -e 10 -f $particles_file -c $parameters`
++ **# of events**:
+	`generator -e 10 -f $particles_file -c $parameters`
 
 Generates particles for a number of events which can be specified by the user.
 If you would like to generate the same particles every time, invoke option --random with a non-zero integer
