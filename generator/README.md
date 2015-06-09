@@ -20,11 +20,10 @@ Details on this generation process are provided via text file. A sample file:
 ####Command line options:
 
 
-+ **One can provide the details of the generation process in a text file via the  f/custom-set command**:
-	+ `generator -c $parameters`
-	+ below is a sample text file, parameters.txt
++ **One can provide the details for a custom generation process in a text file via the c/custom-set command**:
+	+ `generator -c "custom-details.txt"`
+	+ below is an example text file
 ```
-// parameters.txt
 maxpars: 1                     // The desired number of particles in the DIRC is 1
 nparticles: 0,10000            // Up to 1000 particles will be emitted from (0,0,0)
 eta: -.5, .5                   // eta range
