@@ -15,10 +15,13 @@ Using the diagram above as reference, the executable works as follows:
 **For more details on this process, please see [related paper][1]**
 
 ##Command line options:
-#####1. e/events - # of events
-#####2. P/particle - # of particles thrown
+###1. e/events - # of events
+####2. P/particle - # of particles thrown
 #####3. m/maxpars - Max # of particles to intersect DIRC
-#####4. r/random - Seed value
+######4. r/random - Seed value
+-
+Blah
+-
 #####5. f/filename - output filename
 #####6. c/custom-set
 #####7. D/Direction - directory in which files will be saved
