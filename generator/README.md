@@ -21,7 +21,7 @@ Details on this generation process are provided via text file. A sample file:
 
 
 + **One can provide the details of the generation process in a text file via the  f/custom-set command**:
-	`generator -c $parameters`
+	+ `generator -c $parameters`
 	+ below is a sample text file, parameters.txt
 ```
 // parameters.txt
