@@ -33,8 +33,7 @@ phi: .5, 1.5pi                 // phi range
 charge: 0                      // charge of the particles
 types: electron, pion, kaon    // types of particles that will be emitted
 replace                        // only generates custom set
-```
-|
+```|
 + **One can provide the details for a custom generation process in a text file via the c/custom-set command**:
 	+ `generator -c "custom-details.txt"`
 	+
