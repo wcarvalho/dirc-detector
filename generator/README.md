@@ -1,9 +1,7 @@
 # Particle-Generator
-##The main purpose of this library is to create the "**generator**" executable.
-**Here you can find:**
-
-1. the executable's [Command-line options](https://github.com/wcarvalho/dirc-detector/tree/master/generator#command-line-options)
-2. the library's [Installation instructions](https://github.com/wcarvalho/dirc-detector/tree/master/generator#installation-instructions)
+###The main purpose of this library is to create the "**generator**" executable. Here you can find:
+####1. the executable's [Command-line options](https://github.com/wcarvalho/dirc-detector/tree/master/generator#command-line-options)
+####2. the library's [Installation instructions](https://github.com/wcarvalho/dirc-detector/tree/master/generator#installation-instructions)
 
 <figure>
 	<img src="https://github.com/wcarvalho/dirc-detector/blob/master/img/beams.jpg?raw=true" alt="beams" style="width: 400px;"/>
@@ -20,17 +18,16 @@ Using the diagram above as reference, the executable works as follows:
 **For more details on this process, please see [related paper][1]**
 
 ##Command line options:
-###1. e/events - # of events
-####2. P/particle - # of particles thrown
-#####3. m/maxpars - Max # of particles to intersect DIRC
-######4. r/random - Seed value
--
-Blah
--
-#####5. f/filename - output filename
-#####6. c/custom-set
-#####7. D/Direction - directory in which files will be saved
-#####8. pt-distribution-function - function that determines the probability distribution for different pt values
+####+ e/events: # of events
+####+ P/particle: # of particles thrown
+####+ m/maxpars: The maximum # of particles that will intersect with the DIRC
+####+ r/random: Seed value
+	+ if r=0, all numbers are random
+	+ if r /= 0, numbers chosen by the random number generator will repeat in each run of the executable
+####+ f/filename: output filename
+####+ c/custom-set
+####+ D/Direction: directory in which files will be saved
+####+ pt-distribution-function: function that determines the probability distribution for different pt values
 
 user-chosen options via commandline options
 
