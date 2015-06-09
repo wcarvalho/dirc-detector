@@ -1,7 +1,7 @@
 # Particle-Generator
 ##The main purpose of this library is to create the "**generator**" executable.
-1. [Command-line options]((https://github.com/wcarvalho/dirc-detector/tree/master/generator#command-line-options))
-2. [Installation instructions]((https://github.com/wcarvalho/dirc-detector/tree/master/generator#installation-instructions))
+1. [Command-line options](https://github.com/wcarvalho/dirc-detector/tree/master/generator#command-line-options)
+2. [Installation instructions](https://github.com/wcarvalho/dirc-detector/tree/master/generator#installation-instructions)
 <figure>
 	<img src="https://github.com/wcarvalho/dirc-detector/blob/master/img/beams.jpg?raw=true" alt="beams" style="width: 400px;"/>
   <figcaption> </figcaption>
