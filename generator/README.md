@@ -19,17 +19,24 @@ Using the diagram above as reference, the executable works as follows:
 
 ##Command line options:
 ####- e/events: # of events
-####- P/particle: # of particles thrown
+`generator `
+####- P/particle: # of particles emitted from (0,0,0)
+`generator `
 ####- m/maxpars: The maximum # of particles that will intersect with the DIRC
+`generator `
 ####- r/random: Seed value
-
+`generator `
     - if r=0, all numbers are random
     - if r /= 0, numbers chosen by the random number generator will repeat in each run of the executable
 
 ####- f/filename: output filename
+`generator `
 ####- c/custom-set
+`generator -c "custom-details.txt"`
 ####- D/Direction: directory in which files will be saved
+`generator `
 ####- pt-distribution-function: function that determines the probability distribution for different pt values
+`generator `
 
 user-chosen options via commandline options
 
