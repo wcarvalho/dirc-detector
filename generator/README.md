@@ -20,7 +20,6 @@ Using the diagram above as reference, the executable works as follows:
 ##Command line options:
 1. **e/events: # of events**
 `generator `
-
 + **P/particle: # of particles emitted from (0,0,0)**
 `generator `
 
