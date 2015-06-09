@@ -16,6 +16,13 @@ Using the diagram above as reference, the executable works as follows:
 **For more details on this process, please see the [related paper][1]**
 
 Details on this generation process are provided via text file. A sample file:
+
+####Command line options:
+
+
++ **One can provide the details of the generation process in a text file via the  f/custom-set command**:
+	`generator -c $parameters`
+	+ below is a sample text file, parameters.txt
 ```
 // parameters.txt
 maxpars: 1													// The desired number of particles in the DIRC is 1
@@ -28,10 +35,6 @@ types: electron, pion, kaon					// types of particles that will be emitted
 replace															// if
 ```
 
-executable commands:
-
-+ **parameters**:
-	`generator -e 10 -f $particles_file -c $parameters`
 + **# of events**:
 	`generator -e 10 -f $particles_file -c $parameters`
 
