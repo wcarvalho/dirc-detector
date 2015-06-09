@@ -21,28 +21,21 @@ Using the diagram above as reference, the executable works as follows:
 1. **e/events**
   + takes in one int argument for the number of events
   + e.g. `generator -e 10` creates a file with 10 events
-<!--  -->
 + **P/particle**
   + takes in 2 int arguments for the minimum and maximum number of particles emitted from the
   + e.g. `generator -e 10` creates a file with 10 events
-<!--  -->
 + **m/maxpars**
 `generator `
-<!--  -->
 + **r/random**
     + if r=0 (i.e. `generator -r 0`), all numbers are random
     + if r /= 0 (e.g. `generator -r 3`), all random numbers chosen will repeat in each run of the executable
-<!--  -->
 + **f/filename**
     + sets the output filename (output file is a root file)
     + e.g. `generator -f example_file_name.root` will output example_file_name.root
-<!--  -->
 + **c/custom-set**
 `generator -c "custom-details.txt"`
-<!--  -->
 + **D/Direction**
 `generator `
-<!--  -->
 + **pt-distribution-function**
 `generator `
 
