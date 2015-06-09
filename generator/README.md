@@ -19,10 +19,10 @@ Using the diagram above as reference, the executable works as follows:
 ###Input
 
 + By default
-	+ command: c/custom-set
-	+ function: Used to provide the details for a custom generation process via a text file
-	+ example: `generator -c "custom-details.txt"`
-	+ below is a sample:
+	+ **command:** c/custom-set
+	+ **function:** Used to provide the details for a custom generation process via a text file
+	+ **example:** `generator -c "custom-details.txt"`
+	+ **below **is a sample:
 
 generator by default creates particles with the following parameters:
 ```
