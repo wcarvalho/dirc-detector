@@ -17,6 +17,7 @@ Using the diagram above as reference, the executable works as follows:
 
 ####Command line options:
 #####Input
+
 generator by default creates particles with the following parameters:
 -
 
