@@ -32,7 +32,7 @@ pt: 0, 3				// pt range
 phi: .5, 1.5pi 					// phi range
 charge: 0					// charge of the particles
 types: electron, pion, kaon					// types of particles that will be emitted
-replace											// if
+replace										// if
 ```
 
 + **# of events**:
