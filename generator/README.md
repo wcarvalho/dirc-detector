@@ -20,10 +20,10 @@ Using the diagram above as reference, the executable works as follows:
 
 generator by default creates particles with the following parameters:
 
-| Command | Function | Example |
+| Command | Function | Example | Sample |
 | :---: | :--- | :---: |
 | c/custom-set | Used to provide the details for a custom generation process via a text file | `generator -c "custom-details.txt"`
-```
+``` |
 // custom-details.txt
 maxpars: 1                     // The desired number of particles in the DIRC is 1
 nparticles: 0,10000            // Up to 1000 particles will be emitted from (0,0,0)
