@@ -26,7 +26,7 @@ Using the diagram above as reference, the executable works as follows:
 | :--- | :--- |
 | [-e / --events][3] | sets the number of events |
 | [-P / --particle][4] | sets the number of particles that are emitted from (0,0,0) (see [Figure of Particle Generation][2]|
-| [-m / --maxpars][5] | sets the maximum number of particles to intersect with the DIRC per event |
+| [-m / --maxpars][5] | sets the maximum number of particles to intersect with the DIRC per event (see [Figure of Particle Generation][2] |
 | [-r / --random][6] | sets the seed for the random number generator |
 | [-f / --filename][7] | sets the output-file name  |
 | [-c / --custom-set][8] | customizes the particle generation |

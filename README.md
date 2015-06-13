@@ -10,35 +10,23 @@ This library has 5 components: 4 sub-libraries **(1) Dirc-Objects**, **(2) Parti
 ---
 ## Brief Description of Components
 ### 1. [Dirc-Objects]
-#####Collection of ROOT classes to store data
-######Examples of data stored include:
+#####Contains a collection of ROOT classes to store data. Examples of data stored include:
 - DIRC parameters
 - particle data
 - photon data
 - particle reconstruction data
 
 ### 2. [Particle-Generator]
-#####Used to generate particles
-######Main Function:
-- an executable that produces *N* events with up to *n* particles that would intersect with the modeled DIRC.
+#####Contains an executable and functions to generate particles and intersect them with the modeled DIRC.
 
 ### 3. [Photon-Generator]
-#####Used to generate Cherenkov light data from particles traversing through DIRC
-######Main Function:
-- an executable that simulates the trajectory of particles in the modeled DIRC and produces the Cherenkov light data that would be read from the DIRC photon detector
+#####Contains an executable and functions to simulate the trajectory of particles within the modeled DIRC and produce the Cherenkov light data that would be read from the DIRC photon detector.
 
 ### 4. [Particle-Reconstructor]
-#####Used to reconstruct original particles from photon data
-######Contains:
-- a function that calculates the number of photons expected to be detected by the DIRC for a particular particle
-- a function that indexes photons by the particle they were most likely emitted from
-- an executable that determines the likelihood that each particle is a certain particle type
-- etc.
+#####Contains an executable and functions to disentangle the Cherenkov light data and reconstruct the identity of the particles that produced this light.
 
 ### 5. [Scripts]
-######Examples of script functions include:
-- embedding a particle into a particle set
-- smearing the angles of a set of photons
+######Contains scripts for common tasks in this project such as embedding particles and smearing the angles of a set of photons.
 
 ---
 ##Installation Instructions
