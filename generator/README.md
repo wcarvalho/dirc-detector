@@ -35,7 +35,7 @@ Using the diagram above as reference, the executable works as follows:
 
 ##Command line options use:
 
-###Nomenclature:
+###Definitions:
 <p> N: number of particles emitted from (0,0,0) <p>
 <p> N<sup>&darr;</sup>: minimum number of particles emitted from (0,0,0) <p>
 <p> N<sup>&uarr;</sup>: maximum number of particles emitted from (0,0,0) <p>
@@ -55,7 +55,9 @@ generator -e 10
 ```
 generator -P 100 500
 ```
-  + if `maxpars` is set, particles are emitted until the number of emitted particles is greater than the minimum set by this argument and the number of particles that intersect with the DIRC is that set by `maxpars`
+  + <p>
+  if `maxpars` is set, particles are emitted until N >= N<sup>&darr;</sup> and N<sub>DIRC</sub> = N<sup>i</sup><sub>DIRC</sub>
+  <p>
     + if the number of particles that intersect with the dirc never reaches that set by `maxpars`, emission ends with the number of emitted particles is the maximum number allowed by this argument
 
 ####m/maxpars
