@@ -64,9 +64,9 @@ generator -P 0 1000 -m 4
 
 ####m/maxpars
   + <p> takes in **1 int** argument for N<sup>i</sup><sub>DIRC</sub> <p>
-  + e.g. to generate at least 100 particles but at most 500, do
+  + e.g. to have at most 10 particles intersect the DIRC, do
 ```
-generator -P 100 500
+generator -m 10
 ```
 
 ####r/random
