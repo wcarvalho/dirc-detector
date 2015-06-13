@@ -36,17 +36,26 @@ Using the diagram above as reference, the executable works as follows:
 ##Command line options use:
 ####e/events
   + takes in **1 int** argument for the number of events
-  + e.g. to create a file with 10 events one would do
+  + e.g. to create a file with 10 events, do
 ```
 generator -e 10
 ```
 
 ####P/particle
-  + takes in 2 int arguments for the minimum and maximum number of particles emitted from the
-  + e.g. `generator -e 10` creates a file with 10 events
+  + takes in **2 int** arguments for the minimum and maximum number of particles to be emitted from (0,0,0)
+  + e.g. to generate at least 100 particles but at most 500, do
+```
+generator -P 100 500
+```
+  + if `maxpars` is set, particles are emitted until the number of emitted particles is greater than the minimum set by this argument and the number of particles that intersect with the DIRC is that set by `maxpars`
+    + if the number of particles that intersect with the dirc never reaches that set by `maxpars`, emission ends with the number of emitted particles is the maximum number allowed by this argument
 
 ####m/maxpars
-`generator `
+  + takes in **1 int** argument for the maximum number of particles to intersect with the DIRC
+  + e.g. to generate at least 100 particles but at most 500, do
+```
+generator -P 100 500
+```
 
 ####r/random
     + if r=0 (i.e. `generator -r 0`), all numbers are random
