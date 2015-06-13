@@ -1,6 +1,6 @@
 # Particle-Generator
 ###The main purpose of this library is to create the "**generator**" executable. Here you can find:
-####1. a summary of the executable's [command-line options](https://github.com/wcarvalho/dirc-detector/tree/master/generator#summary-of-command-line-options) ([CLICK HERE](https://github.com/wcarvalho/dirc-detector/tree/master/generator#command-line-options-use) for details on the options)
+####1. a summary of the executable's [command-line options](https://github.com/wcarvalho/dirc-detector/tree/master/generator#summary-of-command-line-options) ([CLICK HERE](https://github.com/wcarvalho/dirc-detector/tree/master/generator#details-on-command-line-options) for details on the options)
 ####2. details on the library's [functions](https://github.com/wcarvalho/dirc-detector/tree/master/generator#functions)
 ####3. the library's [installation instructions](https://github.com/wcarvalho/dirc-detector/tree/master/generator#installation-instructions)
 
@@ -24,16 +24,16 @@ Using the diagram above as reference, the executable works as follows:
 
 | Command | Description|
 | :--- | :--- |
+| [-f / --filename][7] | sets the output-file name  |
 | [-e / --events][3] | sets the number of events |
 | [-P / --particle][4] | sets the number of particles that are emitted from (0,0,0) (see [Figure of Particle Generation][2]|
 | [-m / --maxpars][5] | sets the maximum number of particles to intersect with the DIRC per event (see [Figure of Particle Generation][2] |
 | [-r / --random][6] | sets the seed for the random number generator |
-| [-f / --filename][7] | sets the output-file name  |
 | [-c / --custom-set][8] | customizes the particle generation |
 | [-D / --Directory][9] | sets the directory of the output-file |
 | [--pt-distribution-function][10] | sets a custom function for the pt probability-distribution of the particles |
 
-##Command line options use:
+##Details on command line options:
 
 ###Definitions:
 <p> N: number of particles emitted from (0,0,0) <p>
