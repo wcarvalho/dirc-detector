@@ -22,39 +22,36 @@ Using the diagram above as reference, the executable works as follows:
 
 | Command | Description|
 | :--- | :--- |
-| -e/ --events | |
-| -P/ --particle | |
-| -m/ --maxpars | |
-| -r/ --random | |
-| -f/ --filename | |
-| -c/ --custom-set | |
-| -D/ --Directory | |
+| -e / --events | |
+| -P / --particle | |
+| -m / --maxpars | |
+| -r / --random | |
+| -f / --filename | |
+| -c / --custom-set | |
+| -D / --Directory | |
 | --pt-distribution-function | |
-| | |
-| | |
-| | |
 
 
 ##Command line options:
-1. **e/events**
+#####e/events
   + takes in one int argument for the number of events
   + e.g. `generator -e 10` creates a file with 10 events
-+ **P/particle**
+#####P/particle
   + takes in 2 int arguments for the minimum and maximum number of particles emitted from the
   + e.g. `generator -e 10` creates a file with 10 events
-+ **m/maxpars**
+#####m/maxpars
 `generator `
-+ **r/random**
+#####r/random
     + if r=0 (i.e. `generator -r 0`), all numbers are random
     + if r /= 0 (e.g. `generator -r 3`), all random numbers chosen will repeat in each run of the executable
-+ **f/filename**
+#####f/filename
     + sets the output filename (output file is a root file)
     + e.g. `generator -f example_file_name.root` will output example_file_name.root
-+ **c/custom-set**
+#####c/custom-set
 `generator -c "custom-details.txt"`
-+ **D/Directory**
+#####D/Directory
 `generator `
-+ **pt-distribution-function**
+#####pt-distribution-function
 `generator `
 
 
