@@ -4,6 +4,7 @@
 ####2. details on the library's [functions](https://github.com/wcarvalho/dirc-detector/tree/master/generator#functions)
 ####3. the library's [installation instructions](https://github.com/wcarvalho/dirc-detector/tree/master/generator#installation-instructions)
 
+##Figure of Particle Generation
 <figure>
 	<img src="https://github.com/wcarvalho/dirc-detector/blob/master/img/beams.jpg?raw=true" alt="beams" style="width: 400px;"/>
   <figcaption> </figcaption>
@@ -22,9 +23,9 @@ Using the diagram above as reference, the executable works as follows:
 
 | Command | Description|
 | :--- | :--- |
-| -e / --events | |
-| -P / --particle | |
-| -m / --maxpars | |
+| -e / --events | sets the number of events |
+| -P / --particle | sets the number of particles that are emitted from (0,0,0) (see [Figure of Particle Generation][Figure-of-Particle-Generation]|
+| -m / --maxpars | sets the maximum number of particles per event |
 | -r / --random | |
 | -f / --filename | |
 | -c / --custom-set | |
