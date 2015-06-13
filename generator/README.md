@@ -34,6 +34,14 @@ Using the diagram above as reference, the executable works as follows:
 | [--pt-distribution-function][10] | sets a custom function for the pt probability-distribution of the particles |
 
 ##Command line options use:
+
+###Nomenclature:
+<p> N: number of particles emitted from (0,0,0) <p>
+<p> N<sub>&darr;</sub>: minimum number of particles emitted from (0,0,0) <p>
+<p> N<sub>&uarr;</sub>: maximum number of particles emitted from (0,0,0) <p>
+<p> N<sub>i</sub>: maximum number of particles to intersect with the DIRC <p>
+<p> N<sub>DIRC</sub>: number of particles that intersect with the DIRC <p>
+
 ####e/events
   + takes in **1 int** argument for the number of events
   + e.g. to create a file with 10 events, do
@@ -42,7 +50,7 @@ generator -e 10
 ```
 
 ####P/particle
-  + takes in **2 int** arguments for the minimum and maximum number of particles to be emitted from (0,0,0)
+  + <p> takes in **2 int** arguments for N<sub>&darr;</sub> and N<sub>&uarr;</sub><p>
   + e.g. to generate at least 100 particles but at most 500, do
 ```
 generator -P 100 500
