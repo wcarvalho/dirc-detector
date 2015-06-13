@@ -14,23 +14,23 @@
 ##Installation Instructions
 
 
-####Calibration
+#####Calibration
 
-####Photon Angle Smearing
+#####Photon Angle Smearing
 ```
 cd Smearer
 g++ -std=c++11 -O3 -march=native -w -Wall Smearer.cpp -rpath `pkg-config --libs-only-L DircObjs | sed -e 's/\-L//g'``root-config --libs` -I`root-config --incdir` `pkg-config --libs DircObjs` `pkg-config --cflags DircObjs` -o ../smear
 ```
 
-####Embdedding Particles
+#####Embdedding Particles
 
-####Looking Up Particle Information
+#####Looking Up Particle Information
 
-####Printing Histograms
+#####Printing Histograms
 
-####Plotting Efficiency and False-Positive Rates
+#####Plotting Efficiency and False-Positive Rates
 
-####Plotting Efficiency vs. False-Positive Rate
+#####Plotting Efficiency vs. False-Positive Rate
 
 
 [1]:https://github.com/wcarvalho/dirc-detector/tree/master/scripts#calibration
