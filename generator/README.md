@@ -140,7 +140,7 @@ generator --pt-distribution-function (x<2)*.7+(x>=2)*.3
 ```
 generator -c "custom-details.txt"
 ```
-  + example settings could be
+  + example parameters could be
 ```
 // custom-details.txt
 maxpars: 1                     // The desired number of particles in the DIRC is 1
@@ -148,9 +148,9 @@ nparticles: 0,10000            // Up to 1000 particles will be emitted from (0,0
 eta: -.5, .5                   // eta range
 pt: 0, 3                       // pt range
 phi: .5, 1.5pi                 // phi range
-charge: 0                      // charge of the particles
-types: electron, pion, kaon    // types of particles that will be emitted
-replace                        // with this option enabled, this set supplants the original set
+charge: 0                      // randomly charged particles
+types: electron, pion, kaon    // only electrons, pions, and kaons will be emitted
+replace                        // with this option enabled, this set supplants the default set that would be created
 ```
   + The generator, by default, creates particles with the following parameters:
 ```
