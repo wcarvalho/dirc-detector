@@ -7,12 +7,14 @@ Once you have cloned the master directory from git, you can begin the process of
 cd dircobjects
 autoreconf --force --install
 ```
-To facilitate linking to this library, I recommend installing this library in one of your pkg-config paths (i.e. setting your prefix to your pkg-config directory). One can do so as follows
+You can configure with `./configure`. You can set the prefix as you normally would for a library installed with pkg-config. This simply requires that you set your prefix to a prefix recognized by pkg-config. One can do so as follows
 ```
 ./configure --prefix=$PKG_CONFIG_PATH
 ```
-You can then build via
-```make
+You can then build and install via
+```
+make
+make install
 ```
 To force a fresh release after an earlier checkout do
 ```
@@ -20,8 +22,5 @@ make distclean
 git pull
 ./configure
 make
-```
-You can install with
-```
 make install
 ```

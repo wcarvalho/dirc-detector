@@ -12,15 +12,17 @@
 
 Once you have cloned the master directory from git, you can begin the process of building this library via
 ```
-cd generator
+cd simulator
 autoreconf --force --install
 ```
-To facilitate linking to this library, I recommend installing this library in one of your pkg-config paths (i.e. setting your prefix to your pkg-config directory). This library also contains an executable. In order to use this executable, you must set bindir to a location in your path. One can do both as follows
+You can configure with `./configure`. You can set the prefix as you normally would for a library installed with pkg-config. This simply requires that you set your prefix to a prefix recognized by pkg-config. In order to have this library's executable accessible throughout your system, you must set bindir to a location in your path. One can do both as follows
 ```
 ./configure --prefix=$PKG_CONFIG_PATH --bindir=$PATH
 ```
-You can then build via
-```make
+You can then build and install via
+```
+make
+make install
 ```
 To force a fresh release after an earlier checkout do
 ```
@@ -28,8 +30,5 @@ make distclean
 git pull
 ./configure
 make
-```
-You can install with
-```
 make install
 ```
