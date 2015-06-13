@@ -11,6 +11,13 @@
   <figcaption> </figcaption>
 </figure>
 
+###Definitions:
+<p> N: number of particles emitted from (0,0,0) <p>
+<p> N<sup>&darr;</sup>: minimum number of particles emitted from (0,0,0) <p>
+<p> N<sup>&uarr;</sup>: maximum number of particles emitted from (0,0,0) <p>
+<p> N<sub>DIRC</sub>: number of particles that intersect with the DIRC <p>
+<p> N<sup>&uarr;</sup><sub>DIRC</sub>: maximum number of particles to intersect with the DIRC <p>
+
 Using the diagram above as reference, the executable works as follows:
 
 1. <p> It emits particles from point (0,0,0) with a direction determined by solid angle (&eta;<sub>b</sub>, &phi;<sub>b</sub>)<p>
@@ -26,21 +33,14 @@ Using the diagram above as reference, the executable works as follows:
 | :--- | :--- |
 | [-f / --filename][7] | sets the output-file name  |
 | [-e / --events][3] | sets the number of events |
-| [-P / --particle][4] | sets the number of particles that are emitted from (0,0,0) (see [Figure of Particle Generation][2]|
 | [-m / --maxpars][5] | sets the maximum number of particles to intersect with the DIRC per event (see [Figure of Particle Generation][2] |
+| [-P / --particle][4] | sets the number of particles that are emitted from (0,0,0) (see [Figure of Particle Generation][2]|
 | [-r / --random][6] | sets the seed for the random number generator |
 | [-D / --Directory][9] | sets the directory of the output-file |
 | [--pt-distribution-function][10] | sets a custom function for the pt probability-distribution of the particles |
 | [-c / --custom-set][8] | customizes the particle generation |
 
 ##Details on command line options:
-
-###Definitions:
-<p> N: number of particles emitted from (0,0,0) <p>
-<p> N<sup>&darr;</sup>: minimum number of particles emitted from (0,0,0) <p>
-<p> N<sup>&uarr;</sup>: maximum number of particles emitted from (0,0,0) <p>
-<p> N<sub>DIRC</sub>: number of particles that intersect with the DIRC <p>
-<p> N<sup>&uarr;</sup><sub>DIRC</sub>: maximum number of particles to intersect with the DIRC <p>
 
 ####f/filename
   + takes in **1 string** argument to set the output-file name (output file is a root file)
@@ -54,6 +54,12 @@ generator -f example_file_name.root
   + e.g. to create a file with 10 events, do
 ```
 generator -e 10
+```
+####m/maxpars
+  + <p> takes in **1 int** argument for N<sup>&uarr;</sup><sub>DIRC</sub> <p>
+  + e.g. to have at most 10 particles intersect the DIRC, do
+```
+generator -m 10
 ```
 
 ####P/particle
@@ -69,12 +75,6 @@ generator -P 100 500
 generator -P 0 1000 -m 4
 ```
 
-####m/maxpars
-  + <p> takes in **1 int** argument for N<sup>&uarr;</sup><sub>DIRC</sub> <p>
-  + e.g. to have at most 10 particles intersect the DIRC, do
-```
-generator -m 10
-```
 
 ####r/random
   + takes in **1 int** argument to set the seed for the random number generator
