@@ -24,7 +24,7 @@ Using the diagram above as reference, the executable works as follows:
 | Command | Description|
 | :--- | :--- |
 | -e / --events | sets the number of events |
-| -P / --particle | sets the number of particles that are emitted from (0,0,0) (see [Figure of Particle Generation][https://github.com/wcarvalho/dirc-detector/tree/master/generator#Figure-of-Particle-Generation]|
+| -P / --particle | sets the number of particles that are emitted from (0,0,0) (see [Figure of Particle Generation](https://github.com/wcarvalho/dirc-detector/tree/master/generator#Figure-of-Particle-Generation)|
 | -m / --maxpars | sets the maximum number of particles to intersect with the DIRC per event |
 | -r / --random | sets the seed for the random number generator |
 | -f / --filename | sets the output-file name  |
