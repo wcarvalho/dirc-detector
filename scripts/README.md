@@ -1,6 +1,4 @@
-##Installation Instructions
-
-Once you have cloned the master directory from git, you can
+##Available Scripts
 
 |Script| Description|
 | :---: | :--- |
@@ -12,6 +10,8 @@ Once you have cloned the master directory from git, you can
 | [Plotting Efficiency and False-Positive Rates][6] | |
 | [Plotting Efficiency vs. False-Positive Rate][7] | |
 
+
+##Installation Instructions
 
 
 ####Calibration
