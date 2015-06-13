@@ -29,9 +29,9 @@ Using the diagram above as reference, the executable works as follows:
 | [-P / --particle][4] | sets the number of particles that are emitted from (0,0,0) (see [Figure of Particle Generation][2]|
 | [-m / --maxpars][5] | sets the maximum number of particles to intersect with the DIRC per event (see [Figure of Particle Generation][2] |
 | [-r / --random][6] | sets the seed for the random number generator |
-| [-c / --custom-set][8] | customizes the particle generation |
 | [-D / --Directory][9] | sets the directory of the output-file |
 | [--pt-distribution-function][10] | sets a custom function for the pt probability-distribution of the particles |
+| [-c / --custom-set][8] | customizes the particle generation |
 
 ##Details on command line options:
 
@@ -192,7 +192,7 @@ make install
 ```
 
 [1]:https://www.dropbox.com/s/ns3p81k5c5hysz2/nims_draft4.pdf?dl=0
-[2]:https://github.com/wcarvalho/dirc-detector/tree/master/generator#Figure-of-Particle-Generation
+[2]:https://github.com/wcarvalho/dirc-detector/tree/master/generator#figure-of-particle-generation
 [3]:https://github.com/wcarvalho/dirc-detector/tree/master/generator#eevents
 [4]:https://github.com/wcarvalho/dirc-detector/tree/master/generator#pparticle
 [5]:https://github.com/wcarvalho/dirc-detector/tree/master/generator#mmaxpars
