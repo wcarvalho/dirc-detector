@@ -18,12 +18,12 @@
 <p> N<sub>DIRC</sub>: number of particles that intersect with the DIRC <p>
 <p> N<sup>&uarr;</sup><sub>DIRC</sub>: maximum number of particles to intersect with the DIRC <p>
 
-Using the diagram above as reference, the executable works as follows:
+###Using the diagram above as reference, the executable works as follows:
 
 1. <p> It emits particles from point (0,0,0) with a direction determined by solid angle (&eta;<sub>b</sub>, &phi;<sub>b</sub>)<p>
 + Particles are emitted until either
-    * The DIRC has the desired number of particles
-    * Some upper threshold for the number of particles emitted has been met
+    * <p> N<sub>DIRC</sub> = N<sup>&uarr;</sup><sub>DIRC</sub> <p>
+    * <p> N >= N<sup>&darr;</sup> and N<sub>DIRC</sub> = N<sup>&uarr;</sup><sub>DIRC</sub> <p>
 + <p> Each particle that intersects with the DIRC has some coordinate (z<sub>p</sub>, x<sub>p</sub>, y<sub>p</sub>), solid angle (&theta;<sub>p</sub>, &phi;<sub>p</sub>) and &Beta;<p>
 **For more details on this process, please see the [related paper][1]**
 
