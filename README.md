@@ -44,11 +44,10 @@ This library has 5 components: 4 sub-libraries **(1) Dirc-Objects**, **(2) Parti
 ##Installation Instructions
 Before continuing, make sure that *libtool, pkg-config, autoconf,* and *automake* are installed.
 
+
 There are numerous pre-requisite libraries:
 
 1. [ROOT](https://root.cern.ch/drupal/) (version 5.34)
-2. [pkg-config](http://www.freedesktop.org/wiki/Software/pkg-config/)
-3. [svn](https://subversion.apache.org/)
 2. [eigen](http://eigen.tuxfamily.org/index.php?title=Main_Page)
 2. [libseamstress](https://code.google.com/p/libseamstress/)
 3. [fitnewton](https://code.google.com/p/fitnewton/)
