@@ -43,7 +43,7 @@ Using the diagram above as reference, the executable works as follows:
 <p> N<sup>i</sup><sub>DIRC</sub>: maximum number of particles to intersect with the DIRC <p>
 
 ####f/filename
-  + sets the output-file name (output file is a root file)
+  + takes in **1 string** argument to set the output-file name (output file is a root file)
   + e.g. to create a file named "example_file_name.root", do
 ```
 generator -f example_file_name.root
@@ -77,7 +77,7 @@ generator -m 10
 ```
 
 ####r/random
-  + sets the seed for the random number generator
+  + takes in **1 int** argument to set the seed for the random number generator
   + if r is set to 0, all numbers are random
   + e.g. files output1.root and output2.root will have different data
     + further, each file will have different data on each file generation
@@ -98,20 +98,25 @@ generator -f output2.root -r 1
 generator -f output1.root -r 1
 generator -f output2.root -r 2
 ```
-
-##Unfinished
-
-####c/custom-set
-`generator -c "custom-details.txt"`
-
 ####D/Directory
-`generator `
-
+  + takes in **1 string** argument to set the directory of the output-file
+  + e.g. to save the file to `/some/path/in/your/computer`, do
+```
+generator -D /some/path/in/your/computer
+```
 ####pt-distribution-function
-`generator `
-
-
-
+  + takes in **1 string** argument to set the probability-distribution for the pt values (in GeV/c) of the emitted particles
+  + one can use a custom function as follows
+```
+generator --pt-distribution-function x/(0.5+x*x*x*x)
+```
+  + piece-wise functions are supported
+  + e.g. to have a uniform 70% chance that particles will have pt below 2Gev/c and a uniform 30% chance that particles will have pt above 2Gev/c, do
+```
+generator --pt-distribution-function (x<2)*.7+(x>=2)*.3
+```
+##Unfinished
+####c/custom-set
 
 
 
