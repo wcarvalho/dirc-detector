@@ -4,6 +4,7 @@
 ####2. details on the library's [functions](https://github.com/wcarvalho/dirc-detector/tree/master/generator#functions)
 ####3. the library's [installation instructions](https://github.com/wcarvalho/dirc-detector/tree/master/generator#installation-instructions)
 
+---
 ##Figure of Particle Generation
 <figure>
 	<img src="https://github.com/wcarvalho/dirc-detector/blob/master/img/beams.jpg?raw=true" alt="beams" style="width: 400px;"/>
@@ -31,6 +32,16 @@ Using the diagram above as reference, the executable works as follows:
 | [-c / --custom-set][8] | customizes the particle generation |
 | [-D / --Directory][9] | sets the directory of the output-file |
 | [--pt-distribution-function][10] | sets a custom function for the pt probability-distribution of the particles |
+
+|Script| Description|
+| :---: | :--- |
+| [Calibration][1] | |
+| [Photon Angle Smearing][2] | |
+| [Embdedding Particles][3] | |
+| [Looking Up Particle Information][4] | |
+| [Printing Histograms][5] | |
+| [Plotting Efficiency and False-Positive Rates][6] | |
+| [Plotting Efficiency vs. False-Positive Rate][7] | |
 
 
 ##Command line options:
