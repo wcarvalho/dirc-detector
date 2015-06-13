@@ -88,4 +88,13 @@ replace                        // with this option enabled, this set supplants t
 
 ##Installation Instructions
 
+```
+cd generator
+autoreconf --force --install
+./configure --prefix=$LD_LIBRARY_PATH --bindir=$PATH
+make
+make install
+```
+
+
 [1]:https://www.dropbox.com/s/ns3p81k5c5hysz2/nims_draft4.pdf?dl=0
