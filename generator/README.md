@@ -1,8 +1,8 @@
 # Particle-Generator
 ###The main purpose of this library is to create the "**generator**" executable. Here you can find:
-####1. the executable's [Command-line options](https://github.com/wcarvalho/dirc-detector/tree/master/generator#command-line-options)
-####+ details on the library's [functions](https://github.com/wcarvalho/dirc-detector/tree/master/generator#functions)
-####+ the library's [Installation instructions](https://github.com/wcarvalho/dirc-detector/tree/master/generator#installation-instructions)
+####1. a summary of the executable's [command-line options](https://github.com/wcarvalho/dirc-detector/tree/master/generator#summary-of-command-line-options) ([CLICK HERE](https://github.com/wcarvalho/dirc-detector/tree/master/generator#command-line-options) for details on the options)
+####2. details on the library's [functions](https://github.com/wcarvalho/dirc-detector/tree/master/generator#functions)
+####3. the library's [installation instructions](https://github.com/wcarvalho/dirc-detector/tree/master/generator#installation-instructions)
 
 <figure>
 	<img src="https://github.com/wcarvalho/dirc-detector/blob/master/img/beams.jpg?raw=true" alt="beams" style="width: 400px;"/>
@@ -17,6 +17,8 @@ Using the diagram above as reference, the executable works as follows:
     * Some upper threshold for the number of particles emitted has been met
 + <p> Each particle that intersects with the DIRC has some coordinate (z<sub>p</sub>, x<sub>p</sub>, y<sub>p</sub>), solid angle (&theta;<sub>p</sub>, &phi;<sub>p</sub>) and &Beta;<p>
 **For more details on this process, please see the [related paper][1]**
+
+##Summary of command line options:
 
 ##Command line options:
 1. **e/events**
