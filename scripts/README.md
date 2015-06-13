@@ -3,7 +3,7 @@
 Once you have cloned the master directory from git, you can
 
 |Script| Description|
-| <---> | --- |
+| :---: | :--- |
 | [Calibration][1] | |
 
 | [Photon Angle Smearing][2] | |
@@ -41,7 +41,7 @@ g++ -std=c++11 -O3 -march=native -w -Wall Smearer.cpp -rpath `pkg-config --libs-
 
 
 [1]:https://github.com/wcarvalho/dirc-detector/tree/master/scripts#calibration
-[2]:https://github.com/wcarvalho/dirc-detector/tree/master/scripts#photon-angle amearing
+[2]:https://github.com/wcarvalho/dirc-detector/tree/master/scripts#photon-angle-smearing
 [3]:https://github.com/wcarvalho/dirc-detector/tree/master/scripts#Embdedding-Particles
 [4]:https://github.com/wcarvalho/dirc-detector/tree/master/scripts#Looking-Up-Particle-Information
 [5]:https://github.com/wcarvalho/dirc-detector/tree/master/scripts#Printing-Histograms
