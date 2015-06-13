@@ -69,6 +69,9 @@ generator -P 0 1000 -m 4
 generator -m 10
 ```
 
+
+##Unfinished
+
 ####r/random
     + if r=0 (i.e. `generator -r 0`), all numbers are random
     + if r /= 0 (e.g. `generator -r 3`), all random numbers chosen will repeat in each run of the executable
