@@ -40,7 +40,7 @@ Using the diagram above as reference, the executable works as follows:
 <p> N<sup>&darr;</sup>: minimum number of particles emitted from (0,0,0) <p>
 <p> N<sup>&uarr;</sup>: maximum number of particles emitted from (0,0,0) <p>
 <p> N<sub>DIRC</sub>: number of particles that intersect with the DIRC <p>
-<p> N<sup>i</sup><sub>DIRC</sub>: maximum number of particles to intersect with the DIRC <p>
+<p> N<sup>&uarr;</sup><sub>DIRC</sub>: maximum number of particles to intersect with the DIRC <p>
 
 ####f/filename
   + takes in **1 string** argument to set the output-file name (output file is a root file)
@@ -62,15 +62,15 @@ generator -e 10
 ```
 generator -P 100 500
 ```
-  + <p> if `maxpars` is set, particles are emitted until N >= N<sup>&darr;</sup> and N<sub>DIRC</sub> = N<sup>i</sup><sub>DIRC</sub> <p>
-    + <p> if N<sub>DIRC</sub> = N<sup>i</sup><sub>DIRC</sub> is never true, particles are emitted until N = N<sup>&uarr;</sup> <p>
+  + <p> if `maxpars` is set, particles are emitted until N >= N<sup>&darr;</sup> and N<sub>DIRC</sub> = N<sup>&uarr;</sup><sub>DIRC</sub> <p>
+    + <p> if N<sub>DIRC</sub> = N<sup>&uarr;</sup><sub>DIRC</sub> is never true, particles are emitted until N = N<sup>&uarr;</sup> <p>
   + e.g. if one wants at most 1000 particles emitted but at most 4 to intersect with the DIRC, one would do
 ```
 generator -P 0 1000 -m 4
 ```
 
 ####m/maxpars
-  + <p> takes in **1 int** argument for N<sup>i</sup><sub>DIRC</sub> <p>
+  + <p> takes in **1 int** argument for N<sup>&uarr;</sup><sub>DIRC</sub> <p>
   + e.g. to have at most 10 particles intersect the DIRC, do
 ```
 generator -m 10
@@ -115,14 +115,22 @@ generator --pt-distribution-function x/(0.5+x*x*x*x)
 ```
 generator --pt-distribution-function (x<2)*.7+(x>=2)*.3
 ```
-##Unfinished
+
 ####c/custom-set
+  + this takes in **1 string** argument that corresponds to a textfile that will set the details for the particle generation.
+  + this command can set the variables `maxpars`, `particle` along with other paramaters.
+  + it can set
+    + maxpars, the maximum number of particles to intersect the DIRC
+    + nparticles, the minimum and maximum number of particles to be emitted
+    + eta, the eta range for the particles
+    + pt, the pt range for the particles
+    + phi, the phi range for the particles
+    + charge, the charge distribution of the particles
+    + types, the types of particles that are generated
+    + replace, a boolean for whether particles with the default parameters are generated in addition to this set or noot
+      + if this *is not* set, both sets of particles are generated
+      + if this *is* set, only this custom set is generated
 
-
-
-
-
-user-chosen options via commandline options
 
 The generator, by default, creates particles with the following parameters:
 ```
@@ -158,9 +166,6 @@ replace                        // with this option enabled, this set supplants t
 	+ `generator -c "custom-details.txt"`
 	+
 	+ below is an example text file
-
-+ **# of events**:
-	`generator -e 10 -f $particles_file -c $parameters`
 
 ##Functions
 
