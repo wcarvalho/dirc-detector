@@ -33,17 +33,6 @@ Using the diagram above as reference, the executable works as follows:
 | [-D / --Directory][9] | sets the directory of the output-file |
 | [--pt-distribution-function][10] | sets a custom function for the pt probability-distribution of the particles |
 
-|Script| Description|
-| :---: | :--- |
-| [Calibration][1] | |
-| [Photon Angle Smearing][2] | |
-| [Embdedding Particles][3] | |
-| [Looking Up Particle Information][4] | |
-| [Printing Histograms][5] | |
-| [Plotting Efficiency and False-Positive Rates][6] | |
-| [Plotting Efficiency vs. False-Positive Rate][7] | |
-
-
 ##Command line options:
 #####e/events
   + takes in one int argument for the number of events
@@ -148,12 +137,12 @@ make install
 ```
 
 [1]:https://www.dropbox.com/s/ns3p81k5c5hysz2/nims_draft4.pdf?dl=0
-[2]:(https://github.com/wcarvalho/dirc-detector/tree/master/generator#Figure-of-Particle-Generation)
-[3]:(https://github.com/wcarvalho/dirc-detector/tree/master/generator#eevents)
-[4]:(https://github.com/wcarvalho/dirc-detector/tree/master/generator#pparticle)
-[5]:(https://github.com/wcarvalho/dirc-detector/tree/master/generator#mmaxpars)
-[6]:(https://github.com/wcarvalho/dirc-detector/tree/master/generator#rrandom)
-[7]:(https://github.com/wcarvalho/dirc-detector/tree/master/generator#ffilename)
-[8]:(https://github.com/wcarvalho/dirc-detector/tree/master/generator#ccustom-set)
-[9]:(https://github.com/wcarvalho/dirc-detector/tree/master/generator#ddirectory)
-[10]:(https://github.com/wcarvalho/dirc-detector/tree/master/generator#pt-distribution-function)
+[2]:https://github.com/wcarvalho/dirc-detector/tree/master/generator#Figure-of-Particle-Generation
+[3]:https://github.com/wcarvalho/dirc-detector/tree/master/generator#eevents
+[4]:https://github.com/wcarvalho/dirc-detector/tree/master/generator#pparticle
+[5]:https://github.com/wcarvalho/dirc-detector/tree/master/generator#mmaxpars
+[6]:https://github.com/wcarvalho/dirc-detector/tree/master/generator#rrandom
+[7]:https://github.com/wcarvalho/dirc-detector/tree/master/generator#ffilename
+[8]:https://github.com/wcarvalho/dirc-detector/tree/master/generator#ccustom-set
+[9]:https://github.com/wcarvalho/dirc-detector/tree/master/generator#ddirectory
+[10]:https://github.com/wcarvalho/dirc-detector/tree/master/generator#pt-distribution-function
