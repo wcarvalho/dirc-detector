@@ -37,10 +37,10 @@ Using the diagram above as reference, the executable works as follows:
 
 ###Definitions:
 <p> N: number of particles emitted from (0,0,0) <p>
-<p> N<sup>&darr;</sup>: minimum number of particles emitted from (0,0,0) <p>
-<p> N<sup>&uarr;</sup>: maximum number of particles emitted from (0,0,0) <p>
-<p> N<sub>DIRC</sub>: number of particles that intersect with the DIRC <p>
-<p> N<sup>i</sup><sub>DIRC</sub>: maximum number of particles to intersect with the DIRC <p>
+<p> N<sup>&darr;</sup>: minimum number of particles emitted from (0,0,0) </p>
+<p> N<sup>&uarr;</sup>: maximum number of particles emitted from (0,0,0) </p>
+<p> N<sub>DIRC</sub>: number of particles that intersect with the DIRC </p>
+<p> N<sup>i</sup><sub>DIRC</sub>: maximum number of particles to intersect with the DIRC </p>
 
 ####e/events
   + takes in **1 int** argument for the number of events
@@ -50,15 +50,16 @@ generator -e 10
 ```
 
 ####P/particle
-  + <p> takes in **2 int** arguments for N<sub>&darr;</sub> and N<sub>&uarr;</sub><p>
+  + <p> takes in **2 int** arguments for N<sub>&darr;</sub> and N<sub>&uarr;</sub></p>
   + e.g. to generate at least 100 particles but at most 500, do
 ```
 generator -P 100 500
 ```
   + <p>
   if `maxpars` is set, particles are emitted until N >= N<sup>&darr;</sup> and N<sub>DIRC</sub> = N<sup>i</sup><sub>DIRC</sub>
-  <p>
-    + if the number of particles that intersect with the dirc never reaches that set by `maxpars`, emission ends with the number of emitted particles is the maximum number allowed by this argument
+  </p>
+    + <p> if N<sub>DIRC</sub> = N<sup>i</sup><sub>DIRC</sub> is never true, particles are emitted until N = N<sup>&uarr;</sup>
+  </p>
 
 ####m/maxpars
   + takes in **1 int** argument for the maximum number of particles to intersect with the DIRC
