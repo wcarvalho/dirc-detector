@@ -36,7 +36,7 @@ Using the diagram above as reference, the executable works as follows:
 ##Command line options use:
 
 ###Definitions:
-<p> N: number of particles emitted from (0,0,0) <p>
+<p> N: number of particles emitted from (0,0,0) </p>
 <p> N<sup>&darr;</sup>: minimum number of particles emitted from (0,0,0) </p>
 <p> N<sup>&uarr;</sup>: maximum number of particles emitted from (0,0,0) </p>
 <p> N<sub>DIRC</sub>: number of particles that intersect with the DIRC </p>
