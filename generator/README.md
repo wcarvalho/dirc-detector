@@ -90,9 +90,17 @@ replace                        // with this option enabled, this set supplants t
 
 ```
 cd generator
+```
+```
 autoreconf --force --install
+```
+```
 ./configure --prefix=$LD_LIBRARY_PATH --bindir=$PATH
+```
+```
 make
+```
+```
 make install
 ```
 
