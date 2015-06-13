@@ -57,9 +57,13 @@ generator -P 100 500
 ```
   + <p> if `maxpars` is set, particles are emitted until N >= N<sup>&darr;</sup> and N<sub>DIRC</sub> = N<sup>i</sup><sub>DIRC</sub> <p>
     + <p> if N<sub>DIRC</sub> = N<sup>i</sup><sub>DIRC</sub> is never true, particles are emitted until N = N<sup>&uarr;</sup> <p>
+  + e.g. if one wants at most 1000 particles emitted but at most 4 to intersect with the DIRC, one would do
+```
+generator -P 0 1000 -m 4
+```
 
 ####m/maxpars
-  + takes in **1 int** argument for the maximum number of particles to intersect with the DIRC
+  + <p> takes in **1 int** argument for N<sup>i</sup><sub>DIRC</sub> <p>
   + e.g. to generate at least 100 particles but at most 500, do
 ```
 generator -P 100 500
