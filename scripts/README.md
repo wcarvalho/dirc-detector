@@ -5,7 +5,7 @@ Once you have cloned the master directory from git, you can
 
 
 
-####(Calibration)[1]
+####(Calibration):[1]
 
 ####Photon Angle Smearing
 
