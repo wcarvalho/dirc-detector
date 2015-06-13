@@ -26,7 +26,7 @@ This library has 5 components: 4 sub-libraries **(1) Dirc-Objects**, **(2) Parti
 #####Contains an executable and functions to disentangle the Cherenkov light data and reconstruct the identity of the particles that produced this light.
 
 ### 5. [Scripts]
-######Contains scripts for common tasks in this project such as embedding particles and smearing the angles of a set of photons.
+#####Contains scripts for common tasks in this project such as embedding particle data into an existing data set or smearing the angles of a set of photons.
 
 ---
 ##Installation Instructions
@@ -40,7 +40,7 @@ There are numerous pre-requisite libraries:
 2. [libseamstress](https://code.google.com/p/libseamstress/)
 3. [fitnewton](https://code.google.com/p/fitnewton/)
 
-Instructions on how to install each component of this library are located within each component's README:
+Instructions on how to build and install each component of this library are located within each component's README:
 
 1. [Dirc-Objects](https://github.com/wcarvalho/dirc-detector/tree/master/dircobjects#installation-instructions)
 2. [Particle-Generator](https://github.com/wcarvalho/dirc-detector/tree/master/generator#installation-instructions)
@@ -48,9 +48,9 @@ Instructions on how to install each component of this library are located within
 4. [Particle-Reconstructor](https://github.com/wcarvalho/dirc-detector/tree/master/reconstructor#installation-instructions)
 5. [Scripts](https://github.com/wcarvalho/dirc-detector/tree/master/scripts#installation-instructions)
 
-You may contact with me any concerns about this library via wcarvalho92@gmail.com
+You may contact me with any concerns about this library via wcarvalho92@gmail.com
 
-**Note:** Installation for this library has only been tested on [Mac OSX 10.0+](https://www.apple.com/osx/) and [Linux Ubuntu 14.0+](http://www.ubuntu.com/download/desktop). It has <span style="color:red;font-weight:bold">NOT</span> been tested for Windows. While this installation may work on other UNIX-based systems (and windows builds), this is not guarenteed and you continue with installation at your own risk.
+**Note:** Installation for this library has only been tested on [Mac OSX 10.0+](https://www.apple.com/osx/) and [Linux Ubuntu 14.0+](http://www.ubuntu.com/download/desktop). It has <span style="color:red;font-weight:bold">NOT</span> been tested for Windows. While this installation may work on other UNIX-based systems (and windows builds), this is not guaranteed and you continue with installation at your own risk.
 
 
 [Dirc-Objects]:https://github.com/wcarvalho/dirc-detector/tree/master/dircobjects
