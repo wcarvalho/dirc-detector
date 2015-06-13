@@ -42,6 +42,13 @@ Using the diagram above as reference, the executable works as follows:
 <p> N<sub>DIRC</sub>: number of particles that intersect with the DIRC <p>
 <p> N<sup>i</sup><sub>DIRC</sub>: maximum number of particles to intersect with the DIRC <p>
 
+####f/filename
+  + sets the output-file name (output file is a root file)
+  + e.g. to create a file named "example_file_name.root", do
+```
+generator -f example_file_name.root
+```
+
 ####e/events
   + takes in **1 int** argument for the number of events
   + e.g. to create a file with 10 events, do
@@ -69,16 +76,28 @@ generator -P 0 1000 -m 4
 generator -m 10
 ```
 
+####r/random
+  + sets the seed for the random number generator
+  + if r is set to 0, all numbers are random
+  + e.g. to files output1.root and output2.root will have the different data
+```
+generator -f output1.root -r 0
+generator -f output2.root -r 0
+```
+  + if r is not set to 0, all random numbers chosen will repeat in each run of the executable
+  + e.g. to files output1.root and output2.root will have the same data
+```
+generator -f output1.root -r 1
+generator -f output2.root -r 1
+```
+  + the data generated corresponds to the seed used, so different seeds have different data.
+  + e.g. to files output1.root and output2.root will have the different data
+```
+generator -f output1.root -r 1
+generator -f output2.root -r 2
+```
 
 ##Unfinished
-
-####r/random
-    + if r=0 (i.e. `generator -r 0`), all numbers are random
-    + if r /= 0 (e.g. `generator -r 3`), all random numbers chosen will repeat in each run of the executable
-
-####f/filename
-    + sets the output filename (output file is a root file)
-    + e.g. `generator -f example_file_name.root` will output example_file_name.root
 
 ####c/custom-set
 `generator -c "custom-details.txt"`
