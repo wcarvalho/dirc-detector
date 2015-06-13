@@ -40,7 +40,7 @@ Using the diagram above as reference, the executable works as follows:
 <p> N<sup>&darr;</sup>: minimum number of particles emitted from (0,0,0) <p>
 <p> N<sup>&uarr;</sup>: maximum number of particles emitted from (0,0,0) <p>
 <p> N<sub>DIRC</sub>: number of particles that intersect with the DIRC <p>
-<p> N<sub>DIRC</sub><sup>i</sup>: maximum number of particles to intersect with the DIRC <p>
+<p> N<sup>i</sup><sub>DIRC</sub>: maximum number of particles to intersect with the DIRC <p>
 
 ####e/events
   + takes in **1 int** argument for the number of events
