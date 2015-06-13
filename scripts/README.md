@@ -5,17 +5,11 @@ Once you have cloned the master directory from git, you can
 |Script| Description|
 | :---: | :--- |
 | [Calibration][1] | |
-
 | [Photon Angle Smearing][2] | |
-
 | [Embdedding Particles][3] | |
-
 | [Looking Up Particle Information][4] | |
-
 | [Printing Histograms][5] | |
-
 | [Plotting Efficiency and False-Positive Rates][6] | |
-
 | [Plotting Efficiency vs. False-Positive Rate][7] | |
 
 
