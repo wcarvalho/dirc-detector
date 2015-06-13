@@ -42,7 +42,9 @@ This library has 5 components: 4 sub-libraries **(1) Dirc-Objects**, **(2) Parti
 
 ---
 ##Installation Instructions
-There are numerous pre-requisite libraries: 
+Before continuing, make sure that *libtool, pkg-config, autoconf,* and *automake* are installed.
+
+There are numerous pre-requisite libraries:
 
 1. [ROOT](https://root.cern.ch/drupal/) (version 5.34)
 2. [pkg-config](http://www.freedesktop.org/wiki/Software/pkg-config/)
