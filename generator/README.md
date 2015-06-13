@@ -106,12 +106,12 @@ generator -D /some/path/in/your/computer
 ```
 ####pt-distribution-function
   + takes in **1 string** argument to set the probability-distribution for the pt values (in GeV/c) of the emitted particles
-  + one can use a custom function as follows
+  + one can use the custom function `x/(0.5+x*x*x*x)` as follows
 ```
 generator --pt-distribution-function x/(0.5+x*x*x*x)
 ```
   + piece-wise functions are supported
-  + e.g. to have a uniform 70% chance that particles will have pt below 2Gev/c and a uniform 30% chance that particles will have pt above 2Gev/c, do
+  + e.g. to have a uniform 70% chance that particles will have pt below 2Gev/c and a uniform 30% chance that particles will have pt equal to or above 2Gev/c, do
 ```
 generator --pt-distribution-function (x<2)*.7+(x>=2)*.3
 ```
