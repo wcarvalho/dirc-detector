@@ -23,14 +23,14 @@ Using the diagram above as reference, the executable works as follows:
 
 | Command | Description|
 | :--- | :--- |
-| -e / --events | sets the number of events |
-| -P / --particle | sets the number of particles that are emitted from (0,0,0) (see [Figure of Particle Generation](https://github.com/wcarvalho/dirc-detector/tree/master/generator#Figure-of-Particle-Generation)|
-| -m / --maxpars | sets the maximum number of particles to intersect with the DIRC per event |
-| -r / --random | sets the seed for the random number generator |
-| -f / --filename | sets the output-file name  |
-| -c / --custom-set | customizes the particle generation |
-| -D / --Directory | sets the directory of the output-file |
-| --pt-distribution-function | sets a custom function for the pt probability-distribution of the particles |
+| [-e / --events][3] | sets the number of events |
+| [-P / --particle][4] | sets the number of particles that are emitted from (0,0,0) (see [Figure of Particle Generation][2]|
+| [-m / --maxpars][5] | sets the maximum number of particles to intersect with the DIRC per event |
+| [-r / --random][6] | sets the seed for the random number generator |
+| [-f / --filename][7] | sets the output-file name  |
+| [-c / --custom-set][8] | customizes the particle generation |
+| [-D / --Directory][9] | sets the directory of the output-file |
+| [--pt-distribution-function][10] | sets a custom function for the pt probability-distribution of the particles |
 
 
 ##Command line options:
@@ -128,4 +128,14 @@ git pull
 make
 make install
 ```
+
 [1]:https://www.dropbox.com/s/ns3p81k5c5hysz2/nims_draft4.pdf?dl=0
+[2]:(https://github.com/wcarvalho/dirc-detector/tree/master/generator#Figure-of-Particle-Generation)
+[3]:(https://github.com/wcarvalho/dirc-detector/tree/master/generator#eevents)
+[4]:(https://github.com/wcarvalho/dirc-detector/tree/master/generator#pparticle)
+[5]:(https://github.com/wcarvalho/dirc-detector/tree/master/generator#mmaxpars)
+[6]:(https://github.com/wcarvalho/dirc-detector/tree/master/generator#rrandom)
+[7]:(https://github.com/wcarvalho/dirc-detector/tree/master/generator#ffilename)
+[8]:(https://github.com/wcarvalho/dirc-detector/tree/master/generator#ccustom-set)
+[9]:(https://github.com/wcarvalho/dirc-detector/tree/master/generator#ddirectory)
+[10]:(https://github.com/wcarvalho/dirc-detector/tree/master/generator#pt-distribution-function)
