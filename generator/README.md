@@ -20,6 +20,21 @@ Using the diagram above as reference, the executable works as follows:
 
 ##Summary of command line options:
 
+| Command | Description|
+| ---: | :--- |
+| -e/ --events | |
+| -P/ --particle | |
+| -m/ --maxpars | |
+| -r/ --random | |
+| -f/ --filename | |
+| -c/ --custom-set | |
+| -D/ --Directory | |
+| --pt-distribution-function | |
+| | |
+| | |
+| | |
+
+
 ##Command line options:
 1. **e/events**
   + takes in one int argument for the number of events
