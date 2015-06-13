@@ -5,7 +5,7 @@ This library has 5 components: 4 sub-libraries **(1) Dirc-Objects**, **(2) Parti
 
 ---
 
-**Click [HERE](https://github.com/wcarvalho/dirc-detector#installation-instructions) to skip to the installation instructions**
+**To skip to the installation instructions** [CLICK HERE](https://github.com/wcarvalho/dirc-detector#installation-instructions)
 
 ---
 ## Brief Description of Components
