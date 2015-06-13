@@ -79,7 +79,7 @@ generator -m 10
 ####r/random
   + sets the seed for the random number generator
   + if r is set to 0, all numbers are random
-  + e.g. files output1.root and output2.root will have the different data
+  + e.g. files output1.root and output2.root will have different data
 ```
 generator -f output1.root -r 0
 generator -f output2.root -r 0
@@ -91,7 +91,7 @@ generator -f output1.root -r 1
 generator -f output2.root -r 1
 ```
   + the data generated corresponds to the seed used, so different seeds have different data.
-  + e.g. files output1.root and output2.root will have the different data
+  + e.g. files output1.root and output2.root will have different data
 ```
 generator -f output1.root -r 1
 generator -f output2.root -r 2
