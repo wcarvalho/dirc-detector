@@ -21,7 +21,7 @@ Using the diagram above as reference, the executable works as follows:
 ##Summary of command line options:
 
 | Command | Description|
-| ---: | :--- |
+| :--- | :--- |
 | -e/ --events | |
 | -P/ --particle | |
 | -m/ --maxpars | |
