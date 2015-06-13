@@ -24,13 +24,13 @@ Using the diagram above as reference, the executable works as follows:
 | Command | Description|
 | :--- | :--- |
 | -e / --events | sets the number of events |
-| -P / --particle | sets the number of particles that are emitted from (0,0,0) (see [Figure of Particle Generation][Figure-of-Particle-Generation]|
-| -m / --maxpars | sets the maximum number of particles per event |
-| -r / --random | |
-| -f / --filename | |
-| -c / --custom-set | |
-| -D / --Directory | |
-| --pt-distribution-function | |
+| -P / --particle | sets the number of particles that are emitted from (0,0,0) (see [Figure of Particle Generation][https://github.com/wcarvalho/dirc-detector/tree/master/generator#Figure-of-Particle-Generation]|
+| -m / --maxpars | sets the maximum number of particles to intersect with the DIRC per event |
+| -r / --random | sets the seed for the random number generator |
+| -f / --filename | sets the output-file name  |
+| -c / --custom-set | customizes the particle generation |
+| -D / --Directory | sets the directory of the output-file |
+| --pt-distribution-function | sets a custom function for the pt probability-distribution of the particles |
 
 
 ##Command line options:
