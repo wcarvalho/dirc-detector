@@ -22,8 +22,8 @@
 
 1. <p> It emits particles from point (0,0,0) with a direction determined by solid angle (&eta;<sub>b</sub>, &phi;<sub>b</sub>)<p>
 + Particles are emitted until either
-    * <p> N<sub>DIRC</sub> = N<sup>&uarr;</sup><sub>DIRC</sub> <p>
-    * <p> N >= N<sup>&darr;</sup> and N<sub>DIRC</sub> = N<sup>&uarr;</sup><sub>DIRC</sub> <p>
+    * <p> N<sub>DIRC</sub> = N<sup>&uarr;</sup><sub>DIRC</sub> or <p>
+    * <p> N = N<sup>&uarr; <p>
 + <p> Each particle that intersects with the DIRC has some coordinate (z<sub>p</sub>, x<sub>p</sub>, y<sub>p</sub>), solid angle (&theta;<sub>p</sub>, &phi;<sub>p</sub>) and &Beta;<p>
 **For more details on this process, please see the [related paper][1]**
 
