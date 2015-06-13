@@ -55,6 +55,7 @@ generator -e 10
 ```
 generator -P 100 500
 ```
+
   + <p>
   if `maxpars` is set, particles are emitted until N >= N<sup>&darr;</sup> and N<sub>DIRC</sub> = N<sup>i</sup><sub>DIRC</sub>
   </p>
