@@ -1,7 +1,8 @@
 # Particle-Generator
 ###The main purpose of this library is to create the "**generator**" executable. Here you can find:
 ####1. the executable's [Command-line options](https://github.com/wcarvalho/dirc-detector/tree/master/generator#command-line-options)
-####2. the library's [Installation instructions](https://github.com/wcarvalho/dirc-detector/tree/master/generator#installation-instructions)
+####+ details on the library's [functions](https://github.com/wcarvalho/dirc-detector/tree/master/generator#functions)
+####+ the library's [Installation instructions](https://github.com/wcarvalho/dirc-detector/tree/master/generator#installation-instructions)
 
 <figure>
 	<img src="https://github.com/wcarvalho/dirc-detector/blob/master/img/beams.jpg?raw=true" alt="beams" style="width: 400px;"/>
@@ -85,6 +86,8 @@ replace                        // with this option enabled, this set supplants t
 
 + **# of events**:
 	`generator -e 10 -f $particles_file -c $parameters`
+
+##Functions
 
 ##Installation Instructions
 
