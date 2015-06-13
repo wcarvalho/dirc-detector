@@ -125,30 +125,22 @@ generator --pt-distribution-function (x<2)*.7+(x>=2)*.3
     + eta, the eta range for the particles
     + pt, the pt range for the particles
     + phi, the phi range for the particles
+      + this argument recognizes `pi`, e.g. 2pi is recognized
     + charge, the charge distribution of the particles
+      + if *set to 1*, all particles will have a positive charge
+      + if *set to -1*, all particles will have a negative charge
+      + if *set to 0*, all particles will a random charge
     + types, the types of particles that are generated
+      + options: electrons, pions, kaons, muons, protons
     + replace, a boolean for whether particles with the default parameters are generated in addition to this set or noot
       + if this *is not* set, both sets of particles are generated
       + if this *is* set, only this custom set is generated
 
-
-The generator, by default, creates particles with the following parameters:
+  + to use the file `custom-details.txt`, one would do
 ```
-// custom-details.txt
-maxpars: 5                     // The desired number of particles in the DIRC is 1
-nparticles: 0,10000            // Up to 1000 particles will be emitted from (0,0,0)
-eta: -.5, .5                   // eta range
-pt: 0, 3                       // pt range
-phi: 0, 2pi                 // phi range
-charge: 0                                    // charge of the particles
-types: electron, pion, kaon, muon, proton    // types of particles that will be emitted
-replace                        // only generates custom set
+generator -c "custom-details.txt"
 ```
-+ One can create a custom set of particles, either in addition to or in place of the default set via the following
-	+ **command:** c/custom-set
-	<!-- + **function:** Used to provide the details for a custom generation process via a text file -->
-	+ **example:** `generator -c "custom-details.txt"`
-	+ **sample:**
+  + example settings could be
 ```
 // custom-details.txt
 maxpars: 1                     // The desired number of particles in the DIRC is 1
@@ -160,12 +152,17 @@ charge: 0                      // charge of the particles
 types: electron, pion, kaon    // types of particles that will be emitted
 replace                        // with this option enabled, this set supplants the original set
 ```
-
-
-+ **One can provide the details for a custom generation process in a text file via the c/custom-set command**:
-	+ `generator -c "custom-details.txt"`
-	+
-	+ below is an example text file
+  + The generator, by default, creates particles with the following parameters:
+```
+maxpars: 5
+nparticles: 0,10000
+eta: -.5, .5
+pt: 0, 3
+phi: 0, 2pi
+charge: 0
+types: electron, pion, kaon, muon, proton
+replace
+```
 
 ##Functions
 
