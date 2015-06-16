@@ -3,7 +3,7 @@ AC_INIT(DircObjs, 0.0.1, wilka.carvalho@stonybrook.edu)
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_SRCDIR(dirc_objects.h)
 
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([foreign])
 
 AC_PROG_CXX
 AC_PROG_LIBTOOL

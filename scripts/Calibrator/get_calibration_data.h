@@ -81,7 +81,7 @@ void get_calibration_data(TTree &t1, TTree &t2, ParticleEvent &originals, TrackR
     std::string name = histname(key, lowerbound, higherbound);
     static double min = 0., max = 0.;
     if (data.size() == 0) return;
-    wul::vectorminmax(data, min, max);
+    dirc::vectorminmax(data, min, max);
     dirc::dircTH1D h(name.c_str(), name.c_str(), nbins, min, max);
     for (unsigned j = 0; j < data.size(); ++j)
       h.Fill(data.at(j));
@@ -104,7 +104,7 @@ void get_calibration_data(TTree &t1, TTree &t2, ParticleEvent &originals, TrackR
     h.RemovePastSigma(print_details);
     h.SetFillColor(kRed);
     h.Draw("same");
-    if (index == 0) system( wul::appendStrings("rm ", graphfile).c_str() );
+    if (index == 0) system( dirc::appendStrings("rm ", graphfile).c_str() );
     TFile f(graphfile.c_str(), "update");
     h_copy.Write();
     h.Write();

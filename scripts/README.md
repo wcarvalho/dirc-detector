@@ -17,10 +17,14 @@ Many of the scripts, rely on the "Templatized C++ Command Line Parser Library" (
 
 #####Calibration
 ######calibration data generation
+```
+cd Calibrator
+g++ -std=c++11 -O3 -march=native -w -Wall get_calibration_data.cpp `root-config --libs` -I`root-config --incdir` `pkg-config --libs DircObjs` `pkg-config --cflags DircObjs` `pkg-config --cflags tclap` -o generate_calibration_data
+```
 ######data calibration
 ```
 cd Calibrator
-g++ -std=c++11 -O3 -march=native -w -Wall calibrate_data.cpp `root-config --libs` -I`root-config --incdir` `pkg-config --libs DircObjs` `pkg-config --cflags DircObjs` `pkg-config --cflags tclap` `pkg-config --libs wilkasUtilityLib` `pkg-config --cflags wilkasUtilityLib` -o calibrate_data
+g++ -std=c++11 -O3 -march=native -w -Wall calibrate_data.cpp `root-config --libs` -I`root-config --incdir` `pkg-config --libs DircObjs` `pkg-config --cflags DircObjs` `pkg-config --cflags tclap` -o calibrate_data
 ```
 #####Photon Angle Smearing
 ```
@@ -29,7 +33,10 @@ g++ -std=c++11 -O3 -march=native -w -Wall Smearer.cpp -rpath `pkg-config --libs-
 ```
 
 #####Embdedding Particles
-
+```
+cd embedParticles
+g++ -std=c++11 -O3 -march=native -w -Wall embed_particles.cpp -rpath `pkg-config --libs-only-L DircObjs | sed -e 's/\-L//g'``root-config --libs` -I`root-config --incdir` `pkg-config --libs DircObjs` `pkg-config --cflags DircObjs` `pkg-config --libs SimObjs` -o ../embed_particles
+```
 #####Looking Up Particle Information
 
 #####Printing Histograms

@@ -8,6 +8,7 @@ include_HEADERS  =  \
 	analysis_objects.h \
 	event_parsers.h \
 	dircTH1D.h \
+	utility_library.h \
 	calibration_data.h
 
 # dircComparisons.h
@@ -23,6 +24,7 @@ DircObjs_Dict.cpp: \
 	event_parsers.h \
 	calibration_data.h \
 	dircTH1D.h \
+	utility_library.h \
 	LinkDef.h
 		rootcint -f $@ -c $(DEFAULT_INCLUDES) $(INCLUDES) $^
 
@@ -34,6 +36,7 @@ libDircObjs_la_SOURCES = \
 	dircTH1D.cpp \
 	TrackRecons.cpp \
 	dircTFile.cpp \
+	utility_library.cpp \
 	DircObjs_Dict.cpp
 
 libDircObjs_la_LIBADD = \

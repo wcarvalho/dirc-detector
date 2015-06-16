@@ -1,5 +1,5 @@
 #include "get_calibration_data.h"
-#include "FileProperties.h"
+// #include "FileProperties.h"
 #include <tclap/CmdLine.h>
 
 int main(int argc, char const *argv[])
@@ -71,7 +71,7 @@ catch( TCLAP::ArgException& e )
   TTree* t2 = (TTree*)f2.Get("identifications");
   t2 -> SetBranchAddress("guesses", &reconstructions);
 
-  graphFile = wul::appendStrings(outputDirectory, "/", graphFile);
+  graphFile = dirc::appendStrings(outputDirectory, "/", graphFile);
   get_calibration_data(*t1, *t2, *originals, *reconstructions, calibrationPercent, nbins, graphFile, calibrationFile, pStep, calibrateArea, calibrateTheta, print);
 
   f1.cd();
