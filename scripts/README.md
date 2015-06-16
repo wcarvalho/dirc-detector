@@ -74,8 +74,8 @@ cd FakeVsEfficiency
 g++ -std=c++11 -O3 -march=native -w -Wall fakevsefficiency.cpp `root-config --libs` -I`root-config --incdir` `pkg-config --libs DircObjs` `pkg-config --cflags DircObjs` `pkg-config --cflags tclap` -o plot_fake_vs_efficiency
 ```
 
-[1]:https://github.com/wcarvalho/dirc-detector/tree/master/scripts#calibration
-[2]:https://github.com/wcarvalho/dirc-detector/tree/master/scripts#photon-angle-smearing
+[1]:https://github.com/wcarvalho/dirc-detector/tree/master/scripts#Calibrating-Data
+[2]:https://github.com/wcarvalho/dirc-detector/tree/master/scripts#Smearing-Angles
 [3]:https://github.com/wcarvalho/dirc-detector/tree/master/scripts#Embdedding-Particles
 [4]:https://github.com/wcarvalho/dirc-detector/tree/master/scripts#Looking-Up-Particle-Information
 [5]:https://github.com/wcarvalho/dirc-detector/tree/master/scripts#Printing-Histograms
