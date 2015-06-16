@@ -1,14 +1,14 @@
 ##Available Scripts
 
-|Script| Description|
-| :---: | :--- |
-| [Calibration][1] | |
-| [Photon Angle Smearing][2] | |
-| [Embdedding Particles][3] | |
-| [Looking Up Particle Information][4] | |
-| [Printing Histograms][5] | |
-| [Plotting Efficiency and False-Positive Rates][6] | |
-| [Plotting Efficiency vs. False-Positive Rate][7] | |
+|Script| Description| Installation link|
+| :---: | :--- | :--- |
+| Calibration | | [link][1] |
+| Photon Angle Smearing | | [link][2] |
+| Embdedding Particles | | [link][3] |
+| Looking Up Particle Information | | [link][4] |
+| Printing Histograms | | [link][5] |
+| Plotting Efficiency and False-Positive Rates | | [link][6] |
+| Plotting Efficiency vs. False-Positive Rate | | [link][7] |
 
 
 ##Installation Instructions
