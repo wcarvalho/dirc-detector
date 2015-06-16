@@ -13,18 +13,19 @@
 
 ##Installation Instructions
 
+Many of the scripts, rely on the "Templatized C++ Command Line Parser Library" ([TCLAP](http://tclap.sourceforge.net/)) library in order to parse command line options. In order to use these scripts, you must install this library.
 
 #####Calibration
 ######calibration data generation
 ######data calibration
 ```
 cd Calibrator
-g++ -std=c++11 -O3 -march=native -w -Wall calibrate_data.cpp `root-config --libs` -I`root-config --incdir` `pkg-config --libs DircObjs` `pkg-config --cflags DircObjs` `pkg-config --cflags tclap` `pkg-config --libs wilkasUtilityLib` `pkg-config --cflags wilkasUtilityLib` -o ../calibrate_data
+g++ -std=c++11 -O3 -march=native -w -Wall calibrate_data.cpp `root-config --libs` -I`root-config --incdir` `pkg-config --libs DircObjs` `pkg-config --cflags DircObjs` `pkg-config --cflags tclap` `pkg-config --libs wilkasUtilityLib` `pkg-config --cflags wilkasUtilityLib` -o calibrate_data
 ```
 #####Photon Angle Smearing
 ```
 cd Smearer
-g++ -std=c++11 -O3 -march=native -w -Wall Smearer.cpp -rpath `pkg-config --libs-only-L DircObjs | sed -e 's/\-L//g'``root-config --libs` -I`root-config --incdir` `pkg-config --libs DircObjs` `pkg-config --cflags DircObjs` -o ../smear
+g++ -std=c++11 -O3 -march=native -w -Wall Smearer.cpp -rpath `pkg-config --libs-only-L DircObjs | sed -e 's/\-L//g'``root-config --libs` -I`root-config --incdir` `pkg-config --libs DircObjs` `pkg-config --cflags DircObjs` -o smear_photon_angles
 ```
 
 #####Embdedding Particles
