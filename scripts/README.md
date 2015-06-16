@@ -80,4 +80,4 @@ g++ -std=c++11 -O3 -march=native -w -Wall fakevsefficiency.cpp `root-config --li
 [4]:https://github.com/wcarvalho/dirc-detector/tree/master/scripts#looking-up-particle-information
 [5]:https://github.com/wcarvalho/dirc-detector/tree/master/scripts#printing-histograms
 [6]:https://github.com/wcarvalho/dirc-detector/tree/master/scripts#plotting-efficiency-and-false-positive-rates
-[7]:https://github.com/wcarvalho/dirc-detector/tree/master/scripts#plotting-efficiency-vs.-false-positive-rate
+[7]:https://github.com/wcarvalho/dirc-detector/tree/master/scripts#plotting-efficiency-vs-false-positive-rate
