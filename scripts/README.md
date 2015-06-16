@@ -18,27 +18,32 @@ Many of the scripts, rely on the "Templatized C++ Command Line Parser Library" (
 #####Calibrating Data
 ######generating calibration data
 ```
+cd Scripts
 cd Calibrator
 g++ -std=c++11 -O3 -march=native -w -Wall get_calibration_data.cpp `root-config --libs` -I`root-config --incdir` `pkg-config --libs DircObjs` `pkg-config --cflags DircObjs` `pkg-config --cflags tclap` -o generate_calibration_data
 ```
 ######calibrating data
 ```
+cd Scripts
 cd Calibrator
 g++ -std=c++11 -O3 -march=native -w -Wall calibrate_data.cpp `root-config --libs` -I`root-config --incdir` `pkg-config --libs DircObjs` `pkg-config --cflags DircObjs` `pkg-config --cflags tclap` -o calibrate_data
 ```
 #####Smearing Angles
 ```
+cd Scripts
 cd Smearer
 g++ -std=c++11 -O3 -march=native -w -Wall Smearer.cpp -rpath `pkg-config --libs-only-L DircObjs | sed -e 's/\-L//g'``root-config --libs` -I`root-config --incdir` `pkg-config --libs DircObjs` `pkg-config --cflags DircObjs` -o smear_photon_angles
 ```
 
 #####Embdedding Particles
 ```
+cd Scripts
 cd embedParticles
 g++ -std=c++11 -O3 -march=native -w -Wall embed_particles.cpp -rpath `pkg-config --libs-only-L DircObjs | sed -e 's/\-L//g'``root-config --libs` -I`root-config --incdir` `pkg-config --libs DircObjs` `pkg-config --cflags DircObjs` `pkg-config --libs SimObjs` -o ../embed_particles
 ```
 #####Looking Up Particle Information
 ```
+cd Scripts
 cd Information_LookUp
 g++ -std=c++11 -O3 -march=native -w -Wall info_lookup.cpp -rpath `root-config --libs ` -lMinuit -I`root-config --incdir` `pkg-config --libs DircObjs` `pkg-config --cflags DircObjs` `pkg-config --cflags tclap`  `pkg-config --libs ReconstructionObjs` `pkg-config --libs SimObjs` -o ../lookup_info
 ```
@@ -46,6 +51,7 @@ g++ -std=c++11 -O3 -march=native -w -Wall info_lookup.cpp -rpath `root-config --
 #####Printing Histograms
 ######Printing Full Histograms
 ```
+cd Scripts
 cd HistogramPrinter
 
 g++ -std=c++11 -O3 -g -march=native -w -Wall ReducedHistogramPrinter.cpp -rpath `root-config --libs ` -I`root-config --incdir` `pkg-config --libs DircObjs` `pkg-config --cflags DircObjs` `pkg-config --cflags tclap`  `pkg-config --libs ReconstructionObjs` `pkg-config --libs SimObjs` -o ../print_reduced_histograms
