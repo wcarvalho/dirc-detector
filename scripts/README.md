@@ -50,10 +50,11 @@ g++ -std=c++11 -O3 -march=native -w -Wall info_lookup.cpp -rpath `root-config --
 
 #####Printing Histograms
 ######Printing Full Histograms
+```
 cd scripts
 cd HistogramPrinter
-
 g++ -std=c++11 -O3 -march=native -w -Wall HistogramPrinter.cpp -rpath `root-config --libs ` -I`root-config --incdir` `pkg-config --libs DircObjs` `pkg-config --cflags DircObjs` `pkg-config --cflags tclap`  `pkg-config --libs ReconstructionObjs` `pkg-config --libs SimObjs` -o print_histograms
+```
 ######Printing Indexed Histograms
 ```
 cd Scripts
