@@ -92,7 +92,7 @@ void fitElliptical(std::vector<double>& x, std::vector<double>& y, double& x0_fi
 
 	double xlow = -3, xup = 3;
 	double ylow = 0., yup = 0.;
-	wul::vectorminmax(y, ylow, yup);
+	dirc::vectorminmax(y, ylow, yup);
 	// (x-x0)^2/a + (y-y0)^2/b = 1
 	h2 = new TH2D("ellipse_fit", "ellipse_fit", nbinsx, xlow, xup, nbinsy, ylow, yup);
 

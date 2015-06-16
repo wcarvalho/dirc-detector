@@ -115,8 +115,8 @@ catch( TCLAP::ArgException& e )
 	if ( !event_range_set )
 		event_range = {0, nentries};
 
-	string TH1Dfilename = wul::appendStrings(directory, output_base, "TH1D.root");
-	string TH2Dfilename = wul::appendStrings(directory, output_base, "TH2D.root");
+	string TH1Dfilename = dirc::appendStrings(directory, output_base, "TH1D.root");
+	string TH2Dfilename = dirc::appendStrings(directory, output_base, "TH2D.root");
 
 	gErrorIgnoreLevel = 5000;
   if (print) gErrorIgnoreLevel = 0;         // turn off all root printing

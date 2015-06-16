@@ -113,7 +113,7 @@ TH1D* addReducedHistogram(TPad& pad, TrackRecon const& R, vector<PhotonOut> cons
 	// double binwidth = h2.GetYaxis()->GetBinWidth(1);
 	// int nbins = (xhi-xlow)/binwidth;
 
-	// string histname = wul::appendStrings(h2.GetName(), "1D");
+	// string histname = dirc::appendStrings(h2.GetName(), "1D");
 
 	// TH1D* h1 = CreateReducedHistogram(photons, index, particle_index, histname, nbins, xlow, xhi);
 

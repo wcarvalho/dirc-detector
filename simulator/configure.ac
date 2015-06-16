@@ -2,7 +2,7 @@ AC_INIT([simulator], [1], [wilka.carvalho@stonybrook.edu] )
 
 AC_CONFIG_AUX_DIR(config)
 
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([foreign])
 
 AC_PROG_CXX
 AC_PROG_LIBTOOL

@@ -38,11 +38,11 @@ else{
 		if (!passConditions(flags, fmap, P, R, i, threshold)) continue;
 
 		double momentum = P.CalculateMomentum();
-		std::string histitle_part1 = wul::appendStrings("", P.name);
-		std::string histitle_part2 = wul::appendStrings(" as ", R.Options.at(i));
-		std::string histitle_part3 = wul::stringDouble(", p = ", momentum);
-		std::string histitle_part4 = wul::stringDouble(", emissionangle = ", expected_angle);
-		std::string histtitle = wul::appendStrings(histitle_part1, histitle_part2, histitle_part3, histitle_part4);
+		std::string histitle_part1 = dirc::appendStrings("", P.name);
+		std::string histitle_part2 = dirc::appendStrings(" as ", R.Options.at(i));
+		std::string histitle_part3 = dirc::stringDouble(", p = ", momentum);
+		std::string histitle_part4 = dirc::stringDouble(", emissionangle = ", expected_angle);
+		std::string histtitle = dirc::appendStrings(histitle_part1, histitle_part2, histitle_part3, histitle_part4);
 		h.SetTitle(histtitle.c_str());
 		h.GetListOfFunctions()->Add(&f2);
 

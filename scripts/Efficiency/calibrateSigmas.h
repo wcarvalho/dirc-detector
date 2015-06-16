@@ -43,7 +43,7 @@ void calibrateSigmas(TCanvas &C, TTree &t1, TTree &t2, TTree &t1prime, TTree &t2
   auto histname = [&pBounds](std::string& name){
     stringstream ss; ss.str("");
     ss << "_pt_" << pBounds[0] << "_" << pBounds[1];
-    return std::move(wul::appendStrings(name, ss.str()));
+    return std::move(dirc::appendStrings(name, ss.str()));
   };
 
   auto doNothing_trial   = [] (TrackRecon& r, Particle& p){ };
@@ -82,7 +82,7 @@ void calibrateSigmas(TCanvas &C, TTree &t1, TTree &t2, TTree &t1prime, TTree &t2
       std::string name = histname(key);
       static double min = 0., max = 0.;
       if (i->second.back().size() == 0) continue;
-      wul::vectorminmax(i->second.back(), min, max);
+      dirc::vectorminmax(i->second.back(), min, max);
       if (key == "theta") { min = -.15; max = .15; }
       dirc::dircTH1D h(name.c_str(), name.c_str(), nbins, min, max);
       for (unsigned j = 0; j < latest_data.size(); ++j){
@@ -102,7 +102,7 @@ void calibrateSigmas(TCanvas &C, TTree &t1, TTree &t2, TTree &t1prime, TTree &t2
       h.RemovePastSigma(false);
       h.SetFillColor(kRed);
       h.Draw("same");
-      static string fname = wul::appendStrings(prefix, "calibration.root");
+      static string fname = dirc::appendStrings(prefix, "calibration.root");
       TFile f(fname.c_str(), "update");
       h_copy.Write();
       h.Write();

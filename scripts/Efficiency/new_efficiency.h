@@ -35,7 +35,7 @@ public:
 	}
 
 	void setTitle(string match, string against){
-		title = wul::appendStrings("success rate for identifying ", match, " as ", against);
+		title = dirc::appendStrings("success rate for identifying ", match, " as ", against);
 	}
 	void setYtitle(string yt){
 		ytitle = yt;
@@ -54,10 +54,10 @@ void printTGraphASymError(TH1D& NumHist, TH1D& DenHist, const string& search, co
 	int numcounter = NumHist.GetEntries();
 	int dencounter = DenHist.GetEntries();
 
-	string numfilename = wul::appendStrings(dir, search, "_num_", basename);
+	string numfilename = dirc::appendStrings(dir, search, "_num_", basename);
 	if (printhists) NumHist.SaveAs(numfilename.c_str(), "update");
 
-	string denfilename = wul::appendStrings(dir, search, "_den_", basename);
+	string denfilename = dirc::appendStrings(dir, search, "_den_", basename);
 	if (printhists) DenHist.SaveAs(denfilename.c_str(), "update");
 
 	TGraphAsymmErrors graph;
@@ -68,7 +68,7 @@ void printTGraphASymError(TH1D& NumHist, TH1D& DenHist, const string& search, co
 		return;
 	}
 
-	string graphname = wul::appendStrings(dir, search,basename);
+	string graphname = dirc::appendStrings(dir, search,basename);
 
 	graph.BayesDivide(&NumHist, &DenHist);
 	graph.SetMarkerStyle(20);

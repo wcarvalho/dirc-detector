@@ -124,7 +124,7 @@ void checkValid(const TFile& f){
 	}
 }
 string getGraphName(string& file){
-	wul::FileProperties fp(file);
+	dirc::FileProperties fp(file);
 	return std::move(fp.get_filename_without_suffix());
 }
 void getGraph(string& file, TGraphAsymmErrors*& Plot){

@@ -4,7 +4,6 @@ commonAdds = \
 $(ROOT_LIBS) \
 $(DIRC_LIB) \
 $(SIM_LIB) \
-$(UTIL_LIB) \
 $(NEWTON_LIB) \
 $(OPENCV_LIB)
 

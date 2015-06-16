@@ -36,7 +36,7 @@ void CreateHistogram_1D2D(int ev, int par, Analysis &A, std::vector<PhotonOut> &
 	}
 	A.SetData(data);
 
-	std::string histTitle = wul::appendStrings(wul::stringDouble("Event ", ev), wul::stringDouble(", Particle ", par));
+	std::string histTitle = dirc::appendStrings(dirc::stringDouble("Event ", ev), dirc::stringDouble(", Particle ", par));
 	std::string histname = histTitle;
   std::string TH1Name = histname; TH1Name.append("_1D");
   std::string TH2Name = histname; TH2Name.append("_2D");

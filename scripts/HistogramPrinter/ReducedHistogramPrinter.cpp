@@ -129,8 +129,8 @@ catch( TCLAP::ArgException& e )
 	gErrorIgnoreLevel = 5000;
   if (print) gErrorIgnoreLevel = 0;         // turn off all root printing
 
-	string filename2D = wul::appendStrings(directory, output_base, "_TH2Dreduced_plot.root");
-	string filename1D = wul::appendStrings(directory, output_base, "_TH1Dreduced_plot.root");
+	string filename2D = dirc::appendStrings(directory, output_base, "_TH2Dreduced_plot.root");
+	string filename1D = dirc::appendStrings(directory, output_base, "_TH1Dreduced_plot.root");
   auto &pars   = originals->Particles;
   auto &recons = reconstructions->Recon;
 	vector<int>& index = reconstructions->index;
@@ -168,7 +168,7 @@ catch( TCLAP::ArgException& e )
 			double xlow;
 			double xhi;
 			int nbins;
-			h1histname = wul::appendStrings(histname, "1D");
+			h1histname = dirc::appendStrings(histname, "1D");
 			xlow = h2.GetXaxis()->GetXmin();
 			xhi = h2.GetXaxis()->GetXmax();
 			nbins = h2.GetNbinsX();

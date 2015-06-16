@@ -222,7 +222,7 @@ catch( TCLAP::ArgException& e )
 	if (print) cout << nmatch << " " << matchsearch << "s" << endl;
 	if (print) cout << nfalse << " " << falsesearch << "s" << endl;
 
-	// graphlabels matchlabels("efficiency", "momentum", wul::appendString("identifying ", matchsearch, " as ", matchsearch);
+	// graphlabels matchlabels("efficiency", "momentum", dirc::appendString("identifying ", matchsearch, " as ", matchsearch);
 
 	// want the filename to be: efficiency_$appendage
 

@@ -12,7 +12,6 @@ AC_PROG_LIBTOOL
 CPPFLAGS="${CPPFLAGS} -std=c++11 -pipe -Wno-deprecated-register -O3 -march=native -I`root-config --incdir` `pkg-config --cflags wilkasUtilityLib` `pkg-config --cflags fitnewton`"
 
 ROOT_LIBS=`root-config --libs`
-UTIL_LIB=`pkg-config --libs wilkasUtilityLib`
 NEWTON_LIB=`pkg-config --libs fitnewton`
 
 AC_SUBST(ROOT_LIBS)

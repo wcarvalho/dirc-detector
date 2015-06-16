@@ -60,10 +60,10 @@ void FillHist(TH1D &H, vector< pair<int, pair <Particle, TrackRecon> > > const &
 TGraphAsymmErrors graphASymm(TCanvas &c, double low, double hi, double nbins, vector< pair<int, pair <Particle, TrackRecon> > > const & Num, vector< pair<int, pair <Particle, TrackRecon> > > const & Den, int Case, vector< double > range, bool &makegraph, bool print, string graph_name){
 
 	TH1D NumHist("Num", "Num", nbins, low, hi);
-	string numfile = wul::appendStrings(graph_name, "_Num.root");
+	string numfile = dirc::appendStrings(graph_name, "_Num.root");
 
 	TH1D DenHist("Den", "Den", nbins, low, hi);
-	string denfile = wul::appendStrings(graph_name, "_Den.root");
+	string denfile = dirc::appendStrings(graph_name, "_Den.root");
 
 	if (print) cout << "Numerator:\n";
 	FillHist(NumHist, Num, Case, range, print);

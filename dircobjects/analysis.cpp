@@ -43,6 +43,26 @@ int TrackRecon::getIndexOf(std::string type){
 	}
 	return -1;
 }
+
+std::string TrackRecon::getBestFit(double const threshold){
+
+	static double lowestsigma {1.e10};
+	static double nsigma;
+	static string bestfit {""};
+	static string name;
+
+	for (unsigned i = 0; i < size(); ++i){
+		nsigma = getnSigmaThetaAt(i);
+		name = getNameAt(i);
+		if ((nsigma < lowestsigma) && (nsigma < threshold)) {
+			cout << name << ": " << nsigma << endl;
+			lowestsigma = nsigma;
+			bestfit = name;
+		}
+	}
+	cout << "bestfit = " << bestfit << endl;
+	return bestfit;
+}
 void TrackRecon::addFitsToHistogram(TH1D &h){
 
 	if (Params.empty()) return;

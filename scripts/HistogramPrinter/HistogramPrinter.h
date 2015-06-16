@@ -40,9 +40,9 @@ void print1DHistogram(TCanvas &C,TH1D& h, Particle &P, TrackRecon &R, flag_fun_m
 
 			if (!passConditions(flags, fmap, P, R, i, threshold)) continue;
 			double momentum = P.CalculateMomentum();
-			std::string histitle_part1 = wul::appendStrings("", P.name);
-			std::string histitle_part2 = wul::appendStrings(" as ", R.Options.at(i));
-			std::string histtitle = wul::appendStrings(h.GetName(), histitle_part1, histitle_part2);
+			std::string histitle_part1 = dirc::appendStrings("", P.name);
+			std::string histitle_part2 = dirc::appendStrings(" as ", R.Options.at(i));
+			std::string histtitle = dirc::appendStrings(h.GetName(), histitle_part1, histitle_part2);
 			h.SetTitle(histtitle.c_str());
 			h.GetListOfFunctions()->Add(&f2);
 

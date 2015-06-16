@@ -90,7 +90,7 @@ catch( TCLAP::ArgException& e )
 	flag_TFile_map TFilemap;
 	// TFile* empty = 0;
 	for (unsigned i = 0; i < flags.size(); ++i){
-		string filename = wul::appendStrings(dir, TFile_names.at(i));
+		string filename = dirc::appendStrings(dir, TFile_names.at(i));
 		TFile* tempfile = new TFile(filename.c_str(), "update");
 		TFilemap[flags.at(i)] = std::move(tempfile);
 	}
@@ -149,7 +149,7 @@ void collect_data(const vector<int>& flags, flag_func_map& flag_funcs, flag_data
 void print_data(TFile &F, int nbins, const vector<double>& data){
 
 	double xlow = 0., xhi = 0;
-	wul::vectorminmax(data, xlow, xhi);
+	dirc::vectorminmax(data, xlow, xhi);
 	TH1D h("h", "h", nbins, xlow, xhi);
 	for (unsigned i = 0; i < data.size(); ++i)
 		h.Fill(data.at(i));

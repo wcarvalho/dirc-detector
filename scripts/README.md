@@ -15,18 +15,18 @@
 
 Many of the scripts, rely on the "Templatized C++ Command Line Parser Library" ([TCLAP](http://tclap.sourceforge.net/)) library in order to parse command line options. In order to use these scripts, you must install this library.
 
-#####Calibration
-######calibration data generation
+#####Calibrating Data
+######generating calibration data
 ```
 cd Calibrator
 g++ -std=c++11 -O3 -march=native -w -Wall get_calibration_data.cpp `root-config --libs` -I`root-config --incdir` `pkg-config --libs DircObjs` `pkg-config --cflags DircObjs` `pkg-config --cflags tclap` -o generate_calibration_data
 ```
-######data calibration
+######calibrating data
 ```
 cd Calibrator
 g++ -std=c++11 -O3 -march=native -w -Wall calibrate_data.cpp `root-config --libs` -I`root-config --incdir` `pkg-config --libs DircObjs` `pkg-config --cflags DircObjs` `pkg-config --cflags tclap` -o calibrate_data
 ```
-#####Photon Angle Smearing
+#####Smearing Angles
 ```
 cd Smearer
 g++ -std=c++11 -O3 -march=native -w -Wall Smearer.cpp -rpath `pkg-config --libs-only-L DircObjs | sed -e 's/\-L//g'``root-config --libs` -I`root-config --incdir` `pkg-config --libs DircObjs` `pkg-config --cflags DircObjs` -o smear_photon_angles
@@ -38,9 +38,19 @@ cd embedParticles
 g++ -std=c++11 -O3 -march=native -w -Wall embed_particles.cpp -rpath `pkg-config --libs-only-L DircObjs | sed -e 's/\-L//g'``root-config --libs` -I`root-config --incdir` `pkg-config --libs DircObjs` `pkg-config --cflags DircObjs` `pkg-config --libs SimObjs` -o ../embed_particles
 ```
 #####Looking Up Particle Information
+```
+cd Information_LookUp
+g++ -std=c++11 -O3 -march=native -w -Wall info_lookup.cpp -rpath `root-config --libs ` -lMinuit -I`root-config --incdir` `pkg-config --libs DircObjs` `pkg-config --cflags DircObjs` `pkg-config --cflags tclap`  `pkg-config --libs ReconstructionObjs` `pkg-config --libs SimObjs` -o ../lookup_info
+```
 
 #####Printing Histograms
+######Printing Full Histograms
+```
+cd HistogramPrinter
 
+g++ -std=c++11 -O3 -g -march=native -w -Wall ReducedHistogramPrinter.cpp -rpath `root-config --libs ` -I`root-config --incdir` `pkg-config --libs DircObjs` `pkg-config --cflags DircObjs` `pkg-config --cflags tclap`  `pkg-config --libs ReconstructionObjs` `pkg-config --libs SimObjs` -o ../print_reduced_histograms
+```
+######Printing Indexed Histograms
 #####Plotting Efficiency and False-Positive Rates
 
 #####Plotting Efficiency vs. False-Positive Rate

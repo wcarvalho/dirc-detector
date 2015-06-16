@@ -36,7 +36,7 @@ int main(int argc, char** argv)
     string rf = rf_default;
     string wf = wf_default;
 
-    wul::FileProperties readf_prop(rf);
+    dirc::FileProperties readf_prop(rf);
     string directory = "";
 
 
