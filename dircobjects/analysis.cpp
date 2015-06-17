@@ -52,15 +52,13 @@ std::string TrackRecon::getBestFit(double const threshold){
 	static string name;
 
 	for (unsigned i = 0; i < size(); ++i){
-		nsigma = getnSigmaThetaAt(i);
+		nsigma = fabs(getnSigmaThetaAt(i));
 		name = getNameAt(i);
 		if ((nsigma < lowestsigma) && (nsigma < threshold)) {
-			cout << name << ": " << nsigma << endl;
 			lowestsigma = nsigma;
 			bestfit = name;
 		}
 	}
-	cout << "bestfit = " << bestfit << endl;
 	return bestfit;
 }
 void TrackRecon::addFitsToHistogram(TH1D &h){
