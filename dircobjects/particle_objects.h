@@ -14,7 +14,7 @@
 class ParticleOut : public TObject
 {
 public:
-	ParticleOut(double theta=1., double phi=0.) : Theta(theta), Phi(phi), Eta(0.), pt(0.), Time_Traveled(0.) { PossibleMasses(); }
+	ParticleOut(double theta=1., double phi=0.) : Theta(theta), Phi(phi), Eta(0.), pt(0.), Time_Traveled(0.), arc_traveled_to_dirc(1.) { PossibleMasses(); }
 	~ParticleOut(){}
 
 
@@ -32,14 +32,13 @@ public:
 		double Beta = CalculateBeta(m);
 		return sqrt((m*Beta)*(m*Beta)/(1-Beta*Beta));
 	}
-	virtual double CalculateMomentum(double m) const {
-		return CalculateMomentum(m);
-	}
+	virtual double CalculateMomentum(double m) const {return CalculateMomentum(m);}
   friend std::ostream& operator<<(std::ostream& os, ParticleOut& p){
     os << p.Theta << ", " << p.Phi;
     return os;
   }
-
+  double path_to_dirc() const {return arc_traveled_to_dirc;}
+	double path_to_dirc(){return arc_traveled_to_dirc;}
 	double Theta;
 	double Phi;
 	double X;
@@ -52,6 +51,7 @@ public:
 	double Time_Traveled;
 	int Charge;
 	int NumberofPhotons;
+	double arc_traveled_to_dirc;
 
 	std::vector<std::string> deftypes;
 	std::vector<std::string> types;
