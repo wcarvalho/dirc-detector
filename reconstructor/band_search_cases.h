@@ -35,10 +35,10 @@ void x_distance(ParticleOut& P, double& x_back, double& x_forward){
 	sim.DistancetoWalls();
 	sim.WhichWall();
 
-	static string name = "path length (meters)";
-	static TH1D H(name.c_str(), name.c_str(), 100, 0., .02);
-	H.Fill(sim.WillTravel()/100.);
-	H.SaveAs("path_length.root");
+	// static string name = "path length (meters)";
+	// static TH1D H(name.c_str(), name.c_str(), 100, 0., .02);
+	// H.Fill(sim.WillTravel()/100.);
+	// H.SaveAs("path_length.root");
 	sim.TravelDistance(sim.WillTravel());
 
 	static double x_start;
@@ -61,20 +61,23 @@ void x_distance(ParticleOut& P, double& x_back, double& x_forward){
 }
 
 double time_of_flight(ParticleOut& P){
+	static double tp;
 	static double tp_sum;
 	static double beta;
 	auto masses = P.MassMap();
 
 	tp_sum = 0;
+	cout << endl;
 	for (auto i = masses.begin(); i != masses.end(); ++i){
 		double& mass = i->second;
 		beta = P.CalculateBeta(mass);
-		tp_sum += P.path_to_dirc()/beta;
+		tp = (P.path_to_dirc())/(beta/30);
+		tp_sum += tp;
+		cout << i->first << ": " << tp << endl;
 	}
 
-	double tp = tp_sum/masses.size();
-
-	return std::move(tp);
+	double tp_final = tp_sum/masses.size();
+	return std::move(tp_final);
 }
 
 

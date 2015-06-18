@@ -46,9 +46,9 @@ int TrackRecon::getIndexOf(std::string type){
 
 std::string TrackRecon::getBestFit(double const threshold){
 
-	static double lowestsigma {1.e10};
+	static double lowestsigma; lowestsigma = 1.e10;
 	static double nsigma;
-	static string bestfit {""};
+	static string bestfit; bestfit = "";
 	static string name;
 
 	for (unsigned i = 0; i < size(); ++i){

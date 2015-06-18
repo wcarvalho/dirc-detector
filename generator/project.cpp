@@ -82,7 +82,7 @@ bool intersect_circles(bool hel, double startx, double starty, double rad_det, d
 }
 
 
-bool intersect_helix_cylinder(bool hel, double startx, double starty, double startz, double rad_det, double k_trk, double phi_trk, double d_trk, double dzdl_trk, double& x, double& y, double& z)
+bool intersect_helix_cylinder(bool hel, double startx, double starty, double startz, double rad_det, double k_trk, double phi_trk, double d_trk, double dzdl_trk, double& x, double& y, double& z, double& length_to_dirc)
 {
   bool madeit = intersect_circles(hel, startx, starty, rad_det, k_trk, phi_trk, d_trk, x, y);
   if(madeit==false)
@@ -113,6 +113,7 @@ bool intersect_helix_cylinder(bool hel, double startx, double starty, double sta
     s += (5./56.)*temp2;
   }
   double dz = sqrt(s*s*dzdl_trk*dzdl_trk/(1. - dzdl_trk*dzdl_trk));
+  length_to_dirc = fabs(dz/dzdl_trk);
   if(dzdl_trk>0.){z = startz + dz;}
   else{z = startz - dz;}
   return true;
@@ -177,7 +178,6 @@ bool intersect_with_dirc(double dirc_height, double eta, double pt, double phi_i
   }
   double dz = sqrt(s*s*dzdl*dzdl/(1. - dzdl*dzdl));
   double z0 = 0.;
-  length_to_dirc = dz/dzdl;
   if(dzdl > 0.){z0 = vz - dz;}
   else{z0 = vz + dz;}
 
@@ -187,7 +187,7 @@ bool intersect_with_dirc(double dirc_height, double eta, double pt, double phi_i
 
   bool hel = (bool)((sign(charge) + 1)>>1);
   double x=0.;double y=0.;double z=0.;
-  bool madeit = intersect_helix_cylinder(hel, 0.,0.,0., radius, k, phi, d, dzdl, x, y, z);
+  bool madeit = intersect_helix_cylinder(hel, 0.,0.,0., radius, k, phi, d, dzdl, x, y, z, length_to_dirc);
 
   x_dirc = z;
 

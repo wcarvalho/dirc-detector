@@ -31,15 +31,16 @@ bool isPhotonInThetaBand(vector<PhotonOut> const& photons, vector<int> const& ph
 }
 bool isPhotonInTimeBand(vector<PhotonOut> const& photons, vector<int> const& photonset, double const& x_distance_back, double const& x_distance_forward, double const& particle_time_to_dirc, Detector const& d, ParticleOut const& P, bool print){
 
-	static double sigma = 5;
+	static double sigma = 100;
 	static Rotater r; r.Feed_Particle(P.Theta, P.Phi);
 
 	static double time_in_dirc;
 	static double total_time;
 	static double time_difference;
 	static double min_time_difference; min_time_difference = 10.e8;
+	static double max_time_difference = 0;
 	static string name = "reconstructed time - measured time";
-	static TH1D h(name.c_str(), name.c_str(), 1000, -.2, .4);
+	static TH1D h(name.c_str(), name.c_str(), 1000, -10, 10);
 	static int chosen_indx;
 	static int count = 0;
 	for (auto &i: photonset){
@@ -57,35 +58,39 @@ bool isPhotonInTimeBand(vector<PhotonOut> const& photons, vector<int> const& pho
 		time_in_dirc = fabs((d.n/30)*(x_distance*1.e-2)/(sin(theta)*cos(phi)));
 		// cout << "time_in_dirc = " << time_in_dirc << endl;
 		total_time = time_in_dirc + particle_time_to_dirc;
-		// cout << "total_time = " << total_time << endl;
-		// cout << "photon.Time_Traveled = " << photon.Time_Traveled << endl;
+		cout << "\nreconstructed total_time = " << total_time << endl;
+		cout << "recorded      total_time = " << photon.Time_Traveled << endl;
 		time_difference = total_time - photon.Time_Traveled;
 		if (fabs(time_difference) < fabs(min_time_difference)){
 			chosen_indx = i;
 			min_time_difference = time_difference;
-			if (fabs(min_time_difference) > .2){
-				cout << "\nwall = " << photon.GetWall() << endl;
-				cout << "x_distance = " << x_distance << endl;
-				cout << "theta = " << theta << endl;
-				cout << "phi = " << phi << endl;
-				cout << "reconstructed time_in_dirc = " << time_in_dirc << endl;
-				cout << "recorded      time_in_dirc = " << photon.Time_Traveled << endl;
-			}
+			// if (fabs(min_time_difference) > .2){
+			// 	cout << "\nwall = " << photon.GetWall() << endl;
+			// 	cout << "x_distance = " << x_distance << endl;
+			// 	cout << "theta = " << theta << endl;
+			// 	cout << "phi = " << phi << endl;
+			// 	cout << "reconstructed time_in_dirc = " << time_in_dirc << endl;
+			// 	cout << "recorded      time_in_dirc = " << photon.Time_Traveled << endl;
+			// }
+		}
+		if (fabs(time_difference) > fabs(max_time_difference)){
+			max_time_difference = time_difference;
 		}
 
 	}
 
 
 
-	if (fabs(min_time_difference) < sigma){
+	if (fabs(min_time_difference) < 5*sigma){
 		h.Fill(min_time_difference);
 		// cout << "count = " << count << ", size = " << photons.size() << endl;;
 		if (count == (photons.size()) ){
-			h.SaveAs("time_difference.root");
+			h.SaveAs("full_time_difference.root");
 			count = 0;
 		}
 		return true;
 	}
+	// cout << "max_time_difference = " << max_time_difference << endl;
 	return false;
 
 }

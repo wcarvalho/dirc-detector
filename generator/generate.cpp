@@ -19,7 +19,8 @@ vector<Particle> generate(int nparticles, gParticle& gPar, Detector d, int maxPa
 	  				d.Mag_field, gPar.X, gPar.Y, gPar.Phi, gPar.Theta, gPar.Beta, gPar.arc_traveled_to_dirc);
   		gPar.X = gPar.X + d.Length/2;
   		gPar.Y = gPar.Y + d.Width/2;
-
+  		gPar.arc_traveled_to_dirc *= 1.e-2;
+  		gPar.Time_Traveled = (gPar.path_to_dirc())/(gPar.Beta/30);
   		gPar.getEangle();
   		gPar.CalculateMomentum();
   		// determines the number of photons per cm here
@@ -36,8 +37,8 @@ vector<Particle> generate(int nparticles, gParticle& gPar, Detector d, int maxPa
 		  				  		"\t\tX = %f, Y = %f, Z = %f"
 		  				  		"\n\t\tPhi = %f, Theta = %f\n"
 		  				  		"\t\tBeta = %f, Emission Angle = %f\n"
-		  				  		"\t\twith %f PhotonsPercm\n",
-		  				  		gPar.X, gPar.Y, gPar.Z, gPar.Phi, gPar.Theta, gPar.Beta, gPar.ConeAngle, gPar.PhotonsPercm);
+		  				  		"\t\twith %f PhotonsPercm, and distance to dirc %f \n",
+		  				  		gPar.X, gPar.Y, gPar.Z, gPar.Phi, gPar.Theta, gPar.Beta, gPar.ConeAngle, gPar.PhotonsPercm, gPar.path_to_dirc());
 		  		}
 				pars.push_back(*Par);
 				passes++;
