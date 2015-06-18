@@ -19,7 +19,7 @@ void TallestBinContent(ParticleOut & particle, TH2D const& h, double const& smea
 	center_max = center + width;
 }
 
-double x_distance_traveled(ParticleOut& P){
+void x_distance(ParticleOut& P, double& x_back, double& x_forward){
 
 
 	static Detector d;
@@ -32,8 +32,14 @@ double x_distance_traveled(ParticleOut& P){
 	sim.SetAngle(P.Theta, P.Phi);
 	sim.SetDim(l, w, h);
 	sim.SetStart(P.X, P.Y, 0.);
+	sim.DistancetoWalls();
+	sim.WhichWall();
 
-	sim.GotoWall();
+	static string name = "path length (meters)";
+	static TH1D H(name.c_str(), name.c_str(), 100, 0., .02);
+	H.Fill(sim.WillTravel()/100.);
+	H.SaveAs("path_length.root");
+	sim.TravelDistance(sim.WillTravel());
 
 	static double x_start;
 	static double x_final;
@@ -48,13 +54,10 @@ double x_distance_traveled(ParticleOut& P){
 
 	x_half_movement = x_start + sign(x_displacement)*half_x_traveled;
 
-	double delta_total_x;
-	if ( sign(x_displacement) > 0 )
-		delta_total_x = l - x_half_movement;
-	else
-		delta_total_x = x_half_movement;
+	x_back = x_half_movement;
+	x_forward = l - x_half_movement;
 
-	return std::move(delta_total_x);
+	return;
 }
 
 double time_of_flight(ParticleOut& P){

@@ -34,6 +34,8 @@ void Simulate_PhotonPath(Detector& d, Photon &photon, double smear, bool print)
 		double &x_p = simPho.coord[0];
 		if( withinDiff(x_p, 0., .01) || withinDiff(x_p, d.Length, .01) )
 		{
+			if ( withinDiff(x_p, 0., .01) ) photon.SetWall(Photon::BACK);
+			if ( withinDiff(x_p, d.Length, .01) ) photon.SetWall(Photon::FRONT);
 			photon.SetAngle(simPho.Theta, simPho.Phi);
 			photon.X = simPho.coord[0];
 			photon.Y = simPho.coord[1];

@@ -174,7 +174,7 @@ int main(int argc, char** argv)
 
 			histogram_photons_in_frame = histogram_photon_angles(ev, i, photons_in_frame);
 
-			index_photons(particle, i, photons_in_frame, index, histogram_photons_in_frame, smear, band_cases, band_search_case, band_search_width, photons_per_particle, expectedPhotonMap[i], print);
+			index_photons(particle, i, photons_in_frame, index, histogram_photons_in_frame, smear, band_cases, band_search_case, band_search_width, photons_per_particle, expectedPhotonMap[i], *d, print);
 		}
 
 		////////// Create 1D Histograms and Fit them

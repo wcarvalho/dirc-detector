@@ -120,7 +120,7 @@ bool intersect_helix_cylinder(bool hel, double startx, double starty, double sta
 
 
 
-bool intersect_with_dirc(double dirc_height, double eta, double pt, double phi_input, double mass, int charge, double radius, double magfield, double& x_dirc, double& y_dirc, double& phi_dirc, double& theta_dirc, double& beta)
+bool intersect_with_dirc(double dirc_height, double eta, double pt, double phi_input, double mass, int charge, double radius, double magfield, double& x_dirc, double& y_dirc, double& phi_dirc, double& theta_dirc, double& beta, double& length_to_dirc)
 {
   double vx=0.;
   double vy=0.;
@@ -177,6 +177,7 @@ bool intersect_with_dirc(double dirc_height, double eta, double pt, double phi_i
   }
   double dz = sqrt(s*s*dzdl*dzdl/(1. - dzdl*dzdl));
   double z0 = 0.;
+  length_to_dirc = dz/dzdl;
   if(dzdl > 0.){z0 = vz - dz;}
   else{z0 = vz + dz;}
 

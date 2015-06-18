@@ -16,7 +16,7 @@ vector<Particle> generate(int nparticles, gParticle& gPar, Detector d, int maxPa
 
   		passed = intersect_with_dirc(d.Width, gPar.Eta, gPar.pt,
 	  				gPar.Phi_i, gPar.m , gPar.Charge, d.Radial_D,
-	  				d.Mag_field, gPar.X, gPar.Y, gPar.Phi, gPar.Theta, gPar.Beta);
+	  				d.Mag_field, gPar.X, gPar.Y, gPar.Phi, gPar.Theta, gPar.Beta, gPar.arc_traveled_to_dirc);
   		gPar.X = gPar.X + d.Length/2;
   		gPar.Y = gPar.Y + d.Width/2;
 

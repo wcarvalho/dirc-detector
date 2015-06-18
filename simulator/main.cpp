@@ -178,11 +178,11 @@ int main(int argc, char** argv)
 			CheckForFlag(photon_event, i, "no");
 			if (flag) continue;
 			double t = photon.Time_Traveled*300*TMath::Cos(photon.Phi)*TMath::Sin(photon.Theta);
-			if (fabs(t) < 100){
-				cout << "Error with time!\n";
-				cout << "time = " << t << endl;
-				exit(1);
-			}
+			// if (fabs(t) < 100){
+			// 	cout << "Error with time!\n";
+			// 	cout << "time = " << t << endl;
+			// 	exit(1);
+			// }
 		}
 		if (ai.print_photons_given) cout << "total photons: " << photon_event.Photons.size() << endl;
 		FillTree(sim_out, *ParEvent, photon_event, *event_output, "no", event_outputCopy, Append, quiet);

@@ -42,7 +42,7 @@ void getExpectedPhotonMap(vector<ParticleOut> & pars, unordered_map <int, vec_pa
 Photons reconstruct_photons(Photons const& set);
 Photons rotate_photons_into_particle_frame(double const theta, double const phi, Photons const& original_photons);
 
-void index_photons(ParticleOut & particle, int const& particle_index, vector<PhotonOut> const& photons, vector<int>& index, TH2D& h, double const& smear, vector<int> const& cases, unsigned const& band_search_case, double const& band_search_width, unordered_map <int, int>& photons_per_particle, vec_pair const&expected_photons, bool const& print);
+void index_photons(ParticleOut & particle, int const& particle_index, vector<PhotonOut> const& photons, vector<int>& index, TH2D& h, double const& smear, vector<int> const& cases, unsigned const& band_search_case, double const& band_search_width, unordered_map <int, int>& photons_per_particle, vec_pair const&expected_photons, Detector const& d, bool const& print);
 
 TH2D histogram_photon_angles(int const& event, int const& particle, vector<PhotonOut> const& photons);
 
