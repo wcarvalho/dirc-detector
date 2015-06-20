@@ -73,6 +73,7 @@ double Particle::CalculateMomentum() const{
 }
 
 double Particle::CalculateMomentum(){
-	momentum = sqrt((m*Beta)*(m*Beta)/(1-Beta*Beta));
+	double ThetaBeam = 2*atan(exp(-Eta));
+	momentum = pt/sin(ThetaBeam);
 	return momentum;
 }

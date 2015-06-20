@@ -48,9 +48,9 @@ namespace dirc
 
 		int center_bin = FindBin(center_guess);
 		static int distributionRangeBins[2];
-		for (unsigned i = 0; i < 2; ++i)
+		for (unsigned i = 0; i < 2; ++i){
 			distributionRangeBins[i] = FindBin(distributionRange[i]);
-
+		}
 		double distributionIntegral = Integral(distributionRangeBins[0], distributionRangeBins[1], "width");
 		if (print) std::cout << "Total distributionIntegral = " << distributionIntegral << std::endl;
 

@@ -78,6 +78,7 @@ void addFits(TH1D &h, TrackRecon const& R, vector<TF1*>& functions){
 		const double& xhi = R.Params.at(i).at(5);
 		f2.SetRange(xlow, xhi);
 		f2.SetLineColor(i+4);
+		if ((!R.passed_intensity_cut(i, 5)) && (R.getnSigmaThetaAt(i) > 5)) f2.SetLineColor(0);
 		double const& center = R.getIntegralCenterAt(i);
 		if (center < center_min) center_min = center;
 		if (center > center_max) center_max = center;

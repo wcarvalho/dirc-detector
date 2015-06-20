@@ -74,12 +74,19 @@ void CalculateParticleFits(TH1D &histogram, ParticleOut &P, TrackRecon &T, vec_p
 		// if (print) cout << "X, Y, Theta, Phi, Beta = " << P.X << ", " << P.Y << ", " << P.Theta << ", " << P.Phi << ", " << Beta << endl;
 
 		double pi2 = TMath::Pi()/2;
-		double sigma_Theta = smear/(sqrt(Area));
+		double sigma_Theta = smear/(Sigma_N);
 		double delSigTheta = (angle - center)/(sigma_Theta);
 		double delSigA = (N-Area)/Sigma_N;
 		double delSigma = sqrt(delSigTheta*delSigTheta + delSigA*delSigA);
 
+		cout << endl << name << endl;
+		cout << "theta: " << sigma_Theta << ", " << delSigTheta << endl;
+		cout << "photons: " << Sigma_N << ", " << delSigA << endl;
+
 		guess.Options.push_back(name);
+		guess.SigTheta.push_back(sigma_Theta);
+		guess.SigArea.push_back(Sigma_N);
+
 		guess.delSigTheta.push_back(delSigTheta);
 		guess.delSigArea.push_back(delSigA);
 		guess.Sigmas.push_back(delSigma);

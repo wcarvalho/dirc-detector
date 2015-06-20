@@ -31,10 +31,10 @@ int getNormalizedIndex(const double& value, const double& start, const double& s
   return std::move(index);
 }
 
-double getLowerBoundFromIndex(const int& index, double& step){
-  return index*step;
+double getLowerBoundFromIndex(const double lower, const int& index, double& step){
+  return lower + index*step;
 }
 
-double getHigherBoundFromIndex(const int& index, double& step){
-  return getLowerBoundFromIndex(index,step) + step;
+double getHigherBoundFromIndex(const double lower, const int& index, double& step){
+  return getLowerBoundFromIndex(lower, index,step) + step;
 }

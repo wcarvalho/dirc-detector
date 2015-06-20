@@ -13,6 +13,8 @@ vector<Particle> generate(int nparticles, gParticle& gPar, Detector d, int maxPa
   	{
   		if (maxPars == 0) break;
 			gPar.gen();
+  		gPar.CalculateMomentum();
+  		if ((gPar.momentum > gPar.ptrange[1]) || (gPar.momentum < gPar.ptrange[0]) ) continue;
 
   		passed = intersect_with_dirc(d.Width, gPar.Eta, gPar.pt,
 	  				gPar.Phi_i, gPar.m , gPar.Charge, d.Radial_D,
@@ -21,7 +23,6 @@ vector<Particle> generate(int nparticles, gParticle& gPar, Detector d, int maxPa
   		gPar.Y = gPar.Y + d.Width/2;
 
   		gPar.getEangle();
-  		gPar.CalculateMomentum();
   		// determines the number of photons per cm here
 			gPar.CalculatePhotonsPercm(200e-9, 1000e-9, d.n);
   		if (passed)
@@ -30,7 +31,7 @@ vector<Particle> generate(int nparticles, gParticle& gPar, Detector d, int maxPa
 				{
 					if (print)
 					{
-						printf("\n\tParticle: %s, Eta = %f, pt = %f, Phi_i = %f\n", gPar.name.c_str(), gPar.Eta, gPar.pt, gPar.Phi_i);
+						printf("\n\tParticle: %s, Eta = %f, pt = %f, p = %f, Phi_i = %f\n", gPar.name.c_str(), gPar.Eta, gPar.pt, gPar.momentum, gPar.Phi_i);
 		  			printf("\t\tmass = %f, charge = %i\n", gPar.m, gPar.Charge);
 		  			printf("\tCollided with detector with:\n"
 		  				  		"\t\tX = %f, Y = %f, Z = %f"
