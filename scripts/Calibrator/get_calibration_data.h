@@ -99,8 +99,8 @@ void get_calibration_data(TTree &t1, TTree &t2, ParticleEvent &originals, TrackR
       // cout << "\t" << j << ": " << _d << endl;
     }
 
-    static stringstream ss; ss.str(""); ss << key << "_" << lowerbound << "_" << higherbound << ".root";
-    h.SaveAs(ss.str().c_str());
+    // static stringstream ss; ss.str(""); ss << key << "_" << lowerbound << "_" << higherbound << ".root";
+    // h.SaveAs(ss.str().c_str());
     static TH1D h_copy;
     h_copy = h;
     h_copy.Draw();
