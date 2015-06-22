@@ -83,7 +83,7 @@ bool passed_conditions(const Particle& P, const TrackRecon& R, const int& rec_i,
 	passed = true;
 	for(auto i: conditions){
 		conditional_pass = func_map[i](P, R, rec_i, threshold);
-		if (print) cout << "condition: " << i << ", pass: " << conditional_pass << endl;
+		if (print) cout << "\tcondition: " << i << ", pass: " << conditional_pass << endl;
 		passed *= conditional_pass;
 	}
 	return passed;

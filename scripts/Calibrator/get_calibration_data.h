@@ -76,7 +76,8 @@ void get_calibration_data(TTree &t1, TTree &t2, ParticleEvent &originals, TrackR
   typedef vector< pair < double, double > > vec_pair;
 
   bool print_details = false;
-  auto generate_histogram = [&nbins, &histname, &pStep, &print, &percent, &graphfile, &print_details, &pLowerBound](string key, vector<double>& data, vec_pair& sigmas, vector<double>& percentAchieved, unsigned& index){
+  auto generate_histogram = [&nbins, &histname, &pStep, &print, &percent, &graphfile, &print_details, &pLowerBound](string key, vector<double>& data, vec_pair& sigmas, vector<double>& percentAchieved, unsigned& index)
+  {
     static double lowerbound; lowerbound=getLowerBoundFromIndex(pLowerBound, index, pStep);
     static double higherbound; higherbound=getHigherBoundFromIndex(pLowerBound, index, pStep);
     if (print) cout << key << ", generating for: " << lowerbound << " : " << higherbound << endl;

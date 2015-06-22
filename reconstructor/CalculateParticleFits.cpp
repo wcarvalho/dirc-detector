@@ -79,9 +79,13 @@ void CalculateParticleFits(TH1D &histogram, ParticleOut &P, TrackRecon &T, vec_p
 		double delSigA = (N-Area)/Sigma_N;
 		double delSigma = sqrt(delSigTheta*delSigTheta + delSigA*delSigA);
 
-		// cout << endl << name << endl;
-		// cout << "theta: " << sigma_Theta << ", " << delSigTheta << endl;
-		// cout << "photons: " << Sigma_N << ", " << delSigA << endl;
+		double momentum = P.CalculateMomentum(mass);
+		if (print && (momentum > 2.)){
+			cout << endl << name << " with p = " << momentum << endl;
+			cout << "\ttheta: " << sigma_Theta << ", " << delSigTheta << endl;
+			cout << "\t\t expected: " << angle << ", found: " << center << endl;
+			cout << "\tphotons: " << Sigma_N << ", " << delSigA << endl;
+		}
 
 		guess.Options.push_back(name);
 		guess.SigTheta.push_back(sigma_Theta);

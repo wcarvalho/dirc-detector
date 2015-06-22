@@ -35,6 +35,8 @@ public:
 	double getIntegralCenterAt(int const i){ return Params.at(i).at(1); }
 	double getIntegralCenterAt(int const i) const { return Params.at(i).at(1); }
 	bool passed_intensity_cut (int const i, double const threshold) const;
+	double getSigmaThetaAt(int const i) const { return SigTheta.at(i); }
+	double getSigmaAreaAt(int const i) const { return SigArea.at(i); }
 	double getnSigmaAreaAt(int const i) const {
 		// cout << "\ntype: " << getNameAt(i) << endl;
 		// cout << "area = " << getIntegralAt(i) << endl;

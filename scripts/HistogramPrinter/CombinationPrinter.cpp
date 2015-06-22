@@ -170,8 +170,8 @@ int main(int argc, char const *argv[])
 	if ( !event_range_set )
 		event_range = {0, nentries};
 
-	cout << "particle_search = " << particle_search << endl;
-	cout << "particle_compare = " << particle_compare << endl;
+	if (print) cout << "particle_search = " << particle_search << endl;
+	if (print) cout << "particle_compare = " << particle_compare << endl;
 	for (unsigned entry = event_range.at(0); entry < event_range.at(1); ++entry){
 		if (print) cout << "Event " << entry << endl;
 		photon_tree->GetEntry(entry);
@@ -231,8 +231,8 @@ int main(int argc, char const *argv[])
 
 
 
-			if (print) cout << "\tincorrect count: = " << misIdentificationEvents_count << endl;
-			if (print) cout << "\tcorrect count:   = " << particleEvents_count << endl;
+			if (print) cout << "\t- incorrect count: = " << misIdentificationEvents_count << endl;
+			if (print) cout << "\t- correct count:   = " << particleEvents_count << endl;
 		}
 
 
