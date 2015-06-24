@@ -17,8 +17,17 @@
 void calibrateSigmas(TTree &t1, TTree &t2, TTree &t2prime, ParticleEvent &originals, TrackRecons& reconstructions, calibration_data* const& cal_data, vector<string>& calibrationTypes, const bool& calibrateArea, const bool& calibrateTheta, const bool& print){
 
   auto applyCalibration = [&calibrateArea, &calibrateTheta, &print](TrackRecon& recon, int index, double photons_center, double photons_sigma, double theta_center, double theta_sigma){
-    if (calibrateArea) recon.delSigArea.at(index)  = (recon.delSigArea.at(index) - photons_center)/photons_sigma;
-    if (calibrateTheta) recon.delSigTheta.at(index)  = (recon.delSigTheta.at(index) - theta_center)/theta_sigma;
+    if (calibrateArea){
+      recon.delSigArea.at(index)  = (recon.delSigArea.at(index) - photons_center)/photons_sigma;
+      recon.SigArea.at(index) = (recon.getExpectedIntensityAt(index) - recon.getIntegralAt(index))/recon.delSigArea.at(index);
+    }
+
+
+
+    if (calibrateTheta){
+      recon.delSigTheta.at(index)  = (recon.delSigTheta.at(index) - theta_center)/theta_sigma;
+      recon.SigTheta.at(index) = (recon.getExpectedAngleAt(index) - recon.getIntegralCenterAt(index))/recon.delSigTheta.at(index);
+    }
   };
 
   auto calibrate = [&cal_data, &applyCalibration, &calibrationTypes](TrackRecon& recon, Particle& par, bool print){

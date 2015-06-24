@@ -6,6 +6,7 @@
 #include "../headers/functions.h"
 
 using namespace std;
+double pi = 3.14159265358979312;
 
 /*================================================================================================
 Simulate the trajectories for a single Photon of a single Event
@@ -32,10 +33,14 @@ void Simulate_PhotonPath(Detector& d, Photon &photon, double smear, bool print)
 	{
 		simPho.GotoWall(print);
 		double &x_p = simPho.coord[0];
-		if( withinDiff(x_p, 0., .01) || withinDiff(x_p, d.Length, .01) )
+		if( simPho.wall == 1 )
 		{
 			if ( withinDiff(x_p, 0., .01) ) photon.SetWall(Photon::BACK);
 			if ( withinDiff(x_p, d.Length, .01) ) photon.SetWall(Photon::FRONT);
+			if (photon.GetWall() != photon.WallFromPhi(photon.Phi)){
+				cout << "photon wall = " << photon.GetWall() << " with phi = " << photon.Phi << " and subsequent wall " << photon.WallFromPhi(photon.Phi) << endl;
+				exit(1);
+			}
 			photon.SetAngle(simPho.Theta, simPho.Phi);
 			photon.X = simPho.coord[0];
 			photon.Y = simPho.coord[1];

@@ -32,6 +32,7 @@ histogram_photon_angles.cpp \
 getExpectedPhotonMap.cpp \
 CalculateParticleFits.cpp \
 reset_variables.cpp \
+check_reconstructed_photons.cpp \
 ##=====================================
 ##
 ##					Mutual functions

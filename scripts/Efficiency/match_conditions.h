@@ -1,6 +1,6 @@
 #include "Simulate.h"
 
-bool exceedsThreshold(double const value, double const threshold){
+bool exceedsThreshold(double const value, double const threshold, bool print = false){
 	if (threshold < 0){
 		// cout << value << " less than " << fabs(threshold) << endl;
 		return (value < fabs(threshold));
@@ -67,6 +67,14 @@ bool inside_box_xyplane(const Particle& P, const TrackRecon& R, const int& rec_i
 	}
 	else return false;
 }
+
+bool photon_count(const Particle& P, const TrackRecon& R, const int& rec_i, const double& threshold){
+	static double nphotons;
+	nphotons = R.getIntegralAt(rec_i);
+	if (nphotons < 100)
+		return false;
+	else return true;
+}
 //FIXME: boost inside_ellipse so that it
 // bool inside_ellipse(const Particle& P, const TrackRecon& R, const int& rec_i, const double& threshold, const double& x1, const double& x2, const double& y1, const double& y2, const double& b)
 // {
@@ -83,7 +91,7 @@ bool passed_conditions(const Particle& P, const TrackRecon& R, const int& rec_i,
 	passed = true;
 	for(auto i: conditions){
 		conditional_pass = func_map[i](P, R, rec_i, threshold);
-		if (print) cout << "condition: " << i << ", pass: " << conditional_pass << endl;
+		if (print) cout << "\tcondition: " << i << ", pass: " << conditional_pass << endl;
 		passed *= conditional_pass;
 	}
 	return passed;

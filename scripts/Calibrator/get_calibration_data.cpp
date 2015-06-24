@@ -14,6 +14,8 @@ int main(int argc, char const *argv[])
   int nbins = 200;
   double pStep;
 	double calibrationPercent = 0.;
+  double plow;
+  double pup;
 
 	bool print = false;
 	bool calibrateArea = false;
@@ -30,7 +32,10 @@ try{
 
   TCLAP::ValueArg<std::string> DirectoryArg("D","Directory","Directory where graphs for sigma calibration will be stored",false,"","string", cmd);
 
-  TCLAP::ValueArg<double> pBinArg("","p-bin","pt bin size for calibration",false, .25, "int", cmd);
+  TCLAP::ValueArg<double> pBinArg("","p-bin","p bin size for calibration",false, .25, "int", cmd);
+
+  TCLAP::ValueArg<double> plowArg("","plow","lower momentum bound",false, 0, "double", cmd);
+  TCLAP::ValueArg<double> pupArg("","pup","upper momentum bound",false, 3.5, "double", cmd);
 
   TCLAP::ValueArg<int> nBinArg("n","nbins","number of bins in calibration graph",false, 200, "int", cmd);
 
@@ -50,6 +55,9 @@ try{
   outputDirectory = DirectoryArg.getValue();
   pStep = pBinArg.getValue();
   nbins = nBinArg.getValue();
+  plow = plowArg.getValue();
+  pup = pupArg.getValue();
+
 
 	calibrationPercent = calibrationPercentArg.getValue();
 	print = verboseArg.isSet();
@@ -72,7 +80,7 @@ catch( TCLAP::ArgException& e )
   t2 -> SetBranchAddress("guesses", &reconstructions);
 
   graphFile = dirc::appendStrings(outputDirectory, "/", graphFile);
-  get_calibration_data(*t1, *t2, *originals, *reconstructions, calibrationPercent, nbins, graphFile, calibrationFile, pStep, calibrateArea, calibrateTheta, print);
+  get_calibration_data(*t1, *t2, *originals, *reconstructions, calibrationPercent, nbins, graphFile, calibrationFile, pStep, plow, pup, calibrateArea, calibrateTheta, print);
 
   f1.cd();
   f2.Close();

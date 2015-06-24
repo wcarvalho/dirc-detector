@@ -33,7 +33,7 @@ int main(int argc, char const *argv[])
 	double time_max;
 
 	vector< int > event_range;
-	vector<int> matchcondition_cases = {1, 4};
+	vector<int> matchcondition_cases = {1, 5};
 	vector<double> momentum_range {1.75, 2.25};
 
 	bool event_range_set = false;
@@ -64,7 +64,8 @@ int main(int argc, char const *argv[])
 			"\n\t\tcase 1: within_angle_resolution"
 			"\n\t\tcase 2: inside_box"
 			"\n\t\tcase 3: inside_circle"
-			"\n\t\tcase 4: xyplane",false, "double", cmd);
+			"\n\t\tcase 4: xyplane"
+			"\n\t\tcase 5: intensity_cut",false, "double", cmd);
 
 		TCLAP::ValueArg<int> max_countArg("C","max-count","number of each type of graph",false, 100,"int", cmd);
 
@@ -116,6 +117,7 @@ int main(int argc, char const *argv[])
 	functions[2] = &inside_box;
 	functions[3] = &inside_circle;
 	functions[4] = &xyplane;
+	functions[5] = &photon_count;
 
 	TFile* photon_Tfile_p = 0;
 	TTree* photon_tree = 0;
@@ -170,10 +172,13 @@ int main(int argc, char const *argv[])
 	if ( !event_range_set )
 		event_range = {0, nentries};
 
-	cout << "particle_search = " << particle_search << endl;
-	cout << "particle_compare = " << particle_compare << endl;
+	if (print) cout << "particle_search = " << particle_search << endl;
+	if (print) cout << "particle_compare = " << particle_compare << endl;
+
+	TH2D h("momentum vs intensity", "momentum vs intensity", 200, 0, 900, 10, 2, 3);
+
 	for (unsigned entry = event_range.at(0); entry < event_range.at(1); ++entry){
-		if (print) cout << "Event " << entry << endl;
+		if (print) cout << "----------------Event " << entry << "------------\n";
 		photon_tree->GetEntry(entry);
 		particle_tree->GetEntry(entry);
 		reconstruction_tree->GetEntry(entry);
@@ -199,12 +204,12 @@ int main(int argc, char const *argv[])
 
 			auto& par = pars.at(i);
 			auto& phos = photon_reconstruction.Photons.at(i);
-
+			if (print) cout << "photons: " << phos.size() << endl;
+			// if (print) cout << "index size " << index.size() << endl;
 			if (phos.size() != index.size()){
 				cout << "index and photons of different size!\n";
-				cout << " photons size " << phos.size() << endl;
-				cout << " index size " << index.size() << endl;
-				return 0;
+				// cout << " photons size " << phos.size() << endl;
+				continue;
 			}
 			auto& recon = recons.at(i);
 			double momentum = par.CalculateMomentum();
@@ -213,26 +218,52 @@ int main(int argc, char const *argv[])
 
 			if (!withinrange(momentum_range, momentum)) continue;
 
-			int particle_search_index = recon.getIndexOf(particle_compare);
-			if (particle_search_index == -1) continue;
-			cout << "Identification\n";
-			bool passed_Identification = passConditions(matchcondition_cases, functions, par, recon, particle_search_index, -threshold, print);
+			static string best_fit;
+			best_fit = recon.getBestFit(threshold);
+
+
+			// for (unsigned _i = 0; _i < recon.size(); ++_i){
+			// 	cout << recon.getNameAt(_i) << " : " << recon.getnSigmaThetaAt(_i) << endl;
+			// }
+
+
+			if (print) cout << "best fit = " << best_fit << endl;
+			bool search_is_best_fit = (particle_search == best_fit);
+
+
+
+			double intensity = recon.getIntegralAt(recon.getIndexOf(particle_search));
+			h.Fill(intensity, momentum);
+
+
+			bool passed_Identification;
+			if (search_is_best_fit) passed_Identification = true;
+			else passed_Identification = false;
+
+			// bool passed_Identification = passConditions(matchcondition_cases, functions, par, recon, particle_search_index, threshold, print);
 			if (!added_Identification_Batch && passed_Identification && (par.name == particle_search) && (particleEvents_count < max_count)){
 				AddBatch(entry, i, particleEvents, par_outs, pars, photon_reconstruction.Photons, cheat_phos, index, recons, particle_compare, particleEvents_count, threshold, plotType, time_min, time_max);
 				added_Identification_Batch = true;
 			}
 
-			cout << "misIdentification\n";
-			bool passed_misIdentification = passConditions(matchcondition_cases, functions, par, recon, particle_search_index, threshold, print);
+
+			bool compare_is_best_fit = (particle_compare == best_fit);
+
+			bool passed_misIdentification;
+			if (compare_is_best_fit) passed_misIdentification = true;
+			else passed_misIdentification = false;
+
+			// bool passed_misIdentification = passConditions(matchcondition_cases, functions, par, recon, particle_search_index, threshold, print);
+			// if (!passed_Identification) cout << "==============HEYYYYY+++++++++++\n";
 			if (!added_misIdentification_Batch && passed_misIdentification && (par.name == particle_search) && (misIdentificationEvents_count < max_count)){
-				AddBatch(entry, i, misIdentificationEvents, par_outs, pars, photon_reconstruction.Photons, cheat_phos, index, recons, particle_compare, misIdentificationEvents_count, threshold, plotType, time_min, time_max);
+				AddBatch(entry, i, misIdentificationEvents, par_outs, pars, photon_reconstruction.Photons, cheat_phos, index, recons, particle_compare, misIdentificationEvents_count, -threshold, plotType, time_min, time_max);
 				added_misIdentification_Batch = true;
 			}
 
 
 
-			if (print) cout << "\tincorrect count: = " << misIdentificationEvents_count << endl;
-			if (print) cout << "\tcorrect count:   = " << particleEvents_count << endl;
+			if (print) cout << "\t- " << particle_search << " as " << particle_search << " : " << misIdentificationEvents_count << endl ;
+			if (print) cout << "\t- " << particle_search << " as " << particle_compare << " : " << particleEvents_count << endl ;
 		}
 
 
@@ -242,6 +273,12 @@ if (print) cout << "final incorrect count: = " << misIdentificationEvents_count 
 if (print) cout << "final correct count:   = " << particleEvents_count << endl;
 cout << particleEvents.GetName() << endl;
 cout << misIdentificationEvents.GetName() << endl;
+
+stringstream ss1; ss1.str(""); ss1 << particle_search << "_intensity.root";
+
+TCanvas C("C", "C", 1000, 800);
+h.Draw("COLZ");
+C.SaveAs(ss1.str().c_str());
 
 
 photon_Tfile_p->cd();

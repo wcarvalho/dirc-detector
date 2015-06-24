@@ -59,7 +59,7 @@ void addTimeTransformationPlot(TPad& pad, TMultiGraph *mg, TLegend& L, vector<Pa
 	pad.Update();
 	pad.Modified();
 }
-void addFits(TH1D &h, TrackRecon const& R, vector<TF1*>& functions){
+void addFits(TH1D &h, TrackRecon const& R, vector<TF1*>& functions, vector<int>& displayed){
 
 	if (R.Params.empty()) return;
 
@@ -69,6 +69,12 @@ void addFits(TH1D &h, TrackRecon const& R, vector<TF1*>& functions){
 	center_max = 0.;
 
 	for (int i = 0; i < R.size(); ++i){
+		if ((!R.passed_intensity_cut(i, 8)) || (R.getnSigmaThetaAt(i) > 10)) {
+			// cout << "fits: not displaying " << R.getNameAt(i) << "with dsig = " << R.getnSigmaThetaAt(i) << endl;
+			continue;
+		}
+		displayed.push_back(i);
+
 		TF1* f2_p = new TF1(R.getNameAt(i).c_str(), "[0]*exp( -(x-[1])*(x-[1])/(2.*[2]*[2]) ) + [3]");
 		TF1 &f2 = *f2_p;
 		for (unsigned int j = 0; j < 4; j++)
@@ -84,25 +90,6 @@ void addFits(TH1D &h, TrackRecon const& R, vector<TF1*>& functions){
 		functions.push_back(std::move(f2_p));
 		h.GetListOfFunctions()->Add(functions.back());
 	}
-
-}
-void addFit(TH1D &h, TrackRecon const& R, int search_index){
-
-	if (R.Params.empty()) return;
-	static TF1 f2("F", "[0]*exp( -(x-[1])*(x-[1])/(2.*[2]*[2]) ) + [3]");
-
-
-	for (unsigned int j = 0; j < 4; j++)
-			f2.SetParameter(j, R.Params.at(search_index).at(j));
-
-	const double& xlow = R.Params.at(search_index).at(4);
-	const double& xhi = R.Params.at(search_index).at(5);
-	f2.SetRange(xlow, xhi);
-
-	double const& center = R.getIntegralCenterAt(search_index);
-	h.GetXaxis()->SetRangeUser(center-.1, center+.1);
-
-	h.GetListOfFunctions()->Add(&f2);
 
 }
 TH1D* addReducedHistogram(TPad& pad, TrackRecon const& R, vector<PhotonOut> const& photons, vector<int> const& index, int particle_index, int search_index, vector<TF1*> const& functions){
@@ -137,7 +124,7 @@ TH1D* addReducedHistogram(TPad& pad, TrackRecon const& R, vector<PhotonOut> cons
 	pad.Modified();
 	return std::move(h1);
 }
-TH1D* addFullHistogram(TPad& pad, TrackRecon const& R, vector<PhotonOut> const& photons, vector<int> const& index, int particle_index, int search_index, vector<TF1*>& functions){
+TH1D* addFullHistogram(TPad& pad, TrackRecon const& R, vector<PhotonOut> const& photons, vector<int> const& index, int particle_index, int search_index, vector<TF1*>& functions, vector<int>& displayed){
 
 	auto& h2 = R.Hist2D;
 	double xlow = .4;
@@ -150,7 +137,7 @@ TH1D* addFullHistogram(TPad& pad, TrackRecon const& R, vector<PhotonOut> const& 
 	h1->SetTitle("#theta Projection");
 	h1->GetXaxis()->SetTitle("#theta (radians)");
 	// addFit(*h1, R, search_index);
-	addFits(*h1, R, functions);
+	addFits(*h1, R, functions, displayed);
 
 	pad.cd();
 	h1->Draw();
@@ -179,7 +166,7 @@ void AddEventDetails(TPad &pad, TLegend& L, ParticleOut & P, TrackRecon const& R
 	pad.Update();
 	pad.Modified();
 }
-void AddFitDetails(TPad &pad, TLegend& L, ParticleOut & P, TrackRecon const& R, vector<TF1*> functions){
+void AddFitDetails(TPad &pad, TLegend& L, ParticleOut & P, TrackRecon const& R, vector<TF1*> functions, vector<int> const& displayed){
 
 	pad.cd();
 	stringstream ss;
@@ -187,9 +174,11 @@ void AddFitDetails(TPad &pad, TLegend& L, ParticleOut & P, TrackRecon const& R, 
 	auto anglemap = P.EmissionAngleMap();
 
 	// theta reconstruction information
-	for (unsigned i = 0; i < functions.size(); ++i){
+	static unsigned indx; indx = 0;
+	for (int i : displayed){
+		// cout << "AddFitDetails " << i << endl;
 		string name = R.getNameAt(i);
-		TF1*& function = functions.at(i);
+		TF1*& function = functions.at(indx);
 		// expected angle
 		double expected_angle = anglemap[name];
 		ss.str(""); ss << "#scale[1.2]{#bf{" << name << "}}";
@@ -203,9 +192,12 @@ void AddFitDetails(TPad &pad, TLegend& L, ParticleOut & P, TrackRecon const& R, 
 		" vs. " << std::setprecision(5) << R.getIntegralCenterAt(i);
 		L.AddEntry(function, ss.str().c_str(),"");
 		// nsigma
+		ss.str(""); ss << "#sigma = "<< std::setprecision(2) << fabs(R.getSigmaThetaAt(i));
+		L.AddEntry(function, ss.str().c_str(),"");
 		ss.str(""); ss << "#Delta #sigma = "<< std::setprecision(2) << fabs(R.getnSigmaThetaAt(i));
 		L.AddEntry(function, ss.str().c_str(),"");
 		L.Draw();
+		++indx;
 	}
 
 
@@ -261,9 +253,9 @@ void AddCombination(string canvasname, TFile& f, vector<ParticleOut> & particles
 	upperleft->Update();
 	upperleft->Modified();
 
-	vector< TF1* > functions;
-
-	TH1D* hf = addFullHistogram(*lowerleft, R, photons, index, particle_index, search_index, functions);
+	static vector< TF1* > functions; functions.clear();
+	static vector< int> displayed_fits; displayed_fits.clear();
+	TH1D* hf = addFullHistogram(*lowerleft, R, photons, index, particle_index, search_index, functions, displayed_fits);
 	hf->GetXaxis()->SetRangeUser(.75, .9);
 	if (print) cout << "\tfull histogram\n";
 
@@ -282,7 +274,7 @@ void AddCombination(string canvasname, TFile& f, vector<ParticleOut> & particles
 
 	TLegend FitLegend(0., 0., 1., 1., "Emission Angle: Expected Vs. Found");
 	FitLegend.SetTextSize(.045);
-	AddFitDetails(*lowerright, FitLegend, particles.at(particle_index), R, functions);
+	AddFitDetails(*lowerright, FitLegend, particles.at(particle_index), R, functions, displayed_fits);
 	if (print) cout << "\tfit details\n";
 
 	f.cd();
@@ -361,9 +353,9 @@ void AddTimeScatterCombination(string canvasname, TFile& f, vector<ParticleOut> 
 	upperleft->Update();
 	upperleft->Modified();
 
-	vector< TF1* > functions;
-
-	TH1D* hf = addFullHistogram(*lowerleft, R, photons, index, particle_index, search_index, functions);
+	static vector< TF1* > functions; functions.clear();
+	static vector< int> displayed_fits; displayed_fits.clear();
+	TH1D* hf = addFullHistogram(*lowerleft, R, photons, index, particle_index, search_index, functions, displayed_fits);
 	hf->GetXaxis()->SetRangeUser(.75, .9);
 	if (print) cout << "\tfull histogram\n";
 
@@ -382,7 +374,7 @@ void AddTimeScatterCombination(string canvasname, TFile& f, vector<ParticleOut> 
 
 	TLegend FitLegend(0., 0., 1., 1., "Emission Angle: Expected Vs. Found");
 	FitLegend.SetTextSize(.045);
-	AddFitDetails(*lowerright, FitLegend, particles.at(particle_index), R, functions);
+	AddFitDetails(*lowerright, FitLegend, particles.at(particle_index), R, functions, displayed_fits);
 	if (print) cout << "\tfit details\n";
 
 	f.cd();

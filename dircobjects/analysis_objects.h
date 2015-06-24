@@ -13,6 +13,7 @@
 #include "TCanvas.h"
 #include "TMultiGraph.h"
 #include "dirc_objects.h"
+using namespace std;
 
 class TrackRecon : public TObject
 {
@@ -33,29 +34,41 @@ public:
 	double getLatestIntegralCenter() const { return Params.back().at(1); }
 	double getIntegralCenterAt(int const i){ return Params.at(i).at(1); }
 	double getIntegralCenterAt(int const i) const { return Params.at(i).at(1); }
+	bool passed_intensity_cut (int const i, double const threshold) const;
+	double getSigmaThetaAt(int const i) const { return SigTheta.at(i); }
+	double getSigmaAreaAt(int const i) const { return SigArea.at(i); }
 	double getnSigmaAreaAt(int const i) const {
+		// cout << "\ntype: " << getNameAt(i) << endl;
+		// cout << "area = " << getIntegralAt(i) << endl;
+		// cout << "this must be greater than 10\n";
 		if (getIntegralAt(i) < 10) return 1.e100;
 		else return delSigArea.at(i);
 	}
 	double getnSigmaThetaAt(int const i) const {
-		if (getIntegralAt(i) < 10) return 1.e100;
+		// std::cout << "nsigmaTheta = " << delSigTheta.at(i) << std::endl;
+		if (!passed_intensity_cut(i, 7)) return 1.e100;
 		else return delSigTheta.at(i);
 	}
 	double getIntegralAt(int const i) const { return Areas.at(i); }
 	double getIntegralHeightAt(int const i) const { return Params.at(i).at(0); }
-	std::string getBestFit(double const threshold);
+	std::string getBestFit(double const threshold, bool print = false);
 	std::string getNameAt(int const i) const { return Options.at(i); }
+	double getExpectedIntensityAt(int const i) const {return ExpectedNumber.at(i); }
+	double getExpectedAngleAt(int const i) const {return ExpectedAngle.at(i); }
 
 
 	TH2D Hist2D;
 	TH1D Final1D;
 
 	std::vector < std::string > Options; 			// every particle type
+	std::vector < double > SigTheta;				// delta sigma theta for every particle
 	std::vector < double > delSigTheta;				// delta sigma theta for every particle
+	std::vector < double > SigArea;				// delta sigma area for every particle
 	std::vector < double > delSigArea;				// delta sigma area for every particle
 	std::vector < double > Sigmas;						// delta sigma for every particle (quadrature sum)
 	std::vector < double > Areas;							// calculated area under particle fit for every particle
 	std::vector < double > ExpectedNumber;		// expected number of photons for every particle
+	std::vector < double > ExpectedAngle;		// expected angle for every particle
 	std::vector < std::vector < double> > Params;	// one gaussian fit per particle. each fit contains height, center, width, constant, xlow, xhi
 	std::vector < std::string > Funs;					// function used for each function
 
