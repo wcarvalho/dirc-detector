@@ -6,6 +6,7 @@
 #include <string>
 #include "TObject.h"
 #include "TVector3.h"
+#include "TMath.h"
 #include "TH2D.h"
 #include "dirc_objects.h"
 
@@ -35,6 +36,17 @@ public:
    };
   void SetWall(PhotonOut::DircWall w){ dircwall = w; }
   PhotonOut::DircWall GetWall() const { return dircwall; }
+
+  PhotonOut::DircWall WallFromPhi(double const _phi){
+    static double pi = TMath::Pi();
+    if (
+      ((_phi > pi/2.) && (_phi < 3.*pi/2)) ||
+      ((_phi < -pi/2.) && (_phi > -3.*pi/2)) )
+      return PhotonOut::BACK;
+      else
+        return PhotonOut::FRONT;
+  }
+
   private:
 
   PhotonOut::DircWall dircwall;
