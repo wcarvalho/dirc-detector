@@ -48,7 +48,6 @@ public:
 	string ytitle;
 };
 
-
 void printTGraphASymError(TH1D& NumHist, TH1D& DenHist, const string& search, const string& dir, const string& basename, bool printhists){
 
 	int numcounter = NumHist.GetEntries();
@@ -93,21 +92,3 @@ void fillTH1Dmaps(TH1D_map& num, TH1D_map& den, const vector<int>& graph_choices
 	}
 }
 
-std::string findBestFit(TrackRecon const& R, double const& threshold){
-
-	static double min_nSigma {0.}; min_nSigma = 1e1000;
-	static double nSigma {0.};
-	static int index_of_bestfit {0};
-	if (R.size() == 0) return "";
-	// cout << "options: " << R.size() << endl;
-	for (int i = 0; i < R.size(); ++i){
-		nSigma = fabs(R.getnSigmaThetaAt(i));
-		// cout << "\tmin_nSigma = " << min_nSigma << endl;
-		// cout << "\tnSigma = " << nSigma << endl;
-		if (nSigma < min_nSigma){
-			min_nSigma = nSigma;
-			index_of_bestfit = i;
-		}
-	}
-	return R.getNameAt(index_of_bestfit);
-}

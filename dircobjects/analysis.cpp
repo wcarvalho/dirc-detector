@@ -60,21 +60,23 @@ bool TrackRecon::passed_intensity_cut (int const i, double threshold = 7) const 
 
 }
 
-std::string TrackRecon::getBestFit(double const threshold){
+std::string TrackRecon::getBestFit(double const threshold, bool print){
 
 	static double lowestsigma; lowestsigma = 1.e10;
 	static double nsigma;
 	static string bestfit; bestfit = "";
 	static string name;
-
+	if (print) cout << "\tthreshold = " << threshold << endl;
 	for (unsigned i = 0; i < size(); ++i){
 		nsigma = fabs(getnSigmaThetaAt(i));
 		name = getNameAt(i);
+		if (print) cout << "\t" << name << " : " << nsigma << endl;
 		if ((nsigma < lowestsigma) && (nsigma < threshold)) {
 			lowestsigma = nsigma;
 			bestfit = name;
 		}
 	}
+	if (print) cout << "\t\tbest fit = " << bestfit << " with sigma = " << lowestsigma << endl;
 	return bestfit;
 }
 void TrackRecon::addFitsToHistogram(TH1D &h){

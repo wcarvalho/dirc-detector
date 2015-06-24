@@ -19,28 +19,28 @@ using namespace std;
 
 double center_of_mass(TH1D const& h);
 
-void get_calibration_data(TTree &t1, TTree &t2, ParticleEvent &originals, TrackRecons& reconstructions, const double& percent, int nbins, string const &graphfile, string const &calibrationfile, double pStep_setting, const bool& calibrateArea, const bool& calibrateTheta, const bool& print){
+void get_calibration_data(TTree &t1, TTree &t2, ParticleEvent &originals, TrackRecons& reconstructions, const double& percent, int nbins, string const &graphfile, string const &calibrationfile, double pStep_setting, double& pLowerBound, double& pHigherBound, const bool& calibrateArea, const bool& calibrateTheta, const bool& print){
 
   int nentries = t1.GetEntries();
 
   gErrorIgnoreLevel = 5000;         // turn off all root printing
 
-  double pLowerBound = 1e10;
-  double pHigherBound = 0.;
-  auto findPBounds = [&pLowerBound, &pHigherBound](TrackRecon& r, Particle& p, bool print){
-    double momentum = p.CalculateMomentum();
-    if (momentum > pHigherBound) pHigherBound = momentum;
-    if (momentum < pLowerBound) pLowerBound = momentum;
-  };
-  dirc::parseTrials(t1, t2, originals, reconstructions, 0, nentries,
-    findPBounds, dirc::true_trialcondition, false);
+  // double pLowerBound = 1e10;
+  // double pHigherBound = 0.;
+  // auto findPBounds = [&pLowerBound, &pHigherBound](TrackRecon& r, Particle& p, bool print){
+  //   double momentum = p.CalculateMomentum();
+  //   if (momentum > pHigherBound) pHigherBound = momentum;
+  //   if (momentum < pLowerBound) pLowerBound = momentum;
+  // };
+  // dirc::parseTrials(t1, t2, originals, reconstructions, 0, nentries,
+  //   findPBounds, dirc::true_trialcondition, false);
 
-  if (print) cout << "lowest momentum = " << pLowerBound << endl;
-  if (print) cout << "highest momentum = " << pHigherBound << endl;
 
   double pStep = pStep_setting;
   pLowerBound = getLowerBound(pLowerBound, pStep);
   pHigherBound = getHigherBound(pHigherBound, pStep);
+  if (print) cout << "lowest momentum = " << pLowerBound << endl;
+  if (print) cout << "highest momentum = " << pHigherBound << endl;
 
   int upper_index=getNormalizedIndex(pHigherBound, pLowerBound, pStep);
   typedef std::vector< std::vector<double> > vec2d;
@@ -112,7 +112,6 @@ void get_calibration_data(TTree &t1, TTree &t2, ParticleEvent &originals, TrackR
 
     // static double mean; mean = h.GetMean();
     static double com; com = center_of_mass(h);
-    // cout << "center from mean = " << mean << endl;
     // cout << "center from com  = " << com << endl;
     center_guess = com;
     sigma_guess = sqrt( h.GetBinContent(h.GetMaximumBin()) );

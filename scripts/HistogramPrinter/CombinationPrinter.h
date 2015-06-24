@@ -70,7 +70,7 @@ void addFits(TH1D &h, TrackRecon const& R, vector<TF1*>& functions, vector<int>&
 
 	for (int i = 0; i < R.size(); ++i){
 		if ((!R.passed_intensity_cut(i, 8)) || (R.getnSigmaThetaAt(i) > 10)) {
-			cout << "fits: not displaying " << R.getNameAt(i) << "with dsig = " << R.getnSigmaThetaAt(i) << endl;
+			// cout << "fits: not displaying " << R.getNameAt(i) << "with dsig = " << R.getnSigmaThetaAt(i) << endl;
 			continue;
 		}
 		displayed.push_back(i);
@@ -176,7 +176,7 @@ void AddFitDetails(TPad &pad, TLegend& L, ParticleOut & P, TrackRecon const& R, 
 	// theta reconstruction information
 	static unsigned indx; indx = 0;
 	for (int i : displayed){
-		cout << "AddFitDetails " << i << endl;
+		// cout << "AddFitDetails " << i << endl;
 		string name = R.getNameAt(i);
 		TF1*& function = functions.at(indx);
 		// expected angle

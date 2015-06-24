@@ -51,9 +51,10 @@ public:
 	}
 	double getIntegralAt(int const i) const { return Areas.at(i); }
 	double getIntegralHeightAt(int const i) const { return Params.at(i).at(0); }
-	std::string getBestFit(double const threshold);
+	std::string getBestFit(double const threshold, bool print = false);
 	std::string getNameAt(int const i) const { return Options.at(i); }
 	double getExpectedIntensityAt(int const i) const {return ExpectedNumber.at(i); }
+	double getExpectedAngleAt(int const i) const {return ExpectedAngle.at(i); }
 
 
 	TH2D Hist2D;
@@ -67,6 +68,7 @@ public:
 	std::vector < double > Sigmas;						// delta sigma for every particle (quadrature sum)
 	std::vector < double > Areas;							// calculated area under particle fit for every particle
 	std::vector < double > ExpectedNumber;		// expected number of photons for every particle
+	std::vector < double > ExpectedAngle;		// expected angle for every particle
 	std::vector < std::vector < double> > Params;	// one gaussian fit per particle. each fit contains height, center, width, constant, xlow, xhi
 	std::vector < std::string > Funs;					// function used for each function
 

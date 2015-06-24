@@ -85,16 +85,23 @@ catch( TCLAP::ArgException& e )
 	g.GetYaxis()->SetTitle("False-Positive Rate (% of pions identified as electrons)");
 	g.Draw("AP");
 	TGraph *G = 0;
+
+	auto i = ordered_data.begin();
+	double p1 = i->first;
+	++i; double p2 = i->first;
+	double p_step = p2-p1;
+	double p_half_step = p_step/2;
+
 	for (auto i = ordered_data.begin(); i != ordered_data.end(); ++i){
-		const double& pt = i->first;
+		const double& momentum = i->first;
 		xy_t& xy = i->second;
 
 		G = new TGraph();
-		MakeGraph(pt, xy, count, G);
+		MakeGraph(momentum, xy, count, G);
 		graphs.push_back(std::move(G));
 		graphs.back()->Draw("P");
 		stringstream ss; ss.str("");
-		ss << pt;
+		ss << std::setprecision(3) << (momentum - p_half_step) << " : " << std::setprecision(3)<< (momentum + p_half_step);
 	 	L.AddEntry(graphs.back(),ss.str().c_str(),"lp");
 		++count;
 	}
@@ -161,10 +168,10 @@ void extractGraphData(TGraphAsymmErrors matches, TGraphAsymmErrors fakes,data_t&
 	}
 }
 
-void MakeGraph(const double& pt, const xy_t& xy, int graphnumber, TGraph*& g){
+void MakeGraph(const double& momentum, const xy_t& xy, int graphnumber, TGraph*& g){
 
 	stringstream ss; ss.str("");
-	ss << "momentum=" << pt;
+	ss << "momentum=" << momentum;
 	g->SetName(ss.str().c_str());
 
 	for (unsigned i = 0; i < xy.size(); ++i){

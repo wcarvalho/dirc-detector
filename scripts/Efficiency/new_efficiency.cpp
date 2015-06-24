@@ -61,7 +61,8 @@ try{
 		"\n\t\tcase 1: within_angle_resolution"
 		"\n\t\tcase 2: inside_box"
 		"\n\t\tcase 3: inside_circle"
-		"\n\t\tcase 4: xyplane",false, "double", cmd);
+		"\n\t\tcase 4: xyplane"
+		"\n\t\tcase 5: intensity_cut",false, "double", cmd);
 
 	TCLAP::MultiArg<double> momentum_slicesArg("","moms","momentum slices",false,"string", cmd);
 
@@ -146,6 +147,7 @@ catch( TCLAP::ArgException& e )
 	functions[2] = &inside_box;
 	functions[3] = &inside_circle;
 	functions[4] = &xyplane;
+	functions[5] = &photon_count;
 
 	vector_map bounds_map;
 	bounds_map[1] = multiplicity_slices;
@@ -173,8 +175,16 @@ catch( TCLAP::ArgException& e )
 
 	auto fillHistogram = [&threshold, &functions, &graph_choice, &multiplicity, &matchcondition_cases](TrackRecon& r, Particle& p, string& search, TH1D_map& numerator, TH1D_map& denominator, const double& momentum, bool print){
 
-		string bestfit = r.getBestFit(threshold);
-		if (bestfit == "") return;
+		static string bestfit; bestfit = r.getBestFit(threshold, print);
+
+		auto fill = [&search, &denominator, &numerator, &print](bool passed, int const& choice, double const& value, string const& bestfit){
+			denominator[choice]->Fill(value);
+			if (passed && (bestfit == search)) numerator[choice]->Fill(value);
+		};
+
+
+		// if (bestfit == "") return;
+		if (print) cout << p.name << " fit as " << bestfit << endl;
 		for (unsigned i = 0; i < r.Options.size(); ++i){
 			string name = r.Options.at(i);
 			if (!(name == search)) continue;
@@ -182,12 +192,14 @@ catch( TCLAP::ArgException& e )
 			for (auto choice: graph_choice){
 				switch (choice){
 					case 1:
-						denominator[choice]->Fill(multiplicity);
-						if (passed && (bestfit == search)) numerator[choice]->Fill(multiplicity);
+						// denominator[choice]->Fill(multiplicity);
+						// if (passed && (bestfit == search)) numerator[choice]->Fill(multiplicity);
+						fill(passed, choice, multiplicity, bestfit);
 						break;
 					case 2:
-						denominator[choice]->Fill(momentum);
-						if (passed && (bestfit == search)) numerator[choice]->Fill(momentum);
+						// denominator[choice]->Fill(momentum);
+						// if (passed && (bestfit == search)) numerator[choice]->Fill(momentum);
+						fill(passed, choice, momentum, bestfit);
 						break;
 				}
 			}
