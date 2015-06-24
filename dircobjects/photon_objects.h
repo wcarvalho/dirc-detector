@@ -21,7 +21,6 @@ public:
     return os;
   }
   void SetVelocity(double const v) { velocity = v; }
-
   double Theta;
   double Phi;
   double X;
@@ -29,6 +28,16 @@ public:
   double Z;
   double Time_Traveled;
   double velocity;
+  enum DircWall
+   {
+      BACK,
+      FRONT
+   };
+  void SetWall(PhotonOut::DircWall w){ dircwall = w; }
+  PhotonOut::DircWall GetWall() const { return dircwall; }
+  private:
+
+  PhotonOut::DircWall dircwall;
 
   ClassDef(PhotonOut, 1);
 
