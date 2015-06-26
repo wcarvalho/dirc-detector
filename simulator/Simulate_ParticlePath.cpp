@@ -20,7 +20,6 @@ void Simulate_ParticlePath(Detector const& d, Particle &particle, int parnum, Ph
 	double avg_photons_released = 0.;
 	double photons_released = 0.;
 
-	double& particle_time_of_flight = particle.Time_Traveled;
 	Simulate simPar(particle.Theta, particle.Phi);
 
 	simPar.SetDim(d.Length, d.Width, d.Height);
@@ -40,21 +39,20 @@ void Simulate_ParticlePath(Detector const& d, Particle &particle, int parnum, Ph
 	print = false; //TEMPORARY
 	particle.nPhotonsPassed = photons_released;
 
-
-	double time_traveled_so_far = particle.Time_Traveled;
 	for (unsigned int i = 0; i < photons_released; ++i)
 	{
 		simPar.SetStart(particle.X, particle.Y, particle.Z);
-		simPar.setTime(time_traveled_so_far);
+		double& particle_time_of_flight = particle.Time_Traveled;
+		simPar.setTime(particle_time_of_flight);
+
 		double distance = r.Uniform(Path_length);
 
-		simPar.TravelDistance(distance, print);
+		simPar.TravelDistance(Path_length, print);
 
 		static Photon P(0,0);
 		static double theta;
 		static double phi;
 		static double photon_time; photon_time = 0.;
-		static double particle_time_of_flight_in_dirc;
 		theta = particle.ConeAngle;
 		phi = r.Uniform(2*TMath::Pi());
 		P.SetAngle(theta, phi);
@@ -63,13 +61,13 @@ void Simulate_ParticlePath(Detector const& d, Particle &particle, int parnum, Ph
 		P.Z = simPar.coord[2];
 		P.WhichParticle = parnum;
 
-		particle_time_of_flight_in_dirc = distance/(particle.Beta/30);
+		// static double particle_time_of_flight_in_dirc;
+		// particle_time_of_flight_in_dirc = distance*1.e-2/(particle.Beta*30);
 
-		photon_time += particle_time_of_flight_in_dirc;
-		photon_time += particle_time_of_flight;
-		photon_time += simPar.GetTimeTraveled();
+		// cout << "simPar.GetTimeTraveled() = " << simPar.GetTimeTraveled() << endl;
+		// cout << "particle_time_of_flight = " << particle_time_of_flight + particle_time_of_flight_in_dirc << endl;
 
-		P.Time_Traveled = photon_time;
+		P.Time_Traveled = simPar.GetTimeTraveled();
 		photon_event.Photons.push_back(P);
 	}
 }

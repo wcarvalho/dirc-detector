@@ -14,7 +14,7 @@
 class ParticleOut : public TObject
 {
 public:
-	ParticleOut(double theta=1., double phi=0.) : Theta(theta), Phi(phi), Eta(0.), pt(0.), Time_Traveled(0.), arc_traveled_to_dirc(1.) { PossibleMasses(); }
+	ParticleOut(double theta=1., double phi=0.) : Theta(theta), Phi(phi), Eta(0.), pt(0.), Time_Traveled(0.), arc_traveled_to_dirc(0.) { PossibleMasses(); }
 	~ParticleOut(){}
 
 

@@ -40,7 +40,7 @@ bool isPhotonInTimeBand(vector<PhotonOut> const& photons, vector<int> const& pho
 	static double min_time_difference; min_time_difference = 10.e8;
 	static double max_time_difference = 0;
 	static string name = "reconstructed time - measured time";
-	static TH1D h(name.c_str(), name.c_str(), 1000, -10, 10);
+	static TH1D h(name.c_str(), name.c_str(), 1000, -.02, .02);
 	static int chosen_indx;
 	static int count = 0;
 	for (auto &i: photonset){
@@ -56,22 +56,11 @@ bool isPhotonInTimeBand(vector<PhotonOut> const& photons, vector<int> const& pho
 		else
 			x_distance = x_distance_back;
 		time_in_dirc = fabs((d.n/30)*(x_distance*1.e-2)/(sin(theta)*cos(phi)));
-		// cout << "time_in_dirc = " << time_in_dirc << endl;
 		total_time = time_in_dirc + particle_time_to_dirc;
-		cout << "\nreconstructed total_time = " << total_time << endl;
-		cout << "recorded      total_time = " << photon.Time_Traveled << endl;
 		time_difference = total_time - photon.Time_Traveled;
 		if (fabs(time_difference) < fabs(min_time_difference)){
 			chosen_indx = i;
 			min_time_difference = time_difference;
-			// if (fabs(min_time_difference) > .2){
-			// 	cout << "\nwall = " << photon.GetWall() << endl;
-			// 	cout << "x_distance = " << x_distance << endl;
-			// 	cout << "theta = " << theta << endl;
-			// 	cout << "phi = " << phi << endl;
-			// 	cout << "reconstructed time_in_dirc = " << time_in_dirc << endl;
-			// 	cout << "recorded      time_in_dirc = " << photon.Time_Traveled << endl;
-			// }
 		}
 		if (fabs(time_difference) > fabs(max_time_difference)){
 			max_time_difference = time_difference;
@@ -81,16 +70,8 @@ bool isPhotonInTimeBand(vector<PhotonOut> const& photons, vector<int> const& pho
 
 
 
-	if (fabs(min_time_difference) < 5*sigma){
-		h.Fill(min_time_difference);
-		// cout << "count = " << count << ", size = " << photons.size() << endl;;
-		if (count == (photons.size()) ){
-			h.SaveAs("full_time_difference.root");
-			count = 0;
-		}
+	if (fabs(min_time_difference) < 5*sigma)
 		return true;
-	}
-	// cout << "max_time_difference = " << max_time_difference << endl;
 	return false;
 
 }

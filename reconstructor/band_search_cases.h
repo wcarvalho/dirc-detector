@@ -71,9 +71,9 @@ double time_of_flight(ParticleOut& P){
 	for (auto i = masses.begin(); i != masses.end(); ++i){
 		double& mass = i->second;
 		beta = P.CalculateBeta(mass);
-		tp = (P.path_to_dirc())/(beta/30);
+		tp = (P.path_to_dirc())/(beta*30);
 		tp_sum += tp;
-		cout << i->first << ": " << tp << endl;
+		// cout << i->first << ": " << tp << endl;
 	}
 
 	double tp_final = tp_sum/masses.size();

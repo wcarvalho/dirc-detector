@@ -45,7 +45,10 @@ void Simulate_PhotonPath(Detector& d, Photon &photon, double smear, bool print)
 			photon.X = simPho.coord[0];
 			photon.Y = simPho.coord[1];
 			photon.Z = simPho.coord[2];
+			// cout << "photon Time_Traveled pre emission = " << photon.Time_Traveled << endl;
 			photon.Time_Traveled += simPho.GetTimeTraveled();
+			// cout << "photon Time_Traveled post emission = " << simPho.GetTimeTraveled() << endl;
+
 			static bool angle_passed;
 			angle_passed = checkFinalAngle(photon.Theta, photon.Phi, original_theta, original_phi);
 			if (!angle_passed){

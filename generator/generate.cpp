@@ -22,12 +22,13 @@ vector<Particle> generate(int nparticles, gParticle& gPar, Detector d, int maxPa
   		gPar.X = gPar.X + d.Length/2;
   		gPar.Y = gPar.Y + d.Width/2;
   		gPar.arc_traveled_to_dirc *= 1.e-2;
-  		gPar.Time_Traveled = (gPar.path_to_dirc())/(gPar.Beta/30);
+  		gPar.Time_Traveled = (gPar.path_to_dirc())/(gPar.Beta*30);
   		gPar.getEangle();
   		// determines the number of photons per cm here
 			gPar.CalculatePhotonsPercm(200e-9, 1000e-9, d.n);
   		if (passed)
 			{
+	  		// cout << "Particle Time_Traveled = " << gPar.Time_Traveled << endl;
 				if( gPar.ConeAngle == gPar.ConeAngle )
 				{
 					if (print)

@@ -75,8 +75,8 @@ void Simulate::OldWhichWall(bool print)
 }
 
 double Simulate::TimeForDistance(double D, bool print){
-
-	double t = D/Vec.Mag();
+	// double t = D/Vec.Mag();
+	double t = D*1.e-2/30/Vec.Mag(); //
 	return t;
 }
 
@@ -85,9 +85,9 @@ void Simulate::TravelDistance(double D, bool print)
 	double t = TimeForDistance(D, print);
 	time_traveled += t;
 	double dist[3];
-	dist[0] = t*Vec(0);
-	dist[1] = t*Vec(1);
-	dist[2] = t*Vec(2);
+	dist[0] = t/(1.e-2)*30*Vec(0);
+	dist[1] = t/(1.e-2)*30*Vec(1);
+	dist[2] = t/(1.e-2)*30*Vec(2);
 
 	if (print) { TabToLevel(3); cout << "WillTravel = " << D << endl; }
 	if (print) PrintVec();
