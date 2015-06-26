@@ -30,7 +30,6 @@ bool isPhotonInThetaBand(vector<PhotonOut> const& photons, vector<int> const& ph
 	return inside_band;
 }
 bool isPhotonInTimeBand(vector<PhotonOut> const& photons, vector<int> const& photonset, double const& x_distance_back, double const& x_distance_forward, double const& particle_time_to_dirc, Detector const& d, ParticleOut const& P, bool print){
-
 	static double sigma = 100;
 	static Rotater r; r.Feed_Particle(P.Theta, P.Phi);
 
@@ -107,12 +106,6 @@ void diagnostic_print(vector<int> const& index, int const& particle_index, vecto
 	}
 }
 
-
-
-
-
-
-
 typedef std::unordered_map<int, bool(*)(vector<PhotonOut> const&, vector<int> const&, double const&, double const&, bool)> band_case_map;
 
 void index_photons(ParticleOut & particle, int const& particle_index, vector<PhotonOut> const& photons, vector<int>& index, TH2D& h, double const& smear, vector<int> const& cases, unsigned const& band_search_case, double const& band_search_width, unordered_map <int, int>& photons_per_particle, vec_pair const&expected_photons, Detector const& d, bool const& print){
@@ -142,8 +135,11 @@ void index_photons(ParticleOut & particle, int const& particle_index, vector<Pho
 		passedBandTest = true;
 		for (auto&c : cases){
 			switch(c){
-				case 1: passedBandTest *= isPhotonInThetaBand(photons, photonset, theta_center_min, theta_center_max, print);
+				case 1:
+					passedBandTest *= isPhotonInThetaBand(photons, photonset, theta_center_min, theta_center_max, print);
+					break;
 				case 2: passedBandTest *= isPhotonInTimeBand(photons, photonset, x_distance_back, x_distance_forward, particle_time_to_dirc, d, particle, print);
+					break;
 			}
 		}
 

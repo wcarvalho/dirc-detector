@@ -3,19 +3,21 @@ purpose "Reconstructor for DirC.
 By Wilka Carvalho <wcarvalho92@gmail.com>"
 
 # Options
+
 option "input" i "path of particle-generated data" string
+
 option "Directory" D "Sets the directory in which files will be saved. With this option, with no argument the file is saved in directory of input file. Without this option, it is saved in the current directory" string default="" argoptional optional
 
-option "write-file" W "write file for reconstruction" string optional
+option "outputfile" o "write file for reconstruction" string optional
 
 option "verbose" v "print data" optional
 option "quiet" q "suppress all printing" optional
-option "make" m "print graphs of the fits made" optional
-option "graph-prefix" g "directory where graphs will be stored" string optional
 
 option "last" l "only reconstructs the last l particles" int optional
 
-option "Smear" S "the smearing applied to the fitting (used for width of gaussian)" double optional
+option "as" - "the known angular smearing (as)" double optional default=".01"
+
+option "ts" - "the known temporal smearing (ts)" double optional default="10"
 
 option "expected-photons-case" e "\n\tcase 1: look-up table. \n\tcase 2: riemann sum calculation." argoptional int optional default="1"
 

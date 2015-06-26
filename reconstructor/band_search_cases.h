@@ -73,10 +73,11 @@ double time_of_flight(ParticleOut& P){
 		beta = P.CalculateBeta(mass);
 		tp = (P.path_to_dirc())/(beta*30);
 		tp_sum += tp;
-		// cout << i->first << ": " << tp << endl;
+		cout << i->first << ": " << tp << endl;
 	}
 
 	double tp_final = tp_sum/masses.size();
+	cout << "t final = " << tp_final << endl;
 	return std::move(tp_final);
 }
 

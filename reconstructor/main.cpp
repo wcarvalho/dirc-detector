@@ -15,10 +15,10 @@ int main(int argc, char** argv)
 	gengetopt_args_info ai;
 	if (cmdline_parser (argc, argv, &ai) != 0){ exit(1); }
 
-    // double pi = TMath::Pi();
 
     int last     = 0;
-    double smear = .01;
+    double angle_smear = ai.as_arg;
+    double time_smear = ai.ts_arg;
 
  		int ExpectedPhotonCase = ai.expected_photons_case_arg;
 
@@ -29,7 +29,6 @@ int main(int argc, char** argv)
     double calculateFits_time=0.;
     //
     // i/o setup
-    string graphprefix = "";
     string rf_default = ai.input_arg;
     string wf_default = "reconstruction.root";
     string rf = rf_default;
@@ -44,9 +43,8 @@ int main(int argc, char** argv)
     // parse ai arguments
 	bool print = ai.verbose_given;
 	bool quiet = ai.quiet_given; if (quiet) print = !quiet;
-	bool make  = ai.make_given;
     if (ai.last_given) last = ai.last_arg;
-    if (ai.write_file_given) wf = ai.write_file_arg;
+    if (ai.outputfile_given) wf = ai.outputfile_arg;
 
     if(ai.Directory_given) {
         string temp_dir = ai.Directory_arg;
@@ -55,8 +53,6 @@ int main(int argc, char** argv)
 	}
 	readf_prop.appendFileToDirectory(directory, wf);
 
-	if (ai.Smear_given) smear = ai.Smear_arg;
-	if (ai.graph_prefix_given) graphprefix = ai.graph_prefix_arg;
 
 	vector<int> band_cases;
 	if (ai.band_cases_given){
@@ -70,6 +66,7 @@ int main(int argc, char** argv)
 	}
 	else
 		band_cases = {1, 2};
+
 
 	unsigned band_search_case = ai.band_search_case_arg;
 	double band_search_width = ai.band_search_width_arg;
@@ -174,7 +171,7 @@ int main(int argc, char** argv)
 			// check_reconstructed_photons(photons_in_frame);
 			histogram_photons_in_frame = histogram_photon_angles(ev, i, photons_in_frame);
 
-			index_photons(particle, i, photons_in_frame, index, histogram_photons_in_frame, smear, band_cases, band_search_case, band_search_width, photons_per_particle, expectedPhotonMap[i], *d, print);
+			index_photons(particle, i, photons_in_frame, index, histogram_photons_in_frame, angle_smear, band_cases, band_search_case, band_search_width, photons_per_particle, expectedPhotonMap[i], *d, print);
 		}
 
 		////////// Create 1D Histograms and Fit them
@@ -190,7 +187,7 @@ int main(int argc, char** argv)
 			if (print) cout << "\t\tFitting particle " << i << " with " << photons_per_particle[i] << " photon angles (" << (int)photons_per_particle[i]/4 << ")\n";
 
 			if (photons_per_particle[i] != 0 )
-				CalculateParticleFits(*reduced_histogram_theta_projection, particle, current_recon, expectedPhotonMap[i], i, smear, print);
+				CalculateParticleFits(*reduced_histogram_theta_projection, particle, current_recon, expectedPhotonMap[i], i, angle_smear, print);
 			delete reduced_histogram_theta_projection;
 		}
 

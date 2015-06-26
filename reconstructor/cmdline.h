@@ -49,21 +49,20 @@ struct gengetopt_args_info
   char * Directory_arg;	/**< @brief Sets the directory in which files will be saved. With this option, with no argument the file is saved in directory of input file. Without this option, it is saved in the current directory (default='').  */
   char * Directory_orig;	/**< @brief Sets the directory in which files will be saved. With this option, with no argument the file is saved in directory of input file. Without this option, it is saved in the current directory original value given at command line.  */
   const char *Directory_help; /**< @brief Sets the directory in which files will be saved. With this option, with no argument the file is saved in directory of input file. Without this option, it is saved in the current directory help description.  */
-  char * write_file_arg;	/**< @brief write file for reconstruction.  */
-  char * write_file_orig;	/**< @brief write file for reconstruction original value given at command line.  */
-  const char *write_file_help; /**< @brief write file for reconstruction help description.  */
+  char * outputfile_arg;	/**< @brief write file for reconstruction.  */
+  char * outputfile_orig;	/**< @brief write file for reconstruction original value given at command line.  */
+  const char *outputfile_help; /**< @brief write file for reconstruction help description.  */
   const char *verbose_help; /**< @brief print data help description.  */
   const char *quiet_help; /**< @brief suppress all printing help description.  */
-  const char *make_help; /**< @brief print graphs of the fits made help description.  */
-  char * graph_prefix_arg;	/**< @brief directory where graphs will be stored.  */
-  char * graph_prefix_orig;	/**< @brief directory where graphs will be stored original value given at command line.  */
-  const char *graph_prefix_help; /**< @brief directory where graphs will be stored help description.  */
   int last_arg;	/**< @brief only reconstructs the last l particles.  */
   char * last_orig;	/**< @brief only reconstructs the last l particles original value given at command line.  */
   const char *last_help; /**< @brief only reconstructs the last l particles help description.  */
-  double Smear_arg;	/**< @brief the smearing applied to the fitting (used for width of gaussian).  */
-  char * Smear_orig;	/**< @brief the smearing applied to the fitting (used for width of gaussian) original value given at command line.  */
-  const char *Smear_help; /**< @brief the smearing applied to the fitting (used for width of gaussian) help description.  */
+  double as_arg;	/**< @brief the known angular smearing (as) (default='.01').  */
+  char * as_orig;	/**< @brief the known angular smearing (as) original value given at command line.  */
+  const char *as_help; /**< @brief the known angular smearing (as) help description.  */
+  double ts_arg;	/**< @brief the known temporal smearing (ts) (default='10').  */
+  char * ts_orig;	/**< @brief the known temporal smearing (ts) original value given at command line.  */
+  const char *ts_help; /**< @brief the known temporal smearing (ts) help description.  */
   int expected_photons_case_arg;	/**< @brief 
   \tcase 1: look-up table. 
   \tcase 2: riemann sum calculation. (default='1').  */
@@ -120,13 +119,12 @@ struct gengetopt_args_info
   unsigned int version_given ;	/**< @brief Whether version was given.  */
   unsigned int input_given ;	/**< @brief Whether input was given.  */
   unsigned int Directory_given ;	/**< @brief Whether Directory was given.  */
-  unsigned int write_file_given ;	/**< @brief Whether write-file was given.  */
+  unsigned int outputfile_given ;	/**< @brief Whether outputfile was given.  */
   unsigned int verbose_given ;	/**< @brief Whether verbose was given.  */
   unsigned int quiet_given ;	/**< @brief Whether quiet was given.  */
-  unsigned int make_given ;	/**< @brief Whether make was given.  */
-  unsigned int graph_prefix_given ;	/**< @brief Whether graph-prefix was given.  */
   unsigned int last_given ;	/**< @brief Whether last was given.  */
-  unsigned int Smear_given ;	/**< @brief Whether Smear was given.  */
+  unsigned int as_given ;	/**< @brief Whether as was given.  */
+  unsigned int ts_given ;	/**< @brief Whether ts was given.  */
   unsigned int expected_photons_case_given ;	/**< @brief Whether expected-photons-case was given.  */
   unsigned int LookUpTable_given ;	/**< @brief Whether LookUpTable was given.  */
   unsigned int band_cases_given ;	/**< @brief Whether band-cases was given.  */

@@ -38,13 +38,12 @@ const char *gengetopt_args_info_help[] = {
   "  -V, --version                 Print version and exit",
   "  -i, --input=STRING            path of particle-generated data",
   "  -D, --Directory[=STRING]      Sets the directory in which files will be\n                                  saved. With this option, with no argument the\n                                  file is saved in directory of input file.\n                                  Without this option, it is saved in the\n                                  current directory  (default=`')",
-  "  -W, --write-file=STRING       write file for reconstruction",
+  "  -o, --outputfile=STRING       write file for reconstruction",
   "  -v, --verbose                 print data",
   "  -q, --quiet                   suppress all printing",
-  "  -m, --make                    print graphs of the fits made",
-  "  -g, --graph-prefix=STRING     directory where graphs will be stored",
   "  -l, --last=INT                only reconstructs the last l particles",
-  "  -S, --Smear=DOUBLE            the smearing applied to the fitting (used for\n                                  width of gaussian)",
+  "      --as=DOUBLE               the known angular smearing (as)\n                                  (default=`.01')",
+  "      --ts=DOUBLE               the known temporal smearing (ts)\n                                  (default=`10')",
   "  -e, --expected-photons-case[=INT]\n                                \n                                  \tcase 1: look-up table. \n                                  \tcase 2: riemann sum calculation.\n                                  (default=`1')",
   "  -L, --LookUpTable[=STRING]    file for look-up table  (default=`LookUpTable')",
   "  -b, --band-cases[=INT]        \n                                  case 1: Use Theta Band. \n                                  case 2: Use Time Band  (default=`1')",
@@ -85,13 +84,12 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->version_given = 0 ;
   args_info->input_given = 0 ;
   args_info->Directory_given = 0 ;
-  args_info->write_file_given = 0 ;
+  args_info->outputfile_given = 0 ;
   args_info->verbose_given = 0 ;
   args_info->quiet_given = 0 ;
-  args_info->make_given = 0 ;
-  args_info->graph_prefix_given = 0 ;
   args_info->last_given = 0 ;
-  args_info->Smear_given = 0 ;
+  args_info->as_given = 0 ;
+  args_info->ts_given = 0 ;
   args_info->expected_photons_case_given = 0 ;
   args_info->LookUpTable_given = 0 ;
   args_info->band_cases_given = 0 ;
@@ -111,12 +109,13 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->input_orig = NULL;
   args_info->Directory_arg = gengetopt_strdup ("");
   args_info->Directory_orig = NULL;
-  args_info->write_file_arg = NULL;
-  args_info->write_file_orig = NULL;
-  args_info->graph_prefix_arg = NULL;
-  args_info->graph_prefix_orig = NULL;
+  args_info->outputfile_arg = NULL;
+  args_info->outputfile_orig = NULL;
   args_info->last_orig = NULL;
-  args_info->Smear_orig = NULL;
+  args_info->as_arg = .01;
+  args_info->as_orig = NULL;
+  args_info->ts_arg = 10;
+  args_info->ts_orig = NULL;
   args_info->expected_photons_case_arg = 1;
   args_info->expected_photons_case_orig = NULL;
   args_info->LookUpTable_arg = gengetopt_strdup ("LookUpTable");
@@ -144,24 +143,23 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->version_help = gengetopt_args_info_help[1] ;
   args_info->input_help = gengetopt_args_info_help[2] ;
   args_info->Directory_help = gengetopt_args_info_help[3] ;
-  args_info->write_file_help = gengetopt_args_info_help[4] ;
+  args_info->outputfile_help = gengetopt_args_info_help[4] ;
   args_info->verbose_help = gengetopt_args_info_help[5] ;
   args_info->quiet_help = gengetopt_args_info_help[6] ;
-  args_info->make_help = gengetopt_args_info_help[7] ;
-  args_info->graph_prefix_help = gengetopt_args_info_help[8] ;
-  args_info->last_help = gengetopt_args_info_help[9] ;
-  args_info->Smear_help = gengetopt_args_info_help[10] ;
-  args_info->expected_photons_case_help = gengetopt_args_info_help[11] ;
-  args_info->LookUpTable_help = gengetopt_args_info_help[12] ;
-  args_info->band_cases_help = gengetopt_args_info_help[13] ;
+  args_info->last_help = gengetopt_args_info_help[7] ;
+  args_info->as_help = gengetopt_args_info_help[8] ;
+  args_info->ts_help = gengetopt_args_info_help[9] ;
+  args_info->expected_photons_case_help = gengetopt_args_info_help[10] ;
+  args_info->LookUpTable_help = gengetopt_args_info_help[11] ;
+  args_info->band_cases_help = gengetopt_args_info_help[12] ;
   args_info->band_cases_min = 0;
   args_info->band_cases_max = 0;
-  args_info->band_search_case_help = gengetopt_args_info_help[14] ;
-  args_info->band_search_width_help = gengetopt_args_info_help[15] ;
-  args_info->momentum_indexing_threshold_help = gengetopt_args_info_help[16] ;
-  args_info->event_range_help = gengetopt_args_info_help[17] ;
-  args_info->fe_help = gengetopt_args_info_help[18] ;
-  args_info->fp_help = gengetopt_args_info_help[19] ;
+  args_info->band_search_case_help = gengetopt_args_info_help[13] ;
+  args_info->band_search_width_help = gengetopt_args_info_help[14] ;
+  args_info->momentum_indexing_threshold_help = gengetopt_args_info_help[15] ;
+  args_info->event_range_help = gengetopt_args_info_help[16] ;
+  args_info->fe_help = gengetopt_args_info_help[17] ;
+  args_info->fp_help = gengetopt_args_info_help[18] ;
   
 }
 
@@ -295,12 +293,11 @@ cmdline_parser_release (struct gengetopt_args_info *args_info)
   free_string_field (&(args_info->input_orig));
   free_string_field (&(args_info->Directory_arg));
   free_string_field (&(args_info->Directory_orig));
-  free_string_field (&(args_info->write_file_arg));
-  free_string_field (&(args_info->write_file_orig));
-  free_string_field (&(args_info->graph_prefix_arg));
-  free_string_field (&(args_info->graph_prefix_orig));
+  free_string_field (&(args_info->outputfile_arg));
+  free_string_field (&(args_info->outputfile_orig));
   free_string_field (&(args_info->last_orig));
-  free_string_field (&(args_info->Smear_orig));
+  free_string_field (&(args_info->as_orig));
+  free_string_field (&(args_info->ts_orig));
   free_string_field (&(args_info->expected_photons_case_orig));
   free_string_field (&(args_info->LookUpTable_arg));
   free_string_field (&(args_info->LookUpTable_orig));
@@ -358,20 +355,18 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "input", args_info->input_orig, 0);
   if (args_info->Directory_given)
     write_into_file(outfile, "Directory", args_info->Directory_orig, 0);
-  if (args_info->write_file_given)
-    write_into_file(outfile, "write-file", args_info->write_file_orig, 0);
+  if (args_info->outputfile_given)
+    write_into_file(outfile, "outputfile", args_info->outputfile_orig, 0);
   if (args_info->verbose_given)
     write_into_file(outfile, "verbose", 0, 0 );
   if (args_info->quiet_given)
     write_into_file(outfile, "quiet", 0, 0 );
-  if (args_info->make_given)
-    write_into_file(outfile, "make", 0, 0 );
-  if (args_info->graph_prefix_given)
-    write_into_file(outfile, "graph-prefix", args_info->graph_prefix_orig, 0);
   if (args_info->last_given)
     write_into_file(outfile, "last", args_info->last_orig, 0);
-  if (args_info->Smear_given)
-    write_into_file(outfile, "Smear", args_info->Smear_orig, 0);
+  if (args_info->as_given)
+    write_into_file(outfile, "as", args_info->as_orig, 0);
+  if (args_info->ts_given)
+    write_into_file(outfile, "ts", args_info->ts_orig, 0);
   if (args_info->expected_photons_case_given)
     write_into_file(outfile, "expected-photons-case", args_info->expected_photons_case_orig, 0);
   if (args_info->LookUpTable_given)
@@ -961,13 +956,12 @@ cmdline_parser_internal (
         { "version",	0, NULL, 'V' },
         { "input",	1, NULL, 'i' },
         { "Directory",	2, NULL, 'D' },
-        { "write-file",	1, NULL, 'W' },
+        { "outputfile",	1, NULL, 'o' },
         { "verbose",	0, NULL, 'v' },
         { "quiet",	0, NULL, 'q' },
-        { "make",	0, NULL, 'm' },
-        { "graph-prefix",	1, NULL, 'g' },
         { "last",	1, NULL, 'l' },
-        { "Smear",	1, NULL, 'S' },
+        { "as",	1, NULL, 0 },
+        { "ts",	1, NULL, 0 },
         { "expected-photons-case",	2, NULL, 'e' },
         { "LookUpTable",	2, NULL, 'L' },
         { "band-cases",	2, NULL, 'b' },
@@ -980,7 +974,7 @@ cmdline_parser_internal (
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVi:D::W:vqmg:l:S:e::L::b::B::w::r:", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVi:D::o:vql:e::L::b::B::w::r:", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -1020,14 +1014,14 @@ cmdline_parser_internal (
             goto failure;
         
           break;
-        case 'W':	/* write file for reconstruction.  */
+        case 'o':	/* write file for reconstruction.  */
         
         
-          if (update_arg( (void *)&(args_info->write_file_arg), 
-               &(args_info->write_file_orig), &(args_info->write_file_given),
-              &(local_args_info.write_file_given), optarg, 0, 0, ARG_STRING,
+          if (update_arg( (void *)&(args_info->outputfile_arg), 
+               &(args_info->outputfile_orig), &(args_info->outputfile_given),
+              &(local_args_info.outputfile_given), optarg, 0, 0, ARG_STRING,
               check_ambiguity, override, 0, 0,
-              "write-file", 'W',
+              "outputfile", 'o',
               additional_error))
             goto failure;
         
@@ -1056,30 +1050,6 @@ cmdline_parser_internal (
             goto failure;
         
           break;
-        case 'm':	/* print graphs of the fits made.  */
-        
-        
-          if (update_arg( 0 , 
-               0 , &(args_info->make_given),
-              &(local_args_info.make_given), optarg, 0, 0, ARG_NO,
-              check_ambiguity, override, 0, 0,
-              "make", 'm',
-              additional_error))
-            goto failure;
-        
-          break;
-        case 'g':	/* directory where graphs will be stored.  */
-        
-        
-          if (update_arg( (void *)&(args_info->graph_prefix_arg), 
-               &(args_info->graph_prefix_orig), &(args_info->graph_prefix_given),
-              &(local_args_info.graph_prefix_given), optarg, 0, 0, ARG_STRING,
-              check_ambiguity, override, 0, 0,
-              "graph-prefix", 'g',
-              additional_error))
-            goto failure;
-        
-          break;
         case 'l':	/* only reconstructs the last l particles.  */
         
         
@@ -1088,18 +1058,6 @@ cmdline_parser_internal (
               &(local_args_info.last_given), optarg, 0, 0, ARG_INT,
               check_ambiguity, override, 0, 0,
               "last", 'l',
-              additional_error))
-            goto failure;
-        
-          break;
-        case 'S':	/* the smearing applied to the fitting (used for width of gaussian).  */
-        
-        
-          if (update_arg( (void *)&(args_info->Smear_arg), 
-               &(args_info->Smear_orig), &(args_info->Smear_given),
-              &(local_args_info.Smear_given), optarg, 0, 0, ARG_DOUBLE,
-              check_ambiguity, override, 0, 0,
-              "Smear", 'S',
               additional_error))
             goto failure;
         
@@ -1181,8 +1139,36 @@ cmdline_parser_internal (
           break;
 
         case 0:	/* Long option with no short option */
+          /* the known angular smearing (as).  */
+          if (strcmp (long_options[option_index].name, "as") == 0)
+          {
+          
+          
+            if (update_arg( (void *)&(args_info->as_arg), 
+                 &(args_info->as_orig), &(args_info->as_given),
+                &(local_args_info.as_given), optarg, 0, ".01", ARG_DOUBLE,
+                check_ambiguity, override, 0, 0,
+                "as", '-',
+                additional_error))
+              goto failure;
+          
+          }
+          /* the known temporal smearing (ts).  */
+          else if (strcmp (long_options[option_index].name, "ts") == 0)
+          {
+          
+          
+            if (update_arg( (void *)&(args_info->ts_arg), 
+                 &(args_info->ts_orig), &(args_info->ts_given),
+                &(local_args_info.ts_given), optarg, 0, "10", ARG_DOUBLE,
+                check_ambiguity, override, 0, 0,
+                "ts", '-',
+                additional_error))
+              goto failure;
+          
+          }
           /* momentum threshold to determine whether an attemp will be made to index photons to a particular particle.  */
-          if (strcmp (long_options[option_index].name, "momentum-indexing-threshold") == 0)
+          else if (strcmp (long_options[option_index].name, "momentum-indexing-threshold") == 0)
           {
           
           
