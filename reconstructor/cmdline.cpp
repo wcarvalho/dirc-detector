@@ -38,7 +38,7 @@ const char *gengetopt_args_info_help[] = {
   "  -V, --version                 Print version and exit",
   "  -i, --input=STRING            path of particle-generated data",
   "  -D, --Directory[=STRING]      Sets the directory in which files will be\n                                  saved. With this option, with no argument the\n                                  file is saved in directory of input file.\n                                  Without this option, it is saved in the\n                                  current directory  (default=`')",
-  "  -o, --outputfile=STRING       write file for reconstruction",
+  "  -o, --output=STRING           write file for reconstruction\n                                  (default=`particle_reconstruction.root')",
   "  -v, --verbose                 print data",
   "  -q, --quiet                   suppress all printing",
   "  -l, --last=INT                only reconstructs the last l particles",
@@ -46,7 +46,7 @@ const char *gengetopt_args_info_help[] = {
   "      --ts=DOUBLE               the known temporal smearing (ts)\n                                  (default=`10')",
   "  -e, --expected-photons-case[=INT]\n                                \n                                  \tcase 1: look-up table. \n                                  \tcase 2: riemann sum calculation.\n                                  (default=`1')",
   "  -L, --LookUpTable[=STRING]    file for look-up table  (default=`LookUpTable')",
-  "  -b, --band-cases[=INT]        \n                                  case 1: Use Theta Band. \n                                  case 2: Use Time Band  (default=`1')",
+  "      --inc[=INT]               \n                                  case 1: Use Theta Band. \n                                  case 2: Use Time Band",
   "  -B, --band-search-case[=INT]  \n                                  \tcase 1: Search 1D theta projection for\n                                  gaussian peak. \n                                  \tcase 2: apply hough transform to 2D theta\n                                  vs. phi histogram  (default=`1')",
   "  -w, --band-search-width[=DOUBLE]\n                                width to use in theta band for each particle\n                                  (default=`.03')",
   "      --momentum-indexing-threshold=DOUBLE\n                                momentum threshold to determine whether an\n                                  attemp will be made to index photons to a\n                                  particular particle  (default=`.5')",
@@ -84,7 +84,7 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->version_given = 0 ;
   args_info->input_given = 0 ;
   args_info->Directory_given = 0 ;
-  args_info->outputfile_given = 0 ;
+  args_info->output_given = 0 ;
   args_info->verbose_given = 0 ;
   args_info->quiet_given = 0 ;
   args_info->last_given = 0 ;
@@ -92,7 +92,7 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->ts_given = 0 ;
   args_info->expected_photons_case_given = 0 ;
   args_info->LookUpTable_given = 0 ;
-  args_info->band_cases_given = 0 ;
+  args_info->inc_given = 0 ;
   args_info->band_search_case_given = 0 ;
   args_info->band_search_width_given = 0 ;
   args_info->momentum_indexing_threshold_given = 0 ;
@@ -109,8 +109,8 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->input_orig = NULL;
   args_info->Directory_arg = gengetopt_strdup ("");
   args_info->Directory_orig = NULL;
-  args_info->outputfile_arg = NULL;
-  args_info->outputfile_orig = NULL;
+  args_info->output_arg = gengetopt_strdup ("particle_reconstruction.root");
+  args_info->output_orig = NULL;
   args_info->last_orig = NULL;
   args_info->as_arg = .01;
   args_info->as_orig = NULL;
@@ -120,8 +120,8 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->expected_photons_case_orig = NULL;
   args_info->LookUpTable_arg = gengetopt_strdup ("LookUpTable");
   args_info->LookUpTable_orig = NULL;
-  args_info->band_cases_arg = NULL;
-  args_info->band_cases_orig = NULL;
+  args_info->inc_arg = NULL;
+  args_info->inc_orig = NULL;
   args_info->band_search_case_arg = 1;
   args_info->band_search_case_orig = NULL;
   args_info->band_search_width_arg = .03;
@@ -143,7 +143,7 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->version_help = gengetopt_args_info_help[1] ;
   args_info->input_help = gengetopt_args_info_help[2] ;
   args_info->Directory_help = gengetopt_args_info_help[3] ;
-  args_info->outputfile_help = gengetopt_args_info_help[4] ;
+  args_info->output_help = gengetopt_args_info_help[4] ;
   args_info->verbose_help = gengetopt_args_info_help[5] ;
   args_info->quiet_help = gengetopt_args_info_help[6] ;
   args_info->last_help = gengetopt_args_info_help[7] ;
@@ -151,9 +151,9 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->ts_help = gengetopt_args_info_help[9] ;
   args_info->expected_photons_case_help = gengetopt_args_info_help[10] ;
   args_info->LookUpTable_help = gengetopt_args_info_help[11] ;
-  args_info->band_cases_help = gengetopt_args_info_help[12] ;
-  args_info->band_cases_min = 0;
-  args_info->band_cases_max = 0;
+  args_info->inc_help = gengetopt_args_info_help[12] ;
+  args_info->inc_min = 0;
+  args_info->inc_max = 0;
   args_info->band_search_case_help = gengetopt_args_info_help[13] ;
   args_info->band_search_width_help = gengetopt_args_info_help[14] ;
   args_info->momentum_indexing_threshold_help = gengetopt_args_info_help[15] ;
@@ -293,16 +293,16 @@ cmdline_parser_release (struct gengetopt_args_info *args_info)
   free_string_field (&(args_info->input_orig));
   free_string_field (&(args_info->Directory_arg));
   free_string_field (&(args_info->Directory_orig));
-  free_string_field (&(args_info->outputfile_arg));
-  free_string_field (&(args_info->outputfile_orig));
+  free_string_field (&(args_info->output_arg));
+  free_string_field (&(args_info->output_orig));
   free_string_field (&(args_info->last_orig));
   free_string_field (&(args_info->as_orig));
   free_string_field (&(args_info->ts_orig));
   free_string_field (&(args_info->expected_photons_case_orig));
   free_string_field (&(args_info->LookUpTable_arg));
   free_string_field (&(args_info->LookUpTable_orig));
-  free_multiple_field (args_info->band_cases_given, (void *)(args_info->band_cases_arg), &(args_info->band_cases_orig));
-  args_info->band_cases_arg = 0;
+  free_multiple_field (args_info->inc_given, (void *)(args_info->inc_arg), &(args_info->inc_orig));
+  args_info->inc_arg = 0;
   free_string_field (&(args_info->band_search_case_orig));
   free_string_field (&(args_info->band_search_width_orig));
   free_string_field (&(args_info->momentum_indexing_threshold_orig));
@@ -355,8 +355,8 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "input", args_info->input_orig, 0);
   if (args_info->Directory_given)
     write_into_file(outfile, "Directory", args_info->Directory_orig, 0);
-  if (args_info->outputfile_given)
-    write_into_file(outfile, "outputfile", args_info->outputfile_orig, 0);
+  if (args_info->output_given)
+    write_into_file(outfile, "output", args_info->output_orig, 0);
   if (args_info->verbose_given)
     write_into_file(outfile, "verbose", 0, 0 );
   if (args_info->quiet_given)
@@ -371,7 +371,7 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "expected-photons-case", args_info->expected_photons_case_orig, 0);
   if (args_info->LookUpTable_given)
     write_into_file(outfile, "LookUpTable", args_info->LookUpTable_orig, 0);
-  write_multiple_into_file(outfile, args_info->band_cases_given, "band-cases", args_info->band_cases_orig, 0);
+  write_multiple_into_file(outfile, args_info->inc_given, "inc", args_info->inc_orig, 0);
   if (args_info->band_search_case_given)
     write_into_file(outfile, "band-search-case", args_info->band_search_case_orig, 0);
   if (args_info->band_search_width_given)
@@ -641,7 +641,7 @@ cmdline_parser_required2 (struct gengetopt_args_info *args_info, const char *pro
       error_occurred = 1;
     }
   
-  if (check_multiple_option_occurrences(prog_name, args_info->band_cases_given, args_info->band_cases_min, args_info->band_cases_max, "'--band-cases' ('-b')"))
+  if (check_multiple_option_occurrences(prog_name, args_info->inc_given, args_info->inc_min, args_info->inc_max, "'--inc'"))
      error_occurred = 1;
   
   
@@ -919,9 +919,8 @@ cmdline_parser_internal (
                         struct cmdline_parser_params *params, const char *additional_error)
 {
   int c;	/* Character of the parsed option.  */
-  union generic_value multiple_default_value;
 
-  struct generic_list * band_cases_list = NULL;
+  struct generic_list * inc_list = NULL;
   int error_occurred = 0;
   struct gengetopt_args_info local_args_info;
   
@@ -956,7 +955,7 @@ cmdline_parser_internal (
         { "version",	0, NULL, 'V' },
         { "input",	1, NULL, 'i' },
         { "Directory",	2, NULL, 'D' },
-        { "outputfile",	1, NULL, 'o' },
+        { "output",	1, NULL, 'o' },
         { "verbose",	0, NULL, 'v' },
         { "quiet",	0, NULL, 'q' },
         { "last",	1, NULL, 'l' },
@@ -964,7 +963,7 @@ cmdline_parser_internal (
         { "ts",	1, NULL, 0 },
         { "expected-photons-case",	2, NULL, 'e' },
         { "LookUpTable",	2, NULL, 'L' },
-        { "band-cases",	2, NULL, 'b' },
+        { "inc",	2, NULL, 0 },
         { "band-search-case",	2, NULL, 'B' },
         { "band-search-width",	2, NULL, 'w' },
         { "momentum-indexing-threshold",	1, NULL, 0 },
@@ -974,7 +973,7 @@ cmdline_parser_internal (
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVi:D::o:vql:e::L::b::B::w::r:", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVi:D::o:vql:e::L::B::w::r:", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -1017,11 +1016,11 @@ cmdline_parser_internal (
         case 'o':	/* write file for reconstruction.  */
         
         
-          if (update_arg( (void *)&(args_info->outputfile_arg), 
-               &(args_info->outputfile_orig), &(args_info->outputfile_given),
-              &(local_args_info.outputfile_given), optarg, 0, 0, ARG_STRING,
+          if (update_arg( (void *)&(args_info->output_arg), 
+               &(args_info->output_orig), &(args_info->output_given),
+              &(local_args_info.output_given), optarg, 0, "particle_reconstruction.root", ARG_STRING,
               check_ambiguity, override, 0, 0,
-              "outputfile", 'o',
+              "output", 'o',
               additional_error))
             goto failure;
         
@@ -1084,17 +1083,6 @@ cmdline_parser_internal (
               &(local_args_info.LookUpTable_given), optarg, 0, "LookUpTable", ARG_STRING,
               check_ambiguity, override, 0, 0,
               "LookUpTable", 'L',
-              additional_error))
-            goto failure;
-        
-          break;
-        case 'b':	/* 
-        case 1: Use Theta Band. 
-        case 2: Use Time Band.  */
-        
-          if (update_multiple_arg_temp(&band_cases_list, 
-              &(local_args_info.band_cases_given), optarg, 0, "1", ARG_INT,
-              "band-cases", 'b',
               additional_error))
             goto failure;
         
@@ -1167,6 +1155,19 @@ cmdline_parser_internal (
               goto failure;
           
           }
+          /* 
+          case 1: Use Theta Band. 
+          case 2: Use Time Band.  */
+          else if (strcmp (long_options[option_index].name, "inc") == 0)
+          {
+          
+            if (update_multiple_arg_temp(&inc_list, 
+                &(local_args_info.inc_given), optarg, 0, 0, ARG_INT,
+                "inc", '-',
+                additional_error))
+              goto failure;
+          
+          }
           /* momentum threshold to determine whether an attemp will be made to index photons to a particular particle.  */
           else if (strcmp (long_options[option_index].name, "momentum-indexing-threshold") == 0)
           {
@@ -1222,14 +1223,13 @@ cmdline_parser_internal (
     } /* while */
 
 
-  multiple_default_value.int_arg = 1;
-  update_multiple_arg((void *)&(args_info->band_cases_arg),
-    &(args_info->band_cases_orig), args_info->band_cases_given,
-    local_args_info.band_cases_given, &multiple_default_value,
-    ARG_INT, band_cases_list);
+  update_multiple_arg((void *)&(args_info->inc_arg),
+    &(args_info->inc_orig), args_info->inc_given,
+    local_args_info.inc_given, 0,
+    ARG_INT, inc_list);
 
-  args_info->band_cases_given += local_args_info.band_cases_given;
-  local_args_info.band_cases_given = 0;
+  args_info->inc_given += local_args_info.inc_given;
+  local_args_info.inc_given = 0;
   
   if (check_required)
     {
@@ -1244,7 +1244,7 @@ cmdline_parser_internal (
   return 0;
 
 failure:
-  free_list (band_cases_list, 0 );
+  free_list (inc_list, 0 );
   
   cmdline_parser_release (&local_args_info);
   return (EXIT_FAILURE);

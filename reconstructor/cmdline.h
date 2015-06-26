@@ -49,9 +49,9 @@ struct gengetopt_args_info
   char * Directory_arg;	/**< @brief Sets the directory in which files will be saved. With this option, with no argument the file is saved in directory of input file. Without this option, it is saved in the current directory (default='').  */
   char * Directory_orig;	/**< @brief Sets the directory in which files will be saved. With this option, with no argument the file is saved in directory of input file. Without this option, it is saved in the current directory original value given at command line.  */
   const char *Directory_help; /**< @brief Sets the directory in which files will be saved. With this option, with no argument the file is saved in directory of input file. Without this option, it is saved in the current directory help description.  */
-  char * outputfile_arg;	/**< @brief write file for reconstruction.  */
-  char * outputfile_orig;	/**< @brief write file for reconstruction original value given at command line.  */
-  const char *outputfile_help; /**< @brief write file for reconstruction help description.  */
+  char * output_arg;	/**< @brief write file for reconstruction (default='particle_reconstruction.root').  */
+  char * output_orig;	/**< @brief write file for reconstruction original value given at command line.  */
+  const char *output_help; /**< @brief write file for reconstruction help description.  */
   const char *verbose_help; /**< @brief print data help description.  */
   const char *quiet_help; /**< @brief suppress all printing help description.  */
   int last_arg;	/**< @brief only reconstructs the last l particles.  */
@@ -75,19 +75,19 @@ struct gengetopt_args_info
   char * LookUpTable_arg;	/**< @brief file for look-up table (default='LookUpTable').  */
   char * LookUpTable_orig;	/**< @brief file for look-up table original value given at command line.  */
   const char *LookUpTable_help; /**< @brief file for look-up table help description.  */
-  int* band_cases_arg;	/**< @brief 
+  int* inc_arg;	/**< @brief 
   case 1: Use Theta Band. 
-  case 2: Use Time Band (default='1').  */
-  char ** band_cases_orig;	/**< @brief 
+  case 2: Use Time Band.  */
+  char ** inc_orig;	/**< @brief 
   case 1: Use Theta Band. 
   case 2: Use Time Band original value given at command line.  */
-  unsigned int band_cases_min; /**< @brief 
+  unsigned int inc_min; /**< @brief 
   case 1: Use Theta Band. 
   case 2: Use Time Band's minimum occurreces */
-  unsigned int band_cases_max; /**< @brief 
+  unsigned int inc_max; /**< @brief 
   case 1: Use Theta Band. 
   case 2: Use Time Band's maximum occurreces */
-  const char *band_cases_help; /**< @brief 
+  const char *inc_help; /**< @brief 
   case 1: Use Theta Band. 
   case 2: Use Time Band help description.  */
   int band_search_case_arg;	/**< @brief 
@@ -119,7 +119,7 @@ struct gengetopt_args_info
   unsigned int version_given ;	/**< @brief Whether version was given.  */
   unsigned int input_given ;	/**< @brief Whether input was given.  */
   unsigned int Directory_given ;	/**< @brief Whether Directory was given.  */
-  unsigned int outputfile_given ;	/**< @brief Whether outputfile was given.  */
+  unsigned int output_given ;	/**< @brief Whether output was given.  */
   unsigned int verbose_given ;	/**< @brief Whether verbose was given.  */
   unsigned int quiet_given ;	/**< @brief Whether quiet was given.  */
   unsigned int last_given ;	/**< @brief Whether last was given.  */
@@ -127,7 +127,7 @@ struct gengetopt_args_info
   unsigned int ts_given ;	/**< @brief Whether ts was given.  */
   unsigned int expected_photons_case_given ;	/**< @brief Whether expected-photons-case was given.  */
   unsigned int LookUpTable_given ;	/**< @brief Whether LookUpTable was given.  */
-  unsigned int band_cases_given ;	/**< @brief Whether band-cases was given.  */
+  unsigned int inc_given ;	/**< @brief Whether inc was given.  */
   unsigned int band_search_case_given ;	/**< @brief Whether band-search-case was given.  */
   unsigned int band_search_width_given ;	/**< @brief Whether band-search-width was given.  */
   unsigned int momentum_indexing_threshold_given ;	/**< @brief Whether momentum-indexing-threshold was given.  */

@@ -74,6 +74,7 @@ double time_of_flight(ParticleOut& P){
 		tp = (P.path_to_dirc())/(beta*30);
 		tp_sum += tp;
 		cout << i->first << ": " << tp << endl;
+		cout << "momentum = " << P.CalculateMomentum(mass) << endl;
 	}
 
 	double tp_final = tp_sum/masses.size();
