@@ -68,6 +68,7 @@ double time_of_flight(ParticleOut& P){
 
 	tp_sum = 0;
 	cout << endl;
+	cout << "\t p= " << P.CalculateMomentum(masses.begin()->second) << endl;
 	for (auto i = masses.begin(); i != masses.end(); ++i){
 		double& mass = i->second;
 		beta = P.CalculateBeta(mass);
