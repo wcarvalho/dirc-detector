@@ -262,8 +262,8 @@ int main(int argc, char const *argv[])
 
 
 
-			if (print) cout << "\t- " << particle_search << " as " << particle_search << " : " << misIdentificationEvents_count << endl ;
-			if (print) cout << "\t- " << particle_search << " as " << particle_compare << " : " << particleEvents_count << endl ;
+			if (print) cout << "\t- " << particle_search << " as " << particle_search << " : " << particleEvents_count << endl ;
+			if (print) cout << "\t- " << particle_search << " as " << particle_compare << " : " << misIdentificationEvents_count << endl ;
 		}
 
 

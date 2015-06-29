@@ -106,13 +106,14 @@ int main(int argc, char** argv)
 		static Photon_Sets photons_in_different_frames;		// 1 set of photons per particle
 		vector<int>& index = Tracks.index; 				// used to color photons
 		static unsigned nphotons;
+    static unsigned nparticles;
 
 		// reset variables
-		reset_photons_in_different_frames(photons_in_different_frames, nparticles);
+    nparticles = particles.size();
 		nphotons = reconstructed_photons.size();
+		reset_photons_in_different_frames(photons_in_different_frames, nparticles);
 		reset_Tracks(Tracks, nparticles, nphotons);
 
-    unsigned nparticles = particles.size();
 		if ( particles.empty() ){
 			tree->Fill(); continue;
 		}
@@ -165,14 +166,14 @@ int main(int argc, char** argv)
 			// check_reconstructed_photons(photons_in_frame);
 			histogram_photons_in_frame = histogram_photon_angles(ev, i, photons_in_frame);
 
-			index_photons(particle, i, photons_in_frame, index, histogram_photons_in_frame, angle_smear, band_cases, band_search_case, band_search_width, photons_per_particle, expectedPhotonMap[i], *d, print);
+			index_photons(particle, i, photons_in_frame, index, histogram_photons_in_frame, angle_smear, time_smear, band_cases, band_search_case, band_search_width, photons_per_particle, expectedPhotonMap[i], *d, print);
 		}
 
 		////////// Create 1D Histograms and Fit them
-		for (unsigned i = 0; i < npars; ++i){
+		for (unsigned i = 0; i < nparticles; ++i){
 			focus_particle = (i == particle_to_focus);
 			auto& photons_in_frame = photons_in_different_frames.at(i);
-			auto& particle = pars.at(i);
+			auto& particle = particles.at(i);
 			auto& current_recon = Tracks.Recon.at(i);
 			auto& Hist2D = current_recon.Hist2D;
 

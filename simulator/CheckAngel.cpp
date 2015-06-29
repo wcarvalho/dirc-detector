@@ -15,10 +15,6 @@ Simulate the trajectories for a single Photon of a single "Event"
 
 void CheckAngel(Detector d, Photon &photon, string Output)
 {
-	if (Output == "yes")
-	{
-		TabToLevel(4); cout << "CheckAngel:\n";
-	}
 	double pi = TMath::Pi();
 	double angle;
 	double dotproduct, magnitudeproduct;
@@ -52,25 +48,27 @@ void CheckAngel(Detector d, Photon &photon, string Output)
   // {
 		// TabToLevel(5); cout << "dotproduct = " << dotproduct << endl;
 		// TabToLevel(5); cout << "magnitudeproduct = " << magnitudeproduct << endl;
-		// TabToLevel(5); cout << "Photon Angle = " << angle << endl;
-		// TabToLevel(5); cout << "Critical Angle = " << d.CriticalAngle << ", " << pi - d.CriticalAngle << endl;
   // }
  //  if (photon.Flag == 1)
-	// {
-	// 	cout << "photon " << photon.Which << endl;
-	// 	cout << "reflections = " << photon.Reflections << endl;
-	// }
+  // {
+  //  cout << "photon " << photon.Which << endl;
+  //  cout << "reflections = " << photon.Reflections << endl;
+  // }
   if ((angle < d.CriticalAngle) || (angle > (pi - d.CriticalAngle)&&(angle < pi)))
   {
-    // if (Output == "yes")
-    // {
-      // TabToLevel(3); cout << "CRITICAL ANGLE ERROR!!\n";
-    // }
+    if (Output == "yes"){
+      cout << "\tCRITICAL ANGLE ERROR!!\n";
+  		cout << "\t\tPhoton Angle = " << angle << endl;
+  		cout << "\t\tCritical Angle = " << d.CriticalAngle << ", " << pi - d.CriticalAngle << endl;
+    }
     photon.Flag = 1;
   }
   if ( fabs(photon.UnitVector.X()) <.3)
   {
-    // TabToLevel(3); cout << "TOO SLOW!!\n";
+    if (Output == "yes"){
+      cout << "\tTOO SLOW!!\n";
+      cout << "\t\t" << photon.UnitVector.X() << endl;
+    }
     photon.Flag = 1;
   }
   if ((Output == "yes")&&(photon.Flag == 1)){ TabToLevel(3); cout << "Flag!!\n"; }

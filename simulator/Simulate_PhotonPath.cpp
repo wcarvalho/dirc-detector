@@ -29,25 +29,38 @@ void Simulate_PhotonPath(Detector& d, Photon &photon, double smear, bool print)
 	photon.SetVelocity(photon_velocity);
 
 	Random r;
-	while ((photon.X != d.Length) && (photon.X != 0))
+	while (true)
 	{
+		static Photon pho_temp(0,0);
+		pho_temp.Flag = 0;
 		simPho.GotoWall(print);
+		// cout << simPho.wall << ": " << simPho << endl;
+		// cout << "\tcoordinates: " << simPho.printcoord() << endl;
 		double &x_p = simPho.coord[0];
 		if( simPho.wall == 1 )
 		{
-			if ( withinDiff(x_p, 0., .01) ) photon.SetWall(Photon::BACK);
-			if ( withinDiff(x_p, d.Length, .01) ) photon.SetWall(Photon::FRONT);
-			if (photon.GetWall() != photon.WallFromPhi(photon.Phi)){
-				cout << "photon wall = " << photon.GetWall() << " with phi = " << photon.Phi << " and subsequent wall " << photon.WallFromPhi(photon.Phi) << endl;
-				exit(1);
-			}
 			photon.SetAngle(simPho.Theta, simPho.Phi);
 			photon.X = simPho.coord[0];
 			photon.Y = simPho.coord[1];
 			photon.Z = simPho.coord[2];
-			// cout << "photon Time_Traveled pre emission = " << photon.Time_Traveled << endl;
 			photon.Time_Traveled += simPho.GetTimeTraveled();
-			// cout << "photon Time_Traveled post emission = " << simPho.GetTimeTraveled() << endl;
+			if ( withinDiff(x_p, 0., .01) ) photon.SetWall(Photon::BACK);
+			if ( withinDiff(x_p, d.Length, .01) ) photon.SetWall(Photon::FRONT);
+			if (photon.GetWall() != photon.WallFromPhi(photon.Phi)){
+				cout << "ERROR: " << endl;
+					cout << "\tphoton angles: " << photon << endl;
+				switch (photon.GetWall()){
+					case 0:
+						cout << "\t recorded photon wall = Back\n";
+						cout << "\t expected photon wall = Front\n";
+						break;
+					case 1:
+						cout << "\t recorded photon wall = Front\n";
+						cout << "\t expected photon wall = Back\n";
+						break;
+				}
+				exit(1);
+			}
 
 			static bool angle_passed;
 			angle_passed = checkFinalAngle(photon.Theta, photon.Phi, original_theta, original_phi);
@@ -61,10 +74,10 @@ void Simulate_PhotonPath(Detector& d, Photon &photon, double smear, bool print)
 
 		double th = simPho.Theta;
 		double ph = simPho.Phi;
-		Photon pho_temp(th, ph);
+		pho_temp.SetAngle(th, ph);
 		pho_temp.Wall = simPho.wall;
-		// cout << pho_temp.Wall << ": " << pho_temp << endl;
 		CheckAngel(d, pho_temp, "no");
+		// cout << pho_temp.Wall << ": " << pho_temp << endl;
 		photon.Flag = pho_temp.Flag;
 		if (photon.Flag == 1){
 			return;
