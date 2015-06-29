@@ -3,6 +3,7 @@
  */
 
 #include "reconstructor.h"
+#include "dirc_io.h"
 #include <cstdlib>
 #include "cmdline.h"
 #include "boost/bind.hpp"
@@ -15,95 +16,68 @@ int main(int argc, char** argv)
 	gengetopt_args_info ai;
 	if (cmdline_parser (argc, argv, &ai) != 0){ exit(1); }
 
-
-    int last     = 0;
-    double angle_smear = ai.as_arg;
-    double time_smear = ai.ts_arg;
-
- 		int ExpectedPhotonCase = ai.expected_photons_case_arg;
-
-    // measuring time
-    timeval t1, t2;
-    double time1 = 0;
-    double time2 = 0;
-    double calculateFits_time=0.;
-    //
-    // i/o setup
-    string rf_default = ai.input_arg;
-    string wf_default = "reconstruction.root";
-    string rf = rf_default;
-    string wf = wf_default;
-
-    dirc::FileProperties readf_prop(rf);
-    string directory = "";
-
-
-
-
-    // parse ai arguments
+	// command line options with default arguments
+	//----------------------------------------------------------------------------
 	bool print = ai.verbose_given;
 	bool quiet = ai.quiet_given; if (quiet) print = !quiet;
-    if (ai.last_given) last = ai.last_arg;
-    if (ai.outputfile_given) wf = ai.outputfile_arg;
-
-    if(ai.Directory_given) {
-        string temp_dir = ai.Directory_arg;
-        if (temp_dir.size() != 0)	directory = ai.Directory_arg;
-    	else directory = readf_prop.directory;
-	}
-	readf_prop.appendFileToDirectory(directory, wf);
-
-
-	vector<int> band_cases;
-	if (ai.band_cases_given){
-		if (!quiet) cout << "cases used:\t";
-		for (unsigned i = 0; i < ai.band_cases_given; ++i){
-			auto& C = ai.band_cases_arg[i];
-			band_cases.push_back(C);
-			if (!quiet) cout << C << "\t";
-		}
-		if (!quiet) cout << endl;
-	}
-	else
-		band_cases = {1, 2};
-
-
+  double angle_smear = ai.as_arg;
+  double time_smear = ai.ts_arg;
 	unsigned band_search_case = ai.band_search_case_arg;
 	double band_search_width = ai.band_search_width_arg;
+  string rf = ai.input_arg;								// read file / input
+  string wf = ai.output_arg;							// write file / output
 
-	// double lengths_low[5] = {0, 0, 0, 0, .7};
-	// double lengths_hi[5] = {490, 3.5, pi/2, 2*pi, 1};
-	// int nbins[5] = {20, 5, 10, 10, 5};
-	// string lookupfile = "LookUpTable";
-
+	// command line options without default arguments
+  //----------------------------------------------------------------------------
+  // set the directory for the output file
+	  dirc::FileProperties rf_properties(rf);
+	  string directory = "";
+	  if(ai.Directory_given) {
+	    string temp_dir = ai.Directory_arg;
+	    if ( !temp_dir.empty() ) directory = ai.Directory_arg;
+	  	else directory = rf_properties.directory;
+		}
+		rf_properties.appendFileToDirectory(directory, wf);
+	//----------------------------------------------------------------------------
+	// set the cases that will be used to index the photons (inc = index cases)
+		vector<int> band_cases;
+		if (ai.inc_given){
+			if (!quiet) cout << "cases used:\t";
+			for (unsigned i = 0; i < ai.inc_given; ++i){
+				auto& C = ai.inc_arg[i];
+				band_cases.push_back(C);
+				if (!quiet) cout << C << "\t";
+			}
+			if (!quiet) cout << endl;
+		}
+		else
+			band_cases = {1, 2};
+	//----------------------------------------------------------------------------
 	// determine which function will be used to determine the expected number of photons
-	if (print) cout << "ExpectedPhotonCase = ";
-	std::pair<double, double> (*ExpectedNumberofPhotons)(double const&, double const&, double const&, double const&, double const&);
-	switch(ExpectedPhotonCase) {
-		case 1: // look-up table
-			if (!quiet) cout << "LookUpTable\n";
-			ExpectedNumberofPhotons = &LookUpTableWrapper; break;
-		case 2: // riemansum
-			if (!quiet) cout << "RiemannSum\n";
-			ExpectedNumberofPhotons = &RiemannSum; break;
-	}
+		if (print) cout << "ExpectedPhotonCase = ";
+		std::pair<double, double> (*ExpectedNumberofPhotons)(double const&, double const&, double const&, double const&, double const&);
+		switch(ai.expected_photons_case_arg) {
+			case 1: // look-up table
+				if (!quiet) cout << "LookUpTable\n";
+				ExpectedNumberofPhotons = &LookUpTableWrapper; break;
+			case 2: // riemansum
+				if (!quiet) cout << "RiemannSum\n";
+				ExpectedNumberofPhotons = &RiemannSum; break;
+		}
+	//----------------------------------------------------------------------------
 
-	// Classes used for analysis
-  Reconstruction reconstruction;							// used to reconstruct original photon trajectories
-	TrackRecons Tracks;		// stores information on particle identity guesses
+	// root files i/o
+  GeneratorOut *event_output = 0;				// monte-carlo data
+  Detector* d = 0;											// detector information
+	TrackRecons Tracks;										// stores particle reconstruction data
 
-  // pointers to data from ROOT File
-  GeneratorOut *event_output = 0;
-  Detector* d = 0;
-
-  TFile file(rf.c_str(), "read");
-	TTree *events = (TTree*)file.Get("sim_out");
-	events->SetBranchAddress("simEvent", &event_output);
-	events->SetBranchAddress("detector", &d);
-
+	TFile file;
+	TFile* file_p = &file;
+	TTree *events;
+	readInGeneratorData(file_p, rf, events, event_output, d);
 
 	TFile file2(wf.c_str(), "recreate");
-          TTree tree_np("identifications", "information on what particles tracks were reconstructed into and with what probability");
+  TTree tree_np("identifications", "information on what particles tracks were reconstructed into and with what probability");
 	TTree* tree = &tree_np;
 	tree->Branch("guesses", &Tracks);
 	tree->Branch("detector", &d);
@@ -114,43 +88,64 @@ int main(int argc, char** argv)
 
   for (unsigned ev = 0; ev < events->GetEntries(); ++ev){
 		events->GetEntry(ev);
-		static bool will_focus_event = ai.fe_given;
-		static int event_to_focus {0};
-		bool focus_event;
-		if (will_focus_event){
-			event_to_focus = ai.fe_arg;
-			focus_event = (ev == event_to_focus);
-		}
-		vector<ParticleOut> &pars = event_output->Particles;
-    // remove all particles except for last particles determined by option 'l'
-		if (!quiet) cout << "Event " << ev << ", " << pars.size() << " particles\n";
-    if (ai.last_given) removeFirstParticles(event_output, last, print);
+		static bool event_is_in_focus;
+		if (ai.fe_given) event_is_in_focus = (ev == ai.fe_arg);
 
-    unsigned npars = pars.size();
-		if (print) cout << "\t" << npars << " particles\n";
-		if ( pars.empty() ){ tree->Fill(); continue; }
+		vector<ParticleOut> &particles = event_output->Particles;
+
+		if (!quiet) cout << "Event " << ev << ", with " << particles.size() << " particles\n";
 
 
-		auto const& particle_types = pars.at(0).deftypes; // get particle types
+    // remove all particles except for the last particles determined by option 'l'
+    if (ai.last_given) removeFirstParticles(event_output, ai.last_arg, print);
 
-		TCanvas C("C", "C", 800, 600);
 
 		auto reconstructed_photons = reconstruct_photons(event_output->Photons); // find all reflections photons might have udnergone
 
-		unsigned nphotons = reconstructed_photons.size();
-		if ( reconstructed_photons.empty() ){ tree->Fill(); continue; }
-
+    // initialize variables that will be used
 		static Photon_Sets photons_in_different_frames;		// 1 set of photons per particle
-		reset_photons_in_different_frames(photons_in_different_frames, npars);
-
-		reset_Tracks(Tracks, npars, nphotons);
 		vector<int>& index = Tracks.index; 				// used to color photons
+		static unsigned nphotons;
+    static unsigned nparticles;
+
+		// reset variables
+    nparticles = particles.size();
+		nphotons = reconstructed_photons.size();
+		reset_photons_in_different_frames(photons_in_different_frames, nparticles);
+		reset_Tracks(Tracks, nparticles, nphotons);
+
+		if ( particles.empty() ){
+			tree->Fill(); continue;
+		}
+
+
+
+		static auto const& particle_types = particles.at(0).deftypes; // get particle types
+
+
+		// TCanvas C("C", "C", 800, 600);
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 		static unordered_map <int, int> photons_per_particle;
-		reset_photons_per_particle(photons_per_particle, npars);
+		reset_photons_per_particle(photons_per_particle, nparticles);
+
+
+
 
 		static unordered_map <int, vec_pair> expectedPhotonMap;
-		getExpectedPhotonMap(pars, expectedPhotonMap, ExpectedNumberofPhotons);
+		getExpectedPhotonMap(particles, expectedPhotonMap, ExpectedNumberofPhotons);
 
 	  /////////// rotate photons and index them for every particle
 		static bool will_focus_particle = ai.fp_given;
@@ -160,10 +155,10 @@ int main(int argc, char** argv)
 			particle_to_focus = ai.fp_arg;
 			if (print) cout << "particle_to_focus = " << particle_to_focus << endl;
 		}
-		for (unsigned i = 0; i < npars; ++i){
+		for (unsigned i = 0; i < nparticles; ++i){
 			focus_particle = (i == particle_to_focus);
 			auto& photons_in_frame = photons_in_different_frames.at(i);
-			auto& particle = pars.at(i);
+			auto& particle = particles.at(i);
 			auto& histogram_photons_in_frame = Tracks.Recon.at(i).Hist2D;
 
 			photons_in_frame = std::move(rotate_photons_into_particle_frame(particle.Theta, particle.Phi, reconstructed_photons));
@@ -171,14 +166,14 @@ int main(int argc, char** argv)
 			// check_reconstructed_photons(photons_in_frame);
 			histogram_photons_in_frame = histogram_photon_angles(ev, i, photons_in_frame);
 
-			index_photons(particle, i, photons_in_frame, index, histogram_photons_in_frame, angle_smear, band_cases, band_search_case, band_search_width, photons_per_particle, expectedPhotonMap[i], *d, print);
+			index_photons(particle, i, photons_in_frame, index, histogram_photons_in_frame, angle_smear, time_smear, band_cases, band_search_case, band_search_width, photons_per_particle, expectedPhotonMap[i], *d, print);
 		}
 
 		////////// Create 1D Histograms and Fit them
-		for (unsigned i = 0; i < npars; ++i){
+		for (unsigned i = 0; i < nparticles; ++i){
 			focus_particle = (i == particle_to_focus);
 			auto& photons_in_frame = photons_in_different_frames.at(i);
-			auto& particle = pars.at(i);
+			auto& particle = particles.at(i);
 			auto& current_recon = Tracks.Recon.at(i);
 			auto& Hist2D = current_recon.Hist2D;
 
@@ -201,7 +196,7 @@ int main(int argc, char** argv)
   file.cd();
   file.Close();
 
-  if (!quiet) cout << "reconstruction file: " << wf << endl;
+  if (!quiet) cout << " file: " << wf << endl;
 
   return 0;
 }

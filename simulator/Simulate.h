@@ -7,6 +7,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <sstream>
 
 //------------------------------------------
 //		ROOT
@@ -63,6 +64,15 @@ public:
 	double GetTimeTraveled(){
 		return time_traveled; // returns units in s*1.e-9
 	}
+	friend std::ostream& operator<<(std::ostream& os, Simulate& p){
+    os << p.Theta << ", " << p.Phi;
+    return os;
+  }
+  std::string printcoord(){
+  	static stringstream ss; ss.str("");
+  	ss << coord[0] << ", " << coord[1] << ", " << coord[2];
+  	return ss.str();
+  }
 
 	double Distance[3];
 	double Dim[3];

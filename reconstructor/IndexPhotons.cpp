@@ -29,36 +29,54 @@ bool isPhotonInThetaBand(vector<PhotonOut> const& photons, vector<int> const& ph
 	}
 	return inside_band;
 }
-bool isPhotonInTimeBand(vector<PhotonOut> const& photons, vector<int> const& photonset, double const& x_distance_back, double const& x_distance_forward, double const& particle_time_to_dirc, Detector const& d, ParticleOut const& P, bool print){
-	static double sigma = 100;
+void best_photon_time_reconstruction(ParticleOut& P, double const& n, double const& x_distance, double const& theta, double const&phi, double const& recorded_photon_time, double& reconstructed_photon_time, double& time_difference){
+	static double tp;
+	static double beta;
+	static double smallest_time_difference; smallest_time_difference = 1.e10; 							// difference between different reconstructed times dependent on associated type's mass (e.g. kaon vs. pion vs. electron...)
+	static double time_in_dirc;
+	auto masses = P.MassMap();
+
+
+	time_in_dirc = fabs((1000*n/30)*(x_distance*1.e-2)/(sin(theta)*cos(phi)));
+
+	// cout << endl;
+	for (auto i = masses.begin(); i != masses.end(); ++i){
+		double& mass = i->second;
+		beta = P.CalculateBeta(mass);
+		tp = (1000*P.path_to_dirc())/(beta*30);
+		reconstructed_photon_time = tp + time_in_dirc;
+		time_difference = recorded_photon_time - reconstructed_photon_time;
+		if (time_difference < smallest_time_difference) smallest_time_difference = time_difference;
+	}
+
+}
+bool isPhotonInTimeBand(vector<PhotonOut> const& photons, vector<int> const& photonset, double const& x_distance_back, double const& x_distance_forward, Detector const& d, ParticleOut & P, double sigma, bool print){
 	static Rotater r; r.Feed_Particle(P.Theta, P.Phi);
 
-	static double time_in_dirc;
-	static double total_time;
 	static double time_difference;
-	static double min_time_difference; min_time_difference = 10.e8;
+	static double min_time_difference; min_time_difference = 10.e8;							// difference between recorded time and reconstructed time
 	static double max_time_difference = 0;
-	static string name = "reconstructed time - measured time";
-	static TH1D h(name.c_str(), name.c_str(), 1000, -.02, .02);
-	static int chosen_indx;
+	static double reconstructed_photon_time;
+	// static int chosen_indx;
 	static int count = 0;
 	for (auto &i: photonset){
-		++count;
+		cout << count << endl; ++count;
 		auto& photon = photons.at(i);
 		auto theta = photon.Theta;
 		auto phi = photon.Phi;
 		r.Rotate_Photon(theta, phi);
-		if (theta > pi/2) continue;
+		// if (theta > pi/2) continue;
 		static double x_distance;
 		if (photon.GetWall() == Photon::FRONT)
 			x_distance = x_distance_forward;
 		else
 			x_distance = x_distance_back;
-		time_in_dirc = fabs((d.n/30)*(x_distance*1.e-2)/(sin(theta)*cos(phi)));
-		total_time = time_in_dirc + particle_time_to_dirc;
-		time_difference = total_time - photon.Time_Traveled;
+
+		best_photon_time_reconstruction(P, d.n, x_distance, theta, phi, photon.Time_Traveled, reconstructed_photon_time, time_difference);
+
+		cout << "recorded photon time =  " << photon.Time_Traveled << endl;
+		cout <<	"reconstructed_photon_time = " << reconstructed_photon_time << endl;
 		if (fabs(time_difference) < fabs(min_time_difference)){
-			chosen_indx = i;
 			min_time_difference = time_difference;
 		}
 		if (fabs(time_difference) > fabs(max_time_difference)){
@@ -66,7 +84,9 @@ bool isPhotonInTimeBand(vector<PhotonOut> const& photons, vector<int> const& pho
 		}
 
 	}
-
+	cout << "\t- min_time_difference = " << min_time_difference << endl;
+	cout << "\t- max_time_difference = " << max_time_difference << endl;
+	cout << "\t\t- 5sigma = " << 5*sigma << endl;
 
 
 	if (fabs(min_time_difference) < 5*sigma)
@@ -108,7 +128,7 @@ void diagnostic_print(vector<int> const& index, int const& particle_index, vecto
 
 typedef std::unordered_map<int, bool(*)(vector<PhotonOut> const&, vector<int> const&, double const&, double const&, bool)> band_case_map;
 
-void index_photons(ParticleOut & particle, int const& particle_index, vector<PhotonOut> const& photons, vector<int>& index, TH2D& h, double const& smear, vector<int> const& cases, unsigned const& band_search_case, double const& band_search_width, unordered_map <int, int>& photons_per_particle, vec_pair const&expected_photons, Detector const& d, bool const& print){
+void index_photons(ParticleOut & particle, int const& particle_index, vector<PhotonOut> const& photons, vector<int>& index, TH2D& h, double const& smear, double const& time_smear, vector<int> const& cases, unsigned const& band_search_case, double const& band_search_width, unordered_map <int, int>& photons_per_particle, vec_pair const&expected_photons, Detector const& d, bool const& print){
 
 	void (*findThetaBand)(ParticleOut &, TH2D const&, double const&, double const&, double&, double&, vec_pair const&, bool const&);
 	switch(band_search_case){
@@ -123,7 +143,6 @@ void index_photons(ParticleOut & particle, int const& particle_index, vector<Pho
 	static double x_distance_forward;
 
 	x_distance(particle, x_distance_back, x_distance_forward);
-	double particle_time_to_dirc = time_of_flight(particle);
 
 	int nphotons = photons.size()/4;
 	vector<int> photonset{0, 0, 0, 0};
@@ -138,7 +157,7 @@ void index_photons(ParticleOut & particle, int const& particle_index, vector<Pho
 				case 1:
 					passedBandTest *= isPhotonInThetaBand(photons, photonset, theta_center_min, theta_center_max, print);
 					break;
-				case 2: passedBandTest *= isPhotonInTimeBand(photons, photonset, x_distance_back, x_distance_forward, particle_time_to_dirc, d, particle, print);
+				case 2: passedBandTest *= isPhotonInTimeBand(photons, photonset, x_distance_back, x_distance_forward, d, particle, time_smear, print);
 					break;
 			}
 		}

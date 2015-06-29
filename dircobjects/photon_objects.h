@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <cmath>
+#include <sstream>
 #include <string>
 #include "TObject.h"
 #include "TVector3.h"
@@ -21,6 +22,10 @@ public:
     os << p.Theta << ", " << p.Phi;
     return os;
   }
+  std::string printcoord(){
+    static std::stringstream ss; ss.str("");
+    ss << X << ", " << Y << ", " << Z;
+    return ss.str();  }
   void SetVelocity(double const v) { velocity = v; }
   double Theta;
   double Phi;
@@ -42,8 +47,8 @@ public:
       ((_phi > pi/2.) && (_phi < 3.*pi/2)) ||
       ((_phi < -pi/2.) && (_phi > -3.*pi/2)) )
       return PhotonOut::BACK;
-      else
-        return PhotonOut::FRONT;
+
+      else return PhotonOut::FRONT;
   }
 
   private:

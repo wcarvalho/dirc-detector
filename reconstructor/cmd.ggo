@@ -8,7 +8,7 @@ option "input" i "path of particle-generated data" string
 
 option "Directory" D "Sets the directory in which files will be saved. With this option, with no argument the file is saved in directory of input file. Without this option, it is saved in the current directory" string default="" argoptional optional
 
-option "outputfile" o "write file for reconstruction" string optional
+option "output" o "write file for reconstruction" string optional default="particle_reconstruction.root"
 
 option "verbose" v "print data" optional
 option "quiet" q "suppress all printing" optional
@@ -24,7 +24,7 @@ option "expected-photons-case" e "\n\tcase 1: look-up table. \n\tcase 2: riemann
 option "LookUpTable" L "file for look-up table" string default="LookUpTable" argoptional optional dependon="expected-photons-case"
 
 
-option "band-cases" b "\ncase 1: Use Theta Band. \ncase 2: Use Time Band" argoptional int optional multiple default="1"
+option "inc" - "\ncase 1: Use Theta Band. \ncase 2: Use Time Band" argoptional int optional multiple
 
 option "band-search-case" B "\n\tcase 1: Search 1D theta projection for gaussian peak. \n\tcase 2: apply hough transform to 2D theta vs. phi histogram" argoptional int optional default="1"
 

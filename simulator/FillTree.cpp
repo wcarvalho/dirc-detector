@@ -44,7 +44,7 @@ void FillTree(TTree &tree, ParticleEvent particle_event, PhotonEvent photon_even
 		phos.push_back(*Pho);
 	}
 	if(!quiet){
-		cout << "\tphotons: " << phos.size() << endl;
+		cout << "\t" << pars.size() << " particles produced " << phos.size() << " photons" << endl;
 	}
 	tree.Fill();
 

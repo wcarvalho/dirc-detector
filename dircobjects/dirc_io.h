@@ -37,3 +37,10 @@ void checkValid(const TFile& f){
 		exit(1);
 	}
 }
+// void writeReconstructionData(TFile*& f, std::string filename, TTree*& t){
+// 	f = new TFile(filename.c_str(), "recreate");
+//   TTree tree("identifications", "information on what particles tracks were reconstructed into and with what probability");
+// 	t = &tree;
+// 	t->Branch("guesses", &Tracks);
+// 	t->Branch("detector", &d);
+// }
