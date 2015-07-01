@@ -22,6 +22,7 @@ string cheatout;
 
 int seed;
 double smear;
+double time_smear;
 
 bool submittedCheatFile;
 bool print;
@@ -36,6 +37,7 @@ try{
 	TCLAP::ValueArg<std::string> cheatoutFileArg("C","cheat-out-file","file with cheat data from simulation",false,"cheat.root","string", cmd);
 
 	TCLAP::ValueArg<double> smearArg("s","smear","the value with each the angle will be smeared",false,0.01,"string", cmd);
+	TCLAP::ValueArg<double> timesmearArg("t","ts","the value with each the time will be smeared (in picoseconds) ",false,0.01,"string", cmd);
 	TCLAP::ValueArg<double> seedArg("S","seed","seed value for random number generator",false,0,"int", cmd);
 
 	TCLAP::SwitchArg verboseArg("v","verbose","", cmd, false);
@@ -50,6 +52,7 @@ try{
 		cheatout = cheatoutFileArg.getValue();
 	}
 	smear = smearArg.getValue();
+	time_smear = timesmearArg.getValue();
 	seed = seedArg.getValue();
 	print = verboseArg.getValue();
 }
@@ -104,12 +107,15 @@ catch( TCLAP::ArgException& e )
 		for (unsigned int pho = 0; pho < PhotonOuts.size(); ++pho){
 			double theta_smear = r.Gaus(0, smear);
 			double phi_smear = r.Gaus(0, smear);
+			double time_smearing = r.Gaus(0, time_smear);
 			if (submittedCheatFile){
 				Photons->at(pho).Theta += theta_smear;
 				Photons->at(pho).Phi += phi_smear;
+				Photons->at(pho).Time_Traveled += time_smearing;
 			}
 			PhotonOuts.at(pho).Theta += theta_smear;
 			PhotonOuts.at(pho).Phi += phi_smear;
+			PhotonOuts.at(pho).Time_Traveled += time_smearing;
 		}
 		outputTree1.Fill();
 		if (submittedCheatFile) outputTree2->Fill();

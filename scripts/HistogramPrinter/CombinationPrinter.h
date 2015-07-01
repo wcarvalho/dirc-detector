@@ -71,7 +71,7 @@ void addFits(TH1D &h, TrackRecon const& R, vector<TF1*>& functions, vector<int>&
 	for (int i = 0; i < R.size(); ++i){
 		if ((!R.passed_intensity_cut(i, 8)) || (R.getnSigmaThetaAt(i) > 10)) {
 			// cout << "fits: not displaying " << R.getNameAt(i) << "with dsig = " << R.getnSigmaThetaAt(i) << endl;
-			continue;
+			// continue;
 		}
 		displayed.push_back(i);
 
@@ -147,7 +147,7 @@ TH1D* addFullHistogram(TPad& pad, TrackRecon const& R, vector<PhotonOut> const& 
 
 	return std::move(h1);
 }
-void AddEventDetails(TPad &pad, TLegend& L, ParticleOut & P, TrackRecon const& R, int const& particle_index, double const& momentum, string particle_search, double threshold){
+void AddEventDetails(TPad &pad, TLegend& L, ParticleOut & P, TrackRecon const& R, int const& particle_index, double const& momentum, string particle_search, double threshold, double sbratio = 1){
 
 	pad.cd();
 	stringstream ss;
@@ -155,11 +155,15 @@ void AddEventDetails(TPad &pad, TLegend& L, ParticleOut & P, TrackRecon const& R
 
 
 	// particle incidence angle
-	string fitas = findBestFit(R, threshold);
+	string fitas = R.getBestFit(threshold, false);
+	// cout << "fitas = " << fitas << endl;
 	if (fitas != ""){
 		ss.str(""); ss << "fit as "<< fitas;
 		L.AddEntry((TObject*)0, ss.str().c_str(),"");
 	}
+
+	// ss.str(""); ss << "ratio: "<< sbratio;
+	// L.AddEntry((TObject*)0, ss.str().c_str(),"");
 
 	L.Draw();
 
@@ -188,6 +192,18 @@ void AddFitDetails(TPad &pad, TLegend& L, ParticleOut & P, TrackRecon const& R, 
 		if (R.Params.empty()) continue;
 		// found angle
 
+		bool passed_intensity_cut = R.passed_intensity_cut(indx, 8, false);
+		// bool passed_theta_cut = (R.getnSigmaThetaAt(indx) < 10);
+
+		if (!passed_intensity_cut){
+			ss.str("");
+			ss << "failed intensity cut";
+			L.AddEntry(function, ss.str().c_str(),"");
+			L.Draw();
+			++indx;
+			continue;
+		}
+
 		ss.str(""); ss << std::setprecision(5) << expected_angle <<
 		" vs. " << std::setprecision(5) << R.getIntegralCenterAt(i);
 		L.AddEntry(function, ss.str().c_str(),"");
@@ -204,6 +220,42 @@ void AddFitDetails(TPad &pad, TLegend& L, ParticleOut & P, TrackRecon const& R, 
 	pad.Update();
 	pad.Modified();
 }
+
+void getSignaltoBackgroundRatio(TrackRecon const& R, TH1D* const&hf, TH1D* const&hr, double threshold, double &signalbackgroundratio){
+	string best_fit = R.getBestFit(threshold);
+	int best_fit_indx = R.getIndexOf(best_fit);
+	if (best_fit_indx == -1) {
+		signalbackgroundratio=1;
+		return;
+	}
+
+	double center = R.getIntegralCenterAt(best_fit_indx);
+	double width = .01;
+
+	double height_full = hf->GetMean(2);
+	double background_full = height_full*4*width;
+	double full_bin_low = hf->GetBin(center - 2*width);
+	double full_bin_hi = hf->GetBin(center + 2*width);
+	double signal_full = hf->Integral(full_bin_low, full_bin_hi) - background_full;
+	double bsf = background_full/sqrt(signal_full);
+
+
+
+	double height_reduced = hr->GetMean(1);
+	double background_reduced = height_reduced*4*width;
+	double reduced_bin_low = hr->GetBin(center - 2*width);
+	double reduced_bin_hi = hr->GetBin(center + 2*width);
+	double signal_reduced = hr->Integral(reduced_bin_low, reduced_bin_hi) - background_reduced;
+	double bsr = background_reduced/sqrt(signal_reduced);
+	cout << "\t- height_reduced = " <<  height_reduced << endl;
+	cout << "\t- background_reduced = " <<  background_reduced << endl;
+	cout << "\t- signal_reduced = " << signal_reduced << endl;
+	cout << "\t- bsr = " << bsr << endl;
+	exit(1);
+	signalbackgroundratio = bsr/bsf;
+}
+
+
 
 void AddCombination(string canvasname, TFile& f, vector<ParticleOut> & particles, vector<PhotonOut> const& photons, vector<Photon> const& cheat_photons, vector<int> const& index, int particle_index, TrackRecon const& R, int search_index, double const& momentum, string particle_type, string particle_search, double threshold, int plotType, bool print = false){
 
@@ -264,11 +316,14 @@ void AddCombination(string canvasname, TFile& f, vector<ParticleOut> & particles
 	hr->GetXaxis()->SetRangeUser(.75, .9);
 	if (print) cout << "\treduced histogram\n";
 
+	double signalbackgroundratio;
+	// getSignaltoBackgroundRatio(R, hf, hr, threshold, signalbackgroundratio);
+
 	stringstream ss; ss << "Particle "<< particle_index << ": " << particle_type << " with p = "<< setprecision(2) << momentum << "GeV";
 	TLegend L(0., 0.9, 0.35, 1.0, ss.str().c_str());
 	L.SetTextSize(.035);
 
-  AddEventDetails(*lowermiddle, L, particles.at(particle_index), R, search_index, momentum, particle_search, threshold);
+  AddEventDetails(*lowermiddle, L, particles.at(particle_index), R, search_index, momentum, particle_search, threshold, signalbackgroundratio);
 	if (print) cout << "\tevent details\n";
 
 
@@ -389,8 +444,6 @@ void AddTimeScatterCombination(string canvasname, TFile& f, vector<ParticleOut> 
 	delete mg2;
 	delete L_P;
 	delete Dummy;
-
-
 }
 
 void AddBatch(int event, int match, TFile& f, vector<ParticleOut> & particle_outs, vector<Particle> & particles, vector< vector<PhotonOut> > const& photon_sets, vector<Photon> cheat_photons, vector<int> const& index, vector< TrackRecon> & reconstructions, string & particle_compare, unsigned& count, double threshold, int plotType, double time_min, double time_max){

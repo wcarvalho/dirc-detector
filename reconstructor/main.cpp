@@ -22,6 +22,7 @@ int main(int argc, char** argv)
 	bool quiet = ai.quiet_given; if (quiet) print = !quiet;
   double angle_smear = ai.as_arg;
   double time_smear = ai.ts_arg;
+  double time_error = ai.terr_arg;
 	unsigned band_search_case = ai.band_search_case_arg;
 	double band_search_width = ai.band_search_width_arg;
   string rf = ai.input_arg;								// read file / input
@@ -93,8 +94,8 @@ int main(int argc, char** argv)
 
 		vector<ParticleOut> &particles = event_output->Particles;
 
-		if (!quiet) cout << "Event " << ev << ", with " << particles.size() << " particles\n";
 
+		if (!quiet) cout << "Event " << ev << ", with " << particles.size() << " particles and " << event_output->Photons.size() << " photons\n";
 
     // remove all particles except for the last particles determined by option 'l'
     if (ai.last_given) removeFirstParticles(event_output, ai.last_arg, print);
@@ -163,10 +164,10 @@ int main(int argc, char** argv)
 
 			photons_in_frame = std::move(rotate_photons_into_particle_frame(particle.Theta, particle.Phi, reconstructed_photons));
 
-			// check_reconstructed_photons(photons_in_frame);
+			check_reconstructed_photons(photons_in_frame);
 			histogram_photons_in_frame = histogram_photon_angles(ev, i, photons_in_frame);
-
-			index_photons(particle, i, photons_in_frame, index, histogram_photons_in_frame, angle_smear, time_smear, band_cases, band_search_case, band_search_width, photons_per_particle, expectedPhotonMap[i], *d, print);
+			// cout << "\tparticle " << i << endl;
+			index_photons(particle, i, photons_in_frame, index, histogram_photons_in_frame, angle_smear, time_smear, time_error, band_cases, band_search_case, band_search_width, photons_per_particle, expectedPhotonMap[i], *d, print);
 		}
 
 		////////// Create 1D Histograms and Fit them
@@ -179,7 +180,8 @@ int main(int argc, char** argv)
 
 			TH1D* reduced_histogram_theta_projection = ReducedHistogram(photons_in_frame, Hist2D, index, i);
 
-			if (print) cout << "\t\tFitting particle " << i << " with " << photons_per_particle[i] << " photon angles (" << (int)photons_per_particle[i]/4 << ")\n";
+			if (!quiet)
+				cout << "\tFitting particle " << i << " with " << photons_per_particle[i] << " photon angles (" << (int)photons_per_particle[i]/4 << ") at x = " << particle.X << endl;
 
 			if (photons_per_particle[i] != 0 )
 				CalculateParticleFits(*reduced_histogram_theta_projection, particle, current_recon, expectedPhotonMap[i], i, angle_smear, print);

@@ -47,16 +47,16 @@ void DrawScatterPlot(TMultiGraph*& mg, TLegend& L, vector<ParticleOut> const& pa
 
 	L.SetTextSize(.025);
 
+	createGraph(graphs, L, "not indexed", photons, index, -10, markerstyle, nparticles+2, markersize);
 	stringstream ss;
 	for (unsigned i = 0; i < nparticles; ++i){
 		auto const& particle = particles.at(i);
 		 ss.str(""); ss << i << ": (" << std::setprecision(2) << particle.Theta << ", " << std::setprecision(2) << particle.Phi << "), " << int(particle.X);
 		createGraph(graphs, L, ss.str(), photons, index, i, markerstyle, i+2, markersize);
 	}
-
 	createGraph(graphs, L, "shared index", photons, index, -1, markerstyle, 1, markersize);
 
-	createGraph(graphs, L, "not indexed", photons, index, -10, markerstyle, nparticles+2, markersize);
+
 
 	for (auto& graph: graphs){
 		mg->Add(graph);

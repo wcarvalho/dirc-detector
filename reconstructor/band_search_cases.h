@@ -18,7 +18,6 @@ void TallestBinContent(ParticleOut & particle, TH2D const& h, double const& smea
 	center_min = center - width;
 	center_max = center + width;
 }
-
 void x_distance(ParticleOut& P, double& x_back, double& x_forward){
 
 
@@ -54,43 +53,19 @@ void x_distance(ParticleOut& P, double& x_back, double& x_forward){
 
 	x_half_movement = x_start + sign(x_displacement)*half_x_traveled;
 
+	// cout << "x_start = " << x_start << endl;
+	// cout << "x_final = " << x_final << endl;
+	// cout << "x_displacement = " << x_displacement << endl;
+	// cout << "half_x_traveled = " << half_x_traveled << endl;
+	// cout << "x_half_movement = " << x_start << " + " << sign(x_displacement) << "*"<< half_x_traveled << endl;
+
 	x_back = x_half_movement;
+	// cout << "x_half_movement = " << x_half_movement << endl;
 	x_forward = l - x_half_movement;
+	// cout << "x_forward = " << x_forward << endl;
 
 	return;
 }
-
-double time_of_flight(ParticleOut& P){
-	static double tp;
-	static double tp_sum;
-	static double beta;
-	auto masses = P.MassMap();
-
-	cout << endl;
-	cout << "\t p= " << P.CalculateMomentum(masses.begin()->second) << endl;
-	for (auto i = masses.begin(); i != masses.end(); ++i){
-		double& mass = i->second;
-		beta = P.CalculateBeta(mass);
-		tp = P.path_to_dirc()/(beta*30/100);
-		tp_sum += tp;
-	}
-
-	double tp_final = tp_sum/masses.size();
-	cout << "t final = " << tp_final << endl;
-	return std::move(tp_final);
-}
-
-
-
-void findTimeBand(double& time_min, double& time_max, ParticleOut& P){
-
-	time_min = 0;
-	time_max = 10;
-	if (time_max < time_min){
-		cout << "ERROR! time max < time min!\n\nExiting!!\n"; exit(1);
-	}
-}
-
 int sign(double const& number){
 	if (number < 0) return -1;
 	else return 1;

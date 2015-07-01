@@ -29,12 +29,12 @@ public:
 	int size() const { return Options.size(); }
 	int size(){ return Options.size(); }
 	int NReconstructions(){ return Options.size(); } // deprecated
-	int getIndexOf(std::string type);
+	int getIndexOf(std::string type) const;
 	double getLatestIntegralCenter(){ return Params.back().at(1); }
 	double getLatestIntegralCenter() const { return Params.back().at(1); }
 	double getIntegralCenterAt(int const i){ return Params.at(i).at(1); }
 	double getIntegralCenterAt(int const i) const { return Params.at(i).at(1); }
-	bool passed_intensity_cut (int const i, double const threshold) const;
+	bool passed_intensity_cut (int const i, double const threshold, bool print = false) const;
 	double getSigmaThetaAt(int const i) const { return SigTheta.at(i); }
 	double getSigmaAreaAt(int const i) const { return SigArea.at(i); }
 	double getnSigmaAreaAt(int const i) const {
@@ -51,7 +51,8 @@ public:
 	}
 	double getIntegralAt(int const i) const { return Areas.at(i); }
 	double getIntegralHeightAt(int const i) const { return Params.at(i).at(0); }
-	std::string getBestFit(double const threshold, bool print = false);
+	double getIntegralConstantAt(int const i) const { return Params.at(i).at(3); }
+	std::string getBestFit(double const threshold, bool print = false) const;
 	std::string getNameAt(int const i) const { return Options.at(i); }
 	double getExpectedIntensityAt(int const i) const {return ExpectedNumber.at(i); }
 	double getExpectedAngleAt(int const i) const {return ExpectedAngle.at(i); }

@@ -43,7 +43,8 @@ const char *gengetopt_args_info_help[] = {
   "  -q, --quiet                   suppress all printing",
   "  -l, --last=INT                only reconstructs the last l particles",
   "      --as=DOUBLE               the known angular smearing (as)\n                                  (default=`.01')",
-  "      --ts=DOUBLE               the known temporal smearing (ts)\n                                  (default=`10')",
+  "      --ts=DOUBLE               the known temporal smearing (ts)\n                                  (default=`100')",
+  "      --terr=DOUBLE             an assumption on the error in the timing\n                                  information  (default=`100')",
   "  -e, --expected-photons-case[=INT]\n                                \n                                  \tcase 1: look-up table. \n                                  \tcase 2: riemann sum calculation.\n                                  (default=`1')",
   "  -L, --LookUpTable[=STRING]    file for look-up table  (default=`LookUpTable')",
   "      --inc[=INT]               \n                                  case 1: Use Theta Band. \n                                  case 2: Use Time Band",
@@ -90,6 +91,7 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->last_given = 0 ;
   args_info->as_given = 0 ;
   args_info->ts_given = 0 ;
+  args_info->terr_given = 0 ;
   args_info->expected_photons_case_given = 0 ;
   args_info->LookUpTable_given = 0 ;
   args_info->inc_given = 0 ;
@@ -114,8 +116,10 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->last_orig = NULL;
   args_info->as_arg = .01;
   args_info->as_orig = NULL;
-  args_info->ts_arg = 10;
+  args_info->ts_arg = 100;
   args_info->ts_orig = NULL;
+  args_info->terr_arg = 100;
+  args_info->terr_orig = NULL;
   args_info->expected_photons_case_arg = 1;
   args_info->expected_photons_case_orig = NULL;
   args_info->LookUpTable_arg = gengetopt_strdup ("LookUpTable");
@@ -149,17 +153,18 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->last_help = gengetopt_args_info_help[7] ;
   args_info->as_help = gengetopt_args_info_help[8] ;
   args_info->ts_help = gengetopt_args_info_help[9] ;
-  args_info->expected_photons_case_help = gengetopt_args_info_help[10] ;
-  args_info->LookUpTable_help = gengetopt_args_info_help[11] ;
-  args_info->inc_help = gengetopt_args_info_help[12] ;
+  args_info->terr_help = gengetopt_args_info_help[10] ;
+  args_info->expected_photons_case_help = gengetopt_args_info_help[11] ;
+  args_info->LookUpTable_help = gengetopt_args_info_help[12] ;
+  args_info->inc_help = gengetopt_args_info_help[13] ;
   args_info->inc_min = 0;
   args_info->inc_max = 0;
-  args_info->band_search_case_help = gengetopt_args_info_help[13] ;
-  args_info->band_search_width_help = gengetopt_args_info_help[14] ;
-  args_info->momentum_indexing_threshold_help = gengetopt_args_info_help[15] ;
-  args_info->event_range_help = gengetopt_args_info_help[16] ;
-  args_info->fe_help = gengetopt_args_info_help[17] ;
-  args_info->fp_help = gengetopt_args_info_help[18] ;
+  args_info->band_search_case_help = gengetopt_args_info_help[14] ;
+  args_info->band_search_width_help = gengetopt_args_info_help[15] ;
+  args_info->momentum_indexing_threshold_help = gengetopt_args_info_help[16] ;
+  args_info->event_range_help = gengetopt_args_info_help[17] ;
+  args_info->fe_help = gengetopt_args_info_help[18] ;
+  args_info->fp_help = gengetopt_args_info_help[19] ;
   
 }
 
@@ -298,6 +303,7 @@ cmdline_parser_release (struct gengetopt_args_info *args_info)
   free_string_field (&(args_info->last_orig));
   free_string_field (&(args_info->as_orig));
   free_string_field (&(args_info->ts_orig));
+  free_string_field (&(args_info->terr_orig));
   free_string_field (&(args_info->expected_photons_case_orig));
   free_string_field (&(args_info->LookUpTable_arg));
   free_string_field (&(args_info->LookUpTable_orig));
@@ -367,6 +373,8 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "as", args_info->as_orig, 0);
   if (args_info->ts_given)
     write_into_file(outfile, "ts", args_info->ts_orig, 0);
+  if (args_info->terr_given)
+    write_into_file(outfile, "terr", args_info->terr_orig, 0);
   if (args_info->expected_photons_case_given)
     write_into_file(outfile, "expected-photons-case", args_info->expected_photons_case_orig, 0);
   if (args_info->LookUpTable_given)
@@ -961,6 +969,7 @@ cmdline_parser_internal (
         { "last",	1, NULL, 'l' },
         { "as",	1, NULL, 0 },
         { "ts",	1, NULL, 0 },
+        { "terr",	1, NULL, 0 },
         { "expected-photons-case",	2, NULL, 'e' },
         { "LookUpTable",	2, NULL, 'L' },
         { "inc",	2, NULL, 0 },
@@ -1148,9 +1157,23 @@ cmdline_parser_internal (
           
             if (update_arg( (void *)&(args_info->ts_arg), 
                  &(args_info->ts_orig), &(args_info->ts_given),
-                &(local_args_info.ts_given), optarg, 0, "10", ARG_DOUBLE,
+                &(local_args_info.ts_given), optarg, 0, "100", ARG_DOUBLE,
                 check_ambiguity, override, 0, 0,
                 "ts", '-',
+                additional_error))
+              goto failure;
+          
+          }
+          /* an assumption on the error in the timing information.  */
+          else if (strcmp (long_options[option_index].name, "terr") == 0)
+          {
+          
+          
+            if (update_arg( (void *)&(args_info->terr_arg), 
+                 &(args_info->terr_orig), &(args_info->terr_given),
+                &(local_args_info.terr_given), optarg, 0, "100", ARG_DOUBLE,
+                check_ambiguity, override, 0, 0,
+                "terr", '-',
                 additional_error))
               goto failure;
           

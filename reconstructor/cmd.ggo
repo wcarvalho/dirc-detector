@@ -17,7 +17,9 @@ option "last" l "only reconstructs the last l particles" int optional
 
 option "as" - "the known angular smearing (as)" double optional default=".01"
 
-option "ts" - "the known temporal smearing (ts)" double optional default="10"
+option "ts" - "the known temporal smearing (ts)" double optional default="100"
+
+option "terr" - "an assumption on the error in the timing information" double optional default="100"
 
 option "expected-photons-case" e "\n\tcase 1: look-up table. \n\tcase 2: riemann sum calculation." argoptional int optional default="1"
 

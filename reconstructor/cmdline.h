@@ -60,9 +60,12 @@ struct gengetopt_args_info
   double as_arg;	/**< @brief the known angular smearing (as) (default='.01').  */
   char * as_orig;	/**< @brief the known angular smearing (as) original value given at command line.  */
   const char *as_help; /**< @brief the known angular smearing (as) help description.  */
-  double ts_arg;	/**< @brief the known temporal smearing (ts) (default='10').  */
+  double ts_arg;	/**< @brief the known temporal smearing (ts) (default='100').  */
   char * ts_orig;	/**< @brief the known temporal smearing (ts) original value given at command line.  */
   const char *ts_help; /**< @brief the known temporal smearing (ts) help description.  */
+  double terr_arg;	/**< @brief an assumption on the error in the timing information (default='100').  */
+  char * terr_orig;	/**< @brief an assumption on the error in the timing information original value given at command line.  */
+  const char *terr_help; /**< @brief an assumption on the error in the timing information help description.  */
   int expected_photons_case_arg;	/**< @brief 
   \tcase 1: look-up table. 
   \tcase 2: riemann sum calculation. (default='1').  */
@@ -125,6 +128,7 @@ struct gengetopt_args_info
   unsigned int last_given ;	/**< @brief Whether last was given.  */
   unsigned int as_given ;	/**< @brief Whether as was given.  */
   unsigned int ts_given ;	/**< @brief Whether ts was given.  */
+  unsigned int terr_given ;	/**< @brief Whether terr was given.  */
   unsigned int expected_photons_case_given ;	/**< @brief Whether expected-photons-case was given.  */
   unsigned int LookUpTable_given ;	/**< @brief Whether LookUpTable was given.  */
   unsigned int inc_given ;	/**< @brief Whether inc was given.  */

@@ -36,16 +36,17 @@ void TrackRecon::printLatest(){
 	// cout << "Funs = " << Funs.back() << endl;
 }
 
-int TrackRecon::getIndexOf(std::string type){
+int TrackRecon::getIndexOf(std::string type) const{
 	for (int i = 0; i < size(); ++i){
 		if (getNameAt(i) == type) return i;
 	}
 	return -1;
 }
 
-bool TrackRecon::passed_intensity_cut (int const i, double threshold = 7) const {
+bool TrackRecon::passed_intensity_cut (int const i, double threshold = 7, bool print) const {
 
 	static double nsigma; nsigma = getnSigmaAreaAt(i);
+	if (print) cout << "\t\u0394 \u03C3 = " << nsigma << ", threshold = " << threshold << endl;
 	if (fabs(nsigma) <= threshold){
 		return true;
 	}
@@ -55,7 +56,7 @@ bool TrackRecon::passed_intensity_cut (int const i, double threshold = 7) const 
 
 }
 
-std::string TrackRecon::getBestFit(double const threshold, bool print){
+std::string TrackRecon::getBestFit(double const threshold, bool print) const {
 
 	static double lowestsigma; lowestsigma = 1.e10;
 	static double nsigma;

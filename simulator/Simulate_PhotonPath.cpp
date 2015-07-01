@@ -43,7 +43,16 @@ void Simulate_PhotonPath(Detector& d, Photon &photon, double smear, bool print)
 			photon.X = simPho.coord[0];
 			photon.Y = simPho.coord[1];
 			photon.Z = simPho.coord[2];
+			// if (photon.Which < 10) cout << "photon time = " << simPho.GetTimeTraveled() << endl;
+			// static int count = 0;
+			// cout << "photon "<< count << " time = " << simPho.GetTimeTraveled() + photon.Time_Traveled << " = "<< photon.Time_Traveled << " + " << simPho.GetTimeTraveled() << endl;
+			// cout << "\temitted at x = " << photon.X << endl;
+			// ++count;
+
 			photon.Time_Traveled += simPho.GetTimeTraveled();
+
+
+
 			if ( withinDiff(x_p, 0., .01) ) photon.SetWall(Photon::BACK);
 			if ( withinDiff(x_p, d.Length, .01) ) photon.SetWall(Photon::FRONT);
 			if (photon.GetWall() != photon.WallFromPhi(photon.Phi)){

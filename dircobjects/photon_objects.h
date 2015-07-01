@@ -41,7 +41,7 @@ public:
    };
   void SetWall(PhotonOut::DircWall w){ dircwall = w; }
   PhotonOut::DircWall GetWall() const { return dircwall; }
-  PhotonOut::DircWall WallFromPhi(double const _phi){
+  PhotonOut::DircWall WallFromPhi(double const _phi) const {
     static double pi = TMath::Pi();
     if (
       ((_phi > pi/2.) && (_phi < 3.*pi/2)) ||
