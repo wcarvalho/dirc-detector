@@ -15,7 +15,7 @@ void gParticle::setDefaults(){
 	phirange[0] = 0;
 	phirange[1] = 2*TMath::Pi();
 	ptrange[0] = .2;
-	ptrange[1] = 100000.;
+	ptrange[1] = 10.;
 }
 
 

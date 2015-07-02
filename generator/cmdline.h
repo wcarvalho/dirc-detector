@@ -43,26 +43,52 @@ struct gengetopt_args_info
 {
   const char *help_help; /**< @brief Print help and exit help description.  */
   const char *version_help; /**< @brief Print version and exit help description.  */
-  int events_arg;	/**< @brief Number of events.  */
+  int events_arg;	/**< @brief Number of events (default='5').  */
   char * events_orig;	/**< @brief Number of events original value given at command line.  */
   const char *events_help; /**< @brief Number of events help description.  */
-  int* particles_arg;	/**< @brief Takes in two arguments for the range in the number of particles per event.  */
-  char ** particles_orig;	/**< @brief Takes in two arguments for the range in the number of particles per event original value given at command line.  */
-  unsigned int particles_min; /**< @brief Takes in two arguments for the range in the number of particles per event's minimum occurreces */
-  unsigned int particles_max; /**< @brief Takes in two arguments for the range in the number of particles per event's maximum occurreces */
-  const char *particles_help; /**< @brief Takes in two arguments for the range in the number of particles per event help description.  */
-  int maxpars_arg;	/**< @brief maximum number of particles to intersect DirC (for anlytical-control puposes).  */
-  char * maxpars_orig;	/**< @brief maximum number of particles to intersect DirC (for anlytical-control puposes) original value given at command line.  */
-  const char *maxpars_help; /**< @brief maximum number of particles to intersect DirC (for anlytical-control puposes) help description.  */
-  int random_arg;	/**< @brief value for seed of random numbers.  */
-  char * random_orig;	/**< @brief value for seed of random numbers original value given at command line.  */
-  const char *random_help; /**< @brief value for seed of random numbers help description.  */
-  char * filename_arg;	/**< @brief root filename (relative or absolute path). By default written within directory as generator.root.  */
-  char * filename_orig;	/**< @brief root filename (relative or absolute path). By default written within directory as generator.root original value given at command line.  */
-  const char *filename_help; /**< @brief root filename (relative or absolute path). By default written within directory as generator.root help description.  */
+  int maxpars_arg;	/**< @brief maximum number of particles to intersect DirC.  */
+  char * maxpars_orig;	/**< @brief maximum number of particles to intersect DirC original value given at command line.  */
+  const char *maxpars_help; /**< @brief maximum number of particles to intersect DirC help description.  */
+  int* nparticles_arg;	/**< @brief Takes in two arguments for the range in the number of particles emitted per event.  */
+  char ** nparticles_orig;	/**< @brief Takes in two arguments for the range in the number of particles emitted per event original value given at command line.  */
+  unsigned int nparticles_min; /**< @brief Takes in two arguments for the range in the number of particles emitted per event's minimum occurreces */
+  unsigned int nparticles_max; /**< @brief Takes in two arguments for the range in the number of particles emitted per event's maximum occurreces */
+  const char *nparticles_help; /**< @brief Takes in two arguments for the range in the number of particles emitted per event help description.  */
+  double* etar_arg;	/**< @brief eta range.  */
+  char ** etar_orig;	/**< @brief eta range original value given at command line.  */
+  unsigned int etar_min; /**< @brief eta range's minimum occurreces */
+  unsigned int etar_max; /**< @brief eta range's maximum occurreces */
+  const char *etar_help; /**< @brief eta range help description.  */
+  double* ptr_arg;	/**< @brief pt range (cannot be set with pr).  */
+  char ** ptr_orig;	/**< @brief pt range (cannot be set with pr) original value given at command line.  */
+  unsigned int ptr_min; /**< @brief pt range (cannot be set with pr)'s minimum occurreces */
+  unsigned int ptr_max; /**< @brief pt range (cannot be set with pr)'s maximum occurreces */
+  const char *ptr_help; /**< @brief pt range (cannot be set with pr) help description.  */
+  double p_arg;	/**< @brief fixed momentum value (cannot be set with ptr).  */
+  char * p_orig;	/**< @brief fixed momentum value (cannot be set with ptr) original value given at command line.  */
+  const char *p_help; /**< @brief fixed momentum value (cannot be set with ptr) help description.  */
+  double* phir_arg;	/**< @brief phi range.  */
+  char ** phir_orig;	/**< @brief phi range original value given at command line.  */
+  unsigned int phir_min; /**< @brief phi range's minimum occurreces */
+  unsigned int phir_max; /**< @brief phi range's maximum occurreces */
+  const char *phir_help; /**< @brief phi range help description.  */
+  int char_arg;	/**< @brief charge (0=random, 1=positive, -1=negative) (default='0').  */
+  char * char_orig;	/**< @brief charge (0=random, 1=positive, -1=negative) original value given at command line.  */
+  const char *char_help; /**< @brief charge (0=random, 1=positive, -1=negative) help description.  */
+  char ** types_arg;	/**< @brief particle types used.  */
+  char ** types_orig;	/**< @brief particle types used original value given at command line.  */
+  unsigned int types_min; /**< @brief particle types used's minimum occurreces */
+  unsigned int types_max; /**< @brief particle types used's maximum occurreces */
+  const char *types_help; /**< @brief particle types used help description.  */
+  int seed_arg;	/**< @brief value for seed of random numbers (default='0').  */
+  char * seed_orig;	/**< @brief value for seed of random numbers original value given at command line.  */
+  const char *seed_help; /**< @brief value for seed of random numbers help description.  */
+  char * output_arg;	/**< @brief root filename (relative or absolute path). By default written within directory as generator.root (default='particles.root').  */
+  char * output_orig;	/**< @brief root filename (relative or absolute path). By default written within directory as generator.root original value given at command line.  */
+  const char *output_help; /**< @brief root filename (relative or absolute path). By default written within directory as generator.root help description.  */
   const char *verbose_help; /**< @brief print data help description.  */
   const char *quiet_help; /**< @brief suppress all printing help description.  */
-  char * dirc_properties_arg;	/**< @brief file with dirc properties (in this order): Length, Width, Height, Radial Distance, Magnetic Field.  */
+  char * dirc_properties_arg;	/**< @brief file with dirc properties (in this order): Length, Width, Height, Radial Distance, Magnetic Field (default='dirc').  */
   char * dirc_properties_orig;	/**< @brief file with dirc properties (in this order): Length, Width, Height, Radial Distance, Magnetic Field original value given at command line.  */
   const char *dirc_properties_help; /**< @brief file with dirc properties (in this order): Length, Width, Height, Radial Distance, Magnetic Field help description.  */
   char * custom_set_arg;	/**< @brief Takes a filename with parameters for the experiment including number of particles, range in eta, pt, and phi, and particle charge and type.  */
@@ -71,23 +97,29 @@ struct gengetopt_args_info
   char * Directory_arg;	/**< @brief Sets the directory in which files will be saved (by default saves in current directory.  */
   char * Directory_orig;	/**< @brief Sets the directory in which files will be saved (by default saves in current directory original value given at command line.  */
   const char *Directory_help; /**< @brief Sets the directory in which files will be saved (by default saves in current directory help description.  */
-  char * pt_distribution_function_arg;	/**< @brief The probability distribution that pt will follow from pt = 0 to pt = 10GeV.  */
-  char * pt_distribution_function_orig;	/**< @brief The probability distribution that pt will follow from pt = 0 to pt = 10GeV original value given at command line.  */
-  const char *pt_distribution_function_help; /**< @brief The probability distribution that pt will follow from pt = 0 to pt = 10GeV help description.  */
+  char * pt_func_arg;	/**< @brief The probability distribution that pt will follow from pt = 0 to pt = 10GeV.  */
+  char * pt_func_orig;	/**< @brief The probability distribution that pt will follow from pt = 0 to pt = 10GeV original value given at command line.  */
+  const char *pt_func_help; /**< @brief The probability distribution that pt will follow from pt = 0 to pt = 10GeV help description.  */
   
   unsigned int help_given ;	/**< @brief Whether help was given.  */
   unsigned int version_given ;	/**< @brief Whether version was given.  */
   unsigned int events_given ;	/**< @brief Whether events was given.  */
-  unsigned int particles_given ;	/**< @brief Whether particles was given.  */
   unsigned int maxpars_given ;	/**< @brief Whether maxpars was given.  */
-  unsigned int random_given ;	/**< @brief Whether random was given.  */
-  unsigned int filename_given ;	/**< @brief Whether filename was given.  */
+  unsigned int nparticles_given ;	/**< @brief Whether nparticles was given.  */
+  unsigned int etar_given ;	/**< @brief Whether etar was given.  */
+  unsigned int ptr_given ;	/**< @brief Whether ptr was given.  */
+  unsigned int p_given ;	/**< @brief Whether p was given.  */
+  unsigned int phir_given ;	/**< @brief Whether phir was given.  */
+  unsigned int char_given ;	/**< @brief Whether char was given.  */
+  unsigned int types_given ;	/**< @brief Whether types was given.  */
+  unsigned int seed_given ;	/**< @brief Whether seed was given.  */
+  unsigned int output_given ;	/**< @brief Whether output was given.  */
   unsigned int verbose_given ;	/**< @brief Whether verbose was given.  */
   unsigned int quiet_given ;	/**< @brief Whether quiet was given.  */
   unsigned int dirc_properties_given ;	/**< @brief Whether dirc-properties was given.  */
   unsigned int custom_set_given ;	/**< @brief Whether custom-set was given.  */
   unsigned int Directory_given ;	/**< @brief Whether Directory was given.  */
-  unsigned int pt_distribution_function_given ;	/**< @brief Whether pt-distribution-function was given.  */
+  unsigned int pt_func_given ;	/**< @brief Whether pt-func was given.  */
 
 } ;
 

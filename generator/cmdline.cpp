@@ -36,23 +36,30 @@ const char *gengetopt_args_info_description = "";
 const char *gengetopt_args_info_help[] = {
   "  -h, --help                    Print help and exit",
   "  -V, --version                 Print version and exit",
-  "  -e, --events=INT              Number of events",
-  "  -P, --particles=INT           Takes in two arguments for the range in the\n                                  number of particles per event",
-  "  -m, --maxpars=INT             maximum number of particles to intersect DirC\n                                  (for anlytical-control puposes)",
-  "  -r, --random=INT              value for seed of random numbers",
-  "  -f, --filename=STRING         root filename (relative or absolute path). By\n                                  default written within directory as\n                                  generator.root",
+  "  -e, --events=INT              Number of events  (default=`5')",
+  "  -m, --maxpars=INT             maximum number of particles to intersect DirC",
+  "  -P, --nparticles=INT          Takes in two arguments for the range in the\n                                  number of particles emitted per event",
+  "      --etar=DOUBLE             eta range",
+  "      --ptr=DOUBLE              pt range (cannot be set with pr)",
+  "      --p=DOUBLE                fixed momentum value (cannot be set with ptr)",
+  "      --phir=DOUBLE             phi range",
+  "      --char=INT                charge (0=random, 1=positive, -1=negative)\n                                  (default=`0')",
+  "  -t, --types=STRING            particle types used",
+  "  -s, --seed=INT                value for seed of random numbers  (default=`0')",
+  "  -o, --output=STRING           root filename (relative or absolute path). By\n                                  default written within directory as\n                                  generator.root  (default=`particles.root')",
   "  -v, --verbose                 print data",
   "  -q, --quiet                   suppress all printing",
-  "  -d, --dirc-properties=STRING  file with dirc properties (in this order):\n                                  Length, Width, Height, Radial Distance,\n                                  Magnetic Field",
+  "  -d, --dirc-properties=STRING  file with dirc properties (in this order):\n                                  Length, Width, Height, Radial Distance,\n                                  Magnetic Field  (default=`dirc')",
   "  -c, --custom-set=STRING       Takes a filename with parameters for the\n                                  experiment including number of particles,\n                                  range in eta, pt, and phi, and particle\n                                  charge and type",
   "  -D, --Directory=STRING        Sets the directory in which files will be saved\n                                  (by default saves in current directory",
-  "      --pt-distribution-function=STRING\n                                The probability distribution that pt will\n                                  follow from pt = 0 to pt = 10GeV",
+  "      --pt-func=STRING          The probability distribution that pt will\n                                  follow from pt = 0 to pt = 10GeV",
     0
 };
 
 typedef enum {ARG_NO
   , ARG_STRING
   , ARG_INT
+  , ARG_DOUBLE
 } cmdline_parser_arg_type;
 
 static
@@ -76,37 +83,56 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->help_given = 0 ;
   args_info->version_given = 0 ;
   args_info->events_given = 0 ;
-  args_info->particles_given = 0 ;
   args_info->maxpars_given = 0 ;
-  args_info->random_given = 0 ;
-  args_info->filename_given = 0 ;
+  args_info->nparticles_given = 0 ;
+  args_info->etar_given = 0 ;
+  args_info->ptr_given = 0 ;
+  args_info->p_given = 0 ;
+  args_info->phir_given = 0 ;
+  args_info->char_given = 0 ;
+  args_info->types_given = 0 ;
+  args_info->seed_given = 0 ;
+  args_info->output_given = 0 ;
   args_info->verbose_given = 0 ;
   args_info->quiet_given = 0 ;
   args_info->dirc_properties_given = 0 ;
   args_info->custom_set_given = 0 ;
   args_info->Directory_given = 0 ;
-  args_info->pt_distribution_function_given = 0 ;
+  args_info->pt_func_given = 0 ;
 }
 
 static
 void clear_args (struct gengetopt_args_info *args_info)
 {
   FIX_UNUSED (args_info);
+  args_info->events_arg = 5;
   args_info->events_orig = NULL;
-  args_info->particles_arg = NULL;
-  args_info->particles_orig = NULL;
   args_info->maxpars_orig = NULL;
-  args_info->random_orig = NULL;
-  args_info->filename_arg = NULL;
-  args_info->filename_orig = NULL;
-  args_info->dirc_properties_arg = NULL;
+  args_info->nparticles_arg = NULL;
+  args_info->nparticles_orig = NULL;
+  args_info->etar_arg = NULL;
+  args_info->etar_orig = NULL;
+  args_info->ptr_arg = NULL;
+  args_info->ptr_orig = NULL;
+  args_info->p_orig = NULL;
+  args_info->phir_arg = NULL;
+  args_info->phir_orig = NULL;
+  args_info->char_arg = 0;
+  args_info->char_orig = NULL;
+  args_info->types_arg = NULL;
+  args_info->types_orig = NULL;
+  args_info->seed_arg = 0;
+  args_info->seed_orig = NULL;
+  args_info->output_arg = gengetopt_strdup ("particles.root");
+  args_info->output_orig = NULL;
+  args_info->dirc_properties_arg = gengetopt_strdup ("dirc");
   args_info->dirc_properties_orig = NULL;
   args_info->custom_set_arg = NULL;
   args_info->custom_set_orig = NULL;
   args_info->Directory_arg = NULL;
   args_info->Directory_orig = NULL;
-  args_info->pt_distribution_function_arg = NULL;
-  args_info->pt_distribution_function_orig = NULL;
+  args_info->pt_func_arg = NULL;
+  args_info->pt_func_orig = NULL;
   
 }
 
@@ -118,18 +144,32 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->help_help = gengetopt_args_info_help[0] ;
   args_info->version_help = gengetopt_args_info_help[1] ;
   args_info->events_help = gengetopt_args_info_help[2] ;
-  args_info->particles_help = gengetopt_args_info_help[3] ;
-  args_info->particles_min = 0;
-  args_info->particles_max = 0;
-  args_info->maxpars_help = gengetopt_args_info_help[4] ;
-  args_info->random_help = gengetopt_args_info_help[5] ;
-  args_info->filename_help = gengetopt_args_info_help[6] ;
-  args_info->verbose_help = gengetopt_args_info_help[7] ;
-  args_info->quiet_help = gengetopt_args_info_help[8] ;
-  args_info->dirc_properties_help = gengetopt_args_info_help[9] ;
-  args_info->custom_set_help = gengetopt_args_info_help[10] ;
-  args_info->Directory_help = gengetopt_args_info_help[11] ;
-  args_info->pt_distribution_function_help = gengetopt_args_info_help[12] ;
+  args_info->maxpars_help = gengetopt_args_info_help[3] ;
+  args_info->nparticles_help = gengetopt_args_info_help[4] ;
+  args_info->nparticles_min = 0;
+  args_info->nparticles_max = 0;
+  args_info->etar_help = gengetopt_args_info_help[5] ;
+  args_info->etar_min = 0;
+  args_info->etar_max = 0;
+  args_info->ptr_help = gengetopt_args_info_help[6] ;
+  args_info->ptr_min = 0;
+  args_info->ptr_max = 0;
+  args_info->p_help = gengetopt_args_info_help[7] ;
+  args_info->phir_help = gengetopt_args_info_help[8] ;
+  args_info->phir_min = 0;
+  args_info->phir_max = 0;
+  args_info->char_help = gengetopt_args_info_help[9] ;
+  args_info->types_help = gengetopt_args_info_help[10] ;
+  args_info->types_min = 0;
+  args_info->types_max = 0;
+  args_info->seed_help = gengetopt_args_info_help[11] ;
+  args_info->output_help = gengetopt_args_info_help[12] ;
+  args_info->verbose_help = gengetopt_args_info_help[13] ;
+  args_info->quiet_help = gengetopt_args_info_help[14] ;
+  args_info->dirc_properties_help = gengetopt_args_info_help[15] ;
+  args_info->custom_set_help = gengetopt_args_info_help[16] ;
+  args_info->Directory_help = gengetopt_args_info_help[17] ;
+  args_info->pt_func_help = gengetopt_args_info_help[18] ;
   
 }
 
@@ -211,6 +251,7 @@ free_string_field (char **s)
 /** @brief generic value variable */
 union generic_value {
     int int_arg;
+    double double_arg;
     char *string_arg;
     const char *default_string_arg;
 };
@@ -253,26 +294,53 @@ free_multiple_field(unsigned int len, void *arg, char ***orig)
   }
 }
 
+static void
+free_multiple_string_field(unsigned int len, char ***arg, char ***orig)
+{
+  unsigned int i;
+  if (*arg) {
+    for (i = 0; i < len; ++i)
+      {
+        free_string_field(&((*arg)[i]));
+        free_string_field(&((*orig)[i]));
+      }
+    free_string_field(&((*arg)[0])); /* free default string */
+
+    free (*arg);
+    *arg = 0;
+    free (*orig);
+    *orig = 0;
+  }
+}
 
 static void
 cmdline_parser_release (struct gengetopt_args_info *args_info)
 {
 
   free_string_field (&(args_info->events_orig));
-  free_multiple_field (args_info->particles_given, (void *)(args_info->particles_arg), &(args_info->particles_orig));
-  args_info->particles_arg = 0;
   free_string_field (&(args_info->maxpars_orig));
-  free_string_field (&(args_info->random_orig));
-  free_string_field (&(args_info->filename_arg));
-  free_string_field (&(args_info->filename_orig));
+  free_multiple_field (args_info->nparticles_given, (void *)(args_info->nparticles_arg), &(args_info->nparticles_orig));
+  args_info->nparticles_arg = 0;
+  free_multiple_field (args_info->etar_given, (void *)(args_info->etar_arg), &(args_info->etar_orig));
+  args_info->etar_arg = 0;
+  free_multiple_field (args_info->ptr_given, (void *)(args_info->ptr_arg), &(args_info->ptr_orig));
+  args_info->ptr_arg = 0;
+  free_string_field (&(args_info->p_orig));
+  free_multiple_field (args_info->phir_given, (void *)(args_info->phir_arg), &(args_info->phir_orig));
+  args_info->phir_arg = 0;
+  free_string_field (&(args_info->char_orig));
+  free_multiple_string_field (args_info->types_given, &(args_info->types_arg), &(args_info->types_orig));
+  free_string_field (&(args_info->seed_orig));
+  free_string_field (&(args_info->output_arg));
+  free_string_field (&(args_info->output_orig));
   free_string_field (&(args_info->dirc_properties_arg));
   free_string_field (&(args_info->dirc_properties_orig));
   free_string_field (&(args_info->custom_set_arg));
   free_string_field (&(args_info->custom_set_orig));
   free_string_field (&(args_info->Directory_arg));
   free_string_field (&(args_info->Directory_orig));
-  free_string_field (&(args_info->pt_distribution_function_arg));
-  free_string_field (&(args_info->pt_distribution_function_orig));
+  free_string_field (&(args_info->pt_func_arg));
+  free_string_field (&(args_info->pt_func_orig));
   
   
 
@@ -317,13 +385,21 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "version", 0, 0 );
   if (args_info->events_given)
     write_into_file(outfile, "events", args_info->events_orig, 0);
-  write_multiple_into_file(outfile, args_info->particles_given, "particles", args_info->particles_orig, 0);
   if (args_info->maxpars_given)
     write_into_file(outfile, "maxpars", args_info->maxpars_orig, 0);
-  if (args_info->random_given)
-    write_into_file(outfile, "random", args_info->random_orig, 0);
-  if (args_info->filename_given)
-    write_into_file(outfile, "filename", args_info->filename_orig, 0);
+  write_multiple_into_file(outfile, args_info->nparticles_given, "nparticles", args_info->nparticles_orig, 0);
+  write_multiple_into_file(outfile, args_info->etar_given, "etar", args_info->etar_orig, 0);
+  write_multiple_into_file(outfile, args_info->ptr_given, "ptr", args_info->ptr_orig, 0);
+  if (args_info->p_given)
+    write_into_file(outfile, "p", args_info->p_orig, 0);
+  write_multiple_into_file(outfile, args_info->phir_given, "phir", args_info->phir_orig, 0);
+  if (args_info->char_given)
+    write_into_file(outfile, "char", args_info->char_orig, 0);
+  write_multiple_into_file(outfile, args_info->types_given, "types", args_info->types_orig, 0);
+  if (args_info->seed_given)
+    write_into_file(outfile, "seed", args_info->seed_orig, 0);
+  if (args_info->output_given)
+    write_into_file(outfile, "output", args_info->output_orig, 0);
   if (args_info->verbose_given)
     write_into_file(outfile, "verbose", 0, 0 );
   if (args_info->quiet_given)
@@ -334,8 +410,8 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "custom-set", args_info->custom_set_orig, 0);
   if (args_info->Directory_given)
     write_into_file(outfile, "Directory", args_info->Directory_orig, 0);
-  if (args_info->pt_distribution_function_given)
-    write_into_file(outfile, "pt-distribution-function", args_info->pt_distribution_function_orig, 0);
+  if (args_info->pt_func_given)
+    write_into_file(outfile, "pt-func", args_info->pt_func_orig, 0);
   
 
   i = EXIT_SUCCESS;
@@ -587,7 +663,19 @@ cmdline_parser_required2 (struct gengetopt_args_info *args_info, const char *pro
   FIX_UNUSED (additional_error);
 
   /* checks for required options */
-  if (check_multiple_option_occurrences(prog_name, args_info->particles_given, args_info->particles_min, args_info->particles_max, "'--particles' ('-P')"))
+  if (check_multiple_option_occurrences(prog_name, args_info->nparticles_given, args_info->nparticles_min, args_info->nparticles_max, "'--nparticles' ('-P')"))
+     error_occurred = 1;
+  
+  if (check_multiple_option_occurrences(prog_name, args_info->etar_given, args_info->etar_min, args_info->etar_max, "'--etar'"))
+     error_occurred = 1;
+  
+  if (check_multiple_option_occurrences(prog_name, args_info->ptr_given, args_info->ptr_min, args_info->ptr_max, "'--ptr'"))
+     error_occurred = 1;
+  
+  if (check_multiple_option_occurrences(prog_name, args_info->phir_given, args_info->phir_min, args_info->phir_max, "'--phir'"))
+     error_occurred = 1;
+  
+  if (check_multiple_option_occurrences(prog_name, args_info->types_given, args_info->types_min, args_info->types_max, "'--types' ('-t')"))
      error_occurred = 1;
   
   
@@ -665,6 +753,9 @@ int update_arg(void *field, char **orig_field,
   case ARG_INT:
     if (val) *((int *)field) = strtol (val, &stop_char, 0);
     break;
+  case ARG_DOUBLE:
+    if (val) *((double *)field) = strtod (val, &stop_char);
+    break;
   case ARG_STRING:
     if (val) {
       string_field = (char **)field;
@@ -680,6 +771,7 @@ int update_arg(void *field, char **orig_field,
   /* check numeric conversion */
   switch(arg_type) {
   case ARG_INT:
+  case ARG_DOUBLE:
     if (val && !(stop_char && *stop_char == '\0')) {
       fprintf(stderr, "%s: invalid numeric value: %s\n", package_name, val);
       return 1; /* failure */
@@ -793,6 +885,8 @@ void update_multiple_arg(void *field, char ***orig_field,
     switch(arg_type) {
     case ARG_INT:
       *((int **)field) = (int *)realloc (*((int **)field), (field_given + prev_given) * sizeof (int)); break;
+    case ARG_DOUBLE:
+      *((double **)field) = (double *)realloc (*((double **)field), (field_given + prev_given) * sizeof (double)); break;
     case ARG_STRING:
       *((char ***)field) = (char **)realloc (*((char ***)field), (field_given + prev_given) * sizeof (char *)); break;
     default:
@@ -806,6 +900,8 @@ void update_multiple_arg(void *field, char ***orig_field,
         switch(arg_type) {
         case ARG_INT:
           (*((int **)field))[i + field_given] = tmp->arg.int_arg; break;
+        case ARG_DOUBLE:
+          (*((double **)field))[i + field_given] = tmp->arg.double_arg; break;
         case ARG_STRING:
           (*((char ***)field))[i + field_given] = tmp->arg.string_arg; break;
         default:
@@ -822,6 +918,12 @@ void update_multiple_arg(void *field, char ***orig_field,
         if (! *((int **)field)) {
           *((int **)field) = (int *)malloc (sizeof (int));
           (*((int **)field))[0] = default_value->int_arg; 
+        }
+        break;
+      case ARG_DOUBLE:
+        if (! *((double **)field)) {
+          *((double **)field) = (double *)malloc (sizeof (double));
+          (*((double **)field))[0] = default_value->double_arg;
         }
         break;
       case ARG_STRING:
@@ -847,7 +949,11 @@ cmdline_parser_internal (
 {
   int c;	/* Character of the parsed option.  */
 
-  struct generic_list * particles_list = NULL;
+  struct generic_list * nparticles_list = NULL;
+  struct generic_list * etar_list = NULL;
+  struct generic_list * ptr_list = NULL;
+  struct generic_list * phir_list = NULL;
+  struct generic_list * types_list = NULL;
   int error_occurred = 0;
   struct gengetopt_args_info local_args_info;
   
@@ -881,20 +987,26 @@ cmdline_parser_internal (
         { "help",	0, NULL, 'h' },
         { "version",	0, NULL, 'V' },
         { "events",	1, NULL, 'e' },
-        { "particles",	1, NULL, 'P' },
         { "maxpars",	1, NULL, 'm' },
-        { "random",	1, NULL, 'r' },
-        { "filename",	1, NULL, 'f' },
+        { "nparticles",	1, NULL, 'P' },
+        { "etar",	1, NULL, 0 },
+        { "ptr",	1, NULL, 0 },
+        { "p",	1, NULL, 0 },
+        { "phir",	1, NULL, 0 },
+        { "char",	1, NULL, 0 },
+        { "types",	1, NULL, 't' },
+        { "seed",	1, NULL, 's' },
+        { "output",	1, NULL, 'o' },
         { "verbose",	0, NULL, 'v' },
         { "quiet",	0, NULL, 'q' },
         { "dirc-properties",	1, NULL, 'd' },
         { "custom-set",	1, NULL, 'c' },
         { "Directory",	1, NULL, 'D' },
-        { "pt-distribution-function",	1, NULL, 0 },
+        { "pt-func",	1, NULL, 0 },
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVe:P:m:r:f:vqd:c:D:", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVe:m:P:t:s:o:vqd:c:D:", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -915,23 +1027,14 @@ cmdline_parser_internal (
         
           if (update_arg( (void *)&(args_info->events_arg), 
                &(args_info->events_orig), &(args_info->events_given),
-              &(local_args_info.events_given), optarg, 0, 0, ARG_INT,
+              &(local_args_info.events_given), optarg, 0, "5", ARG_INT,
               check_ambiguity, override, 0, 0,
               "events", 'e',
               additional_error))
             goto failure;
         
           break;
-        case 'P':	/* Takes in two arguments for the range in the number of particles per event.  */
-        
-          if (update_multiple_arg_temp(&particles_list, 
-              &(local_args_info.particles_given), optarg, 0, 0, ARG_INT,
-              "particles", 'P',
-              additional_error))
-            goto failure;
-        
-          break;
-        case 'm':	/* maximum number of particles to intersect DirC (for anlytical-control puposes).  */
+        case 'm':	/* maximum number of particles to intersect DirC.  */
         
         
           if (update_arg( (void *)&(args_info->maxpars_arg), 
@@ -943,26 +1046,44 @@ cmdline_parser_internal (
             goto failure;
         
           break;
-        case 'r':	/* value for seed of random numbers.  */
+        case 'P':	/* Takes in two arguments for the range in the number of particles emitted per event.  */
         
-        
-          if (update_arg( (void *)&(args_info->random_arg), 
-               &(args_info->random_orig), &(args_info->random_given),
-              &(local_args_info.random_given), optarg, 0, 0, ARG_INT,
-              check_ambiguity, override, 0, 0,
-              "random", 'r',
+          if (update_multiple_arg_temp(&nparticles_list, 
+              &(local_args_info.nparticles_given), optarg, 0, 0, ARG_INT,
+              "nparticles", 'P',
               additional_error))
             goto failure;
         
           break;
-        case 'f':	/* root filename (relative or absolute path). By default written within directory as generator.root.  */
+        case 't':	/* particle types used.  */
+        
+          if (update_multiple_arg_temp(&types_list, 
+              &(local_args_info.types_given), optarg, 0, 0, ARG_STRING,
+              "types", 't',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 's':	/* value for seed of random numbers.  */
         
         
-          if (update_arg( (void *)&(args_info->filename_arg), 
-               &(args_info->filename_orig), &(args_info->filename_given),
-              &(local_args_info.filename_given), optarg, 0, 0, ARG_STRING,
+          if (update_arg( (void *)&(args_info->seed_arg), 
+               &(args_info->seed_orig), &(args_info->seed_given),
+              &(local_args_info.seed_given), optarg, 0, "0", ARG_INT,
               check_ambiguity, override, 0, 0,
-              "filename", 'f',
+              "seed", 's',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'o':	/* root filename (relative or absolute path). By default written within directory as generator.root.  */
+        
+        
+          if (update_arg( (void *)&(args_info->output_arg), 
+               &(args_info->output_orig), &(args_info->output_given),
+              &(local_args_info.output_given), optarg, 0, "particles.root", ARG_STRING,
+              check_ambiguity, override, 0, 0,
+              "output", 'o',
               additional_error))
             goto failure;
         
@@ -996,7 +1117,7 @@ cmdline_parser_internal (
         
           if (update_arg( (void *)&(args_info->dirc_properties_arg), 
                &(args_info->dirc_properties_orig), &(args_info->dirc_properties_given),
-              &(local_args_info.dirc_properties_given), optarg, 0, 0, ARG_STRING,
+              &(local_args_info.dirc_properties_given), optarg, 0, "dirc", ARG_STRING,
               check_ambiguity, override, 0, 0,
               "dirc-properties", 'd',
               additional_error))
@@ -1029,16 +1150,77 @@ cmdline_parser_internal (
           break;
 
         case 0:	/* Long option with no short option */
-          /* The probability distribution that pt will follow from pt = 0 to pt = 10GeV.  */
-          if (strcmp (long_options[option_index].name, "pt-distribution-function") == 0)
+          /* eta range.  */
+          if (strcmp (long_options[option_index].name, "etar") == 0)
+          {
+          
+            if (update_multiple_arg_temp(&etar_list, 
+                &(local_args_info.etar_given), optarg, 0, 0, ARG_DOUBLE,
+                "etar", '-',
+                additional_error))
+              goto failure;
+          
+          }
+          /* pt range (cannot be set with pr).  */
+          else if (strcmp (long_options[option_index].name, "ptr") == 0)
+          {
+          
+            if (update_multiple_arg_temp(&ptr_list, 
+                &(local_args_info.ptr_given), optarg, 0, 0, ARG_DOUBLE,
+                "ptr", '-',
+                additional_error))
+              goto failure;
+          
+          }
+          /* fixed momentum value (cannot be set with ptr).  */
+          else if (strcmp (long_options[option_index].name, "p") == 0)
           {
           
           
-            if (update_arg( (void *)&(args_info->pt_distribution_function_arg), 
-                 &(args_info->pt_distribution_function_orig), &(args_info->pt_distribution_function_given),
-                &(local_args_info.pt_distribution_function_given), optarg, 0, 0, ARG_STRING,
+            if (update_arg( (void *)&(args_info->p_arg), 
+                 &(args_info->p_orig), &(args_info->p_given),
+                &(local_args_info.p_given), optarg, 0, 0, ARG_DOUBLE,
                 check_ambiguity, override, 0, 0,
-                "pt-distribution-function", '-',
+                "p", '-',
+                additional_error))
+              goto failure;
+          
+          }
+          /* phi range.  */
+          else if (strcmp (long_options[option_index].name, "phir") == 0)
+          {
+          
+            if (update_multiple_arg_temp(&phir_list, 
+                &(local_args_info.phir_given), optarg, 0, 0, ARG_DOUBLE,
+                "phir", '-',
+                additional_error))
+              goto failure;
+          
+          }
+          /* charge (0=random, 1=positive, -1=negative).  */
+          else if (strcmp (long_options[option_index].name, "char") == 0)
+          {
+          
+          
+            if (update_arg( (void *)&(args_info->char_arg), 
+                 &(args_info->char_orig), &(args_info->char_given),
+                &(local_args_info.char_given), optarg, 0, "0", ARG_INT,
+                check_ambiguity, override, 0, 0,
+                "char", '-',
+                additional_error))
+              goto failure;
+          
+          }
+          /* The probability distribution that pt will follow from pt = 0 to pt = 10GeV.  */
+          else if (strcmp (long_options[option_index].name, "pt-func") == 0)
+          {
+          
+          
+            if (update_arg( (void *)&(args_info->pt_func_arg), 
+                 &(args_info->pt_func_orig), &(args_info->pt_func_given),
+                &(local_args_info.pt_func_given), optarg, 0, 0, ARG_STRING,
+                check_ambiguity, override, 0, 0,
+                "pt-func", '-',
                 additional_error))
               goto failure;
           
@@ -1056,13 +1238,37 @@ cmdline_parser_internal (
     } /* while */
 
 
-  update_multiple_arg((void *)&(args_info->particles_arg),
-    &(args_info->particles_orig), args_info->particles_given,
-    local_args_info.particles_given, 0,
-    ARG_INT, particles_list);
+  update_multiple_arg((void *)&(args_info->nparticles_arg),
+    &(args_info->nparticles_orig), args_info->nparticles_given,
+    local_args_info.nparticles_given, 0,
+    ARG_INT, nparticles_list);
+  update_multiple_arg((void *)&(args_info->etar_arg),
+    &(args_info->etar_orig), args_info->etar_given,
+    local_args_info.etar_given, 0,
+    ARG_DOUBLE, etar_list);
+  update_multiple_arg((void *)&(args_info->ptr_arg),
+    &(args_info->ptr_orig), args_info->ptr_given,
+    local_args_info.ptr_given, 0,
+    ARG_DOUBLE, ptr_list);
+  update_multiple_arg((void *)&(args_info->phir_arg),
+    &(args_info->phir_orig), args_info->phir_given,
+    local_args_info.phir_given, 0,
+    ARG_DOUBLE, phir_list);
+  update_multiple_arg((void *)&(args_info->types_arg),
+    &(args_info->types_orig), args_info->types_given,
+    local_args_info.types_given, 0,
+    ARG_STRING, types_list);
 
-  args_info->particles_given += local_args_info.particles_given;
-  local_args_info.particles_given = 0;
+  args_info->nparticles_given += local_args_info.nparticles_given;
+  local_args_info.nparticles_given = 0;
+  args_info->etar_given += local_args_info.etar_given;
+  local_args_info.etar_given = 0;
+  args_info->ptr_given += local_args_info.ptr_given;
+  local_args_info.ptr_given = 0;
+  args_info->phir_given += local_args_info.phir_given;
+  local_args_info.phir_given = 0;
+  args_info->types_given += local_args_info.types_given;
+  local_args_info.types_given = 0;
   
   if (check_required)
     {
@@ -1077,7 +1283,11 @@ cmdline_parser_internal (
   return 0;
 
 failure:
-  free_list (particles_list, 0 );
+  free_list (nparticles_list, 0 );
+  free_list (etar_list, 0 );
+  free_list (ptr_list, 0 );
+  free_list (phir_list, 0 );
+  free_list (types_list, 1 );
   
   cmdline_parser_release (&local_args_info);
   return (EXIT_FAILURE);

@@ -12,58 +12,49 @@ int main(int argc, char** argv)
 {
 	gengetopt_args_info ai;
   if (cmdline_parser (argc, argv, &ai) != 0){ exit(1); }
+
   double pi = TMath::Pi();
-  int input = ai.random_given;			       // number used for seed of TRandom3
-  bool print = ai.verbose_given;	           // bool for printing purposes
+
+  // command line arguments
+
+  bool print = ai.verbose_given;								// bool for printing purposes
   bool quiet = ai.quiet_given; if (quiet) print = !quiet;
-  bool replace = false;
-  int nevents = 5;															// number of events
+  string dirc_prop = ai.dirc_properties_arg;
+  string filename = ai.output_arg;
   string directory = "";
-
-  string dirc_prop = "../dirc_prop.txt";
-	if(ai.dirc_properties_given)
-		dirc_prop = ai.dirc_properties_arg;
-
-  string filename = "generator.root";
-	if(ai.filename_given)
-		filename = ai.filename_arg;
-
   if(ai.Directory_given){
   	directory = ai.Directory_arg;
   	filename = directory.append(filename);
   }
 
-  if(ai.events_given){ nevents = ai.events_arg; }
+  int seed = ai.seed_arg;											// seed for TRandom
+	int nevents = ai.events_arg;									// number of events
+  int maxPars = ai.maxpars_arg;									// maximum # particles to hit DIRC
+  double charge = ai.char_arg;
+  bool replace;
 
+	int nparticle_range[2] {1,1000};
+	double etarange[2] {-.5, .5};
+	double ptrange[2] {.2, 10.};
+	double phirange[2] {0., 2*pi};
+	ParticleOut Pt; vector<string> types = Pt.deftypes;
 
-  int nparticles = 0;														// number of particles
-	//______________ default parameters ___________________
+  if(ai.nparticles_given) equate_arrays(nparticle_range, ai.nparticles_arg);
+  if(ai.etar_given) equate_arrays(etarange, ai.etar_arg);
+  if(ai.ptr_given) equate_arrays(ptrange, ai.ptr_arg);
+  if(ai.phir_given) equate_arrays(phirange, ai.phir_arg);
+  if(ai.types_given) types.clear();
+  for (unsigned i = 0; i < ai.types_given; ++i){
+  	types.push_back(ai.types_arg[i]);
+  }
 
-  int maxPars_default = 100;														// maximum number of particles that will be allowed to pass
-	int nparticle_range_default[2] = {1,10000};						// range in number of particles
-  if(ai.particles_given){
-  	nparticle_range_default[0] = ai.particles_arg[0];
-		nparticle_range_default[1] = ai.particles_arg[1];
-	}
-	double etarange_default[2] = {-.5, .5};
-	double ptrange_default[2] = {.2,10.};
-	double phirange_default[2] = {0.,2*pi};
-	double charge_default = 0;
-	ParticleOut tempP;								// to extract default particle types
-	vector<string> types_default = tempP.types;
+	double fixed_momentum {-1.};
+  if(ai.p_given) fixed_momentum = ai.p_arg;
 
-	if(ai.maxpars_given)
-		maxPars_default = ai.maxpars_arg;
-  if(ai.particles_given)
-  	ResetIntArrayParameter(ai.particles_arg, nparticle_range_default);
-	//______________ parameters used in program ___________________
-  int maxPars = maxPars_default;
-	int nparticle_range[2]; ResetIntArrayParameter(nparticle_range_default, nparticle_range);
-	double etarange[2]; ResetDoubleArrayParameter(etarange_default, etarange);
-	double ptrange[2]; ResetDoubleArrayParameter(ptrange_default, ptrange);
-	double phirange[2]; ResetDoubleArrayParameter(phirange_default, phirange);
-	double charge = charge_default;
-	vector<string> types = tempP.types;
+  if (ai.ptr_given && ai.p_given){
+  	cout << "Please only provide the p or pt\n"; exit(1);
+  }
+
 
 	//--------------------------------------------------
   //              Beginning of Program;
@@ -71,7 +62,6 @@ int main(int argc, char** argv)
   Detector d;
   ParticleEvent ParEv;
   vector<Particle> &pars = ParEv.Particles;
-  vector<Particle> pars2;
   bool passed = false;
   int passes = 0;
 
@@ -81,14 +71,12 @@ int main(int argc, char** argv)
 	tree.Branch("Particle Event", &ParEv);
 	tree.Branch("detector", &d);
 
-  Random f(input);						// random number generator
-
-	gParticle gPar(input);
+  Random f(seed);						// random number generator
+	gParticle gPar(seed);
 	gParticle *gPar_p = &gPar;
 	Particle *Par = gPar_p;                    // inheritting properties of parent class for use with older libraries
-    if (ai.pt_distribution_function_given) gPar.setPtDistributionFunction(ai.pt_distribution_function_arg);
+    if (ai.pt_func_given) gPar.setPtDistributionFunction(ai.pt_func_arg);
 
-	if(!quiet) cout << "\nGENERATOR\n";
 	if (print == true )
 	{
 		printf("Detector Properties:\n");
@@ -100,44 +88,17 @@ int main(int argc, char** argv)
   for (unsigned int ev = 0; ev < nevents; ev++)
   {
   	if(!quiet) cout << "Event " << ev << endl;
+		static int nparticles;														// number of particles
   	f.Int(nparticle_range[0], nparticle_range[1], nparticles);
-  	pars.clear(); pars2.clear();
+  	pars.clear();
   	passes=0;
-	if(ai.custom_set_given){
-		TakeInParameters(ai.custom_set_arg, nevents, maxPars, nparticle_range, etarange, ptrange, phirange, charge, types, replace);
-		maxPars = maxPars_default;
-		ResetIntArrayParameter(nparticle_range_default, nparticle_range);
-		ResetDoubleArrayParameter(etarange_default, etarange);
-		ResetDoubleArrayParameter(ptrange_default, ptrange);
-		ResetDoubleArrayParameter(phirange_default, phirange);
-		charge = charge_default;
-		types = tempP.types;
-	}
-
-	if (!replace)
-	  	pars = generate(nparticles, gPar, d, maxPars, print);
 
 	if(ai.custom_set_given){
 		TakeInParameters(ai.custom_set_arg, nevents, maxPars, nparticle_range, etarange, ptrange, phirange, charge, types, replace);
-		SetParameterOptions(gPar, etarange, ptrange, phirange, charge, types);
-		pars2 = generate(nparticles, gPar, d, maxPars, print);
-
-		maxPars = maxPars_default;
-		ResetIntArrayParameter(nparticle_range_default, nparticle_range);
-		ResetDoubleArrayParameter(etarange_default, etarange);
-		ResetDoubleArrayParameter(ptrange_default, ptrange);
-		ResetDoubleArrayParameter(phirange_default, phirange);
-		charge = charge_default;
-		types = tempP.types;
-		SetParameterOptions(gPar, etarange, ptrange, phirange, charge, types);
-		if (!replace){
-			for (unsigned int i = 0; i<pars2.size(); ++i)
-				pars.push_back(pars2.at(i));
-		}
-		else{
-			pars = pars2;
-		}
 	}
+	SetParameterOptions(gPar, etarange, ptrange, phirange, charge, types);
+	pars = generate(nparticles, gPar, d, maxPars, fixed_momentum, print);
+
 	if(!quiet) cout << "\ttotal particles: " << pars.size() << endl;
    	tree.Fill();
   }
@@ -157,6 +118,12 @@ void SetParameterOptions(gParticle& gPar, double etarange[2], double ptrange[2],
 	gPar.SetPtRange(ptrange[0], ptrange[1]);
 	gPar.SetTypes(types);
 	gPar.SetChargeMarker(charge);
+}
+
+template < typename T >
+void equate_arrays(T array1[], T array2[], int size){
+	for (unsigned i = 0; i < size; ++i)
+		array1[i] = array2[i];
 }
 
 void ResetDoubleArrayParameter(double Default[2], double Used[2]){

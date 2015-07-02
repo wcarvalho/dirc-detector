@@ -3,14 +3,38 @@ purpose "Generator for DirC.
 By Wilka Carvalho <wcarvalho92@gmail.com>"
 
 # Options
-option "events" e "Number of events" int optional
-option "particles" P "Takes in two arguments for the range in the number of particles per event" int optional multiple
-option "maxpars" m "maximum number of particles to intersect DirC (for anlytical-control puposes)" int optional
-option "random" r "value for seed of random numbers" int optional
-option "filename" f "root filename (relative or absolute path). By default written within directory as generator.root" string optional
+
+option "events" e "Number of events" int optional default="5"
+
+option "maxpars" m "maximum number of particles to intersect DirC" int optional
+
+option "nparticles" P "Takes in two arguments for the range in the number of particles emitted per event" int optional multiple
+
+option "etar" - "eta range" double optional multiple
+
+option "ptr" - "pt range (cannot be set with pr)" double optional multiple
+
+option "p" - "fixed momentum value (cannot be set with ptr)" double optional
+
+option "phir" - "phi range" double optional multiple
+
+option "char" - "charge (0=random, 1=positive, -1=negative)" int optional default="0"
+
+option "types" t "particle types used" string optional multiple
+
+
+option "seed" s "value for seed of random numbers" int optional default="0"
+
+option "output" o "root filename (relative or absolute path). By default written within directory as generator.root" string optional default="particles.root"
+
 option "verbose" v "print data" optional
+
 option "quiet" q "suppress all printing" optional
-option "dirc-properties" d "file with dirc properties (in this order): Length, Width, Height, Radial Distance, Magnetic Field" string optional
+
+option "dirc-properties" d "file with dirc properties (in this order): Length, Width, Height, Radial Distance, Magnetic Field" string optional default="dirc"
+
 option "custom-set" c "Takes a filename with parameters for the experiment including number of particles, range in eta, pt, and phi, and particle charge and type" string optional
+
 option "Directory" D "Sets the directory in which files will be saved (by default saves in current directory" string optional
-option "pt-distribution-function" - "The probability distribution that pt will follow from pt = 0 to pt = 10GeV" string optional
+
+option "pt-func" - "The probability distribution that pt will follow from pt = 0 to pt = 10GeV" string optional

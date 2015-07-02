@@ -75,13 +75,19 @@ public:
 
 };
 
-vector<Particle> generate(int nparticles, gParticle& gPar, Detector d, int maxPars, bool print);
+vector<Particle> generate(int nparticles, gParticle& gPar, Detector d, int maxPars, double const& fixed_momentum, bool print);
+
 
 bool intersect_with_dirc(double dirc_height, double eta, double pt, double phi_input, double mass, int charge, double radius, double magfield, double& x_dirc, double& y_dirc, double& phi_dirc, double& theta_dirc, double& beta, double& length_to_dirc);
 
 void TakeInParameters(string file, int& nevents, int& maxPars, int nparticle_range[2], double etarange[2], double ptrange[2], double phirange[2], double &charge, vector<string> &types, bool& replace);
 
 void SetParameterOptions(gParticle& gPar, double etarange[2], double ptrange[2], double phirange[2], double charge, vector<string> types);
+
+template < typename T >
+void equate_arrays(T array1[], T array2[], int size=2);
+
+
 void ResetDoubleArrayParameter(double Default[2], double Used[2]);
 void ResetIntArrayParameter(int Default[2], int Used[2]);
 

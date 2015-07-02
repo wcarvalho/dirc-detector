@@ -1,5 +1,3 @@
-maxpars: 1
-nparticles: 0,10000
 eta: -.5, .5
 pt: .2, .3
 phi: .75pi, 1.5pi
