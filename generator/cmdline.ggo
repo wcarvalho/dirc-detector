@@ -6,7 +6,7 @@ By Wilka Carvalho <wcarvalho92@gmail.com>"
 
 option "events" e "Number of events" int optional default="5"
 
-option "maxpars" m "maximum number of particles to intersect DirC" int optional
+option "maxpars" m "maximum number of particles to intersect DirC" int optional default="10"
 
 option "nparticles" P "Takes in two arguments for the range in the number of particles emitted per event" int optional multiple
 

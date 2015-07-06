@@ -178,11 +178,10 @@ void AddFitDetails(TPad &pad, TLegend& L, ParticleOut & P, TrackRecon const& R, 
 	auto anglemap = P.EmissionAngleMap();
 
 	// theta reconstruction information
-	static unsigned indx; indx = 0;
 	for (int i : displayed){
 		// cout << "AddFitDetails " << i << endl;
 		string name = R.getNameAt(i);
-		TF1*& function = functions.at(indx);
+		TF1*& function = functions.at(i);
 		// expected angle
 		double expected_angle = anglemap[name];
 		ss.str(""); ss << "#scale[1.2]{#bf{" << name << "}}";
@@ -192,15 +191,14 @@ void AddFitDetails(TPad &pad, TLegend& L, ParticleOut & P, TrackRecon const& R, 
 		if (R.Params.empty()) continue;
 		// found angle
 
-		bool passed_intensity_cut = R.passed_intensity_cut(indx, 8, false);
-		// bool passed_theta_cut = (R.getnSigmaThetaAt(indx) < 10);
+		bool passed_intensity_cut = R.passed_intensity_cut(i, 8, false);
+		// bool passed_theta_cut = (R.getnSigmaThetaAt(i) < 10);
 
 		if (!passed_intensity_cut){
 			ss.str("");
 			ss << "failed intensity cut";
 			L.AddEntry(function, ss.str().c_str(),"");
 			L.Draw();
-			++indx;
 			continue;
 		}
 
@@ -213,7 +211,6 @@ void AddFitDetails(TPad &pad, TLegend& L, ParticleOut & P, TrackRecon const& R, 
 		ss.str(""); ss << "#Delta #sigma = "<< std::setprecision(2) << fabs(R.getnSigmaThetaAt(i));
 		L.AddEntry(function, ss.str().c_str(),"");
 		L.Draw();
-		++indx;
 	}
 
 
@@ -435,6 +432,8 @@ void AddTimeScatterCombination(string canvasname, TFile& f, vector<ParticleOut> 
 	f.cd();
 	C.Write();
 
+	if (print) cout << "\twrote\n";
+
 	hr->GetListOfFunctions()->Clear();
 	hf->GetListOfFunctions()->Clear();
 	delete hr;
@@ -444,6 +443,8 @@ void AddTimeScatterCombination(string canvasname, TFile& f, vector<ParticleOut> 
 	delete mg2;
 	delete L_P;
 	delete Dummy;
+	if (print) cout << "\tdone\n";
+
 }
 
 void AddBatch(int event, int match, TFile& f, vector<ParticleOut> & particle_outs, vector<Particle> & particles, vector< vector<PhotonOut> > const& photon_sets, vector<Photon> cheat_photons, vector<int> const& index, vector< TrackRecon> & reconstructions, string & particle_compare, unsigned& count, double threshold, int plotType, double time_min, double time_max){

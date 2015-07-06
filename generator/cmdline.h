@@ -46,7 +46,7 @@ struct gengetopt_args_info
   int events_arg;	/**< @brief Number of events (default='5').  */
   char * events_orig;	/**< @brief Number of events original value given at command line.  */
   const char *events_help; /**< @brief Number of events help description.  */
-  int maxpars_arg;	/**< @brief maximum number of particles to intersect DirC.  */
+  int maxpars_arg;	/**< @brief maximum number of particles to intersect DirC (default='10').  */
   char * maxpars_orig;	/**< @brief maximum number of particles to intersect DirC original value given at command line.  */
   const char *maxpars_help; /**< @brief maximum number of particles to intersect DirC help description.  */
   int* nparticles_arg;	/**< @brief Takes in two arguments for the range in the number of particles emitted per event.  */

@@ -38,7 +38,7 @@ int main(int argc, char const *argv[])
 
 	bool event_range_set = false;
 	bool print = false;
-
+	bool force = false;
 	TCLAP::CmdLine cmd("Options for printing", ' ', "0.1");
 	try{
 		TCLAP::ValueArg<string> directoryArg("D", "directory", "directory where plots will be stored", false, "", "string", cmd);
@@ -71,6 +71,7 @@ int main(int argc, char const *argv[])
 
 		TCLAP::MultiArg<int> eventRangeArg("e","event-range","events for which you want to print fits", false, "int", cmd);
 		TCLAP::SwitchArg verboseArg("v","verbose","", cmd, false);
+		TCLAP::SwitchArg forceArg("f","force","", cmd, false);
 
 
 		cmd.parse( argc, argv);
@@ -86,6 +87,7 @@ int main(int argc, char const *argv[])
 		time_max = maxArg.getValue();
 
 		print = verboseArg.getValue();
+		force = forceArg.getValue();
 
 		threshold = thresholdArg.getValue();
 		max_count = max_countArg.getValue();
@@ -157,10 +159,18 @@ int main(int argc, char const *argv[])
 		case 2: input_to_filename = "_timeprojection_"; break;
 	}
 
-	TFile particleEvents(filename("correct_identification", input_to_filename).c_str(), "recreate");
+	string pevents_filename;
+	if (!force) pevents_filename = filename("right_identification", input_to_filename);
+	else pevents_filename = filename("all", input_to_filename);
+
+	TFile particleEvents(pevents_filename.c_str(), "recreate");
 	unsigned particleEvents_count = 0;
 
-	TFile misIdentificationEvents(filename("incorrect_identification", input_to_filename).c_str(), "recreate");
+	TFile* misIdentificationEvents = 0;
+	if (!force){
+		misIdentificationEvents = TFile::Open(filename("wrong_identification", input_to_filename).c_str(), "recreate");
+	}
+	// TFile& misIdentificationEvents = *misIdentificationEvents_np;
 	unsigned misIdentificationEvents_count = 0;
 
 	int nentries = reconstruction_tree->GetEntries();
@@ -196,7 +206,6 @@ int main(int argc, char const *argv[])
 		for (unsigned i = 0; i < pars.size(); ++i){
 			if ((misIdentificationEvents_count == max_count) && (particleEvents_count == max_count))
 				break;
-			// cout << "\tparticle " << i << endl;
 
 			if (added_Identification_Batch && added_misIdentification_Batch){
 			 continue;
@@ -212,16 +221,14 @@ int main(int argc, char const *argv[])
 			}
 			auto& recon = recons.at(i);
 			double momentum = par.CalculateMomentum();
-			// cout << par.name << ": momentum = " << momentum << endl;
 			if (phos.empty()) continue;
 
 			if (!withinrange(momentum_range, momentum)) continue;
 			if (par.name != particle_search) continue;
 
 			static string best_fit;
-			if (print) cout << "Particle " << i << ":" << par.name << " with momentum " << momentum << endl;
+			if (print) cout << "Particle " << i << " : " << par.name << " with momentum " << momentum << endl;
 			best_fit = recon.getBestFit(threshold, print);
-
 
 			// for (unsigned _i = 0; _i < recon.size(); ++_i){
 			// 	cout << recon.getNameAt(_i) << " : " << recon.getnSigmaThetaAt(_i) << endl;
@@ -234,8 +241,15 @@ int main(int argc, char const *argv[])
 
 
 
-			double intensity = recon.getIntegralAt(recon.getIndexOf(particle_search));
+			// double intensity = recon.getIntegralAt(recon.getIndexOf(particle_search));
+			static unsigned dummy = 0;
 
+			if (force){
+				AddBatch(entry, i, particleEvents, par_outs, pars, photon_reconstruction.Photons, cheat_phos, index, recons, particle_compare, dummy, 1.e10, plotType, time_min, time_max);
+				continue;
+			}
+			static unsigned TEST; TEST = 0;
+			if (print) { cout << "test " << TEST << endl; ++TEST; }
 
 			bool passed_Identification;
 			if (search_is_best_fit) {
@@ -243,14 +257,13 @@ int main(int argc, char const *argv[])
 				++particleEvents_count;
 			}
 			else passed_Identification = false;
-
-			static unsigned dummy = 0;
+			if (print) { cout << "test " << TEST << endl; ++TEST; }
 			// bool passed_Identification = passConditions(matchcondition_cases, functions, par, recon, particle_search_index, threshold, print);
 			if (!added_Identification_Batch && passed_Identification && (par.name == particle_search) && (particleEvents_count < max_count)){
 				AddBatch(entry, i, particleEvents, par_outs, pars, photon_reconstruction.Photons, cheat_phos, index, recons, particle_compare, dummy, threshold, plotType, time_min, time_max);
 				added_Identification_Batch = true;
 			}
-
+			if (print) { cout << "test " << TEST << endl; ++TEST; }
 
 			bool compare_is_best_fit = (particle_compare == best_fit);
 
@@ -260,15 +273,16 @@ int main(int argc, char const *argv[])
 				++misIdentificationEvents_count;
 			}
 			else passed_misIdentification = false;
-
+			if (print) { cout << "test " << TEST << endl; ++TEST; }
 			// bool passed_misIdentification = passConditions(matchcondition_cases, functions, par, recon, particle_search_index, threshold, print);
 			// if (!passed_Identification) cout << "==============HEYYYYY+++++++++++\n";
 			if (!added_misIdentification_Batch && passed_misIdentification && (par.name == particle_search) && (misIdentificationEvents_count < max_count)){
-				AddBatch(entry, i, misIdentificationEvents, par_outs, pars, photon_reconstruction.Photons, cheat_phos, index, recons, particle_compare, dummy, threshold, plotType, time_min, time_max);
+				if (print) { cout << "add wrong batch test " << TEST << endl; ++TEST; }
+				AddBatch(entry, i, *misIdentificationEvents, par_outs, pars, photon_reconstruction.Photons, cheat_phos, index, recons, particle_compare, dummy, threshold, plotType, time_min, time_max);
 				added_misIdentification_Batch = true;
 			}
 
-
+			if (print) { cout << "test " << TEST << endl; ++TEST; }
 
 			if (print) cout << "\t- " << particle_search << " as " << particle_search << " : " << particleEvents_count << endl ;
 			if (print) cout << "\t- " << particle_search << " as " << particle_compare << " : " << misIdentificationEvents_count << endl ;
@@ -277,10 +291,10 @@ int main(int argc, char const *argv[])
 
 	}
 
-if (print) cout << "final correct count:   = " << particleEvents_count << endl;
-if (print) cout << "final incorrect count: = " << misIdentificationEvents_count << endl;
+if (print && !force) cout << "final correct count:   = " << particleEvents_count << endl;
+if (print && !force) cout << "final incorrect count: = " << misIdentificationEvents_count << endl;
 cout << particleEvents.GetName() << endl;
-cout << misIdentificationEvents.GetName() << endl;
+if (!force) cout << misIdentificationEvents->GetName() << endl;
 
 
 photon_Tfile_p->cd();
@@ -296,10 +310,11 @@ particleEvents.cd();
 particleEvents.Write();
 particleEvents.Close();
 
-misIdentificationEvents.cd();
-misIdentificationEvents.Write();
-misIdentificationEvents.Close();
-
+if (!force){
+	misIdentificationEvents->cd();
+	misIdentificationEvents->Write();
+	misIdentificationEvents->Close();
+}
 
 
 	return 0;

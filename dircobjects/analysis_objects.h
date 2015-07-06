@@ -46,7 +46,7 @@ public:
 	}
 	double getnSigmaThetaAt(int const i) const {
 		// std::cout << "nsigmaTheta = " << delSigTheta.at(i) << std::endl;
-		if (!passed_intensity_cut(i, 7)) return 1.e100;
+		if (!passed_intensity_cut(i, 10)) return 1.e100;
 		else return delSigTheta.at(i);
 	}
 	double getIntegralAt(int const i) const { return Areas.at(i); }

@@ -46,7 +46,7 @@ int TrackRecon::getIndexOf(std::string type) const{
 bool TrackRecon::passed_intensity_cut (int const i, double threshold = 7, bool print) const {
 
 	static double nsigma; nsigma = getnSigmaAreaAt(i);
-	if (print) cout << "\t\u0394 \u03C3 = " << nsigma << ", threshold = " << threshold << endl;
+	if (print) cout << "\t" << getNameAt(i) <<": \u0394 \u03C3 = " << nsigma << ", threshold = " << threshold << endl;
 	if (fabs(nsigma) <= threshold){
 		return true;
 	}

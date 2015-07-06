@@ -98,7 +98,7 @@ namespace dirc
 			percentFound = getpercent(binlow, binhi, sigmaBinDistance);
 			if (print) std::cout << "percentFound = " << percentFound << " at bin distance " << sigmaBinDistance << " in center range " << GetBinCenter(binlow) << " : " << this->GetBinCenter(binhi) <<  std::endl;
 
-			if (counts >= 20)
+			if (counts >= 40)
 				break;
 			if (WithinPercentRange(percentFound, .05*percent)){
 				break;
@@ -133,7 +133,7 @@ namespace dirc
 		while(true){
 			percentFound = getpercent(binlow, binhi, sigmaBinDistance);
 			tempdif = fabs(percentFound - percent);
-			if (print) std::cout << "percentFound = " << percentFound << " at bin distance " << sigmaBinDistance << " with difference " << tempdif << std::endl;
+			if (print) std::cout << "percentFound = " << percentFound << " at bin distance " << sigmaBinDistance << "(" << GetBinCenter(center_guess - sigmaBinDistance) << " : " << GetBinCenter(center_guess + sigmaBinDistance) << ") with difference " << tempdif << std::endl;
 			if(tempdif < percentDifference)
 				percentDifference = tempdif;
 			else{

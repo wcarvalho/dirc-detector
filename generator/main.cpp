@@ -93,14 +93,15 @@ int main(int argc, char** argv)
   	pars.clear();
   	passes=0;
 
-	if(ai.custom_set_given){
-		TakeInParameters(ai.custom_set_arg, nevents, maxPars, nparticle_range, etarange, ptrange, phirange, charge, types, replace);
-	}
-	SetParameterOptions(gPar, etarange, ptrange, phirange, charge, types);
-	pars = generate(nparticles, gPar, d, maxPars, fixed_momentum, print);
+  	if(ai.custom_set_given){
+  		TakeInParameters(ai.custom_set_arg, nevents, maxPars, nparticle_range, etarange, ptrange, phirange, charge, types, replace);
+  	}
 
-	if(!quiet) cout << "\ttotal particles: " << pars.size() << endl;
-   	tree.Fill();
+  	SetParameterOptions(gPar, etarange, ptrange, phirange, charge, types);
+  	pars = generate(nparticles, gPar, d, maxPars, fixed_momentum, print);
+
+  	if(!quiet) cout << "\ttotal particles: " << pars.size() << endl;
+     	tree.Fill();
   }
 
   file.Write();

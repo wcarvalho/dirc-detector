@@ -37,7 +37,7 @@ const char *gengetopt_args_info_help[] = {
   "  -h, --help                    Print help and exit",
   "  -V, --version                 Print version and exit",
   "  -e, --events=INT              Number of events  (default=`5')",
-  "  -m, --maxpars=INT             maximum number of particles to intersect DirC",
+  "  -m, --maxpars=INT             maximum number of particles to intersect DirC\n                                  (default=`10')",
   "  -P, --nparticles=INT          Takes in two arguments for the range in the\n                                  number of particles emitted per event",
   "      --etar=DOUBLE             eta range",
   "      --ptr=DOUBLE              pt range (cannot be set with pr)",
@@ -107,6 +107,7 @@ void clear_args (struct gengetopt_args_info *args_info)
   FIX_UNUSED (args_info);
   args_info->events_arg = 5;
   args_info->events_orig = NULL;
+  args_info->maxpars_arg = 10;
   args_info->maxpars_orig = NULL;
   args_info->nparticles_arg = NULL;
   args_info->nparticles_orig = NULL;
@@ -1039,7 +1040,7 @@ cmdline_parser_internal (
         
           if (update_arg( (void *)&(args_info->maxpars_arg), 
                &(args_info->maxpars_orig), &(args_info->maxpars_given),
-              &(local_args_info.maxpars_given), optarg, 0, 0, ARG_INT,
+              &(local_args_info.maxpars_given), optarg, 0, "10", ARG_INT,
               check_ambiguity, override, 0, 0,
               "maxpars", 'm',
               additional_error))

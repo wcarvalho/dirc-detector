@@ -15,7 +15,7 @@ namespace dirc
 
 		void BinProperties(const double& value, int &value_bin, double &binheight, double &bincenter);
 		void FindDistributionCenter(double &center_start, double &sigma_start);
-
+		double getWidth() const { return distributionSigma; };
 		void defineDistributionRange(const int& nsigma, const double& sigma, const double& center){
 			distributionRange[0] = center-nsigma*sigma; distributionRange[1] = center+nsigma*sigma;
 		}
