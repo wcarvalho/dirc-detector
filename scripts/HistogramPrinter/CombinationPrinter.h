@@ -69,7 +69,7 @@ void addFits(TH1D &h, TrackRecon const& R, vector<TF1*>& functions, vector<int>&
 	center_max = 0.;
 
 	for (int i = 0; i < R.size(); ++i){
-		if ((!R.passed_intensity_cut(i, 8)) || (R.getnSigmaThetaAt(i) > 10)) {
+		if ((!R.passed_intensity_cut(i)) || (R.getnSigmaThetaAt(i) > 10)) {
 			// cout << "fits: not displaying " << R.getNameAt(i) << "with dsig = " << R.getnSigmaThetaAt(i) << endl;
 			// continue;
 		}
@@ -191,7 +191,7 @@ void AddFitDetails(TPad &pad, TLegend& L, ParticleOut & P, TrackRecon const& R, 
 		if (R.Params.empty()) continue;
 		// found angle
 
-		bool passed_intensity_cut = R.passed_intensity_cut(i, 8, false);
+		bool passed_intensity_cut = R.passed_intensity_cut(i);
 		// bool passed_theta_cut = (R.getnSigmaThetaAt(i) < 10);
 
 		if (!passed_intensity_cut){

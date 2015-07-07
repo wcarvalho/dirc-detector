@@ -24,7 +24,6 @@ bool isPhotonInThetaBand(vector<PhotonOut> const& photons, vector<int> const& ph
 		auto& photon = photons.at(i);
 		auto& theta = photon.Theta;
 		auto& phi = photon.Phi;
-		if (print) cout << "theta\n";
 		if ( inBand(theta_center_min, theta_center_max, theta) ){
 			inside_band = true; break;
 		}

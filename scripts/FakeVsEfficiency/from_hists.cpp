@@ -1,5 +1,6 @@
 #include <sstream>
 #include <string>
+#include <iomanip>
 
 
 #include "TKey.h"
@@ -30,17 +31,31 @@ void getHistogram(TFile*& f, string& file, dircTH1D& H){
 	H = *H_temp;
 }
 
-void findEfficiencyBounds(dircTH1D& h, double const& center, double percent, double& xlow, double& xhi){
+void calculate_error(double const& numerator, double const& denominator, double& error ){
+	if ( (denominator < 1) || (numerator < 1) ){
+		error = 0;
+	}
+	else
+	error = 1/denominator * sqrt( numerator* ( 1 - numerator/denominator) );
+}
+
+void findEfficiencyBounds(dircTH1D& h, double const& center, double percent, double& xlow, double& xhi, double& percent_achieved, double& error, bool print){
 		static double width;
-		double width_guess;
-		width_guess = sqrt( h.GetBinContent(h.GetMaximumBin()) );
+		// double width_guess;
+		// width_guess = sqrt( h.GetBinContent(h.GetMaximumBin()) );
 
 		h.defineDistributionRange(h.GetXaxis()->GetXmin(), h.GetXaxis()->GetXmax());
-		h.defineSigma(center, width_guess, percent);
+		percent_achieved = h.defineSigma(center, 0., percent, print);
 
 		width = h.getWidth();
 		xlow = center - width;
 		xhi = center + width;
+
+		static double integral;
+		integral = h.Integral(0, h.GetNbinsX());
+		calculate_error(integral*percent_achieved, integral, error);
+		percent_achieved *= 100;
+		error *=  100;
 }
 
 void percentInRange(dircTH1D& h, double const& xlow, double const& xhi, double& false_rate, double& error){
@@ -58,42 +73,52 @@ void percentInRange(dircTH1D& h, double const& xlow, double const& xhi, double& 
 
 	static double denominator;
 	denominator = h.Integral(0, h.GetNbinsX());
-
 	false_rate = numerator/denominator*100;
 
-	static double numerator_error;
-	static double denominator_error;
-
-	// numerator_error = sqrt(numerator);
-	// denominator_error = sqrt(denominator);
-	error = 1/denominator * sqrt( numerator* ( 1 - numerator/denominator) );
-	// error = pow((numerator*numerator + denominator*denominator), .5);
-
-
+	if ( (denominator < 1) || (numerator < 1) ) false_rate = 0;
+	calculate_error(numerator, denominator, error);
+	error *= 100;
 }
 
-void plotFvsE(TGraphErrors*& g, dircTH1D& effh, dircTH1D& falseh, vector<double> const& efficiency_points, double const& momentum, double& max_falserate){
+
+void plotFvsE(TGraphErrors*& g, dircTH1D& effh, dircTH1D& falseh, vector<double> const& efficiency_points, double const& momentum, double& max_falserate, bool print = false){
 
 	static double center;
 	center = effh.GetMean();
 
 	static unsigned count;
 	count = 0;
+	static double old_efficiency; old_efficiency = 0.;
+	static double old_false; old_false = 0.;
+	static double efficiency_found; efficiency_found = 0.;
+	static double efficiency_error; efficiency_error = 0.;
+	static double false_rate; false_rate = 0.;
+	static double false_error; false_error = 0.;
 	for (double efficiency: efficiency_points){
 
 		static double angle_low;
 		static double angle_hi;
 
-		findEfficiencyBounds(effh, center, efficiency/100., angle_low, angle_hi);
+		findEfficiencyBounds(effh, center, efficiency/100., angle_low, angle_hi, efficiency_found, efficiency_error, print);
 
-		static double false_rate;
-		static double false_error;
+
 		percentInRange(falseh, angle_low, angle_hi, false_rate, false_error);
-		cout << momentum << " : " << efficiency << ", " << false_rate << endl;
+		if (print) cout << momentum << ", "<< efficiency << " : " << setprecision(3) << efficiency_found << " \u00B1 " << efficiency_error << ", " << false_rate << " \u00B1 " << false_error << endl;
+		if (fabs(efficiency_found - efficiency) >= 10){
+			if (print) cout << "\tskipping\n";
+			g->SetPoint(count, old_efficiency, old_false);
+			++count;
+			continue;
+		}
+		// if (print) cout << "\tbounds = " << angle_low << " : " << angle_hi << endl;
 
 		if (max_falserate < false_rate) max_falserate = false_rate;
-		g->SetPoint(count, efficiency, false_rate);
+		g->SetPoint(count, efficiency_found, false_rate);
+		g->SetPointError(count, efficiency_error, false_error);
 		++count;
+		old_efficiency = efficiency_found;
+		old_false = false_rate;
+		// if (efficiency > 70) break;
 	}
 
 }
@@ -118,6 +143,7 @@ int main(int argc, char** argv){
 	vector<double> momenta;
 	vector<double> eff_points { 10., 20., 30., 40., 50., 60., 70., 80., 90., 95. };
 
+	bool print;
 	string output;
 
 TCLAP::CmdLine cmd("Command description message", ' ', "0.1");
@@ -133,12 +159,15 @@ try{
 
 	TCLAP::ValueArg<std::string> outputArg("o","output","output-file",false,"theta_distribution.root","string", cmd);
 
+	TCLAP::SwitchArg verboseArg("v","verbose","", cmd, false);
+
 	cmd.parse( argc, argv );
 
 	efficiencyHists = efficiencyHistsArg.getValue();
 	falserateHists = falserateHistsArg.getValue();
 	momenta = momentaArg.getValue();
 	output = outputArg.getValue();
+	print = verboseArg.getValue();
 	if (eff_pointsArg.isSet()) eff_points = eff_pointsArg.getValue();
 
 
@@ -156,7 +185,7 @@ catch( TCLAP::ArgException& e )
 	}
 
 
-	string title="false-positive vs. efficiency (kaons as pions)";
+	string title="false-positive vs. efficiency";
 	TCanvas C(title.c_str(), title.c_str(), 1000, 800 );
 	C.SetGrid();
 
@@ -195,7 +224,7 @@ catch( TCLAP::ArgException& e )
 		auto& falserateHist_file = falserateHists.at(i);
 		getHistogram (falseFile, falserateHist_file, falseHist);
 
-		plotFvsE(g, effHist, falseHist, eff_points, p, max_falserate);
+		plotFvsE(g, effHist, falseHist, eff_points, p, max_falserate, print);
 
 		graphs.push_back(std::move(g));
 		// effHists.push_back(std::move(effHist));
@@ -206,24 +235,24 @@ catch( TCLAP::ArgException& e )
 		graphs.back()->SetMarkerSize(.75);
 		graphs.back()->SetMarkerStyle(8);
 		graphs.back()->SetLineColor(color);
-		graphs.back()->SetLineWidth(3);
-		++color;
+		graphs.back()->SetLineWidth(0);
 		C.cd();
 
-		if (i == 0){
+		if (color == 1){
 			graphs.back()->SetTitle(title.c_str());
 			graphs.back()->GetXaxis()->SetTitle("efficiency");
 			graphs.back()->GetYaxis()->SetTitle("false-positive rate");
-			graphs.back()->Draw("ALP");
+			graphs.back()->Draw("AP");
 		}
 		else{
 			graphs.back()->Draw("SAME");
 		}
+		++color;
 
 		static stringstream ss;
 		ss.str(""); ss << p;
 
-		L.AddEntry(graphs.back(), ss.str().c_str(), "lp");
+		L.AddEntry(graphs.back(), ss.str().c_str(), "mp");
 		// effFile->cd(); effFile->Close();
 		// falseFile->cd(); falseFile->Close();
 		effFiles.push_back(std::move(effFile));

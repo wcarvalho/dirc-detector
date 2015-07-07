@@ -43,36 +43,37 @@ int TrackRecon::getIndexOf(std::string type) const{
 	return -1;
 }
 
-bool TrackRecon::passed_intensity_cut (int const i, double threshold = 7, bool print) const {
+bool TrackRecon::passed_intensity_cut(int const i, bool print, double threshold) const {
 
-	static double nsigma; nsigma = getnSigmaAreaAt(i);
-	if (print) cout << "\t" << getNameAt(i) <<": \u0394 \u03C3 = " << nsigma << ", threshold = " << threshold << endl;
-	if (fabs(nsigma) <= threshold){
-		return true;
-	}
-	else{
-		return false;
-	}
+	static bool passed;
+	static double nsigma; nsigma = getnSigmaAreaAt(i, print);
+	static double intensity; intensity = getIntegralAt(i);
+
+	static bool nsigma_less_than_intensity_threshold;
+	nsigma_less_than_intensity_threshold = (fabs(nsigma) <= threshold);
+	static bool intensity_high_enough;
+	intensity_high_enough = (intensity >= 80);
+
+	passed = nsigma_less_than_intensity_threshold && intensity_high_enough;
+
+	return passed;
 
 }
-
 std::string TrackRecon::getBestFit(double const threshold, bool print) const {
 
 	static double lowestsigma; lowestsigma = 1.e10;
 	static double nsigma;
 	static string bestfit; bestfit = "";
 	static string name;
-	if (print) cout << "\tthreshold = " << threshold << endl;
 	for (unsigned i = 0; i < size(); ++i){
-		nsigma = fabs(getnSigmaThetaAt(i));
 		name = getNameAt(i);
-		if (print) cout << "\t" << name << " : " << nsigma << endl;
+		nsigma = fabs(getnSigmaAt(i, print));
 		if ((nsigma < lowestsigma) && (nsigma < threshold)) {
 			lowestsigma = nsigma;
 			bestfit = name;
 		}
 	}
-	if (print) cout << "\t\tbest fit = " << bestfit << " with sigma = " << lowestsigma << endl;
+	if (print) cout << "\t>>>best fit: " << bestfit << " with \u0394\u03C3 " << lowestsigma << endl;
 	return bestfit;
 }
 void TrackRecon::addFitsToHistogram(TH1D &h){
@@ -107,6 +108,26 @@ void TrackRecon::addFitToHistogram(TH1D &h, std::string type){
 	f1->SetLineColor(2);
 	h.GetListOfFunctions()->Add(f1);
 }
+
+double TrackRecon::getnSigmaAt(int const i, bool const print) const{
+
+	static double nsigma;
+	if (!passed_intensity_cut(i, print)) nsigma = 1.e10;
+	else nsigma = getnSigmaThetaAt(i, print);
+	if (print) cout << "\t" << getNameAt(i) << " final \u0394\u03C3 = " << nsigma << endl << endl;
+	return nsigma;
+}
+
+double TrackRecon::getnSigmaOf(std::string type, bool const print) const{
+
+	static int i; i = getIndexOf(type);
+	return std::move(getnSigmaAt(i, print));
+}
+
+
+
+
+
 void TrackRecons::AddTrackRecon(){
 	TrackRecon tr;
 	Recon.push_back(tr);
@@ -115,6 +136,14 @@ void TrackRecons::PushBackParams(){
 	vector<double> temp;
 	Recon.back().Params.push_back(temp);
 }
+
+
+
+
+
+
+
+
 void Analysis::AddTH1D(const char* name, const char* title, int nbinsx, double xlow, double xup, int which)
 {
 	TH1D h1(name, title, nbinsx, xlow, xup);

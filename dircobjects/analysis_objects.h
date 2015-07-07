@@ -34,25 +34,26 @@ public:
 	double getLatestIntegralCenter() const { return Params.back().at(1); }
 	double getIntegralCenterAt(int const i){ return Params.at(i).at(1); }
 	double getIntegralCenterAt(int const i) const { return Params.at(i).at(1); }
-	bool passed_intensity_cut (int const i, double const threshold, bool print = false) const;
+	bool passed_intensity_cut (int const i, bool print = false, double const threshold = 10) const;
 	double getSigmaThetaAt(int const i) const { return SigTheta.at(i); }
 	double getSigmaAreaAt(int const i) const { return SigArea.at(i); }
-	double getnSigmaAreaAt(int const i) const {
-		// cout << "\ntype: " << getNameAt(i) << endl;
-		// cout << "area = " << getIntegralAt(i) << endl;
-		// cout << "this must be greater than 10\n";
-		if (getIntegralAt(i) < 10) return 1.e100;
-		else return delSigArea.at(i);
+	double getnSigmaAreaAt(int const i, bool print = false) const {
+		if (print) cout << "\t" << getNameAt(i) << " : \u0394\u03C3 (intensity) = " << delSigArea.at(i) << endl;
+		return delSigArea.at(i);
 	}
-	double getnSigmaThetaAt(int const i) const {
-		// std::cout << "nsigmaTheta = " << delSigTheta.at(i) << std::endl;
-		if (!passed_intensity_cut(i, 10)) return 1.e100;
-		else return delSigTheta.at(i);
+	double getnSigmaThetaAt(int const i, bool print = false) const {
+		if (print) cout << "\t" << getNameAt(i) << " : \u0394\u03C3 (theta) = " << delSigTheta.at(i) << endl;
+		return delSigTheta.at(i);
 	}
+	double getnSigmaOf(std::string type, bool const print = false) const;
+	double getnSigmaAt(int const i, bool const print = false) const;
+
+
+
 	double getIntegralAt(int const i) const { return Areas.at(i); }
 	double getIntegralHeightAt(int const i) const { return Params.at(i).at(0); }
 	double getIntegralConstantAt(int const i) const { return Params.at(i).at(3); }
-	std::string getBestFit(double const threshold, bool print = false) const;
+	std::string getBestFit(double const threshold = 10, bool print = false) const;
 	std::string getNameAt(int const i) const { return Options.at(i); }
 	double getExpectedIntensityAt(int const i) const {return ExpectedNumber.at(i); }
 	double getExpectedAngleAt(int const i) const {return ExpectedAngle.at(i); }

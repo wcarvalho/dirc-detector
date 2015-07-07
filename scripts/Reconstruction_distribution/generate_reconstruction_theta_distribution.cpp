@@ -12,7 +12,10 @@ int main(int argc, char** argv){
 string reconstructiondata;
 string search_type;
 string output;
+
+double threshold;
 vector<double> bounds {.5, .95};
+
 bool print;
 
 
@@ -27,6 +30,9 @@ try{
 
 	TCLAP::MultiArg<double> boundsArg("b","bounds","plot bounds",false,"string", cmd);
 
+	TCLAP::ValueArg<double> thresholdArg("T","threshold","",false,10,"double", cmd);
+
+
 	TCLAP::SwitchArg verboseArg("v","verbose","", cmd, false);
 
 	cmd.parse( argc, argv );
@@ -34,9 +40,10 @@ try{
 	reconstructiondata = reconstructionFileArg.getValue();
 	search_type = search_typeArg.getValue();
 	output = outputArg.getValue();
-	if (boundsArg.isSet()) bounds = boundsArg.getValue();
+	threshold = thresholdArg.getValue();
 	print = verboseArg.getValue();
 
+	if (boundsArg.isSet()) bounds = boundsArg.getValue();
 }
 catch( TCLAP::ArgException& e )
 { cout << "ERROR: " << e.error() << " " << e.argId() << endl; }
@@ -49,18 +56,19 @@ catch( TCLAP::ArgException& e )
 
 	double pi=TMath::Pi();
 
-	TH1D h("h", "h", 1000, bounds.at(0), bounds.at(1));
+	TH1D h("h", "h", 10000, bounds.at(0), bounds.at(1));
 
 	if (print) cout << "searching for " << search_type << endl;
 
 	for (unsigned ev = 0; ev < t->GetEntries(); ++ev){
 		t->GetEntry(ev);
+		if (print) cout << "Event " << ev << " with " << Tracks->Recon.size() << " particles\n";
 		for (auto& track: Tracks->Recon){
-			static int indx;
+			// check that the best reconstruction matches the particle type we're targetting
+			if ( track.getBestFit(threshold, print) != search_type ) continue;
+
 			static double theta;
-			indx = track.getIndexOf(search_type);
-			if (indx < 0) continue;
-			theta = track.getIntegralCenterAt(indx);
+			theta = track.getIntegralCenterAt(track.getIndexOf(search_type));
 			h.Fill(theta);
 		}
 	}

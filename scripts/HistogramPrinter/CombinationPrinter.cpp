@@ -236,7 +236,6 @@ int main(int argc, char const *argv[])
 
 			if (best_fit == "") continue;
 
-			if (print) cout << "best fit = " << best_fit << endl;
 			bool search_is_best_fit = (particle_search == best_fit);
 
 
@@ -249,7 +248,6 @@ int main(int argc, char const *argv[])
 				continue;
 			}
 			static unsigned TEST; TEST = 0;
-			if (print) { cout << "test " << TEST << endl; ++TEST; }
 
 			bool passed_Identification;
 			if (search_is_best_fit) {
@@ -257,13 +255,11 @@ int main(int argc, char const *argv[])
 				++particleEvents_count;
 			}
 			else passed_Identification = false;
-			if (print) { cout << "test " << TEST << endl; ++TEST; }
 			// bool passed_Identification = passConditions(matchcondition_cases, functions, par, recon, particle_search_index, threshold, print);
 			if (!added_Identification_Batch && passed_Identification && (par.name == particle_search) && (particleEvents_count < max_count)){
 				AddBatch(entry, i, particleEvents, par_outs, pars, photon_reconstruction.Photons, cheat_phos, index, recons, particle_compare, dummy, threshold, plotType, time_min, time_max);
 				added_Identification_Batch = true;
 			}
-			if (print) { cout << "test " << TEST << endl; ++TEST; }
 
 			bool compare_is_best_fit = (particle_compare == best_fit);
 
@@ -273,7 +269,6 @@ int main(int argc, char const *argv[])
 				++misIdentificationEvents_count;
 			}
 			else passed_misIdentification = false;
-			if (print) { cout << "test " << TEST << endl; ++TEST; }
 			// bool passed_misIdentification = passConditions(matchcondition_cases, functions, par, recon, particle_search_index, threshold, print);
 			// if (!passed_Identification) cout << "==============HEYYYYY+++++++++++\n";
 			if (!added_misIdentification_Batch && passed_misIdentification && (par.name == particle_search) && (misIdentificationEvents_count < max_count)){
@@ -282,7 +277,6 @@ int main(int argc, char const *argv[])
 				added_misIdentification_Batch = true;
 			}
 
-			if (print) { cout << "test " << TEST << endl; ++TEST; }
 
 			if (print) cout << "\t- " << particle_search << " as " << particle_search << " : " << particleEvents_count << endl ;
 			if (print) cout << "\t- " << particle_search << " as " << particle_compare << " : " << misIdentificationEvents_count << endl ;

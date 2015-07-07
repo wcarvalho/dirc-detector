@@ -25,7 +25,7 @@ namespace dirc
 
 		int findBinDistance(const double& from, const double& to);
 
-		double defineSigma(const double center_guess, const double &sigma_guess, const double &percent, bool print = false);
+		double defineSigma(double const center_guess, double const sigma_guess, double const percent, bool print=false, std::string integral_setting = "");
 		void RemovePastSigma(bool print = false);
 
 

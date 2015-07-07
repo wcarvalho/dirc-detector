@@ -1,6 +1,6 @@
 #include "dircTH1D.h"
 #include "TFile.h"
-
+#include <iomanip>
 namespace dirc
 {
 
@@ -44,24 +44,35 @@ namespace dirc
 		return (FindBin(from) - FindBin(to));
 	}
 
-	double dircTH1D::defineSigma(const double center_guess, const double &sigma_guess, const double &percent, bool print){
+	double dircTH1D::defineSigma(double const center_guess, double const sigma_guess, double const percent, bool print, std::string integral_setting){
 
 		int center_bin = FindBin(center_guess);
+
 		static int distributionRangeBins[2];
 		for (unsigned i = 0; i < 2; ++i){
 			distributionRangeBins[i] = FindBin(distributionRange[i]);
 		}
-		double distributionIntegral = Integral(distributionRangeBins[0], distributionRangeBins[1], "width");
-		if (print) std::cout << "Total distributionIntegral = " << distributionIntegral << std::endl;
 
-		int sigmaBinDistance;
-		sigmaBinDistance = std::abs(findBinDistance(center_guess, sigma_guess));
+		static unsigned steps_count; steps_count = 0;
+
+		double distributionIntegral = Integral(distributionRangeBins[0], distributionRangeBins[1], integral_setting.c_str());
+		if (print){
+			std::cout << steps_count << ". Total distributionIntegral = " << distributionIntegral << std::endl;
+			++steps_count;
+		}
+
+		static int sigmaBinDistance;
+		sigmaBinDistance = std::abs(findBinDistance(center_guess, center_guess -sigma_guess));
 
 		int sigmaBinDistance_start = sigmaBinDistance;
+		if (print){
+			std::cout << steps_count << ". Starting Bin Distance = " << sigmaBinDistance_start << std::endl;
+			++steps_count;
+		}
 
 		auto WithinPercentRange = [percent] (const double& percentFound, const double& percentRange){
-			double percent_low = percent-percentRange/2.;
-			double percent_high = percent+percentRange/2.;
+			static double percent_low; percent_low = percent-percentRange/2.;
+			static double percent_high; percent_high = percent+percentRange/2.;
 			bool greaterthanpercentlow = (percentFound > percent_low);
 			bool lessthanpercenthigh = (percentFound < percent_high);
 			return ( greaterthanpercentlow && lessthanpercenthigh );
@@ -71,16 +82,16 @@ namespace dirc
 		enum direction_t {forward = 1, backward = -1};
 		direction_t direction     = forward, currentdirection;
 
-		double percentFound = 0.;
+		double percentFound  = 0.;
 		int binlow           = 0, binhi = 0;
 		int stepsize         = 1;
 		int counts           = 0;
 
-		auto getpercent = [&center_bin, &distributionIntegral, this](int& binlow, int& binhi, int sigmaBinDistance){
+		auto getpercent = [&center_bin, &distributionIntegral, integral_setting, this](int& binlow, int& binhi, int sigmaBinDistance){
 			binlow = center_bin - sigmaBinDistance;
 			binhi  = center_bin + sigmaBinDistance;
 			static double foundintegral;
-			foundintegral = this->Integral(binlow, binhi, "width");
+			foundintegral = this->Integral(binlow, binhi, integral_setting.c_str());
 			double percentFound = foundintegral/distributionIntegral;
 			return std::move(percentFound);
 		};
@@ -90,17 +101,20 @@ namespace dirc
 			if (percentFound > percent) direction = backward;
 		};
 
-		if (print) std::cout << "center_guess = " << center_guess << " at bin " << center_bin << std::endl;
-		 if (print) std::cout << "Starting sigmaBinDistance = " << sigmaBinDistance << std::endl;
+		if (print){
+			std::cout << steps_count << ". Center at " << std::setprecision(4) << center_guess << " at bin " << center_bin << std::endl;
+			++steps_count;
+		}
+
 		while(true){
 
 			currentdirection = direction;
 			percentFound = getpercent(binlow, binhi, sigmaBinDistance);
-			if (print) std::cout << "percentFound = " << percentFound << " at bin distance " << sigmaBinDistance << " in center range " << GetBinCenter(binlow) << " : " << this->GetBinCenter(binhi) <<  std::endl;
-
+			if (print) std::cout << "\tpercentFound = " << percentFound << " at bin distance " << sigmaBinDistance << ", step size = " << stepsize << std::endl;
+			 // in center range " << GetBinCenter(binlow) << " : " << this->GetBinCenter(binhi) <<  std::endl;
 			if (counts >= 40)
 				break;
-			if (WithinPercentRange(percentFound, .05*percent)){
+			if (WithinPercentRange(percentFound, .10)){
 				break;
 			}
 			checkDirection(direction, percentFound);
@@ -125,15 +139,15 @@ namespace dirc
 			}
 			++counts;
 		}
-		if (print) std::cout << "percentFound = " << percentFound << std::endl;
 
 		double percentDifference = 1;
 		double tempdif;
 		stepsize = 1;
+		if (print) std::cout << "\tROUND 2\n";
 		while(true){
 			percentFound = getpercent(binlow, binhi, sigmaBinDistance);
 			tempdif = fabs(percentFound - percent);
-			if (print) std::cout << "percentFound = " << percentFound << " at bin distance " << sigmaBinDistance << "(" << GetBinCenter(center_guess - sigmaBinDistance) << " : " << GetBinCenter(center_guess + sigmaBinDistance) << ") with difference " << tempdif << std::endl;
+			if (print) std::cout << "\tpercentFound = " << percentFound << " at bin distance " << sigmaBinDistance <<  " with difference " << tempdif << std::endl;
 			if(tempdif < percentDifference)
 				percentDifference = tempdif;
 			else{
