@@ -15,7 +15,6 @@ ROOT_LIBS=`root-config --libs`
 NEWTON_LIB=`pkg-config --libs fitnewton`
 
 AC_SUBST(ROOT_LIBS)
-AC_SUBST(UTIL_LIB)
 AC_SUBST(NEWTON_LIB)
 
 PKG_CHECK_MODULES([Fitnewton], [fitnewton])
