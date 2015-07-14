@@ -30,7 +30,7 @@ try{
 
 	TCLAP::MultiArg<double> boundsArg("b","bounds","plot bounds",false,"string", cmd);
 
-	TCLAP::ValueArg<double> thresholdArg("T","threshold","",false,10,"double", cmd);
+	TCLAP::ValueArg<double> thresholdArg("T","threshold","",false,100,"double", cmd);
 
 
 	TCLAP::SwitchArg verboseArg("v","verbose","", cmd, false);
@@ -65,10 +65,10 @@ catch( TCLAP::ArgException& e )
 		if (print) cout << "Event " << ev << " with " << Tracks->Recon.size() << " particles\n";
 		for (auto& track: Tracks->Recon){
 			// check that the best reconstruction matches the particle type we're targetting
-			if ( track.getBestFit(threshold, print) != search_type ) continue;
-
+			static string best_fit; best_fit = track.getBestFit(threshold, print);
+			if (best_fit == "" ) continue;
 			static double theta;
-			theta = track.getIntegralCenterAt(track.getIndexOf(search_type));
+			theta = track.getIntegralCenterAt(track.getIndexOf(best_fit));
 			h.Fill(theta);
 		}
 	}

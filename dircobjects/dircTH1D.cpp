@@ -143,12 +143,14 @@ namespace dirc
 		double percentDifference = 1;
 		double tempdif;
 		stepsize = 1;
+		counts = 0;
 		if (print) std::cout << "\tROUND 2\n";
 		while(true){
 			percentFound = getpercent(binlow, binhi, sigmaBinDistance);
 			tempdif = fabs(percentFound - percent);
+			if (counts >= 30) break;
 			if (print) std::cout << "\tpercentFound = " << percentFound << " at bin distance " << sigmaBinDistance <<  " with difference " << tempdif << std::endl;
-			if(tempdif < percentDifference)
+			if(tempdif <= percentDifference)
 				percentDifference = tempdif;
 			else{
 				sigmaBinDistance -= stepsize*direction;
@@ -158,7 +160,7 @@ namespace dirc
 
 			checkDirection(direction, percentFound);
 			sigmaBinDistance += stepsize*direction;
-
+			++counts;
 		}
 
 		auto findSigma = [&center_guess, &center_bin, this](int& sigmaBinDistance){

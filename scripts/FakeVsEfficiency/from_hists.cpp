@@ -1,9 +1,10 @@
 #include <sstream>
 #include <string>
 #include <iomanip>
-
+#include <unordered_map>
 
 #include "TKey.h"
+#include "TMath.h"
 #include "dircTH1D.h"
 #include "TAxis.h"
 #include "TFile.h"
@@ -16,19 +17,30 @@
 using namespace std;
 using namespace dirc;
 
-void checkValid(TFile const& f){
-	if (!(f.IsOpen())) {
-		cout << f.GetName() << " invalid!\n";
-		exit(1);
-	}
+
+double emission_angle(double const& P, double const mass){
+	static double beta; beta = P/pow(( mass*mass + P*P ),.5);
+	return TMath::ACos(1./(1.474*beta));
 }
 
-void getHistogram(TFile*& f, string& file, dircTH1D& H){
-	f = new TFile(file.c_str()); checkValid(*f);
+bool checkValid(TFile const& f){
+	if (!(f.IsOpen())) {
+		cout << f.GetName() << " invalid!\n";
+		return false;
+	}
+	else return true;
+}
+
+bool getHistogram(TFile*& f, string& file, dircTH1D& H){
+	bool histogram_is_okay;
+	f = new TFile(file.c_str());
+	histogram_is_okay = checkValid(*f);
+	if (!histogram_is_okay) return false;
 	TIter nextkey(f->GetListOfKeys());
 	TKey *key = (TKey*)nextkey();
 	dircTH1D* H_temp = (dircTH1D*)key->ReadObj();
 	H = *H_temp;
+	return true;
 }
 
 void calculate_error(double const& numerator, double const& denominator, double& error ){
@@ -81,10 +93,9 @@ void percentInRange(dircTH1D& h, double const& xlow, double const& xhi, double& 
 }
 
 
-void plotFvsE(TGraphErrors*& g, dircTH1D& effh, dircTH1D& falseh, vector<double> const& efficiency_points, double const& momentum, double& max_falserate, bool print = false){
+void plotFvsE(TGraphErrors*& g, dircTH1D& effh, dircTH1D& falseh, vector<double> const& efficiency_points, double const& efficiency_center, double const& momentum, double& max_falserate, bool print = false){
 
-	static double center;
-	center = effh.GetMean();
+
 
 	static unsigned count;
 	count = 0;
@@ -99,7 +110,7 @@ void plotFvsE(TGraphErrors*& g, dircTH1D& effh, dircTH1D& falseh, vector<double>
 		static double angle_low;
 		static double angle_hi;
 
-		findEfficiencyBounds(effh, center, efficiency/100., angle_low, angle_hi, efficiency_found, efficiency_error, print);
+		findEfficiencyBounds(effh, efficiency_center, efficiency/100., angle_low, angle_hi, efficiency_found, efficiency_error, print);
 
 
 		percentInRange(falseh, angle_low, angle_hi, false_rate, false_error);
@@ -145,6 +156,7 @@ int main(int argc, char** argv){
 
 	bool print;
 	string output;
+	string efficiencyType;
 
 TCLAP::CmdLine cmd("Command description message", ' ', "0.1");
 try{
@@ -158,6 +170,7 @@ try{
 	TCLAP::MultiArg<double> eff_pointsArg("","eff","efficiency points used",false,"string", cmd);
 
 	TCLAP::ValueArg<std::string> outputArg("o","output","output-file",false,"theta_distribution.root","string", cmd);
+	TCLAP::ValueArg<std::string> efficiencyTypeArg("t","efficiency-type","efficiency-type",false,"pion","string", cmd);
 
 	TCLAP::SwitchArg verboseArg("v","verbose","", cmd, false);
 
@@ -167,6 +180,7 @@ try{
 	falserateHists = falserateHistsArg.getValue();
 	momenta = momentaArg.getValue();
 	output = outputArg.getValue();
+	efficiencyType = efficiencyTypeArg.getValue();
 	print = verboseArg.getValue();
 	if (eff_pointsArg.isSet()) eff_points = eff_pointsArg.getValue();
 
@@ -184,6 +198,12 @@ catch( TCLAP::ArgException& e )
 		exit(1);
 	}
 
+	unordered_map < string, double> masses;
+	masses["muon"] = .105658;
+	masses["electron"] = .511e-3;
+	masses["pion"] = .1396;
+	masses["kaon"] = .493667;
+	masses["proton"] = .938;
 
 	string title="false-positive vs. efficiency";
 	TCanvas C(title.c_str(), title.c_str(), 1000, 800 );
@@ -203,13 +223,17 @@ catch( TCLAP::ArgException& e )
 	TFile* effFile = 0;
 	TFile* falseFile = 0;
 
-	int color = 1;
+	static vector<int> colors {20, 27, 28, 29, 30, 31, 34, 38};
+	int color = 0;
 
 	double max_falserate = 0.;
 
-	for (unsigned i = 0; i < neffHists; ++i){
-		auto& p = momenta.at(i);
+	double mass = masses[efficiencyType];
 
+	for (unsigned i = 0; i < neffHists; ++i){
+		++color;
+		auto& p = momenta.at(i);
+		static double efficiency_center; efficiency_center = emission_angle(p, mass);
 		effFile = new TFile();
 		falseFile = new TFile();
 
@@ -219,35 +243,35 @@ catch( TCLAP::ArgException& e )
 		g = new TGraphErrors(eff_points.size());
 
 		auto& efficiencyHist_file = efficiencyHists.at(i);
-		getHistogram (effFile, efficiencyHist_file, effHist);
+		bool histogram_good = getHistogram (effFile, efficiencyHist_file, effHist);
 
 		auto& falserateHist_file = falserateHists.at(i);
-		getHistogram (falseFile, falserateHist_file, falseHist);
+		histogram_good *= getHistogram (falseFile, falserateHist_file, falseHist);
 
-		plotFvsE(g, effHist, falseHist, eff_points, p, max_falserate, print);
+		if (!histogram_good) continue;
+		plotFvsE(g, effHist, falseHist, eff_points, efficiency_center, p, max_falserate, print);
 
 		graphs.push_back(std::move(g));
 		// effHists.push_back(std::move(effHist));
 		// falseHists.push_back(std::move(falseHist));
-		if (color == 10) ++color;
-
+		if ( (color == 10) || (color == 5) ) ++color;
 		graphs.back()->SetMarkerColor(color);
-		graphs.back()->SetMarkerSize(.75);
-		graphs.back()->SetMarkerStyle(8);
 		graphs.back()->SetLineColor(color);
-		graphs.back()->SetLineWidth(0);
+		graphs.back()->SetMarkerSize(1.25);
+		graphs.back()->SetMarkerStyle(8);
+		graphs.back()->SetLineWidth(1);
 		C.cd();
 
 		if (color == 1){
 			graphs.back()->SetTitle(title.c_str());
 			graphs.back()->GetXaxis()->SetTitle("efficiency");
 			graphs.back()->GetYaxis()->SetTitle("false-positive rate");
-			graphs.back()->Draw("AP");
+			graphs.back()->Draw("ALP");
 		}
 		else{
-			graphs.back()->Draw("SAME");
+			graphs.back()->Draw("LP");
 		}
-		++color;
+
 
 		static stringstream ss;
 		ss.str(""); ss << p;
