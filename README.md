@@ -55,16 +55,12 @@ Note: Please make sure **MYAPPS** and **scripts** are in your bin
 
 ######Installing libraries
 For each library do:
+
 1. `sh autoreconf_library.sh`
 + `sh configure_library.sh`
 +  `sh install_library.sh`
 
-e.g. `sh autoreconf_dircobjects.sh` `sh configure_dircobjects.sh` `sh install_dircobjects.sh`, alternatively you can do:
-`sh autoreconf_all.sh` `sh configure_all.sh` `sh install_all.sh`
-to install all libraries
-
-
-All shell scripts to install libraries have prefix "install_" (e.g. install_generator.sh, install_dircobjects.sh, etc.)
+e.g. `sh autoreconf_dircobjects.sh`, `sh configure_dircobjects.sh`, `sh install_dircobjects.sh`
 
 ######Installing scripts
 All shell scripts to built C++ scripts have prefix "install_" (e.g. install_generator.sh, install_dircobjects.sh, etc.)
