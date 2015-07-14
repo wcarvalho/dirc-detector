@@ -35,7 +35,6 @@ DircObjs_Dict.cpp: \
 	LinkDef.h
 		rootcint -f $@ -c $(DEFAULT_INCLUDES) $(INCLUDES) $^
 
-
 libDircObjs_la_SOURCES = \
 	analysis.cpp \
 	dirc_objects.cpp \
