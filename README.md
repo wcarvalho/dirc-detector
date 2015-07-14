@@ -62,6 +62,8 @@ For each library do:
 
 e.g. `sh autoreconf_dircobjects.sh`, `sh configure_dircobjects.sh`, `sh install_dircobjects.sh`
 
+Recommended order: (1) dircobjects, (2) simulator, (3) generator, (4) reconstructor
+
 ######Installing scripts
 All shell scripts to built C++ scripts have prefix "install_" (e.g. install_generator.sh, install_dircobjects.sh, etc.)
 
