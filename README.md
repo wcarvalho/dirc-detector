@@ -49,6 +49,7 @@ We facilitate the install process by including shell scripts in the build_script
 **Environment Variables to export**
 
 In order to install the libraries you must export
+
 1. [Dirc-Objects](https://github.com/wcarvalho/dirc-detector/tree/master/dircobjects#installation-instructions)
 2. [Particle-Generator](https://github.com/wcarvalho/dirc-detector/tree/master/generator#installation-instructions)
 3. [Photon-Generator](https://github.com/wcarvalho/dirc-detector/tree/master/simulator#installation-instructions)
