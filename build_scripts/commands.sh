@@ -4,5 +4,5 @@ clean="make distclean"
 
 configure="../configure --prefix"
 
-make="make -j 4"
-install="make install"
+make="make"
+install="make -j 4 install"
