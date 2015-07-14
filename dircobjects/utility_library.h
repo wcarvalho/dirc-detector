@@ -4,6 +4,7 @@
 #include <string>
 #include <sstream>      // std::stringstream
 #include <vector>
+#include <algorithm>
 
 namespace dirc
 {
