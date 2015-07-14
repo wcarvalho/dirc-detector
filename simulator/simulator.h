@@ -22,9 +22,9 @@
 //------------------------------------------
 #include "dirc_objects.h"
 #include "../headers/functions.h"
-#include "Parameters.h"
+#include "../headers/Parameters.h"
 #include "Simulate.h"
-#include "file-properties.h"
+#include "../headers/file-properties.h"
 
 //------------------------------------------
 //		Functions
