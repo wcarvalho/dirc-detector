@@ -267,6 +267,9 @@ catch( TCLAP::ArgException& e )
 			graphs.back()->GetXaxis()->SetTitle("efficiency");
 			graphs.back()->GetYaxis()->SetTitle("false-positive rate");
 			graphs.back()->Draw("ALP");
+			// double title_size = 10;
+			// graphs.back()->GetXaxis()->SetTitleSize(title_size);
+			// graphs.back()->GetYaxis()->SetTitleSize(title_size);
 		}
 		else{
 			graphs.back()->Draw("LP");
