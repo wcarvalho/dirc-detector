@@ -42,16 +42,17 @@ There are numerous pre-requisite libraries:
 
 Note: For libseamstress and fitnewton, please make sure that the `configure.ac` files are using C++11
 
-####Instructions on how to build and install each component of this library are located within each component's README:
-
-We facilitate the install process by including shell scripts in the build_scripts directory that can be used to install all of the libraries and scripts in this mega-library, or any of them.
+Dirc-Detector facilitate the install process by including shell scripts in the build_scripts directory that can be used to install all (or any) of its libraries and scripts. In order to do so, you will need to run the shell scripts with the appropriate environment variables.
 
 **Environment variables to export**
+
 1. *MYLIBS* : used as location to install libraries
 + *MYAPPS* : used as location to install executables
 + *scripts*  : used as location to install executable scripts
 
 Note: (Please make sure *MYAPPS* and *scripts* are in your bin)
+
+####Instructions on how to build and install each component of this library are located within each component's README:
 
 1. [Dirc-Objects](https://github.com/wcarvalho/dirc-detector/tree/master/dircobjects#installation-instructions)
 2. [Particle-Generator](https://github.com/wcarvalho/dirc-detector/tree/master/generator#installation-instructions)
