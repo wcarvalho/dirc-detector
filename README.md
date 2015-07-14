@@ -37,8 +37,9 @@ There are numerous pre-requisite libraries:
 
 1. [ROOT](https://root.cern.ch/drupal/) (version 5.34)
 + [eigen](http://eigen.tuxfamily.org/index.php?title=Main_Page)
+
 Please make sure that the `configure.ac` files are using C++11
-+ [libseamstress](https://code.google.com/p/libseamstress/) (please use revision 21, i.e. do `svn update -r21`)
+3.  [libseamstress](https://code.google.com/p/libseamstress/) (please use revision 21, i.e. do `svn update -r21`)
 + [fitnewton](https://code.google.com/p/fitnewton/)
 
 Instructions on how to build and install each component of this library are located within each component's README:
