@@ -4,8 +4,7 @@ commonAdds = \
 $(ROOT_LIBS) \
 $(DIRC_LIB) \
 $(SIM_LIB) \
-$(NEWTON_LIB) \
-$(OPENCV_LIB)
+$(NEWTON_LIB)
 
 include_HEADERS = reconstructor.h \
 ../headers/functions.h \
