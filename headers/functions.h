@@ -24,7 +24,7 @@
 //------------------------------------------
 //		mine
 //------------------------------------------
-#include "dirc_objects.h"
+// #include "dirc_objects.h"
 #include "myrandom.h"
 // #include "Rotater.h"
 

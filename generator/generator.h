@@ -28,8 +28,8 @@
 //		mine
 //------------------------------------------
 #include "dirc_objects.h"
-#include "functions.h"
 #include "Simulate.h"
+#include "../headers/myrandom.h"
 
 //------------------------------------------
 //		Functions
