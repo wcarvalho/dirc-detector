@@ -38,7 +38,6 @@ commonSources = \
 	../functions/addtoFile.cpp \
 	../functions/file-properties.cpp
 
-# ../functions/Introduce.cpp \
 
 include_HEADERS = simulator.h \
 Rotater.h \
