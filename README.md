@@ -46,9 +46,7 @@ Note: For libseamstress and fitnewton, please make sure that the `configure.ac` 
 
 We facilitate the install process by including shell scripts in the build_scripts directory that can be used to install all of the libraries and scripts in this mega-library, or any of them.
 
-**Environment Variables to export**
-
-In order to install the libraries you must export
+**Environment variables to export**
 
 1. [Dirc-Objects](https://github.com/wcarvalho/dirc-detector/tree/master/dircobjects#installation-instructions)
 2. [Particle-Generator](https://github.com/wcarvalho/dirc-detector/tree/master/generator#installation-instructions)
