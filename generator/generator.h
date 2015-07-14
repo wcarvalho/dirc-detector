@@ -29,7 +29,7 @@
 //------------------------------------------
 #include "dirc_objects.h"
 #include "Simulate.h"
-#include "../headers/fucntions.h"
+#include "../headers/functions.h"
 
 //------------------------------------------
 //		Functions
