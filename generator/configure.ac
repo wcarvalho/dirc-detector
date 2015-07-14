@@ -16,5 +16,7 @@ DIRC_LIB=`pkg-config --libs DircObjs`
 AC_SUBST(ROOT_LIBS)
 AC_SUBST(DIRC_LIB)
 
+PKG_CHECK_MODULES([SimObjs])
+
 AC_CONFIG_FILES([Makefile GenObjs.pc])
 AC_OUTPUT

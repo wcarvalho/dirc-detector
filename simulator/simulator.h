@@ -21,7 +21,7 @@
 //		mine
 //------------------------------------------
 #include "dirc_objects.h"
-#include "functions.h"
+// #include "../headers/functions.h"
 #include "Parameters.h"
 #include "Simulate.h"
 #include "file-properties.h"
