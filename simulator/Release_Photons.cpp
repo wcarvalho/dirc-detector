@@ -1,6 +1,6 @@
 #include "dirc_objects.h"
 #include "TMath.h"
-#include "../headers/functions.h"
+#include "functions.h"
 #include "simulator.h"
 #include "Simulate.h"
 

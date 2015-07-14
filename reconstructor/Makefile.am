@@ -6,11 +6,7 @@ $(DIRC_LIB) \
 $(SIM_LIB) \
 $(NEWTON_LIB)
 
-include_HEADERS = reconstructor.h \
-../headers/functions.h \
-../headers/fitter.h \
-../headers/myrandom.h \
-../headers/file-properties.h
+include_HEADERS = reconstructor.h
 
 commonSources = LookUpTable.cpp \
 cmdline.cpp \
@@ -31,35 +27,8 @@ histogram_photon_angles.cpp \
 getExpectedPhotonMap.cpp \
 CalculateParticleFits.cpp \
 reset_variables.cpp \
-check_reconstructed_photons.cpp \
-##=====================================
-##
-##					Mutual functions
-##
-##=====================================
-../functions/TabToLevel.cpp \
-../functions/Get_Photon_UnitVector.cpp \
-../functions/Get_Particle_UnitVector.cpp \
-../functions/Print_TVector.cpp \
-../functions/Introduce.cpp \
-../functions/create_2D_vector.cpp \
-../functions/Fill_RotationMatrix.cpp \
-../functions/Print_2D_Vector.cpp \
-../functions/Rotation_Vector.cpp \
-../functions/Rotated_Vector.cpp \
-../functions/Update_Photon_ThetaPhi.cpp \
-../functions/random_numbers.cpp \
-../functions/Photons_Rest.cpp \
-../functions/GraphFocus.cpp \
-../functions/GraphRest.cpp \
-../functions/GraphBounds.cpp \
-../functions/ExtractArray.cpp \
-../functions/Print_Histogram.cpp \
-../functions/Rotater.cpp \
-../functions/min_map.cpp \
-../functions/addtoFile.cpp \
-../functions/returnEnd.cpp \
-../functions/file-properties.cpp
+check_reconstructed_photons.cpp
+
 
 lib_LTLIBRARIES = libReconstructionObjs.la
 libReconstructionObjs_la_SOURCES = $(commonSources)

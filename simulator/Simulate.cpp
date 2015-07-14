@@ -1,5 +1,5 @@
 #include "dirc_objects.h"
-#include "../headers/functions.h"
+#include "functions.h"
 #include "simulator.h"
 #include "Simulate.h"
 #include <iomanip>

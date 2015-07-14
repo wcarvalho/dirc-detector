@@ -3,8 +3,8 @@
 #include <math.h>
 #include "dirc_objects.h"
 #include "TCanvas.h"
-#include "../headers/reconstructor.h"
-#include "../headers/functions.h"
+#include "reconstructor.h"
+#include "functions.h"
 
 
 using namespace std;

@@ -9,19 +9,10 @@ commonSources = \
 	gParticle.cpp \
 	project.cpp \
 	TakeInParameters.cpp \
-	generate.cpp \
-##=====================================
-##
-##					Mutual functions
-##
-##=====================================
-	../functions/random_numbers.cpp
+	generate.cpp
 
-H=../headers
 include_HEADERS = \
-	generator.h \
-	$(H)/functions.h \
-	$(H)/myrandom.h
+	generator.h
 
 lib_LTLIBRARIES = libGenObjs.la
 libGenObjs_la_SOURCES = $(commonSources)

@@ -1,4 +1,4 @@
-#include   "../headers/fitter.h"
+#include   "fitter.h"
 
 // takes in the global bin index "bin" from the lookup table file, as well as the number of bins for each of the variables (x,y,theta,phi,v)
 // the ordering (1,2,3,4,5) <--> (x,y,theta,phi,v)

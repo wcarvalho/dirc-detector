@@ -4,7 +4,7 @@
 #include "TVector3.h"
 #include "dirc_objects.h"
 #include "simulator.h"
-#include "../headers/functions.h"
+#include "functions.h"
 
 using namespace std;
 

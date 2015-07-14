@@ -17,7 +17,7 @@ int main(int argc, char** argv)
 	int input = ai.random_given;
 
 	string readf = ai.input_arg;
-	FileProperties readf_prop(readf);
+	dirc::FileProperties readf_prop(readf);
 	string directory = "";
 
 	string writef = "simulator.root";
@@ -39,7 +39,7 @@ int main(int argc, char** argv)
 	GeneratorOut *event_outputCopy = 0;
 
 	Rotater r;
-	FileProperties &f = readf_prop;
+	dirc::FileProperties &f = readf_prop;
 
 	if(ai.writefile_given) writef = ai.writefile_arg;
 	if(ai.cheatfile_given) writef2 = ai.cheatfile_arg;
@@ -51,7 +51,7 @@ int main(int argc, char** argv)
 	}
 
 	f.appendFileToDirectory(directory, writef);
-	FileProperties writef_prop(writef);
+	dirc::FileProperties writef_prop(writef);
 	f.appendFileToDirectory(directory, writef2);
 
 

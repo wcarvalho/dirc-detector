@@ -24,7 +24,7 @@
 #include "functions.h"
 #include "Parameters.h"
 #include "Simulate.h"
-#include "file-properties.h"
+#include "FileProperties.h"
 
 //------------------------------------------
 //		Functions

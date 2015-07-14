@@ -3,7 +3,7 @@
 #include <cmath>
 #include <string>
 #include "TObject.h"
-#include "../headers/fitter.h"
+#include "fitter.h"
 #include "simulator.h"
 #include "Rotater.h"
 
