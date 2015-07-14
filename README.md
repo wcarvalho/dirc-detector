@@ -40,16 +40,22 @@ There are numerous pre-requisite libraries:
 + [libseamstress](https://code.google.com/p/libseamstress/) (please use revision 21, i.e. do `svn update -r21`)
 + [fitnewton](https://code.google.com/p/fitnewton/)
 
-Note: For [libseamstress] and [fitnewton], please make sure that the `configure.ac` files are using C++11
-Instructions on how to build and install each component of this library are located within each component's README:
+Note: For libseamstress and fitnewton, please make sure that the `configure.ac` files are using C++11
 
+####Instructions on how to build and install each component of this library are located within each component's README:
+
+We facilitate the install process by including shell scripts in the build_scripts directory that can be used to install all of the libraries and scripts in this mega-library, or any of them.
+
+**Environment Variables to export**
+
+In order to install the libraries you must export
 1. [Dirc-Objects](https://github.com/wcarvalho/dirc-detector/tree/master/dircobjects#installation-instructions)
 2. [Particle-Generator](https://github.com/wcarvalho/dirc-detector/tree/master/generator#installation-instructions)
 3. [Photon-Generator](https://github.com/wcarvalho/dirc-detector/tree/master/simulator#installation-instructions)
 4. [Particle-Reconstructor](https://github.com/wcarvalho/dirc-detector/tree/master/reconstructor#installation-instructions)
 5. [Scripts](https://github.com/wcarvalho/dirc-detector/tree/master/scripts#installation-instructions)
 
-You may contact me with any concerns about this library via wcarvalho92@gmail.com
+You may contact me with any concerns about this library at wcarvalho92@gmail.com
 
 **Note:** Installation for this library has only been tested on [Mac OSX 10.0+](https://www.apple.com/osx/) and [Linux Ubuntu 14.0+](http://www.ubuntu.com/download/desktop). It has <span style="color:red;font-weight:bold">NOT</span> been tested for Windows. While this installation may work on other UNIX-based systems (and windows builds), this is not guaranteed and you continue with installation at your own risk.
 
