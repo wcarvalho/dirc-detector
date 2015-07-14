@@ -33,7 +33,7 @@ This library has 5 components: 4 sub-libraries **(1) Dirc-Objects**, **(2) Parti
 Before continuing, make sure that *libtool, pkg-config, autoconf,* and *automake* are installed.
 
 
-There are numerous pre-requisite libraries:
+###pre-requisite libraries:
 
 1. [ROOT](https://root.cern.ch/drupal/) (version 5.34)
 + [eigen](http://eigen.tuxfamily.org/index.php?title=Main_Page)
@@ -42,6 +42,7 @@ There are numerous pre-requisite libraries:
 
 Note: For libseamstress and fitnewton, please make sure that the `configure.ac` files are using C++11
 
+###Easy installation
 Dirc-Detector facilitate the install process by including shell scripts in the build_scripts directory that can be used to install all (or any) of its libraries and scripts. In order to do so, you will need to run the shell scripts with the appropriate environment variables.
 
 **Environment variables to export**
@@ -50,9 +51,12 @@ Dirc-Detector facilitate the install process by including shell scripts in the b
 + *MYAPPS* : used as location to install executables
 + *scripts*  : used as location to install executable scripts
 
-Note: (Please make sure *MYAPPS* and *scripts* are in your bin)
+Note: Please make sure **MYAPPS** and **scripts** are in your bin
 
-####Instructions on how to build and install each component of this library are located within each component's README:
+Once,
+
+###Harder installation
+If the installation instructions above didn't work out for some reason, you can follow the installation instruction in each component's README.
 
 1. [Dirc-Objects](https://github.com/wcarvalho/dirc-detector/tree/master/dircobjects#installation-instructions)
 2. [Particle-Generator](https://github.com/wcarvalho/dirc-detector/tree/master/generator#installation-instructions)
