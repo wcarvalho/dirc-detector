@@ -1,7 +1,7 @@
-#!/usr/bin/env
+#!/usr/bin/bash
 
 directory=reconstructor
 source commands.sh
-cmd="$configure=$MYLIBS --bindir=$MYAPPS/bin"
+cmd="$configure=$MYLIBS --bindir=$MYAPPS"
 # echo $cmd
 source execution.sh

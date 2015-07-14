@@ -1,4 +1,4 @@
-#!/usr/bin/env
+#!/usr/bin/bash
 
 colorprint(){
 	echo "\033[31m$1\033[00m"

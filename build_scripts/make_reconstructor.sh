@@ -1,4 +1,4 @@
-#!/usr/bin/env
+#!/usr/bin/bash
 
 directory=reconstructor
 source commands.sh

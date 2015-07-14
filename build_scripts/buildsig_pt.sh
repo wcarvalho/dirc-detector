@@ -1,4 +1,4 @@
-#!/usr/bin/env
+#!/usr/bin/bash
 
 cd scripts
 cd pt_sigma_comp

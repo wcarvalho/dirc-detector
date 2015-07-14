@@ -1,4 +1,4 @@
-#!/usr/bin/env
+#!/usr/bin/bash
 
 echo "\nsmearer\n"
 source buildsmearer.sh

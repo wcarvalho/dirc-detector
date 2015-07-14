@@ -1,6 +1,6 @@
-#!/usr/bin/env
+#!/usr/bin/bash
 
 directory=generator
 source commands.sh
-cmd="$configure=$MYLIBS --bindir=$MYAPPS/bin"
+cmd="$configure=$MYLIBS --bindir=$MYAPPS"
 source execution.sh
