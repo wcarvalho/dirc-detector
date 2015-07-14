@@ -42,7 +42,7 @@ Before continuing, make sure that *libtool, pkg-config, autoconf,* and *automake
 
 Note: For libseamstress and fitnewton, please make sure that the `configure.ac` files are using C++11
 
-###Easy installation
+####Easy installation
 Dirc-Detector facilitate the install process by including shell scripts in the build_scripts directory that can be used to install all (or any) of its libraries and scripts. In order to do so, you will need to run the shell scripts with the appropriate environment variables.
 
 **Environment variables to export**
@@ -53,9 +53,19 @@ Dirc-Detector facilitate the install process by including shell scripts in the b
 
 Note: Please make sure **MYAPPS** and **scripts** are in your bin
 
-Once,
+######Installing libraries
+1. `sh autoreconf_all.sh`
++  `sh configure_all.sh`
++  `sh install_all.sh`
 
-###Harder installation
+
+All shell scripts to install libraries have prefix "install_" (e.g. install_generator.sh, install_dircobjects.sh, etc.)
+
+######Installing scripts
+All shell scripts to built C++ scripts have prefix "install_" (e.g. install_generator.sh, install_dircobjects.sh, etc.)
+
+
+####Harder installation
 If the installation instructions above didn't work out for some reason, you can follow the installation instruction in each component's README.
 
 1. [Dirc-Objects](https://github.com/wcarvalho/dirc-detector/tree/master/dircobjects#installation-instructions)

@@ -1,3 +1,5 @@
+#!/usr/bin/bash
+
 source autoreconf_generator.sh
 source autoreconf_simulator.sh
 source autoreconf_reconstructor.sh
