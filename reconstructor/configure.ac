@@ -10,7 +10,7 @@ AC_PROG_LIBTOOL
 ##CXXFLAGS="-Wall -Werror -O2 ${CXXFLAGS}"
 CPPFLAGS="${CPPFLAGS} -std=c++11 -pipe -Wno-deprecated-register -O3 -march=native -I`root-config --incdir` `pkg-config --cflags DircObjs` `pkg-config --cflags SimObjs` `pkg-config --cflags fitnewton`"
 
-ROOT_LIBS=`root-config --libs -lTSpectrum`
+ROOT_LIBS=`root-config --libs`
 DIRC_LIB=`pkg-config --libs DircObjs`
 SIM_LIB=`pkg-config --libs SimObjs`
 NEWTON_LIB=`pkg-config --libs fitnewton`
