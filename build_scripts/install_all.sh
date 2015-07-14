@@ -1,9 +1,14 @@
-echo "\nDIRC OBJECTS\n"
+#!/usr/bin/env
+
+colorprint(){
+	echo "\033[31m$1\033[00m"
+}
+colorprint "DIRC OBJECTS"
 source install_dircobjects.sh
-echo "\nGENERATOR\n"
+colorprint "GENERATOR"
 source install_generator.sh
-echo "\nSIMULATOR\n"
+colorprint "SIMULATOR"
 source install_simulator.sh
-echo "\nRECONSTRUCTOR\n"
+colorprint "RECONSTRUCTOR"
 source install_reconstructor.sh
-source buildallscripts.sh
+# source buildallscripts.sh
