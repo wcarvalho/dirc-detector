@@ -23,7 +23,6 @@ commonSources = \
 	../functions/Get_Photon_UnitVector.cpp \
 	../functions/Get_Particle_UnitVector.cpp \
 	../functions/Print_TVector.cpp \
-	../functions/Introduce.cpp \
 	../functions/create_2D_vector.cpp \
 	../functions/Print_2D_Vector.cpp \
 	../functions/Rotation_Vector.cpp \
@@ -38,6 +37,8 @@ commonSources = \
 	../functions/returnEnd.cpp \
 	../functions/addtoFile.cpp \
 	../functions/file-properties.cpp
+
+# ../functions/Introduce.cpp \
 
 include_HEADERS = simulator.h \
 Rotater.h \

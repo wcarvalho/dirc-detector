@@ -36,9 +36,9 @@ using namespace std;
 void TabToLevel(int level);
 void Print_TVector(TVector3 v);
 void Print_2D_Vector(vector< vector<double> > array);
-void Introduce(string title, string Output);
-void Check_PhotonEvent(PhotonEvent event);
-void Check_ParticleEvent(ParticleEvent event);
+// void Introduce(string title, string Output);
+// void Check_PhotonEvent(PhotonEvent event);
+// void Check_ParticleEvent(ParticleEvent event);
 void addtoFile(std::string file, std::string toAdd);
 
 
