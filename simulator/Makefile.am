@@ -30,7 +30,6 @@ commonSources = \
 	../functions/Update_Photon_ThetaPhi.cpp \
 	../functions/random_numbers.cpp \
 	../functions/Photons_Rest.cpp \
-	../functions/GraphFocus.cpp \
 	../functions/GraphRest.cpp \
 	../functions/GraphBounds.cpp \
 	../functions/Rotater.cpp \

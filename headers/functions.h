@@ -50,15 +50,12 @@ TVector3 Get_UnitVector(double theta, double phi);
 // void Rotate_Photons_IntoFrame(Detector d, ParticleOut particle, vector<PhotonOut> &photons, int beg, int end, string Output);
 void create_2D_vector(vector< vector<double> > &array, int rows, int number_of_columns);
 void Update_Photon_ThetaPhi(Photon &photon, string Output);
-void GraphFocus(TCanvas *c1, TGraph*& focus, PhotonEvent photon_event, string Output);
+void GraphFocus(TCanvas *c1, TGraph*& focus, PhotonEvent photon_event, string Output);  // sim
 void GraphRest(TCanvas *c1, TGraph*& rest, PhotonEvent photon_event, string Output);
 void GraphBounds(TCanvas *c1, string Output);
 
 //		Return Values
 //------------------------------------------
-// double RandomDoubleBetween(double beginning, double end, int input_number);
-// double RandomIntBetween(int beginning, int end, int input_number);
-// double* random_numbers(int size, int input_number);
 int Corresponding_Photons(PhotonEvent photon_event, int focus);
 int Photons_Rest(PhotonEvent photon_event, int focus);
 double *ExtractTheta(vector<Photon> v, string Output);
