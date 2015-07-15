@@ -58,15 +58,22 @@ For each library do:
 
 1. `sh autoreconf_library.sh`
 + `sh configure_library.sh`
-+  `sh install_library.sh`
++ `sh install_library.sh`
 
-e.g. `sh autoreconf_dircobjects.sh`, `sh configure_dircobjects.sh`, `sh install_dircobjects.sh`
+For example:
+```
+sh autoreconf_dircobjects.sh
+sh configure_dircobjects.sh
+sh install_dircobjects.sh
+```
 
 Recommended order: (1) dircobjects, (2) simulator, (3) generator, (4) reconstructor
 
-######Installing scripts
-All shell scripts to built C++ scripts have prefix "install_" (e.g. install_generator.sh, install_dircobjects.sh, etc.)
+<!-- ######Installing scripts
 
+
+All shell scripts to built C++ scripts have prefix "install_" (e.g. install_generator.sh, install_dircobjects.sh, etc.)
+ -->
 
 ####Harder installation
 If the installation instructions above didn't work out for some reason, you can follow the installation instruction in each component's README.
