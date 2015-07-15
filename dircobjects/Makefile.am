@@ -16,10 +16,10 @@ include_HEADERS  =  \
 	functions.h \
 	Parameters.h \
 	fitter.h \
-	myrandom.h
-# dircComparisons.h
-# dircTFile.h
-# dirc_io.h
+	myrandom.h \
+	dircComparisons.h \
+	dircTFile.h \
+	dirc_io.h
 
 
 DircObjs_Dict.cpp: \

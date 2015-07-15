@@ -17,7 +17,8 @@ commonSources = \
 	Rotater.cpp
 
 include_HEADERS = simulator.h \
-	Rotater.h
+	Rotater.h \
+	Simulate.h
 
 lib_LTLIBRARIES = libSimObjs.la
 libSimObjs_la_LIBADD = $(commonAdds)
@@ -29,7 +30,6 @@ pkgconfig_DATA = SimObjs.pc
 
 bin_PROGRAMS = simulator
 simulator_SOURCES = main.cpp
-	$(commonSources)
 simulator_LDADD = $(commonAdds) \
 	libSimObjs.la
 simulator_CFLAGS = $(AM_CFLAGS)

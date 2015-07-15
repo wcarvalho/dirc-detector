@@ -40,7 +40,8 @@ pkgconfig_DATA = ReconstructionObjs.pc
 
 bin_PROGRAMS = reconstructor
 reconstructor_SOURCES = main.cpp
-reconstructor_LDADD = libReconstructionObjs.la
+reconstructor_LDADD = $(commonAdds) \
+	libReconstructionObjs.la
 reconstructor_CFLAGS = $(AM_CFLAGS)
 
 clear-local:

@@ -85,7 +85,7 @@ public:
 
 	void AddTrackRecon();
 	void PushBackParams();
-	void CreateIndexedPlot(TCanvas &C);
+	// void CreateIndexedPlot(TCanvas &C);
 	// void SetIndex(std::vector< int > i){ index = std::move(index) ; }
 	// void SetPhotonPlot(int const i, TCanvas C){
 	// 	ColoredPhotons.at(i) = *C.Clone();
