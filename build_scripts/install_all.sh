@@ -11,4 +11,3 @@ colorprint "GENERATOR"
 source install_generator.sh
 colorprint "RECONSTRUCTOR"
 source install_reconstructor.sh
-# source buildallscripts.sh
