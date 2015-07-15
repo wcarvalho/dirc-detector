@@ -54,6 +54,12 @@ Dirc-Detector facilitate the install process by including shell scripts in the b
 Note: Please make sure **MYAPPS** and **scripts** are in your `$PATH`
 
 ######Installing libraries
+The easiest thing to do is to create a link to all shell scripts in `build_scripts` in your main directory, i.e.
+```
+ln build_scripts/*.sh .
+```
+Although you can link only the shell script files described below
+
 For each library do:
 
 1. `sh autoreconf_library.sh`
