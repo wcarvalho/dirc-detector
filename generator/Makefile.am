@@ -2,7 +2,8 @@ AUTOMAKE_OPTIONS = subdir-objects
 
 commonAdds = \
 	$(ROOT_LIBS) \
-	$(DIRC_LIB)
+	$(DIRC_LIB) \
+	$(SIM_LIB)
 
 commonSources = \
 	cmdline.cpp \
@@ -24,7 +25,8 @@ pkgconfig_DATA = GenObjs.pc
 
 bin_PROGRAMS = generator
 generator_SOURCES = main.cpp
-generator_LDADD = libGenObjs.la
+generator_LDADD = $(commonAdds) \
+	libGenObjs.la
 generator_CFLAGS = $(AM_CFLAGS)
 
 cmdline.c: cmdline.ggo

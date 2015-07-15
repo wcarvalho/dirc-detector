@@ -6,8 +6,6 @@
 #include "dirc_io.h"
 #include <cstdlib>
 #include "cmdline.h"
-#include "boost/bind.hpp"
-#include "boost/function.hpp"
 
 #define pi 3.14159265358979312
 
