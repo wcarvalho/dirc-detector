@@ -25,8 +25,8 @@ pkgconfig_DATA = GenObjs.pc
 
 bin_PROGRAMS = generator
 generator_SOURCES = main.cpp
-generator_LDADD = $(commonAdds) \
-	libGenObjs.la
+generator_LDADD = libGenObjs.la \
+	$(commonAdds)
 generator_CFLAGS = $(AM_CFLAGS)
 
 cmdline.c: cmdline.ggo
