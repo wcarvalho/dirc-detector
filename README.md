@@ -51,7 +51,7 @@ Dirc-Detector facilitate the install process by including shell scripts in the b
 + *MYAPPS* : used as location to install executables
 + *scripts*  : used as location to install executable scripts
 
-Note: Please make sure **MYAPPS** and **scripts** are in your bin
+Note: Please make sure **MYAPPS** and **scripts** are in your `$PATH`
 
 ######Installing libraries
 For each library do:
