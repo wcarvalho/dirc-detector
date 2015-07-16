@@ -58,7 +58,14 @@ The easiest thing to do is to create a link to all shell scripts in `build_scrip
 ```
 ln build_scripts/*.sh .
 ```
-Although you can link only the shell script files described below
+Although, you can link only the shell script files described below, i.e.
+
+```
+ln build_scripts/*dircobjects*.sh .
+ln build_scripts/*simulator*.sh .
+ln build_scripts/*generator*.sh .
+ln build_scripts/*reconstructor*.sh .
+```
 
 For each library do:
 
