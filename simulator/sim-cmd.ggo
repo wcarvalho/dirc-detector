@@ -14,3 +14,4 @@ option "seed" s "seed used in random number generator" double optional
 option "quiet" q "turn off all printing" optional
 option "print-photons" p "only print photon information per event" optional
 option "file-write-off" - "Turn off file writing" optional
+option "quantum-efficiency" Q "Quantum efficiency (in %) for photon detection" double optional default="40"

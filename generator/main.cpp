@@ -33,7 +33,7 @@ int main(int argc, char** argv)
   double charge = ai.char_arg;
   bool replace;
 
-	int nparticle_range[2] {1,1000};
+	int nparticle_range[2] {1,100000};
 	double etarange[2] {-.5, .5};
 	double ptrange[2] {.2, 10.};
 	double phirange[2] {0., 2*pi};

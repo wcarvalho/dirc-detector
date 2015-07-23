@@ -54,7 +54,8 @@ bool TrackRecon::passed_intensity_cut(int const i, bool print, double threshold)
 	static bool intensity_high_enough;
 	intensity_high_enough = (intensity >= 80);
 
-	passed = nsigma_less_than_intensity_threshold && intensity_high_enough;
+	// passed = nsigma_less_than_intensity_threshold && intensity_high_enough;
+	passed = intensity_high_enough;
 
 	return passed;
 

@@ -34,19 +34,20 @@ const char *gengetopt_args_info_versiontext = "";
 const char *gengetopt_args_info_description = "";
 
 const char *gengetopt_args_info_help[] = {
-  "  -h, --help                Print help and exit",
-  "  -V, --version             Print version and exit",
-  "  -i, --input=STRING        path of particle-generated data",
-  "  -D, --Directory[=STRING]  Sets the directory in which files will be saved.\n                              With this option, with no argument the file is\n                              saved in directory of input file. Without this\n                              option, it is saved in the current directory\n                              (default=`')",
-  "  -r, --random=INT          value for seed of random numbers",
-  "  -v, --verbose             print data",
-  "  -W, --writefile=STRING    file to be written to",
-  "  -c, --cheatfile=STRING    filename for cheat data",
-  "  -A, --Append              append particle and photon generation to current\n                              file",
-  "  -s, --seed=DOUBLE         seed used in random number generator",
-  "  -q, --quiet               turn off all printing",
-  "  -p, --print-photons       only print photon information per event",
-  "      --file-write-off      Turn off file writing",
+  "  -h, --help                    Print help and exit",
+  "  -V, --version                 Print version and exit",
+  "  -i, --input=STRING            path of particle-generated data",
+  "  -D, --Directory[=STRING]      Sets the directory in which files will be\n                                  saved. With this option, with no argument the\n                                  file is saved in directory of input file.\n                                  Without this option, it is saved in the\n                                  current directory  (default=`')",
+  "  -r, --random=INT              value for seed of random numbers",
+  "  -v, --verbose                 print data",
+  "  -W, --writefile=STRING        file to be written to",
+  "  -c, --cheatfile=STRING        filename for cheat data",
+  "  -A, --Append                  append particle and photon generation to\n                                  current file",
+  "  -s, --seed=DOUBLE             seed used in random number generator",
+  "  -q, --quiet                   turn off all printing",
+  "  -p, --print-photons           only print photon information per event",
+  "      --file-write-off          Turn off file writing",
+  "  -Q, --quantum-efficiency=DOUBLE\n                                Quantum efficiency (in %) for photon detection\n                                  (default=`40')",
     0
 };
 
@@ -87,6 +88,7 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->quiet_given = 0 ;
   args_info->print_photons_given = 0 ;
   args_info->file_write_off_given = 0 ;
+  args_info->quantum_efficiency_given = 0 ;
 }
 
 static
@@ -103,6 +105,8 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->cheatfile_arg = NULL;
   args_info->cheatfile_orig = NULL;
   args_info->seed_orig = NULL;
+  args_info->quantum_efficiency_arg = 40;
+  args_info->quantum_efficiency_orig = NULL;
   
 }
 
@@ -124,6 +128,7 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->quiet_help = gengetopt_args_info_help[10] ;
   args_info->print_photons_help = gengetopt_args_info_help[11] ;
   args_info->file_write_off_help = gengetopt_args_info_help[12] ;
+  args_info->quantum_efficiency_help = gengetopt_args_info_help[13] ;
   
 }
 
@@ -217,6 +222,7 @@ cmdline_parser_release (struct gengetopt_args_info *args_info)
   free_string_field (&(args_info->cheatfile_arg));
   free_string_field (&(args_info->cheatfile_orig));
   free_string_field (&(args_info->seed_orig));
+  free_string_field (&(args_info->quantum_efficiency_orig));
   
   
 
@@ -273,6 +279,8 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "print-photons", 0, 0 );
   if (args_info->file_write_off_given)
     write_into_file(outfile, "file-write-off", 0, 0 );
+  if (args_info->quantum_efficiency_given)
+    write_into_file(outfile, "quantum-efficiency", args_info->quantum_efficiency_orig, 0);
   
 
   i = EXIT_SUCCESS;
@@ -568,10 +576,11 @@ cmdline_parser_internal (
         { "quiet",	0, NULL, 'q' },
         { "print-photons",	0, NULL, 'p' },
         { "file-write-off",	0, NULL, 0 },
+        { "quantum-efficiency",	1, NULL, 'Q' },
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVi:D::r:vW:c:As:qp", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVi:D::r:vW:c:As:qpQ:", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -703,6 +712,18 @@ cmdline_parser_internal (
               &(local_args_info.print_photons_given), optarg, 0, 0, ARG_NO,
               check_ambiguity, override, 0, 0,
               "print-photons", 'p',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'Q':	/* Quantum efficiency (in %) for photon detection.  */
+        
+        
+          if (update_arg( (void *)&(args_info->quantum_efficiency_arg), 
+               &(args_info->quantum_efficiency_orig), &(args_info->quantum_efficiency_given),
+              &(local_args_info.quantum_efficiency_given), optarg, 0, "40", ARG_DOUBLE,
+              check_ambiguity, override, 0, 0,
+              "quantum-efficiency", 'Q',
               additional_error))
             goto failure;
         

@@ -79,18 +79,23 @@ struct gengetopt_args_info
   char * LookUpTable_orig;	/**< @brief file for look-up table original value given at command line.  */
   const char *LookUpTable_help; /**< @brief file for look-up table help description.  */
   int* inc_arg;	/**< @brief 
+  case 0: No Coloring Algorithm. 
   case 1: Use Theta Band. 
   case 2: Use Time Band.  */
   char ** inc_orig;	/**< @brief 
+  case 0: No Coloring Algorithm. 
   case 1: Use Theta Band. 
   case 2: Use Time Band original value given at command line.  */
   unsigned int inc_min; /**< @brief 
+  case 0: No Coloring Algorithm. 
   case 1: Use Theta Band. 
   case 2: Use Time Band's minimum occurreces */
   unsigned int inc_max; /**< @brief 
+  case 0: No Coloring Algorithm. 
   case 1: Use Theta Band. 
   case 2: Use Time Band's maximum occurreces */
   const char *inc_help; /**< @brief 
+  case 0: No Coloring Algorithm. 
   case 1: Use Theta Band. 
   case 2: Use Time Band help description.  */
   int band_search_case_arg;	/**< @brief 

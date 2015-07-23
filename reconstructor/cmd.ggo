@@ -26,7 +26,7 @@ option "expected-photons-case" e "\n\tcase 1: look-up table. \n\tcase 2: riemann
 option "LookUpTable" L "file for look-up table" string default="LookUpTable" argoptional optional dependon="expected-photons-case"
 
 
-option "inc" - "\ncase 1: Use Theta Band. \ncase 2: Use Time Band" argoptional int optional multiple
+option "inc" - "\ncase 0: No Coloring Algorithm. \ncase 1: Use Theta Band. \ncase 2: Use Time Band" argoptional int optional multiple
 
 option "band-search-case" B "\n\tcase 1: Search 1D theta projection for gaussian peak. \n\tcase 2: apply hough transform to 2D theta vs. phi histogram" argoptional int optional default="1"
 

@@ -106,16 +106,22 @@ namespace dirc
 			++steps_count;
 		}
 
+		bool restart = true;
 		while(true){
 
 			currentdirection = direction;
 			percentFound = getpercent(binlow, binhi, sigmaBinDistance);
 			if (print) std::cout << "\tpercentFound = " << percentFound << " at bin distance " << sigmaBinDistance << ", step size = " << stepsize << std::endl;
 			 // in center range " << GetBinCenter(binlow) << " : " << this->GetBinCenter(binhi) <<  std::endl;
-			if (counts >= 40)
+			if (counts >= 100)
 				break;
-			if (WithinPercentRange(percentFound, .10)){
-				break;
+			if (WithinPercentRange(percentFound, .10*percent) && counts > 5){
+				if (restart) {
+					counts = 0;
+					restart = false;
+					if (print) std::cout << "\t\trestarted\n";
+				}
+				else break;
 			}
 			checkDirection(direction, percentFound);
 
@@ -149,7 +155,7 @@ namespace dirc
 			percentFound = getpercent(binlow, binhi, sigmaBinDistance);
 			tempdif = fabs(percentFound - percent);
 			if (counts >= 30) break;
-			if (print) std::cout << "\tpercentFound = " << percentFound << " at bin distance " << sigmaBinDistance <<  " with difference " << tempdif << std::endl;
+			if (print) std::cout << "\tpercentFound = " << percentFound << " at bin distance " << sigmaBinDistance <<  " and x = " << GetBinCenter(center_bin- sigmaBinDistance) << std::endl;
 			if(tempdif <= percentDifference)
 				percentDifference = tempdif;
 			else{

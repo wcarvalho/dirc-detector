@@ -5,7 +5,6 @@
 //====================================================
 
 #include "simulator.h"
-#include "Rotater.h"
 #include <sstream>
 #include <cstdlib>
 #include "cmdline.h"
@@ -38,7 +37,6 @@ int main(int argc, char** argv)
 	GeneratorOut *event_output = 0;
 	GeneratorOut *event_outputCopy = 0;
 
-	Rotater r;
 	dirc::FileProperties &f = readf_prop;
 
 	if(ai.writefile_given) writef = ai.writefile_arg;
@@ -138,52 +136,14 @@ int main(int argc, char** argv)
 
 		d->get_Critical_Angle(1.);
 		if (print) cout << "Number of Particles: " << ParEvent->Particles.size() << endl;
-		for (unsigned int par = 0; par < ParEvent->Particles.size(); par++)
-		{
-			auto& particle = ParEvent->Particles.at(par);
- 			par_theta = &particle.Theta;
-			par_phi = &particle.Phi;
 
-			if (print) cout << "\tParticle = " << par << " with X, Y, Z, Theta, Phi, Beta =\n\t\t" << particle.X << ", " << particle.Y << ", " << particle.Z << ", " << particle.Theta << ", " << particle.Phi << ", " << particle.Beta << endl;
-			if (print) cout << "\t\tPhotonsPerCm = " << particle.PhotonsPercm << endl;
-			// if (print){
-				// printf("\t\tparticle theta = %f, phi = %f\n", *par_theta, *par_phi);
-			// }
-			Simulate_ParticlePath(*d, ParEvent->Particles[par], par, photon_event, seed, print);
-			r.Feed_Particle(*par_theta, *par_phi);
-			// cout << "par_theta = " << *par_theta << endl;
-			// cout << "par_phi = " << *par_phi << endl;
-			for(int &pho = photon_event.iterator; pho < photon_event.Photons.size(); pho++)
-			{
-				pho_theta = &photon_event.Photons[pho].Theta;
-				pho_phi = &photon_event.Photons[pho].Phi;
-				// if (pho == 0) cout << "\ttheta, phi = " << *pho_theta << ", " << *pho_phi <<" -> ";
-				pho_phi = &photon_event.Photons[pho].Phi;
-				r.Rotate_Photon(*pho_theta, *pho_phi);
-				photon_event.Photons[pho].UnitVector = Get_UnitVector(*pho_theta, *pho_phi);
-				// if (pho == 0) cout << "theta, phi = " << *pho_theta << ", " << *pho_phi <<endl;
-			}
-		}
-
+		SimulateParticles(*d, ParEvent->Particles, photon_event, seed, print);
 
 		double totalphotons = photon_event.Photons.size();
-		for (int i = 0; i < photon_event.Photons.size(); i++)
-		{
-			auto& photon = photon_event.Photons.at(i);
-			Simulate_PhotonPath(*d, photon, seed, false);
-			if (photon.Flag == 1){
-				ParEvent->Particles.at(photon.WhichParticle).nPhotonsPassed -= 1;
-			}
-			bool flag = (photon.Flag == 1);
-			CheckForFlag(photon_event, i, "no");
-			if (flag) continue;
-			double t = photon.Time_Traveled*300*TMath::Cos(photon.Phi)*TMath::Sin(photon.Theta);
-			// if (fabs(t) < 100){
-			// 	cout << "Error with time!\n";
-			// 	cout << "time = " << t << endl;
-			// 	exit(1);
-			// }
-		}
+
+		SimulatePhotons(*d, photon_event, ParEvent->Particles, seed, ai.quantum_efficiency_arg, print);
+
+
 		if (ai.print_photons_given) cout << "total photons: " << photon_event.Photons.size() << endl;
 		FillTree(sim_out, *ParEvent, photon_event, *event_output, "no", event_outputCopy, Append, quiet);
 		if (print){

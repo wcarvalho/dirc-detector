@@ -14,7 +14,10 @@ commonSources = \
 	FillTree.cpp \
 	Simulate.cpp \
 	Pull_Data.cpp \
-	Rotater.cpp
+	Rotater.cpp \
+	quantum_efficiency_cut.cpp \
+	SimulateParticles.cpp \
+	SimulatePhotons.cpp
 
 include_HEADERS = simulator.h \
 	Rotater.h \

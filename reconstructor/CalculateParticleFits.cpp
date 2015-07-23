@@ -80,7 +80,7 @@ void CalculateParticleFits(TH1D &histogram, ParticleOut &P, TrackRecon &T, vec_p
 		double delSigma = sqrt(delSigTheta*delSigTheta + delSigA*delSigA);
 
 		double momentum = P.CalculateMomentum(mass);
-		if (print && (momentum > 2.)){
+		if (print){
 			cout << "\n\t" << name << " with p = " << momentum << endl;
 			cout << "\ttheta: " << sigma_Theta << ", " << delSigTheta << endl;
 			cout << "\t\t- expected: " << angle << ", found: " << center << endl;

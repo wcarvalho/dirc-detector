@@ -164,7 +164,8 @@ int main(int argc, char** argv)
 
 			check_reconstructed_photons(photons_in_frame);
 			histogram_photons_in_frame = histogram_photon_angles(ev, i, photons_in_frame);
-			// cout << "\tparticle " << i << endl;
+
+			if (band_cases.at(0) == 0) continue;
 			index_photons(particle, i, photons_in_frame, index, histogram_photons_in_frame, angle_smear, time_smear, time_error, band_cases, band_search_case, band_search_width, photons_per_particle, expectedPhotonMap[i], *d, print);
 		}
 
@@ -176,14 +177,18 @@ int main(int argc, char** argv)
 			auto& current_recon = Tracks.Recon.at(i);
 			auto& Hist2D = current_recon.Hist2D;
 
-			TH1D* reduced_histogram_theta_projection = ReducedHistogram(photons_in_frame, Hist2D, index, i);
+			TH1D* reduced_histogram_theta_projection = 0;
+			if (band_cases.at(0) != 0)
+				reduced_histogram_theta_projection = ReducedHistogram(photons_in_frame, Hist2D, index, i);
+			else
+				reduced_histogram_theta_projection = Hist2D.ProjectionY();
 
 			if (!quiet)
 				cout << "\tFitting particle " << i << " with " << photons_per_particle[i] << " photon angles (" << (int)photons_per_particle[i]/4 << ") at x = " << particle.X << endl;
 
-			if (photons_per_particle[i] != 0 )
+			if ( (photons_per_particle[i] != 0 ) || (band_cases.at(0) == 0) )
 				CalculateParticleFits(*reduced_histogram_theta_projection, particle, current_recon, expectedPhotonMap[i], i, angle_smear, print);
-			delete reduced_histogram_theta_projection;
+			if (band_cases.at(0) != 0) delete reduced_histogram_theta_projection;
 		}
 
 		tree->Fill();

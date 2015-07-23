@@ -47,7 +47,7 @@ const char *gengetopt_args_info_help[] = {
   "      --terr=DOUBLE             an assumption on the error in the timing\n                                  information  (default=`100')",
   "  -e, --expected-photons-case[=INT]\n                                \n                                  \tcase 1: look-up table. \n                                  \tcase 2: riemann sum calculation.\n                                  (default=`1')",
   "  -L, --LookUpTable[=STRING]    file for look-up table  (default=`LookUpTable')",
-  "      --inc[=INT]               \n                                  case 1: Use Theta Band. \n                                  case 2: Use Time Band",
+  "      --inc[=INT]               \n                                  case 0: No Coloring Algorithm. \n                                  case 1: Use Theta Band. \n                                  case 2: Use Time Band",
   "  -B, --band-search-case[=INT]  \n                                  \tcase 1: Search 1D theta projection for\n                                  gaussian peak. \n                                  \tcase 2: apply hough transform to 2D theta\n                                  vs. phi histogram  (default=`1')",
   "  -w, --band-search-width[=DOUBLE]\n                                width to use in theta band for each particle\n                                  (default=`.03')",
   "      --momentum-indexing-threshold=DOUBLE\n                                momentum threshold to determine whether an\n                                  attemp will be made to index photons to a\n                                  particular particle  (default=`.5')",
@@ -1179,6 +1179,7 @@ cmdline_parser_internal (
           
           }
           /* 
+          case 0: No Coloring Algorithm. 
           case 1: Use Theta Band. 
           case 2: Use Time Band.  */
           else if (strcmp (long_options[option_index].name, "inc") == 0)

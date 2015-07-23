@@ -286,7 +286,7 @@ catch( TCLAP::ArgException& e )
 		falseFiles.push_back(std::move(falseFile));
 	}
 
-	graphs.at(0)->GetYaxis()->SetRangeUser(0, max_falserate + 5);
+	graphs.at(0)->GetYaxis()->SetRangeUser(0, 100);
 	L.Draw();
 	C.Print(output.c_str());
 
