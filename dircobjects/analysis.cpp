@@ -52,13 +52,12 @@ bool TrackRecon::passed_intensity_cut(int const i, bool print, double threshold)
 	static bool nsigma_less_than_intensity_threshold;
 	nsigma_less_than_intensity_threshold = (fabs(nsigma) <= threshold);
 	static bool intensity_high_enough;
-	intensity_high_enough = (intensity >= 80);
+	intensity_high_enough = (intensity >= 40);
 
 	// passed = nsigma_less_than_intensity_threshold && intensity_high_enough;
 	passed = intensity_high_enough;
 
 	return passed;
-
 }
 std::string TrackRecon::getBestFit(double const threshold, bool print) const {
 
@@ -113,7 +112,7 @@ void TrackRecon::addFitToHistogram(TH1D &h, std::string type){
 double TrackRecon::getnSigmaAt(int const i, bool const print) const{
 
 	static double nsigma;
-	if (!passed_intensity_cut(i, print)) nsigma = 1.e10;
+	if (!passed_intensity_cut(i, print)) nsigma = 100;
 	else nsigma = getnSigmaThetaAt(i, print);
 	if (print) cout << "\t" << getNameAt(i) << " final \u0394\u03C3 = " << nsigma << endl << endl;
 	return nsigma;

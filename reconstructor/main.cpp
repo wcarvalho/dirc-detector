@@ -51,6 +51,7 @@ int main(int argc, char** argv)
 		}
 		else
 			band_cases = {1, 2};
+		if (band_cases.at(0) == 4) band_cases = {1, 2};
 	//----------------------------------------------------------------------------
 	// determine which function will be used to determine the expected number of photons
 		if (print) cout << "ExpectedPhotonCase = ";
@@ -117,31 +118,10 @@ int main(int argc, char** argv)
 			tree->Fill(); continue;
 		}
 
-
-
 		static auto const& particle_types = particles.at(0).deftypes; // get particle types
-
-
-		// TCanvas C("C", "C", 800, 600);
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 		static unordered_map <int, int> photons_per_particle;
 		reset_photons_per_particle(photons_per_particle, nparticles);
-
-
-
 
 		static unordered_map <int, vec_pair> expectedPhotonMap;
 		getExpectedPhotonMap(particles, expectedPhotonMap, ExpectedNumberofPhotons);

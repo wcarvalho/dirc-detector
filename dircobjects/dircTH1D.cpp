@@ -11,33 +11,31 @@ namespace dirc
 		bincenter = GetBinCenter(value_bin);
 
 	}
-
+	// Deprecated. Please don't Use
 	void dircTH1D::FindDistributionCenter(double &center_start, double &sigma_start){
 
-		double centerheight = 0., center = 0.;
-		int centerbin = 0;
-		BinProperties(GetMean(), centerbin, centerheight, center);
-		if (centerheight < 0.3*GetBinContent(GetMaximumBin())){
-			center = GetBinCenter(GetMaximumBin());
-			centerheight = GetBinContent(GetMaximumBin());
-		}
-		double sigma_guess = sqrt(centerheight);
-		double &amplitude_guess = centerheight;
-
-		double xlow = GetXaxis()->GetXmin();
-		double xhi = GetXaxis()->GetXmax();
+		double amplitude_guess = GetBinContent(GetMaximumBin());
+		std::cout << "amplitude_guess = " << amplitude_guess << std::endl;
+		std::cout << "center_start = " << center_start << std::endl;
+		std::cout << "sigma_start = " << sigma_start << std::endl;
+		double xlow = center_start - 6*sigma_start;
+		double xhi = center_start + 6*sigma_start;
 		static TF1 fitfunc("f",
 			"[0]*exp(-(x-[1])*(x-[1])/2*[2]*[2])",
 			xlow, xhi);
-		fitfunc.SetRange(xlow, xhi);
 		fitfunc.SetParameter(0, amplitude_guess);
-		fitfunc.SetParameter(1, center);
+		fitfunc.SetParameter(1, center_start);
 		fitfunc.SetParLimits(1, xlow, xhi);
-		fitfunc.SetParameter(2, sigma_guess);
+		fitfunc.SetParameter(2, sigma_start);
 
-		Fit(&fitfunc, "QBIRCN0");
+		Fit(&fitfunc, "");
+		SaveAs("test.root");
+		amplitude_guess = fitfunc.GetParameter(0);
 		center_start = fitfunc.GetParameter(1);
 		sigma_start = fitfunc.GetParameter(2);
+		std::cout << "amplitude_guess = " << amplitude_guess << std::endl;
+		std::cout << "center_start = " << center_start << std::endl;
+		std::cout << "sigma_start = " << sigma_start << std::endl;
 	}
 
 	int dircTH1D::findBinDistance(const double& from, const double& to){
