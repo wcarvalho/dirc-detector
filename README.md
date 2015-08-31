@@ -69,15 +69,15 @@ ln build_scripts/*reconstructor*.sh .
 
 For each library do:
 
-1. `sh autoreconf_library.sh`
-+ `sh configure_library.sh`
-+ `sh install_library.sh`
+1. `bash autoreconf_library.sh`
++ `bash configure_library.sh`
++ `bash install_library.sh`
 
 For example:
 ```
-sh autoreconf_dircobjects.sh
-sh configure_dircobjects.sh
-sh install_dircobjects.sh
+bash autoreconf_dircobjects.sh
+bash configure_dircobjects.sh
+bash install_dircobjects.sh
 ```
 
 Recommended order: (1) dircobjects, (2) simulator, (3) generator, (4) reconstructor
