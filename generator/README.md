@@ -191,7 +191,7 @@ make
 make install
 ```
 
-[1]:https://www.dropbox.com/s/ns3p81k5c5hysz2/nims_draft4.pdf?dl=0
+[1]:http://1drv.ms/1NPyAHS
 [2]:https://github.com/wcarvalho/dirc-detector/tree/master/generator#figure-of-particle-generation
 [3]:https://github.com/wcarvalho/dirc-detector/tree/master/generator#eevents
 [4]:https://github.com/wcarvalho/dirc-detector/tree/master/generator#pparticle
